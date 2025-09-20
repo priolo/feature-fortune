@@ -1,0 +1,49 @@
+{
+  "name": "jen",
+  "version": "0.1.1",
+  "description": "Agents Framework",
+  "private": true,
+  "author": "Iorio Ivano <iorioivano@gmail.com>",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/start.js",
+  "scripts": {
+    "start": "cross-env NODE_ENV=production tsx src/start.ts",
+    "start:dev": "cross-env NODE_ENV=development tsx src/start.ts",
+    "test": "node --experimental-vm-modules --inspect-brk ./node_modules/jest/bin/jest.js",
+    "stripetest": "node ./src/server_test.js"
+  },
+  "//dependencies": {
+    "@priolo/julian": "file://C:/Users/iorio/Documents/julian",
+    "@priolo/jon-utils#local": "file:C://Users//iorio//Documents//jon-utils",
+    "@priolo/jon-utils": "^0.2.2",
+    "@priolo/jess": "file://C:/Users/iorio/Documents/jess"
+  },
+  "dependencies": {
+    "@priolo/jon-utils": "^0.5.3",
+    "@priolo/julian": "file://C:/Users/ivano.iorio/Documents/julian",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "express": "^5.1.0",
+    "google-auth-library": "^10.3.0",
+    "mysql2": "^3.9.7",
+    "sqlite3": "^5.1.7",
+    "stripe": "^18.5.0",
+    "typeorm": "^0.3.23",
+    "ws": "^8.18.2"
+  },
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.2",
+    "@types/express": "^4.17.8",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.1",
+    "axios": "^1.9.0",
+    "jest": "^30.0.3",
+    "ts-jest": "^29.4.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}

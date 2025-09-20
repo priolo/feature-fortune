@@ -1,0 +1,12 @@
+*.map
+
+node_modules/
+dist/
+examples/
+src/examples/
+db/
+
+.env
+.env.test
+.env.production
+.env.development
