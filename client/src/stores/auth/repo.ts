@@ -24,7 +24,7 @@ const setup = {
 		 * Chiamato allo startup dell'app
 		 */
 		current: async (_: void, store?: AuthStore) => {
-			if ( !!store.state.user ) return
+			if (!!store.state.user) return
 			let user: Account = null
 			try {
 				user = (await authApi.current())?.user
@@ -32,6 +32,13 @@ const setup = {
 				console.error('Error fetching current user:', error);
 			}
 			store.setUser(user)
+		},
+
+
+		loginWithGithub: async (_: void, store?: AuthStore) => {
+			const res = await authApi.githubLoginUrl()
+			console.log(res)
+			window.location.href = res.url
 		},
 
 		createSession: async (token: string, store?: AuthStore) => {
@@ -50,6 +57,7 @@ const setup = {
 			store.setUser(null)
 			await authApi.logout()
 		},
+
 	},
 
 	mutators: {

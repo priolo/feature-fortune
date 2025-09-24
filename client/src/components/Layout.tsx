@@ -1,60 +1,44 @@
-import React, { useState } from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
-import './Layout.css';
-import UserCmp from './UserCmp';
+import { Box } from '@mui/material';
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+import HeaderCmp from './HeaderCmp';
+
 
 
 const Layout: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Searching for:', searchQuery);
-    // Implement search functionality here
-  };
+	// RENDER
+	
+	return (
+		<Box sx={{
+			display: 'flex',
+			height: '100vh',
+			backgroundColor: '#f5f5f5'
+		}}>
 
-  return (
-    <div className="layout">
+			{/* Main Content */}
+			<Box sx={{
+				flex: 1,
+				display: 'flex',
+				flexDirection: 'column',
+				overflow: 'hidden'
+			}}>
 
-      {/* Main Content */}
-      <div className="main-wrapper">
+				{/* Header */}
+				<HeaderCmp />
 
-
-        {/* Header */}
-        <header className="header">
-
-          <div className="header-left">
-            <h1 className="page-title">Startup Web App</h1>
-          </div>
-          
-          <div className="header-center">
-            <form onSubmit={handleSearch} className="search-form">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search..."
-                className="search-input"
-              />
-              <button type="submit" className="search-button">
-                🔍
-              </button>
-            </form>
-          </div>
-          
-          <div className="header-right">
-            <UserCmp />
-          </div>
-          
-        </header>
-
-        {/* Main Content Area */}
-        <main className="main-content">
-          <Outlet />
-        </main>
-      </div>
-    </div>
-  );
+				{/* Main Content Area */}
+				<Box component="main" sx={{
+					flex: 1,
+					overflowY: 'auto',
+					padding: '2rem',
+					backgroundColor: '#f8f9fa'
+				}}>
+					<Outlet />
+				</Box>
+			</Box>
+		</Box>
+	);
 };
 
 export default Layout;

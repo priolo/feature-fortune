@@ -1,10 +1,11 @@
 import GithubRepoCmp from '@/pages/feature/cards/GithubRepoCmp';
-import featureDetailSo from '@/stores/feature/detail';
+import featureDetailSo, { stripePromise } from '@/stores/feature/detail';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';
 import StripePromise from './cards/StripePromiseCmp';
 import StripeCardCmp from './cards/StripeCardCmp';
+import { Elements } from '@stripe/react-stripe-js';
 
 interface UserCmpProps {
 }
@@ -88,14 +89,16 @@ const DetailPag: React.FC<UserCmpProps> = ({
 
             </>}
 
-            <StripePromise />
+            <Elements stripe={stripePromise}>
+                <StripePromise />
+            </Elements>
 
-            <Button variant="contained" color="primary" 
+            {/* <Button variant="contained" color="primary" 
                 onClick={handleCreateClick}>
                 SUBMIT
             </Button>
 
-            <StripeCardCmp />
+            <StripeCardCmp /> */}
 
         </Box>
     );

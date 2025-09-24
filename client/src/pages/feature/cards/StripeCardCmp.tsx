@@ -45,11 +45,13 @@ function CheckoutForm({ clientSecret }: { clientSecret: string }) {
 		if (!stripe || !elements) return;
 
 		setProcessing(true);
-		const card = elements.getElement(CardElement)!;
 
 		// 1) conferma la carta
 		const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-			payment_method: { card, billing_details: { name: 'Mario Rossi' } }
+			payment_method: { 
+				card: elements.getElement(CardElement)!,
+				billing_details: { name: 'Mario Rossi' } 
+			}
 		});
 
 		if (error) {

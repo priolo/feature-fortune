@@ -11,7 +11,9 @@
     "start": "cross-env NODE_ENV=production tsx src/start.ts",
     "start:dev": "cross-env NODE_ENV=development tsx src/start.ts",
     "test": "node --experimental-vm-modules --inspect-brk ./node_modules/jest/bin/jest.js",
-    "stripetest": "node ./src/server_test.js"
+    "server_stripe": "node ./src/server_stripe_webhook.js",
+    "server_github": "tsx ./src/server_github_auth.ts",
+    "server_github:watch": "tsx --watch ./src/server_github_auth.ts"
   },
   "//dependencies": {
     "@priolo/julian": "file://C:/Users/iorio/Documents/julian",
@@ -20,8 +22,11 @@
     "@priolo/jess": "file://C:/Users/iorio/Documents/jess"
   },
   "dependencies": {
+    "@octokit/oauth-app": "^8.0.1",
     "@priolo/jon-utils": "^0.5.3",
     "@priolo/julian": "file://C:/Users/ivano.iorio/Documents/julian",
+    "@types/cors": "^2.8.19",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "express": "^5.1.0",
@@ -40,7 +45,7 @@
     "axios": "^1.9.0",
     "jest": "^30.0.3",
     "ts-jest": "^29.4.0",
-    "tsx": "^4.19.4",
+    "tsx": "^4.20.5",
     "typescript": "^5.7.2"
   },
   "engines": {

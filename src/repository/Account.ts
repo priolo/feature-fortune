@@ -9,14 +9,17 @@ export class AccountRepo {
 	@PrimaryGeneratedColumn("uuid")
 	id?: string;
 
-	@Column({ type: 'varchar', default: '' })
+	@Column({ type: 'varchar', unique: true })
 	email: string;
 
-	@Column({ type: 'varchar', default: '' })
+	@Column({ type: 'varchar', nullable: true })
 	name: string;
 
-	@Column({ type: 'varchar', default: '' })
+	@Column({ type: 'varchar', nullable: true })
 	avatarUrl: string;
+
+	@Column({ type: 'bigint', nullable: true })
+	githubId: string;
 
 	/**
 	 * visibile agli LLMs
@@ -43,9 +46,6 @@ export class AccountRepo {
 
 
 
-	// [II] probabilmente da mettere nei Providers
-	@Column({ type: 'integer', nullable: true })
-	githubId?: string;
 
 	// collegamento con un account STRIPE
 	@Column({ type: 'varchar', nullable: true })

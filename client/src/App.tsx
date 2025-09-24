@@ -1,12 +1,15 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
-import FeatureListPag from './pages/feature/ListPag';
+import AuthorRegisterPag from './pages/account/AuthorRegisterPag';
 import Analytics from './pages/Analytics';
-import FeatureDetailPag from './pages/feature/DetailPag';
 import Customers from './pages/Customers';
+import { default as FeatureDetailPag } from './pages/feature/DetailPag';
+import FeatureListPag from './pages/feature/ListPag';
 import Orders from './pages/Orders';
 import Settings from './pages/Settings';
 import './styles/pages.css';
+
+
 
 function App() {
   return (
@@ -16,6 +19,7 @@ function App() {
 
           <Route index element={<FeatureListPag />} />
           <Route path="feature" element={<FeatureDetailPag />} />
+          <Route path="register" element={<AuthorRegisterPag />} />
 
           <Route path="analytics" element={<Analytics />} />
           

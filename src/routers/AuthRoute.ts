@@ -6,12 +6,18 @@ import { Request, Response } from "express";
 import { OAuth2Client } from 'google-auth-library';
 import { FindManyOptions } from "typeorm";
 import { ENV_TYPE } from "@/types/env.js";
-
+import { OAuthApp } from "@octokit/oauth-app";
 
 
 
 const client = new OAuth2Client('YOUR_GOOGLE_CLIENT_ID');
 
+// Configurazione OAuthApp
+const githubOAuth = new OAuthApp({
+	clientType: "oauth-app",
+	clientId: process.env.GITHUB_CLIENT_ID!,
+	clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+});
 
 
 class AuthRoute extends httpRouter.Service {
@@ -130,6 +136,8 @@ class AuthRoute extends httpRouter.Service {
 		res.status(200).send('Logout successful');
 	}
 
+	
+
 	/** eseguo il login con GOOGLE */
 	async googleLogin(req: Request, res: Response) {
 		const { token } = req.body;
@@ -143,14 +151,12 @@ class AuthRoute extends httpRouter.Service {
 			const payload = ticket.getPayload();
 
 			// cerco lo USER tramite email
-			const users: any[] = await new Bus(this, this.state.repository).dispatch({
-				type: typeorm.Actions.FIND,
+			let user: AccountRepo = await new Bus(this, this.state.repository).dispatch({
+				type: typeorm.Actions.FIND_ONE,
 				payload: <FindManyOptions<AccountRepo>>{
 					where: { email: payload.email },
 				}
 			})
-			let user: AccountRepo = users?.[0]
-
 			// se non c'e' allora creo un nuovo USER
 			if (!user) {
 				user = await new Bus(this, this.state.repository).dispatch({
@@ -167,7 +173,7 @@ class AuthRoute extends httpRouter.Service {
 				type: typeorm.RepoRestActions.DELETE,
 				payload: <ProviderRepo>{
 					name: PROVIDER_NAME.GOOGLE,
-					userId: user.id,
+					accountId: user.id,
 				}
 			})
 			// inserisco il PROVIDER per questo USER
@@ -176,21 +182,20 @@ class AuthRoute extends httpRouter.Service {
 				payload: <ProviderRepo>{
 					name: PROVIDER_NAME.GOOGLE,
 					key: token,
-					userId: user.id,
+					accountId: user.id,
 				}
 			})
-
 			// Genera il token JWT con l'email nel payload
 			const jwtToken = await new Bus(this, "/jwt").dispatch({
 				type: jwt.Actions.ENCODE,
 				payload: {
 					payload: {
 						id: user.id,
+						name: payload.name,
 						email: payload.email,
 					}
 				},
 			})
-
 			// memorizzo JWT nei cookies. Imposta il cookie HTTP-only
 			res.cookie('jwt', jwtToken, {
 				httpOnly: true,

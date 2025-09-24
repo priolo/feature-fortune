@@ -7,9 +7,10 @@ import Stripe from "stripe";
 
 
 
-const stripe = new Stripe("sk_test_51S9Cab3oUVTivUNZyoaysY2yrobENo6QBulkV7i2fRmbFzVmWXDP4KX61rSBsNCcmTRUwYFe3TKsM2u7cUllUHd2000hexAzG8");
-const endpointSecret = "whsec_d5aa13a069a45123d9ebc272b742e8c76f8856eb5d59f908673d735511a53643";
+const stripe = new Stripe(process.env.STRIPE_API_KEY!);
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
+let cuId = null
 
 class FundingRoute extends httpRouter.Service {
 
@@ -20,21 +21,37 @@ class FundingRoute extends httpRouter.Service {
 			repository: "/typeorm/fundings",
 			routers: [
 				{ path: "/create", verb: "post", method: "createIntent" },
-				{ path: "/webhook", verb: "post", method: "webhook", isRaw: true },
+				{ path: "/donate", verb: "post", method: "donate" },
+				{ path: "/webhook", verb: "post", method: "webhook" },
+				{ path: "/link", verb: "post", method: "registerLink" },
 			]
 		}
 	}
 
+	/** memorizza il metodo di pagamento */
 	async createIntent(req: Request, res: Response) {
-		const { amount, contributorEmail, github, authorGithub } = req.body
 
-		// creo il PaymentIntent su Stripe
-		const intent = await stripe.paymentIntents.create({
-			amount,
-			currency: "EUR",
-			capture_method: 'manual',        // FONDAMENTALE: non addebitare ora
-			metadata: { contributorEmail, github, authorGithub }
-		})
+		const { contributorId } = req.body;
+
+		// Puoi anche associare un customer a Stripe
+		let customer = await stripe.customers.create({ metadata: { contributorId } });
+
+		const setupIntent = await stripe.setupIntents.create({
+			customer: customer.id,
+			payment_method_types: ["card"],
+		});
+
+		cuId = customer.id
+
+		res.send({ clientSecret: setupIntent.client_secret });
+
+		// // creo il PaymentIntent su Stripe
+		// const intent = await stripe.paymentIntents.create({
+		// 	amount,
+		// 	currency: "EUR",
+		// 	capture_method: 'manual',        // FONDAMENTALE: non addebitare ora
+		// 	metadata: { contributorEmail, github, authorGithub }
+		// })
 
 		// cerco o creo l'ACCOUNT dell'autore GITHUB
 		// let author = await new Bus(this, "/typeorm/accounts").dispatch({
@@ -53,34 +70,54 @@ class FundingRoute extends httpRouter.Service {
 		// 	})
 		// }
 
-		// creo il FUNDING a stato "created"
-		const funding: AccountRepo = await new Bus(this, this.state.repository).dispatch({
-			type: typeorm.RepoRestActions.SAVE,
-			payload: <FundingRepo>{
-				amount: amount, // in centesimi
-				expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // scade in una settimana
-				status: "created",
-				userId: "",
-				featureId: "temporary", // lo aggiorno dopo
-				stripePi: intent.id      // salvo l'ID del PaymentIntent di Stripe
-			}
-		})
+		// // creo il FUNDING a stato "created"
+		// const funding: AccountRepo = await new Bus(this, this.state.repository).dispatch({
+		// 	type: typeorm.RepoRestActions.SAVE,
+		// 	payload: <FundingRepo>{
+		// 		amount: amount, // in centesimi
+		// 		expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // scade in una settimana
+		// 		status: "created",
+		// 		userId: "",
+		// 		featureId: "temporary", // lo aggiorno dopo
+		// 		stripePi: intent.id      // salvo l'ID del PaymentIntent di Stripe
+		// 	}
+		// })
 
-		// rispondo al client con il client_secret del PaymentIntent
-		res.status(200).json({ 
-			client_secret: intent.client_secret 
-		});
+		// // rispondo al client con il client_secret del PaymentIntent
+		// res.status(200).json({
+		// 	client_secret: intent.client_secret
+		// });
 	}
 
+	/**
+	 * 2) Quando autore è pronto → creazione PaymentIntent
+	 */
+	async donate(req: Request, res: Response) {
+		const { amount, currency, paymentMethodId, authorStripeAccountId, customerId } = req.body;
 
+		// Creazione PaymentIntent usando il payment_method salvato
+		const paymentIntent = await stripe.paymentIntents.create({
+			amount: 2000, // in centesimi
+			currency: "EUR",
+			customer: cuId,
+			payment_method: paymentMethodId,
+			off_session: true, // il contributor non deve reinserire la carta
+			confirm: true,
+			transfer_data: {
+				destination: "ca_T5NLBOPLa7QHKrAMfwjPsIbwSkO9OyVT", // soldi all'autore
+			},
+		});
 
+		res.send(paymentIntent);
+	}
 
+	/**
+	 * eventi da STRIPE
+	 */
 	async webhook(request: Request, response: Response) {
-		
+
 		const sig = request.headers['stripe-signature'];
 		let event;
-
-
 
 		try {
 			event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
@@ -131,6 +168,35 @@ class FundingRoute extends httpRouter.Service {
 		// Return a 200 response to acknowledge receipt of the event
 		response.send();
 	}
+
+	/**
+	 * link per registrazione STRIPE-EXPRESS dell AUTHOR 
+	 */
+	async registerLink(req: Request, res: Response) {
+		const { email } = req.body;
+
+		const account = await stripe.accounts.create({
+			type: "express", // Express account
+			country: "IT",
+			email,
+			capabilities: {
+				card_payments: { requested: true },
+				transfers: { requested: true },
+			},
+		});
+
+		const accountLink = await stripe.accountLinks.create({
+			account: account.id,
+			refresh_url: "http://localhost:5173/app/register",
+			return_url: "http://localhost:5173/app/register",
+			type: "account_onboarding",
+		});
+
+		res.status(200).json(
+			{ url: accountLink.url }
+		)
+	}
+
 }
 
 

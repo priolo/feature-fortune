@@ -3,14 +3,45 @@ import { Feature } from "@/types/Feature"
 
 
 
-/** INDEX */
-function createIntent(amount:number, contributorEmail:string, github:string, authorGithub:string,  opt?: CallOptions): Promise<{client_secret: string}> {
-	return ajax.post(`fundings/create`, {amount, contributorEmail, github, authorGithub}, opt)
+/** 
+ * Creo INTENT per salvare i dati della CARD e restituire il client_secret
+ */
+//function createIntent(amount:number, contributorId:string, github:string, authorGithub:string,  opt?: CallOptions): Promise<{client_secret: string}> {
+function createIntent(contributorId: string, opt?: CallOptions): Promise<{ clientSecret: string }> {
+	return ajax.post(
+		`fundings/create`,
+		{
+			//amount, 
+			contributorId,
+			//github, 
+			//authorGithub
+		},
+		opt
+	)
 }
 
+function donate(paymentMethodId: string, opt?: CallOptions): Promise<{ clientSecret: string }> {
+	return ajax.post(
+		`fundings/donate`,
+		{
+			paymentMethodId,
+			// 	//amount, 
+			// 	contributorId,
+			// 	//github, 
+			// 	//authorGithub
+		},
+		opt
+	)
+}
+
+function stripeAuthorRegisterLink(email: string, opt?: CallOptions): Promise<any> {
+	return ajax.post(`fundings/link`, { email }, opt)
+}
 
 
 const fundingApi = {
 	createIntent,
+	donate,
+	stripeAuthorRegisterLink,
 }
 export default fundingApi

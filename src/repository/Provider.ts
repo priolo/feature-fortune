@@ -9,6 +9,7 @@ import { AccountAssets } from './AccountAssets.js';
  */
 export enum PROVIDER_NAME {
 	GOOGLE = "google",
+	GITHUB = "github",
 	FACEBOOK = "facebook",
 	AZURE = "azure",
 	APPLE = "apple",

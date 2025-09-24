@@ -13,6 +13,7 @@ import { envInit } from "./types/env.js";
 import { ProviderRepo } from "./repository/Provider.js";
 import { CommentRepo } from "./repository/Comment.js";
 import FundingRoute from "./routers/FundingRoute.js";
+import AuthGithubRoute from "./routers/AuthGithubRoute.js";
 
 
 
@@ -42,7 +43,9 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 			rawPaths: ["/api/fundings/webhook"],
 			children: [
 
+				{ class: AuthGithubRoute },
 				{ class: AuthRoute },
+				
 
 				<httpRouter.jwt.conf>{
 					class: "http-router/jwt",
