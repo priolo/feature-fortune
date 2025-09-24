@@ -1,7 +1,6 @@
 import featureDetailSo, { stripePromise } from '@/stores/feature/detail';
-import { Box, TextField } from '@mui/material';
 import { useStore } from '@priolo/jon';
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js';
 import { FormEvent, useState } from 'react';
 
 

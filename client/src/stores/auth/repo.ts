@@ -1,4 +1,5 @@
 import authApi from "@/api/auth";
+import fundingApi from "@/api/funding";
 import { Account } from "@/types/Account.js";
 import { StoreCore, createStore } from "@priolo/jon";
 
@@ -13,6 +14,8 @@ const setup = {
 	state: {
 		token: <string>null,
 		user: <Account>null,
+
+		clientSecret: <string>null,
 	},
 
 	getters: {
@@ -41,27 +44,40 @@ const setup = {
 			window.location.href = res.url
 		},
 
-		createSession: async (token: string, store?: AuthStore) => {
-			let user: Account = null
-			try {
-				user = (await authApi.loginGoogle(token))?.user
-			} catch (error) {
-				console.error('Error fetching current user:', error);
-				return
-			}
-			console.log('User data:', user);
-			authSo.setUser(user)
-		},
+		// createSession: async (token: string, store?: AuthStore) => {
+		// 	let user: Account = null
+		// 	try {
+		// 		user = (await authApi.loginGoogle(token))?.user
+		// 	} catch (error) {
+		// 		console.error('Error fetching current user:', error);
+		// 		return
+		// 	}
+		// 	console.log('User data:', user);
+		// 	authSo.setUser(user)
+		// },
 
 		logout: async (_: void, store?: AuthStore) => {
 			store.setUser(null)
 			await authApi.logout()
 		},
 
+		createPaymentMethod: async (_: void, store?: AuthStore) => {
+			const res = await fundingApi.createPaymentMethod(
+				//store.state.funding.amount,
+				//"contributor@gmail.com",
+				store.state.githubRepo.full_name,
+				store.state.githubRepo.owner.login
+			)
+			if (!res) return // error
+			console.log(res.client_secret)
+			store.setClientSecret( res.client_secret)
+		}
+
 	},
 
 	mutators: {
 		setUser: (user) => ({ user }),
+		setClientSecret: (clientSecret: string) => ({ clientSecret }),
 	},
 }
 

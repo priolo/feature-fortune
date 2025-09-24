@@ -23,7 +23,7 @@ export default function DonationForm() {
 		// 	headers: { "Content-Type": "application/json" },
 		// 	body: JSON.stringify({ contributorId: "user123" }),
 		// });
-		const { clientSecret } = await fundingApi.createIntent("user123");
+		const { clientSecret } = await fundingApi.createPaymentMethod("user123");
 
 		// 2) Confermo SetupIntent con i dati della carta
 		const result = await stripe.confirmCardSetup(clientSecret, {

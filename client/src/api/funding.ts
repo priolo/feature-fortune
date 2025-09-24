@@ -7,7 +7,7 @@ import { Feature } from "@/types/Feature"
  * Creo INTENT per salvare i dati della CARD e restituire il client_secret
  */
 //function createIntent(amount:number, contributorId:string, github:string, authorGithub:string,  opt?: CallOptions): Promise<{client_secret: string}> {
-function createIntent(contributorId: string, opt?: CallOptions): Promise<{ clientSecret: string }> {
+function createPaymentMethod(contributorId: string, opt?: CallOptions): Promise<{ clientSecret: string }> {
 	return ajax.post(
 		`fundings/create`,
 		{
@@ -40,7 +40,7 @@ function stripeAuthorRegisterLink(email: string, opt?: CallOptions): Promise<any
 
 
 const fundingApi = {
-	createIntent,
+	createPaymentMethod,
 	donate,
 	stripeAuthorRegisterLink,
 }

@@ -14,6 +14,7 @@ import { ProviderRepo } from "./repository/Provider.js";
 import { CommentRepo } from "./repository/Comment.js";
 import FundingRoute from "./routers/FundingRoute.js";
 import AuthGithubRoute from "./routers/AuthGithubRoute.js";
+import AuthGoogleRoute from "./routers/AuthGoogleRoute.js";
 
 
 
@@ -44,6 +45,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 			children: [
 
 				{ class: AuthGithubRoute },
+				{ class: AuthGoogleRoute },
 				{ class: AuthRoute },
 				
 

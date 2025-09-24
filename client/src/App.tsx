@@ -8,6 +8,7 @@ import FeatureListPag from './pages/feature/ListPag';
 import Orders from './pages/Orders';
 import Settings from './pages/Settings';
 import './styles/pages.css';
+import UserPag from './pages/account/UserPag';
 
 
 
@@ -20,8 +21,8 @@ function App() {
           <Route index element={<FeatureListPag />} />
           <Route path="feature" element={<FeatureDetailPag />} />
           <Route path="register" element={<AuthorRegisterPag />} />
+          <Route path="account" element={<UserPag />} />
 
-          <Route path="analytics" element={<Analytics />} />
           
           <Route path="customers" element={<Customers />} />
           <Route path="orders" element={<Orders />} />

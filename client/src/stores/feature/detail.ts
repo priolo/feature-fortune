@@ -7,13 +7,9 @@ import { Feature } from "@/types/Feature"
 import { Funding } from "@/types/Funding"
 import { GitHubRepositoryDetails } from "@/types/GitHub"
 import { createStore, StoreCore } from "@priolo/jon"
-import { loadStripe } from "@stripe/stripe-js"
 
 
 
-// Make sure to call `loadStripe` outside of a component’s render to avoid
-// recreating the `Stripe` object on every render.
-export const stripePromise = loadStripe('pk_test_51S9Cab3oUVTivUNZHbQYRGlbEErimwbDooNuVnwNewJQcSCjVU923z7Y40zJZVPwEw9xaav03rBwtQkNKnRlE3km00KRH91N8Q');
 
 // const fetchClientSecret = () => {
 // 	return fetch('/create-checkout-session', { method: 'POST' })
@@ -28,7 +24,6 @@ const setup = {
 		githubRepo: null as GitHubRepositoryDetails | null,
 		authorUser: <Account>null,
 		funding: <Funding>null,
-		clientSecret: <string>null,
 	},
 
 	getters: {
@@ -70,15 +65,7 @@ const setup = {
 		},
 
 		async createFunding(_: void, store?: FeatureDetailStore) {
-			const res = await fundingApi.createIntent(
-				store.state.funding.amount,
-				"contributor@gmail.com",
-				store.state.githubRepo.full_name,
-				store.state.githubRepo.owner.login
-			)
-			if (!res) return // error
-			console.log(res.client_secret)
-			store.setClientSecret( res.client_secret)
+			
 
 			// const stripe = await stripePromise;
 			// if (!stripe) return // error
@@ -104,7 +91,7 @@ const setup = {
 		setFunding: (funding: Funding) => ({ funding }),
 		setGithubRepo: (githubRepo: GitHubRepositoryDetails | null) => ({ githubRepo }),
 		setAuthorUser: (authorUser: Account) => ({ authorUser }),
-		setClientSecret: (clientSecret: string) => ({ clientSecret })
+		
 	},
 
 }
