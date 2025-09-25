@@ -1,16 +1,22 @@
 import GithubRepoCmp from '@/pages/feature/cards/GithubRepoCmp';
-import featureDetailSo, { stripePromise } from '@/stores/feature/detail';
+import { stripePromise } from '@/stores/auth/repo';
+import featureDetailSo from '@/stores/feature/detail';
 import { Box, Button, TextField, Typography } from '@mui/material';
+import GithubFinderCmp from '@/pages/feature/GithubFinderCmp';
 import { useStore } from '@priolo/jon';
-import React, { useEffect } from 'react';
-import StripePromise from './cards/StripePromiseCmp';
-import StripeCardCmp from './cards/StripeCardCmp';
 import { Elements } from '@stripe/react-stripe-js';
+import React, { useEffect } from 'react';
+import StripePromise from '../account/cards/StripePromiseCmp';
 
-interface UserCmpProps {
+
+
+interface AccountPagProps {
 }
 
-const DetailPag: React.FC<UserCmpProps> = ({
+/**
+ * si occupa di crerae e collegare l'account del current user ai vari servizi
+ */
+const DetailPag: React.FC<AccountPagProps> = ({
 }) => {
 
     // STORES
@@ -50,28 +56,11 @@ const DetailPag: React.FC<UserCmpProps> = ({
                 padding: 2
             }}
         >
-            <Typography variant="h5" component="h1">
-                GitHub Repository Search
-            </Typography>
-
-            <Box sx={{ width: '100%', display: 'flex', gap: 2, alignItems: 'flex-start' }}>
-                <TextField
-                    label="GitHub Repository (name or URL)"
-                    variant="outlined"
-                    fullWidth
-                    placeholder="e.g., facebook/react or https://github.com/facebook/react"
-                    value={featureDetailSo.state.feature?.github ?? ''}
-                    onChange={handleGitHubChange}
-                />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSearchClick}
-                    sx={{ minWidth: 120 }}
-                >
-                    'SEARCH'
-                </Button>
-            </Box>
+            <GithubFinderCmp
+                value={featureDetailSo.state.feature?.github ?? ''}
+                onChange={handleGitHubChange}
+                onSearch={handleSearchClick}
+            />
 
             {githubRepo && <>
 
@@ -97,7 +86,6 @@ const DetailPag: React.FC<UserCmpProps> = ({
                 onClick={handleCreateClick}>
                 SUBMIT
             </Button>
-
             <StripeCardCmp /> */}
 
         </Box>

@@ -2,8 +2,13 @@ import authApi from "@/api/auth";
 import fundingApi from "@/api/funding";
 import { Account } from "@/types/Account.js";
 import { StoreCore, createStore } from "@priolo/jon";
+import { loadStripe } from "@stripe/stripe-js"
 
 
+
+// Make sure to call `loadStripe` outside of a component’s render to avoid
+// recreating the `Stripe` object on every render.
+export const stripePromise = loadStripe('pk_test_51S9Cab3oUVTivUNZHbQYRGlbEErimwbDooNuVnwNewJQcSCjVU923z7Y40zJZVPwEw9xaav03rBwtQkNKnRlE3km00KRH91N8Q');
 
 /**
  * Contiene le info dell'utente loggato
@@ -60,18 +65,6 @@ const setup = {
 			store.setUser(null)
 			await authApi.logout()
 		},
-
-		createPaymentMethod: async (_: void, store?: AuthStore) => {
-			const res = await fundingApi.createPaymentMethod(
-				//store.state.funding.amount,
-				//"contributor@gmail.com",
-				store.state.githubRepo.full_name,
-				store.state.githubRepo.owner.login
-			)
-			if (!res) return // error
-			console.log(res.client_secret)
-			store.setClientSecret( res.client_secret)
-		}
 
 	},
 

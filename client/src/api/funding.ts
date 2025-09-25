@@ -6,41 +6,52 @@ import { Feature } from "@/types/Feature"
 /** 
  * Creo INTENT per salvare i dati della CARD e restituire il client_secret
  */
-//function createIntent(amount:number, contributorId:string, github:string, authorGithub:string,  opt?: CallOptions): Promise<{client_secret: string}> {
-function createPaymentMethod(contributorId: string, opt?: CallOptions): Promise<{ clientSecret: string }> {
+function createPaymentMethod(opt?: CallOptions): Promise<{ clientSecret: string, stripeCustomerId: string }> {
+	return ajax.post(`fundings/create`, null, opt)
+}
+
+/**
+ * Salvo il PaymentMethod (ID) associandolo all'utente loggato
+ */
+function savePaymentMethod(paymentMethodId: string, opt?: CallOptions): Promise<{ success: boolean }> {
 	return ajax.post(
-		`fundings/create`,
-		{
-			//amount, 
-			contributorId,
-			//github, 
-			//authorGithub
-		},
+		`fundings/save`,
+		{ paymentMethodId },
 		opt
 	)
 }
 
-function donate(paymentMethodId: string, opt?: CallOptions): Promise<{ clientSecret: string }> {
-	return ajax.post(
-		`fundings/donate`,
-		{
-			paymentMethodId,
-			// 	//amount, 
-			// 	contributorId,
-			// 	//github, 
-			// 	//authorGithub
-		},
-		opt
-	)
+function getPaymentMethod(opt?: CallOptions): Promise<{ success: boolean }> {
+	return ajax.post(`fundings/get`, null, opt)
 }
 
-function stripeAuthorRegisterLink(email: string, opt?: CallOptions): Promise<any> {
-	return ajax.post(`fundings/link`, { email }, opt)
+function removePaymentMethod(opt?: CallOptions): Promise<{ success: boolean }> {
+	return ajax.post(`fundings/remove`, null, opt)
+}
+
+
+
+
+
+
+
+
+
+function donate(opt?: CallOptions): Promise<{ success: boolean }> {
+	return ajax.post(`fundings/donate`, null, opt)
+}
+
+function stripeAuthorRegisterLink(opt?: CallOptions): Promise<any> {
+	return ajax.post(`fundings/link`, null, opt)
 }
 
 
 const fundingApi = {
 	createPaymentMethod,
+	savePaymentMethod,
+	getPaymentMethod,
+	removePaymentMethod,
+	
 	donate,
 	stripeAuthorRegisterLink,
 }

@@ -104,7 +104,7 @@ class AuthGithubRoute extends httpRouter.Service {
 						name: userGithub.name || userGithub.login,
 						avatarUrl: userGithub.avatar_url,
 						githubId: userGithub.id,
-						description: userGithub.bio || "",
+						//description: userGithub.bio || "",
 						// password, salt lasciano vuoti perch' l'accesso avviene SOLO via GITHUB
 					}
 				})

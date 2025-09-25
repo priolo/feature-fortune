@@ -39,19 +39,19 @@ export async function seeding(root: RootService) {
 		]
 	});
 
-	const funding = await new Bus(root, "/typeorm/fundings").dispatch<FeatureRepo[]>({
-		type: typeorm.RepoStructActions.SEED,
-		payload: <FundingRepo[]>[
-			{ type: typeorm.RepoStructActions.TRUNCATE },
-			{
-				amount: 50.00,
-				expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-				status: "PENDING",
-				message: "Spero che questa funzionalità venga implementata presto!",
-				featureId: features[0].id!,
-				userId: accounts[1].id!,	
-			}
-		]
-	});
+	// const funding = await new Bus(root, "/typeorm/fundings").dispatch<FeatureRepo[]>({
+	// 	type: typeorm.RepoStructActions.SEED,
+	// 	payload: <FundingRepo[]>[
+	// 		{ type: typeorm.RepoStructActions.TRUNCATE },
+	// 		{
+	// 			amount: 50.00,
+	// 			expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+	// 			status: "PENDING",
+	// 			message: "Spero che questa funzionalità venga implementata presto!",
+	// 			featureId: features[0].id!,
+	// 			userId: accounts[1].id!,	
+	// 		}
+	// 	]
+	// });
 
 }

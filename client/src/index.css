@@ -67,7 +67,7 @@ input, textarea, select {
 }
 
 
-.mannaggia {
-  width: 500px;
-  height: 200px;;
+.stripe-card-element {
+  width: 100%;
+  height: 100%;;
 }

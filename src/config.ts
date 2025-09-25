@@ -15,6 +15,7 @@ import { CommentRepo } from "./repository/Comment.js";
 import FundingRoute from "./routers/FundingRoute.js";
 import AuthGithubRoute from "./routers/AuthGithubRoute.js";
 import AuthGoogleRoute from "./routers/AuthGoogleRoute.js";
+import StripeHookRoute from "./routers/StripeHookRoute.js";
 
 
 
@@ -47,13 +48,14 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 				{ class: AuthGithubRoute },
 				{ class: AuthGoogleRoute },
 				{ class: AuthRoute },
+				{ class: StripeHookRoute },
 				
 
 				<httpRouter.jwt.conf>{
 					class: "http-router/jwt",
 					repository: "/typeorm/user",
 					jwt: "/jwt",
-					disabled: true,
+					//disabled: true,
 					children: [
 
 						<httpRouter.conf>{

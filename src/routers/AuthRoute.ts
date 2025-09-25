@@ -1,12 +1,11 @@
-import { PROVIDER_NAME, ProviderRepo } from "@/repository/Provider.js";
 import { AccountRepo } from "@/repository/Account.js";
+import { ENV_TYPE } from "@/types/env.js";
+import { OAuthApp } from "@octokit/oauth-app";
 import { Bus, httpRouter, jwt, typeorm } from "@priolo/julian";
 import crypto from "crypto";
 import { Request, Response } from "express";
 import { OAuth2Client } from 'google-auth-library';
 import { FindManyOptions } from "typeorm";
-import { ENV_TYPE } from "@/types/env.js";
-import { OAuthApp } from "@octokit/oauth-app";
 
 
 
@@ -30,7 +29,6 @@ class AuthRoute extends httpRouter.Service {
 			repository: "/typeorm/accounts",
 			jwt: "/jwt",
 			routers: [
-				{ path: "/google", verb: "post", method: "googleLogin" },
 				{ path: "/current", verb: "get", method: "current" },
 				{ path: "/logout", verb: "post", method: "logout" },
 
@@ -128,8 +126,6 @@ class AuthRoute extends httpRouter.Service {
 		res.status(200).json({ user });
 	}
 
-
-
 	/** elimino il cookie JWT cosi da chiudere la sessione */
 	async logout(req: Request, res: Response) {
 		res.clearCookie('jwt');
@@ -137,83 +133,6 @@ class AuthRoute extends httpRouter.Service {
 	}
 
 	
-
-	/** eseguo il login con GOOGLE */
-	async googleLogin(req: Request, res: Response) {
-		const { token } = req.body;
-		try {
-
-			// Verifico GOOGLE token e ricavo PAYLOAD
-			const ticket = await client.verifyIdToken({
-				idToken: token,
-				audience: '106027300810-0udm0cjghhjr87626qrvcoug5ahgq1bh.apps.googleusercontent.com',
-			});
-			const payload = ticket.getPayload();
-
-			// cerco lo USER tramite email
-			let user: AccountRepo = await new Bus(this, this.state.repository).dispatch({
-				type: typeorm.Actions.FIND_ONE,
-				payload: <FindManyOptions<AccountRepo>>{
-					where: { email: payload.email },
-				}
-			})
-			// se non c'e' allora creo un nuovo USER
-			if (!user) {
-				user = await new Bus(this, this.state.repository).dispatch({
-					type: typeorm.RepoRestActions.SAVE,
-					payload: <AccountRepo>{
-						email: payload.email,
-						name: payload.name,
-						avatarUrl: payload.picture,
-					}
-				})
-			}
-			// cancello eventuali vecchi PROVIDER
-			await new Bus(this, "/typeorm/providers").dispatch({
-				type: typeorm.RepoRestActions.DELETE,
-				payload: <ProviderRepo>{
-					name: PROVIDER_NAME.GOOGLE,
-					accountId: user.id,
-				}
-			})
-			// inserisco il PROVIDER per questo USER
-			await new Bus(this, "/typeorm/providers").dispatch({
-				type: typeorm.RepoRestActions.SAVE,
-				payload: <ProviderRepo>{
-					name: PROVIDER_NAME.GOOGLE,
-					key: token,
-					accountId: user.id,
-				}
-			})
-			// Genera il token JWT con l'email nel payload
-			const jwtToken = await new Bus(this, "/jwt").dispatch({
-				type: jwt.Actions.ENCODE,
-				payload: {
-					payload: {
-						id: user.id,
-						name: payload.name,
-						email: payload.email,
-					}
-				},
-			})
-			// memorizzo JWT nei cookies. Imposta il cookie HTTP-only
-			res.cookie('jwt', jwtToken, {
-				httpOnly: true,
-				secure: process.env.NODE_ENV === 'production', // Assicurati di usare secure solo in produzione
-				maxAge: 24 * 60 * 60 * 1000, // 1 giorno
-			});
-
-			// restituisco i dati dell'utente loggato
-			delete user.password
-			delete user.salt
-			res.status(200).json({ user });
-
-		} catch (error) {
-			res.status(401).json({ error: 'Invalid Token' });
-		}
-	}
-
-
 
 	/**
 	 * Grazie all'"email" registra un nuovo utente

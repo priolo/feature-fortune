@@ -18,15 +18,34 @@ export class AccountRepo {
 	@Column({ type: 'varchar', nullable: true })
 	avatarUrl: string;
 
+
+
+	/**
+	 * account github
+	 */
 	@Column({ type: 'bigint', nullable: true })
 	githubId: string;
 
-	/**
-	 * visibile agli LLMs
+	/** 
+	 * STRIPE account per CONTRIBUTOR
 	 */
-	@Column({ type: 'varchar', default: '' })
-	description?: string;
+	@Column({ type: 'varchar', nullable: true })
+	stripeCustomerId?: string;
+	// pagamento predefinito
+	@Column({ type: 'varchar', nullable: true })
+	stripePaymentMethodId?: string;
+	// account EXPRESS per AUTHOR
+	@Column({ type: 'varchar', nullable: true })
+	stripeAccountId?: string;
 
+
+
+
+
+
+	/**
+	 * account generato con email
+	 */
 	@Column({ type: 'varchar', default: '' })
 	password?: string;
 
@@ -47,8 +66,5 @@ export class AccountRepo {
 
 
 
-	// collegamento con un account STRIPE
-	@Column({ type: 'varchar', nullable: true })
-	stripe_id?: string;
 
 }

@@ -57,6 +57,20 @@ class GitHubApiService {
     }
 
     /**
+     * Get GitHub account data by account ID
+     * @param accountId - GitHub user account ID (numeric)
+     */
+    async getUserById(accountId: number): Promise<GitHubUser> {
+        const response = await fetch(`${this.baseUrl}/user/${accountId}`);
+        
+        if (!response.ok) {
+            throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
+    }
+
+    /**
      * Get repository with detailed owner information including email
      * @param owner - Repository owner username
      * @param repo - Repository name
@@ -99,6 +113,48 @@ class GitHubApiService {
     }
 
     /**
+     * Get all repositories for a GitHub user by their account ID
+     * @param accountId - GitHub user account ID (numeric)
+     * @param per_page - Number of results per page (default: 100, max: 100)
+     * @param page - Page number (default: 1)
+     */
+    async getRepositoriesByAccountId(accountId: number, per_page = 100, page = 1): Promise<GitHubRepository[]> {
+        // First, get the user details to obtain the username
+        const userResponse = await fetch(`${this.baseUrl}/user/${accountId}`);
+        
+        if (!userResponse.ok) {
+            throw new Error(`GitHub API Error: ${userResponse.status} ${userResponse.statusText}`);
+        }
+
+        const user: GitHubUser = await userResponse.json();
+        
+        // Then get all repositories for this user
+        const reposResponse = await fetch(`${this.baseUrl}/users/${user.login}/repos?per_page=${per_page}&page=${page}&sort=updated&direction=desc`);
+        
+        if (!reposResponse.ok) {
+            throw new Error(`GitHub API Error: ${reposResponse.status} ${reposResponse.statusText}`);
+        }
+
+        return reposResponse.json();
+    }
+
+    /**
+     * Get all repositories for a GitHub user by their username
+     * @param username - GitHub username
+     * @param per_page - Number of results per page (default: 100, max: 100)
+     * @param page - Page number (default: 1)
+     */
+    async getRepositoriesByUsername(username: string, per_page = 100, page = 1): Promise<GitHubRepository[]> {
+        const response = await fetch(`${this.baseUrl}/users/${username}/repos?per_page=${per_page}&page=${page}&sort=updated&direction=desc`);
+        
+        if (!response.ok) {
+            throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
+    }
+
+    /**
      * Parse GitHub URL to extract owner and repo name
      * @param githubUrl - GitHub repository URL
      */
@@ -129,3 +185,5 @@ class GitHubApiService {
 
 const gitHubApi = new GitHubApiService();
 export default gitHubApi;
+
+
