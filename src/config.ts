@@ -3,19 +3,18 @@ import { TypeLog } from "@priolo/julian/dist/core/types.js";
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { AccountRepo } from "./repository/Account.js";
+import { CommentRepo } from "./repository/Comment.js";
 import { getDBConnectionConfig } from './repository/dbConfig.js';
 import { FeatureRepo } from "./repository/Feature.js";
 import { FundingRepo } from "./repository/Funding.js";
 import AccountRoute from "./routers/AccountRoute.js";
-import AuthRoute from "./routers/AuthRoute.js";
-import FeatureRoute from "./routers/FeatureRoute.js";
-import { envInit } from "./types/env.js";
-import { ProviderRepo } from "./repository/Provider.js";
-import { CommentRepo } from "./repository/Comment.js";
-import FundingRoute from "./routers/FundingRoute.js";
 import AuthGithubRoute from "./routers/AuthGithubRoute.js";
 import AuthGoogleRoute from "./routers/AuthGoogleRoute.js";
+import AuthRoute from "./routers/AuthRoute.js";
+import FeatureRoute from "./routers/FeatureRoute.js";
+import FundingRoute from "./routers/FundingRoute.js";
 import StripeHookRoute from "./routers/StripeHookRoute.js";
+import { envInit } from "./types/env.js";
 
 
 
@@ -91,11 +90,11 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 					class: "typeorm/repo",
 					model: AccountRepo,
 				},
-				{
-					name: "providers",
-					class: "typeorm/repo",
-					model: ProviderRepo,
-				},
+				// {
+				// 	name: "providers",
+				// 	class: "typeorm/repo",
+				// 	model: ProviderRepo,
+				// },
 				{
 					name: "features",
 					class: "typeorm/repo",

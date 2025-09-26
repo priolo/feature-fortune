@@ -29,7 +29,7 @@ class FundingRoute extends httpRouter.Service {
 	}
 
 	/** 
-	 * creo eventualmente il CUSTOMER e lo associoad un PAYMENT METHOD
+	 * ATTACH: creo eventualmente il CUSTOMER e lo associoad un PAYMENT METHOD
 	 */
 	async createPaymentMethod(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
@@ -75,7 +75,7 @@ class FundingRoute extends httpRouter.Service {
 	}
 
 	/**
-	 * Completo la creazione del PAYMENT METHOD 
+	 * ATTACH2: Completo la creazione del PAYMENT METHOD 
 	 */
 	async savePaymentMethod(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
@@ -93,7 +93,7 @@ class FundingRoute extends httpRouter.Service {
 	}
 
 	/**
-	 * Rimuovo tutti i PAYMENT METHOD salvati per questo CUSTOMER
+	 * REMOVE: Rimuovo tutti i PAYMENT METHOD salvati per questo CUSTOMER
 	 */
 	async removePaymentMethod(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
@@ -134,6 +134,9 @@ class FundingRoute extends httpRouter.Service {
 		res.send({ success: true })
 	}
 
+	/**
+	 * GET: Recupero il PAYMENT METHOD salvato per questo CUSTOMER
+	 */
 	async getPaymentMethod(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({

@@ -20,6 +20,7 @@ const AccountPag: React.FC<AccountPagProps> = ({
 
     // STORES
     useStore(featureDetailSo)
+    useStore(authSo)
 
 
 
@@ -31,8 +32,8 @@ const AccountPag: React.FC<AccountPagProps> = ({
 
 
     // HANDLERS
-    const handleGithubLogin = async () => {
-        authSo.loginWithGithub()
+    const handleGithubAttach = async () => {
+        authSo.attachGithub()
     }
 
     
@@ -46,9 +47,9 @@ const AccountPag: React.FC<AccountPagProps> = ({
 
             {/* GITHUB ZONE */}
             {haveGithub ? (
-                <GithubUserCmp userId={authSo.state.user?.githubId} />
+                <GithubUserCmp userId={authSo.state.user.githubId} />
             ) : (
-                <Button variant="contained" onClick={handleGithubLogin}>
+                <Button variant="contained" onClick={handleGithubAttach}>
                     Accedi con GitHub
                 </Button>
             )}
@@ -68,7 +69,7 @@ const sxRoot: SxProps = {
     display: 'flex',
     flexDirection: 'column',
     gap: 2,
-    alignItems: 'center',
+    //alignItems: 'center',
     maxWidth: 800,
     margin: '0 auto',
     padding: 2

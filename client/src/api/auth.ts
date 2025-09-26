@@ -7,6 +7,12 @@ import { Account } from "@/types/Account"
 function githubLoginUrl(opt?: CallOptions): Promise<any> {
 	return ajax.get(`auth/github/login`, opt)
 }
+function githubAttachUrl(opt?: CallOptions): Promise<any> {
+	return ajax.get(`accounts/github`, opt)
+}
+function githubDetach(opt?: CallOptions): Promise<any> {
+	return ajax.delete(`accounts/github`, opt)
+}
 
 
 
@@ -34,6 +40,8 @@ function logout(opt?: CallOptions): Promise<{ user: Account }> {
 const authApi = {
 
 	githubLoginUrl,
+	githubAttachUrl,
+	githubDetach,
 
 	current,
 	loginGoogle,

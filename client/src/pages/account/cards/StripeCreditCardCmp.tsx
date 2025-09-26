@@ -3,6 +3,7 @@ import authSo from "@/stores/auth/repo";
 import { Box, Button, SxProps } from "@mui/material";
 import { useStore } from "@priolo/jon";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { PaymentMethod } from "@stripe/stripe-js";
 import { useEffect, useState } from "react";
 
 
@@ -19,19 +20,19 @@ const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 	// STORES
 
 	useStore(authSo)
-	const [card, setCard] = useState(null)
+	const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(null)
 
 
 	// HOOKS
 
 	const stripe = useStripe();
 	const elements = useElements();
-	
+
 	useEffect(() => {
 		if (!havePaymentMethod) return
 		async function load() {
-			const card = fundingApi.getPaymentMethod()
-			setCard(card)
+			const { paymentMethods } = await fundingApi.getPaymentMethod()
+			setPaymentMethod(paymentMethods)
 		}
 		load()
 	}, [havePaymentMethod])
@@ -80,6 +81,7 @@ const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 				...authSo.state.user,
 				stripePaymentMethodId: null
 			})
+			setPaymentMethod(null)
 		} else {
 			alert("Errore nella rimozione del metodo di pagamento.")
 		}
@@ -95,6 +97,7 @@ const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 			{havePaymentMethod ? <>
 
 				<Box>CREDIT CARD SETTATA</Box>
+				<CardDisplay card={paymentMethod?.card} />
 				<Button onClick={handleCCReset}>RESET</Button>
 
 			</> : <>
@@ -117,4 +120,26 @@ const sxRoot: SxProps = {
 	display: 'flex',
 	flexDirection: 'column',
 	gap: 1,
+}
+
+
+
+const CardDisplay = ({ card }: { card: PaymentMethod.Card }) => {
+	if (!card) return <Box>No Card Data</Box>
+
+	return <Box sx={{
+		border: '1px solid #ccc',
+		borderRadius: 1,
+		p: 2,
+		display: 'flex',
+		alignItems: 'center',
+		gap: 2
+	}}>
+		<Box sx={{ fontSize: '1.2em' }}>
+			**** **** **** {card.last4}
+		</Box>
+		<Box sx={{ fontSize: '0.9em', color: 'text.secondary' }}>
+			{card.brand.toUpperCase()} {card.exp_month}/{card.exp_year}
+		</Box>
+	</Box>
 }

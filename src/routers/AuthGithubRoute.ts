@@ -1,18 +1,9 @@
 import { AccountRepo } from "@/repository/Account.js";
-import { PROVIDER_NAME, ProviderRepo } from "@/repository/Provider.js";
 import { OAuthApp } from "@octokit/oauth-app";
 import { Bus, httpRouter, jwt, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 import { FindManyOptions } from "typeorm";
 
-
-
-// Configurazione OAuthApp
-const githubOAuth = new OAuthApp({
-	clientType: "oauth-app",
-	clientId: process.env.GITHUB_CLIENT_ID!,
-	clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-});
 
 
 class AuthGithubRoute extends httpRouter.Service {
@@ -56,7 +47,9 @@ class AuthGithubRoute extends httpRouter.Service {
 	}
 
 	/** 
-	 * Callback → GitHub ritorna con `code` 
+	 * WEBHOOK 
+	 * https://github.com/settings/applications/3174659
+	 * GitHub ritorna con `code` 
 	 */
 	async callback(req: Request, res: Response) {
 		const { code, error, state } = req.query as { code: string, error: string, state: string }
@@ -64,70 +57,58 @@ class AuthGithubRoute extends httpRouter.Service {
 		if (!code) return res.status(400).json({ error: "No authorization code received" });
 
 		const customData = urlToCustomData(state)
-		if (["lgn", "rgs"].includes(customData?.act) === false) {
+		if (["lgn", "rgs", "att"].includes(customData?.act) === false) {
 			return res.status(400).json({ error: "Invalid state parameter" });
 		}
 
 		try {
-
-			// creo il token di accesso e recupero info utente
-			const { authentication } = await githubOAuth.createToken({ code });
-			const response = await fetch("https://api.github.com/user", {
-				headers: {
-					Authorization: `Bearer ${authentication.token}`,
-					"User-Agent": "feature-fortune-app",
-					"Accept": "application/vnd.github.v3+json"
-				},
-			});
-			if (!response.ok) {
-				throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
-			}
-			const userGithub: any = await response.json();
-
-
+			const userGithub: any = await this.getGithubUserByCode(code)
 			let user: AccountRepo
 
-			// cerco lo USER se è gia' registrato
-			user = await new Bus(this, this.state.account_repo).dispatch({
-				type: typeorm.Actions.FIND_ONE,
-				payload: <FindManyOptions<AccountRepo>>{
-					where: { githubId: userGithub.id, },
-				}
-			})
+			// ATTACH to existing user
+			if (customData.act == "att") {
+				if (!customData.accountId) return res.status(400).json({ error: "Invalid state parameter: no accountId" });
+				// cerco lo USER se è gia' registrato
+				user = await new Bus(this, this.state.account_repo).dispatch({
+					type: typeorm.RepoRestActions.GET_BY_ID,
+					payload: customData.accountId,
+				})
+				if (!user) return res.status(404).json({ error: "User not found" });
 
-			// se non c'e allora creo un nuovo USER
-			if (!user) {
+				// LOGIN or REGISTER
+			} else {
+
+				// cerco lo USER se è gia' registrato
+				user = await new Bus(this, this.state.account_repo).dispatch({
+					type: typeorm.Actions.FIND_ONE,
+					payload: <FindManyOptions<AccountRepo>>{
+						where: { githubId: userGithub.id, },
+					}
+				})
+				// se non c'e allora creo un nuovo USER
+				if (!user) {
+					user = await new Bus(this, this.state.account_repo).dispatch({
+						type: typeorm.RepoRestActions.SAVE,
+						payload: <AccountRepo>{
+							email: userGithub.email ?? userGithub.notification_email ?? userGithub.login,
+							name: userGithub.name || userGithub.login,
+							avatarUrl: userGithub.avatar_url,
+							githubId: userGithub.id,
+						}
+					})
+				}
+			}
+
+			// manca githubId lo aggiorno
+			if (!user.githubId) {
 				user = await new Bus(this, this.state.account_repo).dispatch({
 					type: typeorm.RepoRestActions.SAVE,
 					payload: <AccountRepo>{
-						email: userGithub.email ?? userGithub.notification_email ?? userGithub.login,
-						name: userGithub.name || userGithub.login,
-						avatarUrl: userGithub.avatar_url,
+						id: user.id,
 						githubId: userGithub.id,
-						//description: userGithub.bio || "",
-						// password, salt lasciano vuoti perch' l'accesso avviene SOLO via GITHUB
 					}
 				})
 			}
-
-			// cancello eventuali vecchi PROVIDER
-			await new Bus(this, "/typeorm/providers").dispatch({
-				type: typeorm.RepoRestActions.DELETE,
-				payload: <ProviderRepo>{
-					name: PROVIDER_NAME.GITHUB,
-					accountId: user.id,
-				}
-			})
-
-			// inserisco il PROVIDER per questo USER
-			await new Bus(this, "/typeorm/providers").dispatch({
-				type: typeorm.RepoRestActions.SAVE,
-				payload: <ProviderRepo>{
-					name: PROVIDER_NAME.GITHUB,
-					key: authentication.token,
-					accountId: user.id,
-				}
-			})
 
 			// Genera il token JWT con l'email nel payload
 			const jwtToken = await new Bus(this, "/jwt").dispatch({
@@ -149,10 +130,10 @@ class AuthGithubRoute extends httpRouter.Service {
 			});
 
 			// Redirect alla pagina desiderata
-			if ( customData?.act === "lgn" ) {
-				res.redirect(`${process.env.FRONTEND_URL}/app/`);	
+			if (customData?.act === "lgn") {
+				res.redirect(`${process.env.FRONTEND_URL}/app/`);
 			} else {
-				res.redirect(`${process.env.FRONTEND_URL}/register/`);
+				res.redirect(`${process.env.FRONTEND_URL}/app/account/`);
 			}
 
 		} catch (err) {
@@ -160,16 +141,48 @@ class AuthGithubRoute extends httpRouter.Service {
 		}
 	}
 
+	async getGithubUserByCode(code: string) {
+		// creo il token di accesso e recupero info utente
+		const { authentication } = await githubOAuth.createToken({ code });
+		const response = await fetch("https://api.github.com/user", {
+			headers: {
+				Authorization: `Bearer ${authentication.token}`,
+				"User-Agent": "feature-fortune-app",
+				"Accept": "application/vnd.github.v3+json"
+			},
+		});
+		if (!response.ok) {
+			throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
+		}
+		const userGithub: any = await response.json();
+		return userGithub
+	}
+
 }
 
 export default AuthGithubRoute
 
 
-function customDataToUrl(customData: any) {
+/**
+ * lib di GITHUB OAUTH
+ */
+export const githubOAuth = new OAuthApp({
+	clientType: "oauth-app",
+	clientId: process.env.GITHUB_CLIENT_ID!,
+	clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+});
+
+/**
+ * codifica customData in BASE64 per passaggio nello state di OAuth
+ */
+export function customDataToUrl(customData: any) {
 	if (!customData) return null;
 	return Buffer.from(JSON.stringify(customData)).toString('base64');
 }
 
+/**
+ * decodifica customData da BASE64 passata nello state di OAuth
+ */
 function urlToCustomData(state: string): CustomData | null {
 	if (!state) return null;
 	try {
@@ -181,6 +194,7 @@ function urlToCustomData(state: string): CustomData | null {
 	return null
 }
 
-type CustomData = {
-	act?: "lgn" | "rgs",
+export type CustomData = {
+	act?: "lgn" | "rgs" | "att",
+	accountId?: string,
 }

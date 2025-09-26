@@ -1,22 +1,10 @@
 import { AccountRepo } from "@/repository/Account.js";
 import { ENV_TYPE } from "@/types/env.js";
-import { OAuthApp } from "@octokit/oauth-app";
 import { Bus, httpRouter, jwt, typeorm } from "@priolo/julian";
 import crypto from "crypto";
 import { Request, Response } from "express";
-import { OAuth2Client } from 'google-auth-library';
 import { FindManyOptions } from "typeorm";
 
-
-
-const client = new OAuth2Client('YOUR_GOOGLE_CLIENT_ID');
-
-// Configurazione OAuthApp
-const githubOAuth = new OAuthApp({
-	clientType: "oauth-app",
-	clientId: process.env.GITHUB_CLIENT_ID!,
-	clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-});
 
 
 class AuthRoute extends httpRouter.Service {
@@ -31,10 +19,6 @@ class AuthRoute extends httpRouter.Service {
 			routers: [
 				{ path: "/current", verb: "get", method: "current" },
 				{ path: "/logout", verb: "post", method: "logout" },
-
-				//{ path: "/register", verb: "post", method: "registerUser" },
-				//{ path: "/activate", verb: "post", method: "activate" },
-				//{ path: "/login", verb: "post", method: "login" },
 			]
 		}
 	}

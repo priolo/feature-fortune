@@ -48,6 +48,18 @@ const setup = {
 			console.log(res)
 			window.location.href = res.url
 		},
+		attachGithub: async (_: void, store?: AuthStore) => {
+			const res = await authApi.githubAttachUrl()
+			console.log(res)
+			window.location.href = res.url
+		},
+		detachGithub: async (_: void, store?: AuthStore) => {
+			const res = await authApi.githubDetach()
+			store.setUser( {
+				...store.state.user,
+				githubId: null,
+			})
+		},
 
 		// createSession: async (token: string, store?: AuthStore) => {
 		// 	let user: Account = null

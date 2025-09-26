@@ -1,5 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
-import { ProviderRepo } from './Provider.js';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 
 
@@ -56,8 +55,8 @@ export class AccountRepo {
 	//#region RELATIONSHIPS
 
 	/** I providers di accesso associati a questo user */
-	@OneToMany(() => ProviderRepo, provider => provider.account)
-	providers?: Relation<ProviderRepo[]>
+	// @OneToMany(() => ProviderRepo, provider => provider.account)
+	// providers?: Relation<ProviderRepo[]>
 
 	//#endregion
 

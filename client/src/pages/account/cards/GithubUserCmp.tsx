@@ -1,6 +1,7 @@
 import gitHubApi from '@/api/github';
+import authSo from '@/stores/auth/repo';
 import { GitHubUser } from '@/types/GitHub';
-import { Avatar, Typography } from '@mui/material';
+import { Avatar, Button, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 
 
@@ -29,19 +30,23 @@ const GithubUserCmp: React.FC<GithubUserCmpProps> = ({
     }, [userId])
 
     // HANDLERS
+    const handleDetachClick = () => {
+        authSo.detachGithub()
+    }
 
     // RENDER
     if (!user) {
         return <Typography variant="body1">Nessun utente GitHub associato.</Typography>
     }
 
-    return (
+    return <>
         <Avatar
             src={user.avatar_url}
             alt={user.login}
             sx={{ width: 64, height: 64 }}
         />
-    )
+        <Button onClick={handleDetachClick}>DETACH</Button>
+    </>
 }
 
 export default GithubUserCmp;

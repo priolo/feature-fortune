@@ -1,5 +1,6 @@
 import ajax, { CallOptions } from "@/plugins/AjaxService"
 import { Feature } from "@/types/Feature"
+import { PaymentMethod } from "@stripe/stripe-js"
 
 
 
@@ -21,7 +22,7 @@ function savePaymentMethod(paymentMethodId: string, opt?: CallOptions): Promise<
 	)
 }
 
-function getPaymentMethod(opt?: CallOptions): Promise<{ success: boolean }> {
+function getPaymentMethod(opt?: CallOptions): Promise<{ success: boolean, paymentMethods: PaymentMethod }> {
 	return ajax.post(`fundings/get`, null, opt)
 }
 

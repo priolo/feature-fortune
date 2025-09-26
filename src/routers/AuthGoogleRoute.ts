@@ -1,5 +1,4 @@
 import { AccountRepo } from "@/repository/Account.js";
-import { PROVIDER_NAME, ProviderRepo } from "@/repository/Provider.js";
 import { Bus, httpRouter, jwt, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 import { OAuth2Client } from 'google-auth-library';
@@ -54,23 +53,6 @@ class AuthGoogleRoute extends httpRouter.Service {
 					}
 				})
 			}
-			// cancello eventuali vecchi PROVIDER
-			await new Bus(this, "/typeorm/providers").dispatch({
-				type: typeorm.RepoRestActions.DELETE,
-				payload: <ProviderRepo>{
-					name: PROVIDER_NAME.GOOGLE,
-					accountId: user.id,
-				}
-			})
-			// inserisco il PROVIDER per questo USER
-			await new Bus(this, "/typeorm/providers").dispatch({
-				type: typeorm.RepoRestActions.SAVE,
-				payload: <ProviderRepo>{
-					name: PROVIDER_NAME.GOOGLE,
-					key: token,
-					accountId: user.id,
-				}
-			})
 			// Genera il token JWT con l'email nel payload
 			const jwtToken = await new Bus(this, "/jwt").dispatch({
 				type: jwt.Actions.ENCODE,

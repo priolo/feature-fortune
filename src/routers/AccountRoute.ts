@@ -1,6 +1,7 @@
 import { AccountRepo } from "@/repository/Account.js";
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
+import { customDataToUrl, githubOAuth } from "./AuthGithubRoute.js";
 
 
 
@@ -11,60 +12,44 @@ class AccountRoute extends httpRouter.Service {
 			...super.stateDefault,
 			path: "/accounts",
 			repository: "/typeorm/accounts",
+			account_repo: "/typeorm/accounts",
 			routers: [
-				{ path: "/", verb: "get", method: "getAll" },
-				{ path: "/:id", verb: "get", method: "getById" },
-				{ path: "/", verb: "post", method: "create" },
-				{ path: "/:id", verb: "delete", method: "delete" },
-				{ path: "/:id", verb: "patch", method: "update" }
+				{ path: "/github", verb: "get", method: "getUrlAttachGithub" },
+				{ path: "/github", verb: "delete", method: "detachGithub" },
 			]
 		}
 	}
 
-	async getAll(req: Request, res: Response) {
-		const users = await new Bus(this, this.state.repository).dispatch({
-			type: typeorm.RepoRestActions.ALL
-		})
-		res.json(users)
-	}
-
-	async getById(req: Request, res: Response) {
-		const id = req.params["id"]
-		const tool: AccountRepo = await new Bus(this, this.state.repository).dispatch({
+	async getUrlAttachGithub(req: Request, res: Response) {
+		const userJwt: AccountRepo = req["jwtPayload"]
+		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
 			type: typeorm.RepoRestActions.GET_BY_ID,
-			payload: id
+			payload: userJwt.id,
 		})
-		res.json(tool)
+		if (!user) return res.status(404).json({ error: "User not found" });
+
+		const url = githubOAuth.getWebFlowAuthorizationUrl({
+			scopes: ["read:user", "user:email"],
+			state: customDataToUrl({
+				act: "att",
+				accountId: user.id
+			}),
+		});
+		res.json({ url: url.url })
 	}
 
+	async detachGithub(req: Request, res: Response) {
+		const userJwt: AccountRepo = req["jwtPayload"]
 
-	async create(req: Request, res: Response) {
-		const { user }: { user: AccountRepo } = req.body
-		const userNew: AccountRepo = await new Bus(this, this.state.repository).dispatch({
+		await new Bus(this, this.state.account_repo).dispatch({
 			type: typeorm.RepoRestActions.SAVE,
-			payload: user
+			payload: <Partial<AccountRepo>>{
+				id: userJwt.id,
+				githubId: null,
+			},
 		})
-		res.json(userNew)
-	}
 
-	async delete(req: Request, res: Response) {
-		const id = req.params["id"]
-		await new Bus(this, this.state.repository).dispatch({
-			type: typeorm.RepoRestActions.DELETE,
-			payload: id
-		})
-		res.json({ data: "ok" })
-	}
-
-	async update(req: Request, res: Response) {
-		const id = req.params["id"]
-		const { user }: { user: AccountRepo } = req.body
-		if (!id || !user) return
-		const userUp = await new Bus(this, this.state.repository).dispatch({
-			type: typeorm.RepoRestActions.SAVE,
-			payload: user,
-		})
-		res.json(userUp)
+		res.send({ success: true })
 	}
 }
 
