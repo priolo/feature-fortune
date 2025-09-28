@@ -55,23 +55,33 @@ const setup = {
 		},
 		detachGithub: async (_: void, store?: AuthStore) => {
 			const res = await authApi.githubDetach()
-			store.setUser( {
+			store.setUser({
 				...store.state.user,
 				githubId: null,
 			})
 		},
 
-		// createSession: async (token: string, store?: AuthStore) => {
-		// 	let user: Account = null
-		// 	try {
-		// 		user = (await authApi.loginGoogle(token))?.user
-		// 	} catch (error) {
-		// 		console.error('Error fetching current user:', error);
-		// 		return
-		// 	}
-		// 	console.log('User data:', user);
-		// 	authSo.setUser(user)
-		// },
+		attachGoogle: async (token: string, store?: AuthStore) => {
+			const res = await authApi.googleAttach(token)
+			const user = res.user as Account
+			console.log(user)
+			store.setUser(<Partial<Account>>{
+				...store.state.user,
+				googleEmail: user.googleEmail,
+			})
+		},
+
+		createSession: async (token: string, store?: AuthStore) => {
+			let user: Account = null
+			try {
+				user = (await authApi.loginGoogle(token))?.user
+			} catch (error) {
+				console.error('Error fetching current user:', error);
+				return
+			}
+			console.log('User data:', user);
+			authSo.setUser(user)
+		},
 
 		logout: async (_: void, store?: AuthStore) => {
 			store.setUser(null)

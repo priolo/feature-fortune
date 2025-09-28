@@ -1,21 +1,18 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
-import { AccountRepo } from './Account.js';
-import { AccountAssets } from './AccountAssets.js';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import { AccountAsset } from './AccountAsset.js';
+import { CommentRepo } from './Comment.js';
 import { FeatureRepo } from './Feature.js';
 
 
 
 @Entity('fundings')
-export class FundingRepo extends AccountAssets {
+export class FundingRepo extends AccountAsset {
 
 	@PrimaryGeneratedColumn("uuid")
 	id?: string;
 
 	@Column({ type: 'decimal', precision: 10, scale: 2 })
 	amount: number;
-
-	@Column({ type: 'datetime' })
-	expiresAt: Date;
 
 	@Column({ type: 'varchar', default: 'created' })
 	status: "created" | "pending" | "completed" | "failed" | "expired";
@@ -26,6 +23,8 @@ export class FundingRepo extends AccountAssets {
 	@Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
 	createdAt: Date;
 
+	@Column({ type: 'datetime' })
+	expiresAt: Date;
 
 
 	//#region RELATIONSHIPS
@@ -38,13 +37,11 @@ export class FundingRepo extends AccountAssets {
 	@Column({ type: 'varchar' })
 	featureId: string;
 
-	/** Chi ci ha messi i soldi! */
-	@ManyToOne(() => AccountRepo)
-	@JoinColumn({ name: 'userId' })
-	user?: Relation<AccountRepo>;
-	/** Chi ci ha messi i soldi! */
-	@Column({ type: 'varchar' })
-	userId: string;
+	/**
+	 * comments on the feature
+	 */
+	@OneToMany(() => CommentRepo, comment => comment.funding)
+	comments?: Relation<CommentRepo[]>;
 
 	//#endregion
 

@@ -25,33 +25,59 @@ export async function seeding(root: RootService) {
 		payload: <FeatureRepo[]>[
 			{ type: typeorm.RepoStructActions.TRUNCATE },
 			{
-				github: "priolo/jack", 
+				id: "id-feature-1",
+				githubName: "priolo/jack", 
 				title: "Vorrei una funzionalità X", 
 				description: "La funzionalità X mi permetterebbe di fare Y e Z, migliorando il mio flusso di lavoro in questo modo...", 
-				userId: accounts[0].id!,
+				accountId: accounts[0].id!,
 			},
 			{
-				github: "priolo/jess", 
+				id: "id-feature-2",
+				githubName: "priolo/jess", 
 				title: "Vorrei una funzionalità Y",
 				description: "La funzionalità Y sarebbe fantastica perché mi aiuterebbe a risolvere il problema di A e B, rendendo tutto più efficiente...",
-				userId: accounts[0].id!,
+				accountId: accounts[0].id!,
 			},
 		]
 	});
 
-	// const funding = await new Bus(root, "/typeorm/fundings").dispatch<FeatureRepo[]>({
-	// 	type: typeorm.RepoStructActions.SEED,
-	// 	payload: <FundingRepo[]>[
-	// 		{ type: typeorm.RepoStructActions.TRUNCATE },
-	// 		{
-	// 			amount: 50.00,
-	// 			expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 1)),
-	// 			status: "PENDING",
-	// 			message: "Spero che questa funzionalità venga implementata presto!",
-	// 			featureId: features[0].id!,
-	// 			userId: accounts[1].id!,	
-	// 		}
-	// 	]
-	// });
+	const funding = await new Bus(root, "/typeorm/fundings").dispatch<FeatureRepo[]>({
+		type: typeorm.RepoStructActions.SEED,
+		payload: <FundingRepo[]>[
+			{ type: typeorm.RepoStructActions.TRUNCATE },
+			{
+				amount: 50.00,
+				expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+				status: "pending",
+				message: "Spero che questa funzionalità venga implementata presto!",
+				featureId: features[0].id!,
+				accountId: accounts[1].id!,	
+			},
+			{
+				amount: 75.00,
+				expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 2)),
+				status: "pending",
+				message: "Questa feature risolverebbe molti dei miei problemi quotidiani!",
+				featureId: features[0].id!,
+				accountId: accounts[2].id!,	
+			},
+			{
+				amount: 25.00,
+				expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 1)),
+				status: "pending",
+				message: "Contribuisco volentieri per vedere questa funzionalità realizzata.",
+				featureId: features[0].id!,
+				accountId: accounts[0].id!,	
+			},
+			{
+				amount: 100.00,
+				expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 3)),
+				status: "pending",
+				message: "Investimento importante per una feature che cambierà tutto!",
+				featureId: features[0].id!,
+				accountId: accounts[1].id!,	
+			}
+		]
+	});
 
 }

@@ -17,7 +17,7 @@
     "@mui/material": "^7.3.2",
     "@priolo/jon": "file:C:/Users/ivano.iorio/Documents/jon",
     "@priolo/jon-utils": "file:C:/Users/ivano.iorio/Documents/jon-utils",
-    "@react-oauth/google": "^0.12.1",
+    "@react-oauth/google": "^0.12.2",
     "@stripe/react-stripe-js": "^4.0.2",
     "@stripe/stripe-js": "^7.9.0",
     "cross-env": "^7.0.3",

@@ -27,6 +27,9 @@ function current(opt?: CallOptions): Promise<{ user: Account }> {
 function loginGoogle(token: string, opt?: CallOptions): Promise<{ user: Account }> {
 	return ajax.post(`auth/google`, { token }, { ...opt, isLogin: true })
 }
+function googleAttach(token: string, opt?: CallOptions): Promise<any> {
+	return ajax.post(`accounts/google`, { token }, opt)
+}
 
 
 function logout(opt?: CallOptions): Promise<{ user: Account }> {
@@ -45,6 +48,7 @@ const authApi = {
 
 	current,
 	loginGoogle,
+	googleAttach,
 	logout,
 }
 

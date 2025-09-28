@@ -7,6 +7,8 @@ export interface Account {
 	name: string
 	email: string
 
+	googleEmail?: string
+
 	githubId?: number
 
 	stripeCustomerId?: string

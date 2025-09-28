@@ -1,12 +1,13 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
 import { AccountRepo } from './Account.js';
-import { AccountAssets } from './AccountAssets.js';
+import { AccountAsset } from './AccountAsset.js';
 import { FeatureRepo } from './Feature.js';
+import { FundingRepo } from './Funding.js';
 
 
 
 @Entity('comments')
-export class CommentRepo extends AccountAssets {
+export class CommentRepo extends AccountAsset {
 
 	@PrimaryGeneratedColumn("uuid")
 	id?: string;
@@ -20,21 +21,32 @@ export class CommentRepo extends AccountAssets {
 
 	
 	//#region RELATIONSHIPS
+	
+	 /**
+     * Type of entity this comment belongs to
+     */
+    @Column({ type: 'varchar' })
+    entityType: 'feature' | 'funding';
 
-	@ManyToOne(() => AccountRepo)
-	@JoinColumn({ name: 'userId' })
-	user?: Relation<AccountRepo>;
-	@Column({ type: 'varchar' })
-	userId: string;
+    /**
+     * ID of the entity this comment belongs to
+     */
+    @Column({ type: 'varchar' })
+    entityId: string;
 
-	/**
-	 * entity that have this comment
-	 */
-	@ManyToOne(() => FeatureRepo, feature => feature.comments)
-	@JoinColumn({ name: 'entityId' })
-	feature?: Relation<FeatureRepo>;
-	@Column({ type: 'varchar' })
-	entityId: string;
+    /**
+     * Feature entity (only populated when entityType is 'feature')
+     */
+    @ManyToOne(() => FeatureRepo, feature => feature.comments)
+    @JoinColumn({ name: 'entityId' })
+    feature?: Relation<FeatureRepo>;
+
+    /**
+     * Funding entity (only populated when entityType is 'funding')
+     */
+    @ManyToOne(() => FundingRepo, funding => funding.comments)
+    @JoinColumn({ name: 'entityId' })
+    funding?: Relation<FundingRepo>;
 
 	//#endregion
 }

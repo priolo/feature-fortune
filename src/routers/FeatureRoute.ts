@@ -32,8 +32,11 @@ class FeatureRoute extends httpRouter.Service {
 	async getById(req: Request, res: Response) {
 		const id = req.params["id"]
 		const feature: FeatureRepo = await new Bus(this, this.state.repository).dispatch({
-			type: typeorm.RepoRestActions.GET_BY_ID,
-			payload: id
+			type: typeorm.Actions.FIND_ONE,
+			payload: {
+				where: { id: id },
+				relations: { comments: true, fundings: true, account: true }
+			}
 		})
 		res.json(feature)
 	}

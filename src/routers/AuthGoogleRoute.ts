@@ -6,7 +6,7 @@ import { FindManyOptions } from "typeorm";
 
 
 
-const client = new OAuth2Client('YOUR_GOOGLE_CLIENT_ID');
+export const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 class AuthGoogleRoute extends httpRouter.Service {
 
@@ -23,6 +23,8 @@ class AuthGoogleRoute extends httpRouter.Service {
 		}
 	}
 
+	
+
 	/** eseguo il login con GOOGLE */
 	async login(req: Request, res: Response) {
 		const { token } = req.body;
@@ -31,7 +33,7 @@ class AuthGoogleRoute extends httpRouter.Service {
 			// Verifico GOOGLE token e ricavo PAYLOAD
 			const ticket = await client.verifyIdToken({
 				idToken: token,
-				audience: '106027300810-0udm0cjghhjr87626qrvcoug5ahgq1bh.apps.googleusercontent.com',
+				audience: process.env.GOOGLE_CLIENT_ID,
 			});
 			const payload = ticket.getPayload();
 

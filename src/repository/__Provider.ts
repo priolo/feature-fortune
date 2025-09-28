@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { AccountAssets } from './AccountAssets.js';
+import { AccountAsset } from './AccountAsset.js';
 
 
 
@@ -17,7 +17,7 @@ export enum PROVIDER_NAME {
 
 
 @Entity('providers')
-export class ProviderRepo extends AccountAssets {
+export class ProviderRepo extends AccountAsset {
 
 	@PrimaryGeneratedColumn("uuid")
 	id?: string;

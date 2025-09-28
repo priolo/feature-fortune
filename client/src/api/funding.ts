@@ -1,5 +1,5 @@
 import ajax, { CallOptions } from "@/plugins/AjaxService"
-import { Feature } from "@/types/Feature"
+import { Feature } from "@/types/feature/Feature"
 import { PaymentMethod } from "@stripe/stripe-js"
 
 

@@ -1,12 +1,11 @@
 import authSo, { stripePromise } from '@/stores/auth/repo';
-import featureDetailSo from '@/stores/feature/detail';
 import { Box, Button, SxProps } from '@mui/material';
 import { useStore } from '@priolo/jon';
+import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { Elements } from '@stripe/react-stripe-js';
-import React, { useEffect } from 'react';
+import React from 'react';
 import GithubUserCmp from './cards/GithubUserCmp';
 import StripeCreditCardCmp from './cards/StripeCreditCardCmp';
-
 
 
 interface AccountPagProps {
@@ -19,16 +18,10 @@ const AccountPag: React.FC<AccountPagProps> = ({
 }) => {
 
     // STORES
-    useStore(featureDetailSo)
     useStore(authSo)
 
 
-
     // HOOKS
-    useEffect(() => {
-        if (!featureDetailSo.state.githubRepo) return
-        featureDetailSo.fetchGithubUser()
-    }, [featureDetailSo.state.githubRepo])
 
 
     // HANDLERS
@@ -36,14 +29,50 @@ const AccountPag: React.FC<AccountPagProps> = ({
         authSo.attachGithub()
     }
 
-    
+    const handleGoogleDetach = async () => {
+        //authSo.attachGithub()
+    }
+
+    const handleLoginSuccess = (response: CredentialResponse) => {
+        console.log('Login Success:', response);
+        authSo.attachGoogle(response.credential)
+    }
+
+    const handleLoginFailure = () => {
+        console.log('Login Failure:');
+    }
 
 
     // RENDER
     const haveGithub = !!authSo.state.user?.githubId
+    const haveGoogle = !!authSo.state.user?.googleEmail
 
     return (
         <Box sx={sxRoot}>
+
+
+            {haveGoogle != null ? (
+				<div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+					<div>{authSo.state.user.email} LOGGED</div>
+					<Button
+						onClick={handleGoogleDetach}
+					>DETACH</Button>
+				</div>
+			) : (
+				<div style={{ display: 'flex', flexDirection: "column", gap: 10, alignItems: 'center' }}>
+					<div>ANONYMOUS</div>
+					<GoogleOAuthProvider clientId="545902107281-qgd4s1enct9mcq4qh3vpccn45uocdk9s.apps.googleusercontent.com">
+						<div>
+							<h2>Login with Google</h2>
+							<GoogleLogin
+								onSuccess={handleLoginSuccess}
+								onError={handleLoginFailure}
+							/>
+						</div>
+					</GoogleOAuthProvider>
+				</div>
+			)}
+
 
             {/* GITHUB ZONE */}
             {haveGithub ? (

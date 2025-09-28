@@ -1,19 +1,15 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
-import { AccountRepo } from './Account.js';
-import { AccountAssets } from './AccountAssets.js';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import { AccountAsset } from './AccountAsset.js';
 import { CommentRepo } from './Comment.js';
 import { FundingRepo } from './Funding.js';
 
 
 
 @Entity('features')
-export class FeatureRepo extends AccountAssets {
+export class FeatureRepo extends AccountAsset {
 
 	@PrimaryGeneratedColumn("uuid")
 	id?: string;
-
-	@Column({ type: 'varchar', nullable: true })
-    github?: string;
 
 	/**
 	 * title of the feature
@@ -32,15 +28,20 @@ export class FeatureRepo extends AccountAssets {
 	createdAt: Date;
 
 
+
+	/**
+	 * github repo ID
+	 */
+	// @Column({ type: 'bigint', nullable: true })
+	// githubRepoId: number;
+	/**
+	 * github repo name
+	 */
+	@Column({ type: 'varchar' })
+	githubName: string;
+
 	
 	//#region RELATIONSHIPS
-
-	@ManyToOne(() => AccountRepo)
-	@JoinColumn({ name: 'userId' })
-	user?: Relation<AccountRepo>;
-
-	@Column({ type: 'varchar' })
-	userId: string;
 
 	/**
 	 * the accounts that funded this feature

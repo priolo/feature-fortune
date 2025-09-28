@@ -1,95 +1,185 @@
-import GithubRepoCmp from '@/pages/feature/cards/GithubRepoCmp';
-import { stripePromise } from '@/stores/auth/repo';
+import GithubRepoCmp from '@/components/github/GithubRepoCmp';
+import FundingList from '@/components/funding/FundingList';
 import featureDetailSo from '@/stores/feature/detail';
-import { Box, Button, TextField, Typography } from '@mui/material';
-import GithubFinderCmp from '@/pages/feature/GithubFinderCmp';
+import { Box, Card, CardContent, SxProps, TextField, Typography, Chip, List, ListItem, ListItemText, Divider, Button, CardActions } from '@mui/material';
 import { useStore } from '@priolo/jon';
-import { Elements } from '@stripe/react-stripe-js';
-import React, { useEffect } from 'react';
-import StripePromise from '../account/cards/StripePromiseCmp';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import SelectorDialogBase from '@/components/SelectorDialogBase';
+import GithubRepoDialog from '@/components/funding/GithubRepoDialog';
 
 
 
-interface AccountPagProps {
+interface Props {
 }
 
 /**
  * si occupa di crerae e collegare l'account del current user ai vari servizi
  */
-const DetailPag: React.FC<AccountPagProps> = ({
+const FeatureDetailPag: React.FC<Props> = ({
 }) => {
 
     // STORES
     useStore(featureDetailSo)
 
-
     // HOOKS
+    const { id } = useParams<{ id: string }>();
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [dialogOpen, setDialogOpen] = useState(false);
+
     useEffect(() => {
-        if (!featureDetailSo.state.githubRepo) return
-        featureDetailSo.fetchGithubUser()
-    }, [featureDetailSo.state.githubRepo])
+        if (!id) return
+        const load = async () => {
+            featureDetailSo.setFeature({ id })
+            await featureDetailSo.fetch()
+            featureDetailSo.fetchGithubRepo()
+        };
+        load();
+    }, [id])
+
 
     // HANDLERS
-    const handleGitHubChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        featureDetailSo.setFeature({ ...featureDetailSo.state.feature, github: e.target.value })
-    }
-    const handleSearchClick = async () => {
-        featureDetailSo.fetchGithubRepo()
-    }
-    const handleCreateClick = async () => {
-        featureDetailSo.createFunding()
-    }
+    const handleGithubRepoSelect = () => {
+        setDialogOpen(true)
+    };
 
+    const handleContribute = () => {
+        // TODO: Implement contribute functionality
+        console.log('Contribute button clicked');
+    };
+
+    const formatAmount = (amount: number) => {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD'
+        }).format(amount);
+    };
 
     // RENDER
-    const { githubRepo, authorUser } = featureDetailSo.state;
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-                alignItems: 'center',
-                maxWidth: 800,
-                margin: '0 auto',
-                padding: 2
-            }}
-        >
-            <GithubFinderCmp
-                value={featureDetailSo.state.feature?.github ?? ''}
-                onChange={handleGitHubChange}
-                onSearch={handleSearchClick}
-            />
+        <Box sx={sxRoot}>
 
-            {githubRepo && <>
+            <Card sx={{ width: '100%', mt: 2 }}>
+                <CardContent>
+                    <GithubRepoCmp
+                        repository={featureDetailSo.state.githubRepo}
+                    />
+                </CardContent>
+                <CardActions>
+                    <Button
+                        onClick={handleGithubRepoSelect}
+                    >SELECT</Button>
+                </CardActions>
+            </Card>
 
-                <GithubRepoCmp githubRepo={githubRepo} />
+            <Card sx={{ width: '100%', mt: 2 }}>
+                <CardContent>
+                    <TextField
+                        label="Feature Title"
+                        variant="outlined"
+                        fullWidth
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="Enter a short title for the feature"
+                        sx={{ mb: 2 }}
+                    />
 
-                {!authorUser ? (
-                    <Box>
-                        ATTENZIONE utente non registrato non potrà ricevere il compeso se non si registra!
-                        Contatta l'autore e dagli questo link per registrarsi
-                        oppure manda un invito automatico alla sua email cliccando qui:
+                    <TextField
+                        label="Feature Description"
+                        variant="outlined"
+                        fullWidth
+                        multiline
+                        rows={6}
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        placeholder="Enter a complete description of the feature..."
+                        sx={{ mb: 2 }}
+                    />
+                </CardContent>
+                <CardActions>
+                    <Button
+                        onClick={() => { console.log('Creating feature:', { title, description }) }}
+                    >Create Feature</Button>
+                </CardActions>
+            </Card>
+
+            {/* Fundings Section */}
+            <Card sx={{ width: '100%', mt: 2 }}>
+                <CardContent>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                        <Typography variant="h6" component="h2">
+                            Fundings ({featureDetailSo.state.feature?.fundings?.length || 0})
+                        </Typography>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleContribute}
+                            sx={{ textTransform: 'none' }}
+                        >
+                            CONTRIBUTE
+                        </Button>
                     </Box>
-                ) : (
-                    <Box>{authorUser.name} è registrato!</Box>
-                )}
 
-            </>}
+                    {featureDetailSo.state.feature?.fundings && featureDetailSo.state.feature.fundings.length > 0 ? (
+                        <FundingList fundings={featureDetailSo.state.feature.fundings} />
+                    ) : (
+                        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
+                            No fundings yet for this feature.
+                        </Typography>
+                    )}
 
-            <Elements stripe={stripePromise}>
-                <StripePromise />
-            </Elements>
+                    {/* Total funding summary */}
+                    {featureDetailSo.state.feature?.fundings && featureDetailSo.state.feature.fundings.length > 0 && (
+                        <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider' }}>
+                            <Typography variant="body1" sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <strong>Total Funded:</strong>
+                                <strong>
+                                    {formatAmount(
+                                        featureDetailSo.state.feature.fundings
+                                            .filter(f => f.status === 'completed')
+                                            .reduce((sum, f) => sum + f.amount, 0)
+                                    )}
+                                </strong>
+                            </Typography>
+                        </Box>
+                    )}
+                </CardContent>
+            </Card>
 
-            {/* <Button variant="contained" color="primary" 
-                onClick={handleCreateClick}>
-                SUBMIT
-            </Button>
-            <StripeCardCmp /> */}
+
+            <GithubRepoDialog 
+                isOpen={dialogOpen}  
+                onClose={() => {}}
+            />  
 
         </Box>
     );
 };
 
-export default DetailPag;
+export default FeatureDetailPag;
+
+const sxRoot: SxProps = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 2,
+    //alignItems: 'center',
+    maxWidth: 800,
+    margin: '0 auto',
+    padding: 2
+}
+
+
+const testItems = [
+    { id: 1, name: 'Item One', description: 'This is the first item' },
+    { id: 2, name: 'Item Two', description: 'This is the second item' },
+    { id: 3, name: 'Item Three', description: 'This is the third item' },
+    { id: 4, name: 'Item Four', description: 'This is the fourth item' },
+    { id: 5, name: 'Item Five', description: 'This is the fifth item' },
+    { id: 6, name: 'Item Six', description: 'This is the sixth item' },
+    { id: 7, name: 'Item Seven', description: 'This is the seventh item' },
+    { id: 8, name: 'Item Eight', description: 'This is the eighth item' },
+    { id: 9, name: 'Item Nine', description: 'This is the ninth item' },
+    { id: 10, name: 'Item Ten', description: 'This is the tenth item' },
+]

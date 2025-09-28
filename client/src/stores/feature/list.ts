@@ -1,5 +1,5 @@
 import featureApi from "@/api/feature"
-import { Feature } from "@/types/Feature"
+import { Feature } from "@/types/feature/Feature"
 import { createStore, StoreCore } from "@priolo/jon"
 
 

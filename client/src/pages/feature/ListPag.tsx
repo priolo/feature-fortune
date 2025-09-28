@@ -1,4 +1,19 @@
 import featureListSo from '@/stores/feature/list';
+import {
+	Box,
+	Button,
+	Card,
+	CardContent,
+	Container,
+	Typography,
+	List,
+	ListItem,
+	ListItemAvatar,
+	ListItemText,
+	Avatar,
+	Chip,
+	ListItemButton
+} from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -16,10 +31,10 @@ const FeatureListPag: React.FC = () => {
 	// HOOCKS
 	useEffect(() => {
 		featureListSo.fetch()
-	},[])
+	}, [])
 
 	// HANDLERS
-	const handleCreate = async () => {
+	const handleCreateClick = async () => {
 		//await featureListSo.create()
 		navigate('/app/feature')
 	}
@@ -30,55 +45,71 @@ const FeatureListPag: React.FC = () => {
 	const features = featureListSo.state.all ?? [];
 
 	return (
-		<div className="page">
-			<div className="page-header">
-				<h1>Dashboard</h1>
-				<button className="refresh-button" onClick={handleCreate}>NUOVO</button>
-			</div>
+		<Container maxWidth="lg" sx={{ py: 4 }}>
+			{/* Page Header */}
+			<Box sx={{
+				display: 'flex',
+				justifyContent: 'space-between',
+				alignItems: 'center',
+				mb: 4,
+				pb: 2,
+				borderBottom: 2,
+				borderColor: 'divider'
+			}}>
+				<Typography variant="h3" component="h1" sx={{
+					color: 'text.primary',
+					fontWeight: 600
+				}}>
+					Features
+				</Typography>
+				<Button
+					variant="contained"
+					color="primary"
+					onClick={handleCreateClick}
+					sx={{ textTransform: 'none' }}
+				>
+					New Feature
+				</Button>
+			</Box>
 
-			<div className="dashboard-grid">
-				<div className="card">
-					<h3>Total Revenue</h3>
-					<div className="metric">$24,500</div>
-					<div className="metric-change positive">+12.5%</div>
-				</div>
+			<Card>
+				<CardContent>
+					<List>
+						{features.map((feature, index) => (
 
-				<div className="card">
-					<h3>Active Users</h3>
-					<div className="metric">1,423</div>
-					<div className="metric-change positive">+8.2%</div>
-				</div>
-
-				<div className="card">
-					<h3>Orders</h3>
-					<div className="metric">89</div>
-					<div className="metric-change negative">-3.1%</div>
-				</div>
-
-				<div className="card">
-					<h3>Conversion Rate</h3>
-					<div className="metric">3.2%</div>
-					<div className="metric-change positive">+0.5%</div>
-				</div>
-			</div>
-
-			<div className="recent-activity">
-				<h2>Recent Activity</h2>
-				<div className="activity-list">
-
-					{features.map((feature) => (
-						<div key={feature.id} className="activity-item">
-							<div className="activity-icon">📦</div>
-							<div className="activity-content">
-								<div className="activity-title">{feature.title}</div>
-								<div className="activity-time">{feature.description}</div>
-							</div>
-						</div>
-					))}
-
-				</div>
-			</div>
-		</div>
+							<ListItemButton divider key={feature.id}>
+								<ListItemAvatar>
+									<Avatar sx={{ bgcolor: 'primary.main' }}>
+										📦
+									</Avatar>
+								</ListItemAvatar>
+								<ListItemText
+									primary={
+										<Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+											{feature.title}
+										</Typography>
+									}
+									secondary={
+										<Typography variant="body2" color="text.secondary">
+											{feature.description}
+										</Typography>
+									}
+								/>
+							</ListItemButton>
+							
+						))}
+						
+						{features.length === 0 && (
+							<Box sx={{ textAlign: 'center', py: 4 }}>
+								<Typography variant="body1" color="text.secondary">
+									No features found. Create your first feature to get started!
+								</Typography>
+							</Box>
+						)}
+					</List>
+				</CardContent>
+			</Card>
+		</Container>
 	);
 };
 

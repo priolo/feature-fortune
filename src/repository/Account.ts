@@ -20,10 +20,17 @@ export class AccountRepo {
 
 
 	/**
+	 * account google
+	 */
+	@Column({ type: 'varchar', nullable: true })
+	googleEmail: string;
+
+
+	/**
 	 * account github
 	 */
 	@Column({ type: 'bigint', nullable: true })
-	githubId: string;
+	githubId: number;
 
 	/** 
 	 * STRIPE account per CONTRIBUTOR

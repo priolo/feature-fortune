@@ -1,12 +1,11 @@
-import accountApi from "@/api/account"
 import featureApi from "@/api/feature"
-import fundingApi from "@/api/funding"
 import gitHubApi from "@/api/github"
 import { Account } from "@/types/Account"
-import { Feature } from "@/types/Feature"
+import { Feature } from "@/types/feature/Feature"
 import { Funding } from "@/types/Funding"
-import { GitHubRepositoryDetails } from "@/types/GitHub"
+import { GitHubRepository, GitHubRepositoryDetails } from "@/types/GitHub"
 import { createStore, StoreCore } from "@priolo/jon"
+import { FORM_MODE } from "../types"
 
 
 
@@ -20,10 +19,11 @@ import { createStore, StoreCore } from "@priolo/jon"
 const setup = {
 
 	state: {
+		mode: <FORM_MODE>FORM_MODE.VIEW,
+
 		feature: <Partial<Feature>>null,
-		githubRepo: null as GitHubRepositoryDetails | null,
-		authorUser: <Account>null,
-		funding: <Funding>null,
+		/** dettaglio GITHUB della FEATURE */
+		githubRepo: <GitHubRepository>null,
 	},
 
 	getters: {
@@ -36,33 +36,17 @@ const setup = {
 			store.setFeature(feature)
 		},
 
-		async fetchIfVoid(_: void, store?: FeatureDetailStore) {
-			if (!!store.state.feature) return
-			await store.fetch()
-		},
+		// async fetchIfVoid(_: void, store?: FeatureDetailStore) {
+		// 	if (!!store.state.feature) return
+		// 	await store.fetch()
+		// },
 
 		async fetchGithubRepo(_: void, store?: FeatureDetailStore) {
-			const githubQuery = store.state.feature?.github;
-			try {
-				// Check if it's a URL format
-				const parsedUrl = gitHubApi.parseGitHubUrl(githubQuery);
-				// Direct repository lookup
-				const repoDetails: GitHubRepositoryDetails = !!parsedUrl
-					? await gitHubApi.getRepositoryWithOwnerDetails(parsedUrl.owner, parsedUrl.repo)
-					: await gitHubApi.searchAndGetFirstRepositoryWithDetails(githubQuery)
-				if (!repoDetails) return // error
-				store.setFeature({ ...store.state.feature, github: repoDetails.html_url });
-				store.setGithubRepo(repoDetails);
-			} catch (error) {
-				//  error
-			}
+			const repo = await gitHubApi.getRepositoryByName(store.state.feature.githubName)
+			store.setGithubRepo(repo)
 		},
 
-		async fetchGithubUser(_: void, store?: FeatureDetailStore) {
-			if (!store.state.githubRepo) return
-			const user = await accountApi.getByGithub(store.state.githubRepo.id)
-			if (!user) return // error
-		},
+	
 
 		async createFunding(_: void, store?: FeatureDetailStore) {
 			

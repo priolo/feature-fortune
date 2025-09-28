@@ -2,6 +2,8 @@ import { AccountRepo } from "@/repository/Account.js";
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 import { customDataToUrl, githubOAuth } from "./AuthGithubRoute.js";
+import { client } from "./AuthGoogleRoute.js";
+import { FindManyOptions } from "typeorm";
 
 
 
@@ -16,9 +18,67 @@ class AccountRoute extends httpRouter.Service {
 			routers: [
 				{ path: "/github", verb: "get", method: "getUrlAttachGithub" },
 				{ path: "/github", verb: "delete", method: "detachGithub" },
+
+				{ path: "/google", verb: "post", method: "attachGoogle" },
+
+
 			]
 		}
 	}
+
+	/** eseguo il login con GOOGLE */
+	async attachGoogle(req: Request, res: Response) {
+		const userJwt: AccountRepo = req["jwtPayload"]
+		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
+			type: typeorm.RepoRestActions.GET_BY_ID,
+			payload: userJwt.id,
+		})
+		if (!user) return res.status(404).json({ error: "User not found" });
+
+
+
+		const { token } = req.body;
+		try {
+
+			// Verifico GOOGLE token e ricavo PAYLOAD
+			const ticket = await client.verifyIdToken({
+				idToken: token,
+				audience: process.env.GOOGLE_CLIENT_ID,
+			});
+			const payload = ticket.getPayload();
+
+			// se è gia' settato come email google allora tutto ok
+			if (user.googleEmail === payload.email) {
+				return res.status(200).json({ user });
+			}
+
+			// cerco lo USER tramite l'email
+			const userDuplicate: AccountRepo = await new Bus(this, this.state.repository).dispatch({
+				type: typeorm.Actions.FIND_ONE,
+				payload: <FindManyOptions<AccountRepo>>{
+					where: { googleEmail: payload.email },
+				}
+			})
+			
+			// se c'e' allora l'email è gia' utilizzata
+			if (!!userDuplicate) {
+				return res.status(400).json({ error: "Email already in use" });
+			}
+
+			await new Bus(this, this.state.account_repo).dispatch({
+				type: typeorm.RepoRestActions.SAVE,
+				payload: <Partial<AccountRepo>>{
+					id: userJwt.id,
+					googleEmail: payload.email,
+				},
+			})
+			res.status(200).json({ user });
+
+		} catch (error) {
+			res.status(401).json({ error: 'Invalid Token' });
+		}
+	}
+
 
 	async getUrlAttachGithub(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]

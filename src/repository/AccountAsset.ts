@@ -5,7 +5,7 @@ import { AccountRepo } from './Account.js';
 /**
  * Rappresenta un entità che appartiene ad un ACCOUNT
  */
-export abstract class AccountAssets {
+export abstract class AccountAsset {
 
 	//#region RELATIONSHIPS
 

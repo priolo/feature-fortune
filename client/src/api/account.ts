@@ -15,12 +15,7 @@ async function get(id: string, opt?: CallOptions): Promise<Account> {
 	return user
 }
 
-/** GET BY GITHUB*/
-async function getByGithub(githubId: number, opt?: CallOptions): Promise<Account> {
-	if (!githubId) return
-	const user = await ajax.get(`accounts/github/${githubId}`, opt)
-	return user
-}
+
 
 /** DELETE */
 function remove(id: string, opt?: CallOptions): Promise<void> {
@@ -44,7 +39,6 @@ function update(user: Account, opt?: CallOptions): Promise<Account> {
 const accountApi = {
 	index,
 	get,
-	getByGithub,
 	remove,
 	create,
 	update,

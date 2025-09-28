@@ -1,7 +1,10 @@
 
-import { GitHubRepositoryDetails } from './GitHub';
+import { AccountAsset } from '../AccountAsset';
+import { Funding } from '../Funding';
 
-export interface Feature {
+
+
+export interface Feature extends AccountAsset {
 	
 	id?: string;
     github?: string;
@@ -9,18 +12,16 @@ export interface Feature {
 	description: string;
 	createdAt: Date;
 
-	// GitHub repository information
-	githubRepo?: GitHubRepositoryDetails;
+	// GitHub repository 
+	githubName: string
 	
 	//#region RELATIONSHIPS
 
-	//user?: Account;
-	userId: string;
 
 	/**
 	 * the accounts that funded this feature
 	 */
-	//fundings?: Relation<FundingRepo[]>;
+	fundings?: Funding[]
 
 	/**
 	 * comments on the feature

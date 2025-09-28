@@ -42,6 +42,34 @@ class GitHubApiService {
         return response.json();
     }
 
+     /**
+     * 
+     */
+    async getRepositoryByName(name: string): Promise<GitHubRepository> {
+        const response = await fetch(`${this.baseUrl}/repos/${name}`);
+        
+        if (!response.ok) {
+            throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
+    }
+
+
+    /**
+     * Get detailed information about a repository by its ID
+     * @param repositoryId - Repository ID (numeric)
+     */
+    async getRepositoryById(repositoryId: number): Promise<GitHubRepository> {
+        const response = await fetch(`${this.baseUrl}/repositories/${repositoryId}`);
+        
+        if (!response.ok) {
+            throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
+    }
+
     /**
      * Get detailed information about a GitHub user
      * @param username - GitHub username
