@@ -1,4 +1,4 @@
-import { GitHubRepository } from "@/types/GitHub";
+import { GitHubRepository } from "@/types/github/GitHub";
 import { Dialog, DialogTitle, List, ListItem, ListItemButton, ListItemText, TextField, Box, DialogActions, Button } from "@mui/material";
 import React, { FunctionComponent, useEffect } from "react";
 import gitHubApi from "@/api/github";
@@ -36,15 +36,11 @@ const GithubRepoDialog: FunctionComponent<Partial<Props>> = ({
 
 	// HANDLERS
 	const handleClose = (reason?: 'backdropClick' | 'escapeKeyDown') => {
-		if (onClose) {
-			onClose(null)
-		}
+		onClose(null)
 	}
 
-	const handleItemClick = (item: GitHubRepository) => {
-		if (onClose) {
-			onClose(item)
-		}
+	const handleItemClick = (repo: GitHubRepository) => {
+		onClose(repo)
 	}
 
 	const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {

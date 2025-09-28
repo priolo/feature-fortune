@@ -1,6 +1,6 @@
 import gitHubApi from '@/api/github';
 import authSo from '@/stores/auth/repo';
-import { GitHubUser } from '@/types/GitHub';
+import { GitHubUser } from '@/types/github/GitHub';
 import { Avatar, Button, Typography } from '@mui/material';
 import React, { useEffect } from 'react';
 

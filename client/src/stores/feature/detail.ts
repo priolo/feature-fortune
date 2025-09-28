@@ -3,18 +3,11 @@ import gitHubApi from "@/api/github"
 import { Account } from "@/types/Account"
 import { Feature } from "@/types/feature/Feature"
 import { Funding } from "@/types/Funding"
-import { GitHubRepository, GitHubRepositoryDetails } from "@/types/GitHub"
+import { GitHubRepository, GitHubRepositoryDetails } from "@/types/github/GitHub"
 import { createStore, StoreCore } from "@priolo/jon"
 import { FORM_MODE } from "../types"
 
 
-
-
-// const fetchClientSecret = () => {
-// 	return fetch('/create-checkout-session', { method: 'POST' })
-// 		.then((response) => response.json())
-// 		.then((json) => json.checkoutSessionClientSecret)
-// };
 
 const setup = {
 

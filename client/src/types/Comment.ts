@@ -1,3 +1,5 @@
+import { Feature } from "./feature/Feature";
+import { Funding } from "./Funding";
 
 
 
@@ -7,18 +9,25 @@ export interface Comment {
 	text: string;
 	createdAt: Date;
 
-
 	
 	//#region RELATIONSHIPS
 
-	//user?: Relation<AccountRepo>;
-	userId: string;
+    entityType: 'feature' | 'funding';
 
-	/**
-	 * entity that have this comment
-	 */
-	//feature?: Relation<FeatureRepo>;
-	entityId: string;
+    /**
+     * ID of the entity this comment belongs to
+     */
+    entityId: string;
+
+    /**
+     * Feature entity (only populated when entityType is 'feature')
+     */
+    feature?: Feature;
+
+    /**
+     * Funding entity (only populated when entityType is 'funding')
+     */
+    funding?: Funding;
 
 	//#endregion
 }

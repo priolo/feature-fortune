@@ -1,4 +1,4 @@
-import { GitHubUser } from '@/types/GitHub';
+import { GitHubUser } from '@/types/github/GitHub';
 import { Box, Card, CardContent, Link, Typography } from '@mui/material';
 import React from 'react';
 

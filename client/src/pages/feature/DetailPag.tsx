@@ -1,12 +1,13 @@
-import GithubRepoCmp from '@/components/github/GithubRepoCmp';
 import FundingList from '@/components/funding/FundingList';
+import GithubRepoDialog from '@/components/github/GithubRepoDialog';
+import GithubRepoCmp from '@/components/github/GithubRepoCmp';
 import featureDetailSo from '@/stores/feature/detail';
-import { Box, Card, CardContent, SxProps, TextField, Typography, Chip, List, ListItem, ListItemText, Divider, Button, CardActions } from '@mui/material';
+import { buildNewFeature } from '@/types/feature/factory';
+import { GitHubRepository } from '@/types/github/GitHub';
+import { Box, Button, Card, CardActions, CardContent, SxProps, TextField, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import SelectorDialogBase from '@/components/SelectorDialogBase';
-import GithubRepoDialog from '@/components/funding/GithubRepoDialog';
 
 
 
@@ -23,26 +24,41 @@ const FeatureDetailPag: React.FC<Props> = ({
     useStore(featureDetailSo)
 
     // HOOKS
-    const { id } = useParams<{ id: string }>();
+    let { id } = useParams<{ id: string }>()
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
 
+
     useEffect(() => {
-        if (!id) return
+        if ( id === 'new' ) {
+            featureDetailSo.setFeature(buildNewFeature())
+            featureDetailSo.setGithubRepo(null)
+            return
+        }
         const load = async () => {
             featureDetailSo.setFeature({ id })
             await featureDetailSo.fetch()
             featureDetailSo.fetchGithubRepo()
-        };
+        }
         load();
     }, [id])
 
 
     // HANDLERS
-    const handleGithubRepoSelect = () => {
+    const handleGithubFindClick = () => {
         setDialogOpen(true)
-    };
+    }
+    const handleGithubDialogClose = (repo:GitHubRepository) => {
+        setDialogOpen(false)
+        if (repo) {
+            featureDetailSo.setGithubRepo(repo)
+            featureDetailSo.setFeature({
+                ...featureDetailSo.state.feature,
+                githubName: repo.full_name
+            })
+        }   
+    }
 
     const handleContribute = () => {
         // TODO: Implement contribute functionality
@@ -69,7 +85,7 @@ const FeatureDetailPag: React.FC<Props> = ({
                 </CardContent>
                 <CardActions>
                     <Button
-                        onClick={handleGithubRepoSelect}
+                        onClick={handleGithubFindClick}
                     >SELECT</Button>
                 </CardActions>
             </Card>
@@ -151,7 +167,7 @@ const FeatureDetailPag: React.FC<Props> = ({
 
             <GithubRepoDialog 
                 isOpen={dialogOpen}  
-                onClose={() => {}}
+                onClose={handleGithubDialogClose}
             />  
 
         </Box>

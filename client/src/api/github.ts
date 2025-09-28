@@ -1,4 +1,4 @@
-import { GitHubRepository, GitHubRepositoryDetails, GitHubSearchResponse, GitHubUser } from '@/types/GitHub';
+import { GitHubRepository, GitHubRepositoryDetails, GitHubSearchResponse, GitHubUser } from '@/types/github/GitHub';
 
 class GitHubApiService {
     private baseUrl = 'https://api.github.com';

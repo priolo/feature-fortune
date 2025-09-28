@@ -1,19 +1,5 @@
 import featureListSo from '@/stores/feature/list';
-import {
-	Box,
-	Button,
-	Card,
-	CardContent,
-	Container,
-	Typography,
-	List,
-	ListItem,
-	ListItemAvatar,
-	ListItemText,
-	Avatar,
-	Chip,
-	ListItemButton
-} from '@mui/material';
+import { Avatar, Box, Button, Card, CardContent, Container, List, ListItemAvatar, ListItemButton, ListItemText, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -36,7 +22,7 @@ const FeatureListPag: React.FC = () => {
 	// HANDLERS
 	const handleCreateClick = async () => {
 		//await featureListSo.create()
-		navigate('/app/feature')
+		navigate('/app/feature/new')
 	}
 
 
@@ -46,30 +32,15 @@ const FeatureListPag: React.FC = () => {
 
 	return (
 		<Container maxWidth="lg" sx={{ py: 4 }}>
+
 			{/* Page Header */}
-			<Box sx={{
-				display: 'flex',
-				justifyContent: 'space-between',
-				alignItems: 'center',
-				mb: 4,
-				pb: 2,
-				borderBottom: 2,
-				borderColor: 'divider'
-			}}>
-				<Typography variant="h3" component="h1" sx={{
-					color: 'text.primary',
-					fontWeight: 600
-				}}>
+			<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4, pb: 2, borderBottom: 2, borderColor: 'divider' }}>
+				<Typography variant="h3" component="h1" sx={{ color: 'text.primary', fontWeight: 600 }}>
 					Features
 				</Typography>
-				<Button
-					variant="contained"
-					color="primary"
+				<Button variant="contained" color="primary" sx={{ textTransform: 'none' }}
 					onClick={handleCreateClick}
-					sx={{ textTransform: 'none' }}
-				>
-					New Feature
-				</Button>
+				>New Feature</Button>
 			</Box>
 
 			<Card>
@@ -96,9 +67,9 @@ const FeatureListPag: React.FC = () => {
 									}
 								/>
 							</ListItemButton>
-							
+
 						))}
-						
+
 						{features.length === 0 && (
 							<Box sx={{ textAlign: 'center', py: 4 }}>
 								<Typography variant="body1" color="text.secondary">

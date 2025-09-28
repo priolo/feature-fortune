@@ -1,4 +1,4 @@
-import { GitHubRepository } from '@/types/GitHub';
+import { GitHubRepository } from '@/types/github/GitHub';
 import { Avatar, Box, Card, CardContent, Chip, Link, Typography } from '@mui/material';
 import React from 'react';
 

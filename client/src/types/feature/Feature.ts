@@ -1,5 +1,6 @@
 
 import { AccountAsset } from '../AccountAsset';
+import { Comment } from '../Comment';
 import { Funding } from '../Funding';
 
 
@@ -7,16 +8,16 @@ import { Funding } from '../Funding';
 export interface Feature extends AccountAsset {
 	
 	id?: string;
-    github?: string;
 	title: string;
 	description: string;
 	createdAt: Date;
 
-	// GitHub repository 
-	githubName: string
 	
-	//#region RELATIONSHIPS
+	githubName: string
 
+	
+
+	//#region RELATIONSHIPS
 
 	/**
 	 * the accounts that funded this feature
@@ -26,7 +27,7 @@ export interface Feature extends AccountAsset {
 	/**
 	 * comments on the feature
 	 */
-	//comments?: Relation<CommentRepo[]>;
+	comments?: Comment[]
 
 	//#endregion
 }
