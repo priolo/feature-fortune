@@ -15,7 +15,6 @@ function App() {
 
 					<Route index element={<FeatureListPag />} />
 					<Route path="account" element={<AccountPag />} />
-
 					<Route path="feature/:id" element={<FeatureDetailPag />} />
 
 					{/* <Route path="register" element={<AuthorRegisterPag />} /> */}

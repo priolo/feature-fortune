@@ -32,22 +32,6 @@ const GithubRepoDialog: FunctionComponent<Partial<Props>> = ({
 	const [loading, setLoading] = React.useState(false)
 	const [error, setError] = React.useState<string | null>(null)
 
-
-
-	// HANDLERS
-	const handleClose = (reason?: 'backdropClick' | 'escapeKeyDown') => {
-		onClose(null)
-	}
-
-	const handleItemClick = (repo: GitHubRepository) => {
-		onClose(repo)
-	}
-
-	const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setFilterText(event.target.value)
-	}
-
-	// EFFECTS
 	useEffect(() => {
 		const searchRepositories = async () => {
 			if (filterText.length >= 3) {
@@ -73,6 +57,22 @@ const GithubRepoDialog: FunctionComponent<Partial<Props>> = ({
 
 		return () => clearTimeout(debounceTimer)
 	}, [filterText])
+
+
+
+
+	// HANDLERS
+	const handleClose = (reason?: 'backdropClick' | 'escapeKeyDown') => {
+		onClose(null)
+	}
+
+	const handleItemClick = (repo: GitHubRepository) => {
+		onClose(repo)
+	}
+
+	const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setFilterText(event.target.value)
+	}
 
 
 	// RENDER 

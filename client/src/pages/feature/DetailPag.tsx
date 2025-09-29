@@ -8,6 +8,9 @@ import { Box, Button, Card, CardActions, CardContent, SxProps, TextField, Typogr
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { FORM_MODE } from '@/stores/types';
+import FundingDialog from '@/components/funding/FundingDialog';
+import { Funding } from '@/types/Funding';
 
 
 
@@ -25,17 +28,18 @@ const FeatureDetailPag: React.FC<Props> = ({
 
     // HOOKS
     let { id } = useParams<{ id: string }>()
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [dialogFundingOpen, setDialogFundingOpen] = useState(false);
 
 
     useEffect(() => {
-        if ( id === 'new' ) {
+        if (id === 'new') {
             featureDetailSo.setFeature(buildNewFeature())
             featureDetailSo.setGithubRepo(null)
+            featureDetailSo.setMode(FORM_MODE.CREATE)
             return
         }
+        featureDetailSo.setMode(FORM_MODE.VIEW)
         const load = async () => {
             featureDetailSo.setFeature({ id })
             await featureDetailSo.fetch()
@@ -49,21 +53,46 @@ const FeatureDetailPag: React.FC<Props> = ({
     const handleGithubFindClick = () => {
         setDialogOpen(true)
     }
-    const handleGithubDialogClose = (repo:GitHubRepository) => {
+    const handleGithubDialogClose = (repo: GitHubRepository) => {
         setDialogOpen(false)
-        if (repo) {
-            featureDetailSo.setGithubRepo(repo)
-            featureDetailSo.setFeature({
-                ...featureDetailSo.state.feature,
-                githubName: repo.full_name
-            })
-        }   
+        if (!repo) return
+        featureDetailSo.setGithubRepo(repo)
+        featureDetailSo.setFeature({
+            ...featureDetailSo.state.feature,
+            githubName: repo.full_name,
+            githubId: repo.id
+        })
     }
 
-    const handleContribute = () => {
-        // TODO: Implement contribute functionality
-        console.log('Contribute button clicked');
+
+
+    const handleFeatureTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        featureDetailSo.setFeature({
+            ...featureDetailSo.state.feature,
+            title: e.target.value
+        })
     };
+    const handleFeatureDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        featureDetailSo.setFeature({
+            ...featureDetailSo.state.feature,
+            description: e.target.value
+        })
+    }
+    const handleFeatureSaveClick = () => {
+        featureDetailSo.saveFeature()
+    }
+
+
+
+    const handleFundingCreateClick = () => {
+        setDialogFundingOpen(true)
+    };
+    const handleFundingDialogClose = (funding: Funding) => {
+        setDialogFundingOpen(false)
+        if (!funding) return
+        featureDetailSo.setFundingSelected(funding)
+        featureDetailSo.saveFunding()
+    }
 
     const formatAmount = (amount: number) => {
         return new Intl.NumberFormat('en-US', {
@@ -73,6 +102,10 @@ const FeatureDetailPag: React.FC<Props> = ({
     };
 
     // RENDER
+    const inNew = featureDetailSo.state.feature?.id == null
+    const showFundings = !inNew
+    const title = featureDetailSo.state.feature?.title || ''
+    const description = featureDetailSo.state.feature?.description || ''
 
     return (
         <Box sx={sxRoot}>
@@ -91,84 +124,82 @@ const FeatureDetailPag: React.FC<Props> = ({
             </Card>
 
             <Card sx={{ width: '100%', mt: 2 }}>
-                <CardContent>
-                    <TextField
-                        label="Feature Title"
-                        variant="outlined"
-                        fullWidth
+                <CardContent sx={{ gap: 1, display: 'flex', flexDirection: 'column' }}>
+                    <TextField fullWidth
+                        label="Title"
                         value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        onChange={handleFeatureTitleChange}
                         placeholder="Enter a short title for the feature"
-                        sx={{ mb: 2 }}
                     />
-
-                    <TextField
+                    <TextField fullWidth multiline
                         label="Feature Description"
-                        variant="outlined"
-                        fullWidth
-                        multiline
                         rows={6}
                         value={description}
-                        onChange={(e) => setDescription(e.target.value)}
+                        onChange={handleFeatureDescriptionChange}
                         placeholder="Enter a complete description of the feature..."
-                        sx={{ mb: 2 }}
                     />
                 </CardContent>
                 <CardActions>
                     <Button
-                        onClick={() => { console.log('Creating feature:', { title, description }) }}
+                        onClick={handleFeatureSaveClick}
                     >Create Feature</Button>
                 </CardActions>
             </Card>
 
             {/* Fundings Section */}
-            <Card sx={{ width: '100%', mt: 2 }}>
-                <CardContent>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                        <Typography variant="h6" component="h2">
-                            Fundings ({featureDetailSo.state.feature?.fundings?.length || 0})
-                        </Typography>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleContribute}
-                            sx={{ textTransform: 'none' }}
-                        >
-                            CONTRIBUTE
-                        </Button>
-                    </Box>
+            {showFundings && (
+                <Card sx={{ width: '100%', mt: 2 }}>
+                    <CardContent>
 
-                    {featureDetailSo.state.feature?.fundings && featureDetailSo.state.feature.fundings.length > 0 ? (
-                        <FundingList fundings={featureDetailSo.state.feature.fundings} />
-                    ) : (
-                        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
-                            No fundings yet for this feature.
-                        </Typography>
-                    )}
-
-                    {/* Total funding summary */}
-                    {featureDetailSo.state.feature?.fundings && featureDetailSo.state.feature.fundings.length > 0 && (
-                        <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider' }}>
-                            <Typography variant="body1" sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <strong>Total Funded:</strong>
-                                <strong>
-                                    {formatAmount(
-                                        featureDetailSo.state.feature.fundings
-                                            .filter(f => f.status === 'completed')
-                                            .reduce((sum, f) => sum + f.amount, 0)
-                                    )}
-                                </strong>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                            <Typography variant="h6" component="h2">
+                                Fundings ({featureDetailSo.state.feature?.fundings?.length || 0})
                             </Typography>
+                            <Button variant="contained" color="primary"
+                                onClick={handleFundingCreateClick}
+                            >CONTRIBUTE</Button>
                         </Box>
-                    )}
-                </CardContent>
-            </Card>
+
+                        {featureDetailSo.state.feature?.fundings && featureDetailSo.state.feature.fundings.length > 0 ? (
+
+                            <FundingList fundings={featureDetailSo.state.feature.fundings} />
+
+                        ) : (
+                            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
+                                No fundings yet for this feature.
+                            </Typography>
+                        )}
+
+                        {/* Total funding summary */}
+                        {featureDetailSo.state.feature?.fundings && featureDetailSo.state.feature.fundings.length > 0 && (
+                            <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider' }}>
+                                <Typography variant="body1" sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <strong>Total Funded:</strong>
+                                    <strong>
+                                        {formatAmount(
+                                            featureDetailSo.state.feature.fundings
+                                                .filter(f => f.status === 'completed')
+                                                .reduce((sum, f) => sum + f.amount, 0)
+                                        )}
+                                    </strong>
+                                </Typography>
+                            </Box>
+                        )}
+                    </CardContent>
+                </Card>
+            )}
 
 
-            <GithubRepoDialog 
-                isOpen={dialogOpen}  
+
+            <GithubRepoDialog
+                isOpen={dialogOpen}
                 onClose={handleGithubDialogClose}
-            />  
+            />
+
+            <FundingDialog 
+                isOpen={dialogFundingOpen}
+                onClose={handleFundingDialogClose}
+            /> 
 
         </Box>
     );

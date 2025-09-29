@@ -19,7 +19,7 @@ class GitHubApiService {
         });
 
         const response = await fetch(`${this.baseUrl}/search/repositories?${searchParams}`);
-        
+
         if (!response.ok) {
             throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
         }
@@ -32,43 +32,34 @@ class GitHubApiService {
      * @param owner - Repository owner username
      * @param repo - Repository name
      */
-    async getRepository(owner: string, repo: string): Promise<GitHubRepository> {
-        const response = await fetch(`${this.baseUrl}/repos/${owner}/${repo}`);
-        
-        if (!response.ok) {
-            throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
-        }
+    // async getRepository(owner: string, repo: string): Promise<GitHubRepository> {
+    //     const response = await fetch(`${this.baseUrl}/repos/${owner}/${repo}`);
 
-        return response.json();
-    }
+    //     if (!response.ok) {
+    //         throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
+    //     }
 
-     /**
-     * 
-     */
-    async getRepositoryByName(name: string): Promise<GitHubRepository> {
-        const response = await fetch(`${this.baseUrl}/repos/${name}`);
-        
-        if (!response.ok) {
-            throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
-        }
-
-        return response.json();
-    }
-
+    //     return response.json();
+    // }
 
     /**
-     * Get detailed information about a repository by its ID
-     * @param repositoryId - Repository ID (numeric)
-     */
-    async getRepositoryById(repositoryId: number): Promise<GitHubRepository> {
-        const response = await fetch(`${this.baseUrl}/repositories/${repositoryId}`);
-        
+    * restituisce il repository sia che venga passato come "owner/repo" o come ID numerico
+    * @param id - Repository full name (owner/repo) or numeric ID
+    */
+    async getRepository(id: string | number): Promise<GitHubRepository> {
+        let response:Response
+        if (typeof id === 'number') {
+            response = await fetch(`${this.baseUrl}/repositories/${id}`);
+        } else {
+            response = await fetch(`${this.baseUrl}/repos/${id}`);
+        }
         if (!response.ok) {
             throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
         }
-
         return response.json();
     }
+
+
 
     /**
      * Get detailed information about a GitHub user
@@ -76,7 +67,7 @@ class GitHubApiService {
      */
     async getUser(username: string): Promise<GitHubUser> {
         const response = await fetch(`${this.baseUrl}/users/${username}`);
-        
+
         if (!response.ok) {
             throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
         }
@@ -90,7 +81,7 @@ class GitHubApiService {
      */
     async getUserById(accountId: number): Promise<GitHubUser> {
         const response = await fetch(`${this.baseUrl}/user/${accountId}`);
-        
+
         if (!response.ok) {
             throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
         }
@@ -103,42 +94,42 @@ class GitHubApiService {
      * @param owner - Repository owner username
      * @param repo - Repository name
      */
-    async getRepositoryWithOwnerDetails(owner: string, repo: string): Promise<GitHubRepositoryDetails> {
-        try {
-            const [repository, ownerDetails] = await Promise.all([
-                this.getRepository(owner, repo),
-                this.getUser(owner)
-            ]);
+    // async getRepositoryWithOwnerDetails(owner: string, repo: string): Promise<GitHubRepositoryDetails> {
+    //     try {
+    //         const [repository, ownerDetails] = await Promise.all([
+    //             this.getRepository(owner, repo),
+    //             this.getUser(owner)
+    //         ]);
 
-            return {
-                ...repository,
-                owner_details: ownerDetails
-            };
-        } catch (error) {
-            console.error('Error fetching repository with owner details:', error);
-            throw error;
-        }
-    }
+    //         return {
+    //             ...repository,
+    //             owner_details: ownerDetails
+    //         };
+    //     } catch (error) {
+    //         console.error('Error fetching repository with owner details:', error);
+    //         throw error;
+    //     }
+    // }
 
     /**
      * Search repositories and get the first result with owner details
      * @param query - Search query
      */
-    async searchAndGetFirstRepositoryWithDetails(query: string): Promise<GitHubRepositoryDetails | null> {
-        try {
-            const searchResults = await this.searchRepositories(query, 1);
-            
-            if (searchResults.items.length === 0) {
-                return null;
-            }
+    // async searchAndGetFirstRepositoryWithDetails(query: string): Promise<GitHubRepositoryDetails | null> {
+    //     try {
+    //         const searchResults = await this.searchRepositories(query, 1);
 
-            const firstRepo = searchResults.items[0];
-            return this.getRepositoryWithOwnerDetails(firstRepo.owner.login, firstRepo.name);
-        } catch (error) {
-            console.error('Error searching and fetching repository details:', error);
-            throw error;
-        }
-    }
+    //         if (searchResults.items.length === 0) {
+    //             return null;
+    //         }
+
+    //         const firstRepo = searchResults.items[0];
+    //         return this.getRepositoryWithOwnerDetails(firstRepo.owner.login, firstRepo.name);
+    //     } catch (error) {
+    //         console.error('Error searching and fetching repository details:', error);
+    //         throw error;
+    //     }
+    // }
 
     /**
      * Get all repositories for a GitHub user by their account ID
@@ -149,16 +140,16 @@ class GitHubApiService {
     async getRepositoriesByAccountId(accountId: number, per_page = 100, page = 1): Promise<GitHubRepository[]> {
         // First, get the user details to obtain the username
         const userResponse = await fetch(`${this.baseUrl}/user/${accountId}`);
-        
+
         if (!userResponse.ok) {
             throw new Error(`GitHub API Error: ${userResponse.status} ${userResponse.statusText}`);
         }
 
         const user: GitHubUser = await userResponse.json();
-        
+
         // Then get all repositories for this user
         const reposResponse = await fetch(`${this.baseUrl}/users/${user.login}/repos?per_page=${per_page}&page=${page}&sort=updated&direction=desc`);
-        
+
         if (!reposResponse.ok) {
             throw new Error(`GitHub API Error: ${reposResponse.status} ${reposResponse.statusText}`);
         }
@@ -174,7 +165,7 @@ class GitHubApiService {
      */
     async getRepositoriesByUsername(username: string, per_page = 100, page = 1): Promise<GitHubRepository[]> {
         const response = await fetch(`${this.baseUrl}/users/${username}/repos?per_page=${per_page}&page=${page}&sort=updated&direction=desc`);
-        
+
         if (!response.ok) {
             throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
         }

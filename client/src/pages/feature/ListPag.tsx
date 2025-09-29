@@ -20,9 +20,11 @@ const FeatureListPag: React.FC = () => {
 	}, [])
 
 	// HANDLERS
-	const handleCreateClick = async () => {
-		//await featureListSo.create()
+	const handleNewFeatureClick = async () => {
 		navigate('/app/feature/new')
+	}
+	const handleFeatureClick = (id: string) => {
+		navigate(`/app/feature/${id}`)
 	}
 
 
@@ -39,7 +41,7 @@ const FeatureListPag: React.FC = () => {
 					Features
 				</Typography>
 				<Button variant="contained" color="primary" sx={{ textTransform: 'none' }}
-					onClick={handleCreateClick}
+					onClick={handleNewFeatureClick}
 				>New Feature</Button>
 			</Box>
 
@@ -48,7 +50,9 @@ const FeatureListPag: React.FC = () => {
 					<List>
 						{features.map((feature, index) => (
 
-							<ListItemButton divider key={feature.id}>
+							<ListItemButton divider key={feature.id}
+								onClick={()=>handleFeatureClick(feature.id)}
+							>
 								<ListItemAvatar>
 									<Avatar sx={{ bgcolor: 'primary.main' }}>
 										📦

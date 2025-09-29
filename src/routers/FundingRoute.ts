@@ -1,4 +1,5 @@
 import { AccountRepo } from "@/repository/Account.js";
+import { FundingRepo } from "@/repository/Funding.js";
 import { Bus, httpRouter } from "@priolo/julian";
 import { RepoRestActions } from "@priolo/julian/dist/services/typeorm/types.js";
 import { Request, Response } from "express";
@@ -24,6 +25,7 @@ class FundingRoute extends httpRouter.Service {
 
 				{ path: "/donate", verb: "post", method: "donate" },
 				{ path: "/link", verb: "post", method: "registerLink" },
+				{ path: "/new", verb: "post", method: "createFunding" },
 			]
 		}
 	}
@@ -231,6 +233,27 @@ class FundingRoute extends httpRouter.Service {
 		)
 	}
 
+
+	/**
+	 * 
+	 */
+	async createFunding(req: Request, res: Response) {
+		const userJwt: AccountRepo = req["jwtPayload"]
+		let { funding }: { funding: FundingRepo } = req.body
+		if (!funding) return
+
+		funding.accountId = userJwt.id
+		// è sempre nuovo
+		delete funding.id
+
+		// salvo
+		const fundingNew: AccountRepo = await new Bus(this, this.state.repository).dispatch({
+			type: RepoRestActions.SAVE,
+			payload: funding
+		})
+
+		res.json(fundingNew)
+	}
 }
 
 

@@ -32,8 +32,8 @@ export class FeatureRepo extends AccountAsset {
 	/**
 	 * github repo ID
 	 */
-	// @Column({ type: 'bigint', nullable: true })
-	// githubRepoId: number;
+	@Column({ type: 'bigint', nullable: true })
+	githubId: number;
 	/**
 	 * github repo name
 	 */

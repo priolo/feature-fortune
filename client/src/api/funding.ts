@@ -1,5 +1,6 @@
 import ajax, { CallOptions } from "@/plugins/AjaxService"
 import { Feature } from "@/types/feature/Feature"
+import { Funding } from "@/types/Funding"
 import { PaymentMethod } from "@stripe/stripe-js"
 
 
@@ -34,6 +35,16 @@ function removePaymentMethod(opt?: CallOptions): Promise<{ success: boolean }> {
 
 
 
+function indexFunding(featureId:string, opt?: CallOptions): Promise<{ fundings: Funding[] }> {
+	return null
+	//return ajax.post(`fundings/new`, { funding }, opt)
+}
+function createFunding(funding:Funding, opt?: CallOptions): Promise<{ success: boolean }> {
+	return ajax.post(`fundings/new`, { funding }, opt)
+}
+
+
+
 
 
 
@@ -55,5 +66,8 @@ const fundingApi = {
 	
 	donate,
 	stripeAuthorRegisterLink,
+
+	indexFunding,
+	createFunding,
 }
 export default fundingApi

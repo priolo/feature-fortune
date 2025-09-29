@@ -11,7 +11,7 @@ export interface Funding extends AccountAsset {
 	status: "created" | "pending" | "completed" | "failed" | "expired";
 	message?: string;
 
-	createdAt: Date;
+	createdAt?: Date;
 	expiresAt: Date;
 
 
