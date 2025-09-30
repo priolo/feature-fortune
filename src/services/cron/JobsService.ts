@@ -6,17 +6,19 @@ import dayjs from "dayjs"
 
 
 
-export type CronConf = Partial<CronService['stateDefault']>
+export type JobsConf = Partial<JobsService['stateDefault']>
 
 /**
  * Permette di gestire i log.. per esempio su console o su file
  * essenzialmente utilizza winstonjs
  */
-export class CronService extends ServiceBase {
+export class JobsService extends ServiceBase {
 
 	get stateDefault() {
 		return {
 			...super.stateDefault,
+			retryDelta: 1000 * 60 * 5, // 5 minuti
+			retryMaxDelay: 1000 * 60 * 60 * 24, // 24 ore
 			schedulings: [] as Scheduling[],
 			onSchedulingsLoad: null as () => Promise<Scheduling[]>,
 			onSchedulingEnd: null as (scheduling: Scheduling) => void,
@@ -87,7 +89,7 @@ export class CronService extends ServiceBase {
 
 		// se c'e il Retry controllo che non l'abbia fatto per troppo tempo
 		if (!!scheduling.dateRetry) {
-			const maxRetryTime = scheduling.date + (1000 * 60 * 60 * 24) // 24 ore
+			const maxRetryTime = scheduling.date + this.state.retryMaxDelay
 			if (scheduling.dateRetry > maxRetryTime) {
 				this.log("CRON", `Cron job reached max retry time, aborting`)
 				scheduling.state = JOB_STATE.RETRY_FAIL
@@ -103,7 +105,7 @@ export class CronService extends ServiceBase {
 			} break
 
 			case JOB_STATE.RETRY: {
-				scheduling.dateRetry = (Date.now() + 1000 * 60 * 5) // 5 minuti di default
+				scheduling.dateRetry = Date.now() + this.state.retryDelta
 				this.log("CRON", `Cron job will retry at ${dayjs(scheduling.dateRetry).format("YYYY-MM-DD HH:mm:ss")}`)
 				this.addScheduling(scheduling)
 			} break
