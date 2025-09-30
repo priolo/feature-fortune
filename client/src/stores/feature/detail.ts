@@ -32,11 +32,6 @@ const setup = {
 			store.setFeature(feature)
 		},
 
-		// async fetchIfVoid(_: void, store?: FeatureDetailStore) {
-		// 	if (!!store.state.feature) return
-		// 	await store.fetch()
-		// },
-
 		async fetchGithubRepo(_: void, store?: FeatureDetailStore) {
 			const repo = await gitHubApi.getRepository(store.state.feature.githubId ?? store.state.feature.githubName)
 			store.setGithubRepo(repo)
@@ -49,24 +44,11 @@ const setup = {
 	
 
 		async saveFunding(_: void, store?: FeatureDetailStore) {
-			const fundingNew = await fundingApi.createFunding(store.state.fundingSelected)
-			
-
-			// const stripe = await stripePromise;
-			// if (!stripe) return // error
-
-			// const { error } = await stripe.confirmPayment({
-			// 	clientSecret: store.state.clientSecret,
-			// 	confirmOptions: {
-			// 		return_url: 'http://localhost:3000', // URL di reindirizzamento dopo il pagamento
-			// 	},
-			// });
-
-			// if (error) {
-			// 	alert(error.message);
-			// } else {
-			// 	alert('Pagamento completato!');
-			// }
+			const { funding } = await fundingApi.create(store.state.fundingSelected)
+			store.setFeature({
+				...store.state.feature,
+				fundings: store.state.feature.fundings?.concat(funding) ?? [funding]
+			})
 		}
 
 	},

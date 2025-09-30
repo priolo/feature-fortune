@@ -49,7 +49,7 @@ const setup = {
 	
 
 		async saveFunding(_: void, store?: FeatureDetailStore) {
-			const fundingNew = await fundingApi.createFunding(store.state.fundingSelected)
+			const fundingNew = await fundingApi.create(store.state.fundingSelected)
 			
 
 			// const stripe = await stripePromise;

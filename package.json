@@ -35,7 +35,8 @@
     "sqlite3": "^5.1.7",
     "stripe": "^18.5.0",
     "typeorm": "^0.3.23",
-    "ws": "^8.18.2"
+    "ws": "^8.18.2",
+    "dayjs": "^1.11.18"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.2",

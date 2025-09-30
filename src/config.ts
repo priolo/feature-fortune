@@ -15,6 +15,7 @@ import FeatureRoute from "./routers/FeatureRoute.js";
 import FundingRoute from "./routers/FundingRoute.js";
 import StripeHookRoute from "./routers/StripeHookRoute.js";
 import { envInit } from "./types/env.js";
+import PaymentRoute from "./routers/PaymentRoute.js";
 
 
 
@@ -68,6 +69,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 							children: [
 								{ class: AccountRoute },
 								{ class: FeatureRoute },
+								{ class: PaymentRoute },
 								{ class: FundingRoute },
 							],
 						},

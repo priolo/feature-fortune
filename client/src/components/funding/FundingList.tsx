@@ -1,14 +1,8 @@
 import React from 'react';
 import { Box, Typography, Chip, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { Funding } from '@/types/Funding';
 
-interface Funding {
-    id?: string;
-    amount: number;
-    status: string;
-    createdAt: Date;
-    expiresAt: Date;
-    message?: string;
-}
+
 
 interface Props {
     fundings: Funding[];

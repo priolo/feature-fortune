@@ -1,8 +1,7 @@
 import authApi from "@/api/auth";
-import fundingApi from "@/api/funding";
 import { Account } from "@/types/Account.js";
 import { StoreCore, createStore } from "@priolo/jon";
-import { loadStripe } from "@stripe/stripe-js"
+import { loadStripe } from "@stripe/stripe-js";
 
 
 

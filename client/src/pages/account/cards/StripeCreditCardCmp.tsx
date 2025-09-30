@@ -1,4 +1,5 @@
 import fundingApi from "@/api/funding";
+import paymentApi from "@/api/payment";
 import authSo from "@/stores/auth/repo";
 import { Box, Button, SxProps } from "@mui/material";
 import { useStore } from "@priolo/jon";
@@ -31,7 +32,7 @@ const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 	useEffect(() => {
 		if (!havePaymentMethod) return
 		async function load() {
-			const { paymentMethods } = await fundingApi.getPaymentMethod()
+			const { paymentMethods } = await paymentApi.get()
 			setPaymentMethod(paymentMethods)
 		}
 		load()
@@ -44,7 +45,7 @@ const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 		if (!stripe || !elements) return;
 
 		// Creo il PaymentMethod 
-		const resIntent = await fundingApi.createPaymentMethod()
+		const resIntent = await paymentApi.create()
 		if (!resIntent) return // error
 
 		// Confermo con i dati della carta
@@ -59,7 +60,7 @@ const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 
 		// 3) Salvo il PaymentMethod 
 		const stripePaymentMethodId = resCard.setupIntent.payment_method as string
-		const res = await fundingApi.savePaymentMethod(stripePaymentMethodId);
+		const res = await paymentApi.saveCard(stripePaymentMethodId);
 
 		if (res.success) {
 			alert("Metodo di pagamento salvato! Sarai addebitato quando l'autore sarà pronto.");
@@ -74,7 +75,7 @@ const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 	}
 
 	const handleCCReset = async () => {
-		const res = await fundingApi.removePaymentMethod()
+		const res = await paymentApi.remove()
 		if (res.success) {
 			alert("Metodo di pagamento rimosso.");
 			authSo.setUser({

@@ -1,7 +1,8 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
 import { AccountAsset } from './AccountAsset.js';
 import { CommentRepo } from './Comment.js';
 import { FundingRepo } from './Funding.js';
+import { AccountRepo } from './Account.js';
 
 
 
@@ -35,13 +36,23 @@ export class FeatureRepo extends AccountAsset {
 	@Column({ type: 'bigint', nullable: true })
 	githubId: number;
 	/**
-	 * github repo name
+	 * github repo name [II] da eliminare
 	 */
 	@Column({ type: 'varchar' })
 	githubName: string;
 
-	
+
 	//#region RELATIONSHIPS
+
+	/** 
+	 * autore del GITHUB. Non è detto che ci sia
+	 */
+	// @ManyToOne(() => FeatureRepo)
+	// @JoinColumn({ name: 'authorId' })
+	// author?: Relation<AccountRepo>;
+	/** autore del GITHUB. Non è detto che ci sia */
+	@Column({ type: 'varchar' })
+	authorId?: string;
 
 	/**
 	 * the accounts that funded this feature

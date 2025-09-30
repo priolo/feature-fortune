@@ -1,4 +1,5 @@
 import fundingApi from "@/api/funding";
+import paymentApi from "@/api/payment";
 import { Button } from "@mui/material";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 
@@ -18,7 +19,7 @@ export default function DonationForm() {
 		if (!stripe || !elements) return;
 
 		// 1) Chiamo il BE per ottenere SetupIntent
-		const resIntent = await fundingApi.createPaymentMethod()
+		const resIntent = await paymentApi.create()
 		if (!resIntent) return // error
 
 		// 2) Confermo SetupIntent con i dati della carta
@@ -31,7 +32,7 @@ export default function DonationForm() {
 			}
 		)
 
-		const res = await fundingApi.savePaymentMethod(resCard.setupIntent.payment_method as string);
+		const res = await paymentApi.saveCard(resCard.setupIntent.payment_method as string);
 
 		if (!res.success) {
 			alert(resCard.error.message);
