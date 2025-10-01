@@ -1,5 +1,5 @@
 import { AccountRepo } from "@/repository/Account.js";
-import { FundingRepo } from "@/repository/Funding.js";
+import { FUNDING_STATE, FundingRepo } from "@/repository/Funding.js";
 import { Bus, httpRouter } from "@priolo/julian";
 import { RepoRestActions } from "@priolo/julian/dist/services/typeorm/types.js";
 import { Request, Response } from "express";
@@ -20,8 +20,6 @@ class FundingRoute extends httpRouter.Service {
 			routers: [
 				{ path: "/", verb: "post", method: "create" },
 
-
-				{ path: "/donate", verb: "post", method: "donate" },
 				{ path: "/link", verb: "post", method: "registerLink" },
 			]
 		}
@@ -35,9 +33,10 @@ class FundingRoute extends httpRouter.Service {
 		let { funding }: { funding: FundingRepo } = req.body
 		if (!funding) return
 
-		funding.accountId = userJwt.id
 		// è sempre nuovo
 		delete funding.id
+		funding.accountId = userJwt.id
+		funding.status = FUNDING_STATE.PENDING
 
 		// salvo
 		const fundingNew: AccountRepo = await new Bus(this, this.state.repository).dispatch({
@@ -46,34 +45,6 @@ class FundingRoute extends httpRouter.Service {
 		})
 
 		res.json(fundingNew)
-	}
-
-	/**
-	 * 2) Quando autore è pronto → creazione PaymentIntent
-	 */
-	async donate(req: Request, res: Response) {
-		const userJwt: AccountRepo = req["jwtPayload"]
-		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
-			type: RepoRestActions.GET_BY_ID,
-			payload: userJwt.id,
-		})
-		if (!user) return res.status(404).json({ error: "User not found" });
-
-
-		// Creazione PaymentIntent usando il payment_method salvato
-		const paymentIntent = await stripe.paymentIntents.create({
-			amount: 2000, // in centesimi
-			currency: "EUR",
-			customer: user.stripeCustomerId,
-			payment_method: user.stripePaymentMethodId,
-			off_session: true, // il contributor non deve reinserire la carta
-			confirm: true,
-			transfer_data: {
-				destination: "acct_1SAGZZKfacmp3sya", // soldi all'autore
-			},
-		});
-
-		res.send(paymentIntent);
 	}
 
 	/**
@@ -115,7 +86,7 @@ class FundingRoute extends httpRouter.Service {
 			{ url: accountLink.url }
 		)
 	}
-	
+
 }
 
 

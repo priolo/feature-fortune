@@ -37,10 +37,14 @@ export class AccountRepo {
 	 */
 	@Column({ type: 'varchar', nullable: true })
 	stripeCustomerId?: string;
-	// pagamento predefinito
+	/** 
+	 * pagamento predefinito
+	 */
 	@Column({ type: 'varchar', nullable: true })
 	stripePaymentMethodId?: string;
-	// account EXPRESS per AUTHOR
+	/** 
+	 * account EXPRESS per AUTHOR
+	 */
 	@Column({ type: 'varchar', nullable: true })
 	stripeAccountId?: string;
 

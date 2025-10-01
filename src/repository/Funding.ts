@@ -5,17 +5,28 @@ import { FeatureRepo } from './Feature.js';
 
 
 
+export enum FUNDING_STATE {
+	CREATED = "created",
+	PENDING = "pending",
+	COMPLETED = "completed",
+	FAILED = "failed",
+} 
+
+
 @Entity('fundings')
 export class FundingRepo extends AccountAsset {
 
 	@PrimaryGeneratedColumn("uuid")
 	id?: string;
 
+	/**
+	 * in centesimi. Per esempio 2000 = 2 euro
+	 */
 	@Column({ type: 'decimal', precision: 10, scale: 2 })
 	amount: number;
 
-	@Column({ type: 'varchar', default: 'created' })
-	status: "created" | "pending" | "completed" | "failed" | "expired";
+	@Column({ type: 'varchar', default: FUNDING_STATE.CREATED })
+	status: FUNDING_STATE
 
 	@Column({ type: 'text', nullable: true })
 	message?: string;
@@ -45,16 +56,5 @@ export class FundingRepo extends AccountAsset {
 
 	//#endregion
 
-
-	/** 
-	 * ID del PaymentIntent di Stripe associato a questo funding
-	 */
-	@Column({ type: 'varchar', nullable: true })
-	stripePi: string;
-
 }
-
-
-
-
 

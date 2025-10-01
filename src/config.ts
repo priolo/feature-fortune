@@ -13,10 +13,9 @@ import AuthGoogleRoute from "./routers/AuthGoogleRoute.js";
 import AuthRoute from "./routers/AuthRoute.js";
 import FeatureRoute from "./routers/FeatureRoute.js";
 import FundingRoute from "./routers/FundingRoute.js";
+import PaymentRoute from "./routers/PaymentRoute.js";
 import StripeHookRoute from "./routers/StripeHookRoute.js";
 import { envInit } from "./types/env.js";
-import PaymentRoute from "./routers/PaymentRoute.js";
-import { JobsConf, JobsService } from "./services/cron/JobsService.js";
 
 
 
@@ -38,11 +37,6 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 			onParentLog: (log) => {
 				if (!!log?.payload && ['nc:init', 'nc:destroy', "ns:set-state"].includes(log.payload.type)) return false
 			}
-		},
-
-		<JobsConf>{
-			class: JobsService,
-
 		},
 
 		<http.conf>{
