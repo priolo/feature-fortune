@@ -27,23 +27,25 @@ export class AccountRepo {
 
 
 	/**
-	 * account github
+	 * ACCOUNT GITHUB that are the owner
 	 */
 	@Column({ type: 'bigint', nullable: true })
 	githubId: number;
 
 	/** 
-	 * STRIPE account per CONTRIBUTOR
+	 * STRIPE for CONTRIBUTOR
+	 * who put the moneys
 	 */
 	@Column({ type: 'varchar', nullable: true })
 	stripeCustomerId?: string;
 	/** 
-	 * pagamento predefinito
+	 * STRIPE payment method 
 	 */
 	@Column({ type: 'varchar', nullable: true })
 	stripePaymentMethodId?: string;
 	/** 
-	 * account EXPRESS per AUTHOR
+	 * STRIPE for AUTHOR
+	 * who receive the moneys
 	 */
 	@Column({ type: 'varchar', nullable: true })
 	stripeAccountId?: string;
@@ -61,20 +63,5 @@ export class AccountRepo {
 
 	@Column({ type: 'varchar', default: '' })
 	salt?: string;
-
-
-	//#region RELATIONSHIPS
-
-	/** I providers di accesso associati a questo user */
-	// @OneToMany(() => ProviderRepo, provider => provider.account)
-	// providers?: Relation<ProviderRepo[]>
-
-	//#endregion
-
-
-
-
-
-
 
 }

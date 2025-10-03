@@ -1,13 +1,11 @@
 import { AccountRepo } from "@/repository/Account.js";
 import { FUNDING_STATE, FundingRepo } from "@/repository/Funding.js";
-import { Bus, httpRouter } from "@priolo/julian";
-import { RepoRestActions } from "@priolo/julian/dist/services/typeorm/types.js";
+import PaymentCrono from "@/services/crono/PaymentCrono.js";
+import { Actions, ExpressAccountData } from "@/services/stripe/types.js";
+import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
-import Stripe from "stripe";
 
 
-
-const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
 class FundingRoute extends httpRouter.Service {
 
@@ -17,12 +15,23 @@ class FundingRoute extends httpRouter.Service {
 			path: "/fundings",
 			repository: "/typeorm/fundings",
 			account_repo: "/typeorm/accounts",
+			stripe_service: "/stripe",
 			routers: [
 				{ path: "/", verb: "post", method: "create" },
 
 				{ path: "/link", verb: "post", method: "registerLink" },
+				{ path: "/pay", verb: "post", method: "pay" },
 			]
 		}
+	}
+
+	async pay(req: Request, res: Response) {
+		const userJwt: AccountRepo = req["jwtPayload"]
+		let { fundingId }: { fundingId: string } = req.body
+		if (!fundingId) return
+		const paymentCronoService = this.nodeByPath("/crono-payments") as PaymentCrono
+		const funding = await paymentCronoService.paymentFunding(fundingId)
+		res.json({ funding })
 	}
 
 	/**
@@ -40,11 +49,11 @@ class FundingRoute extends httpRouter.Service {
 
 		// salvo
 		const fundingNew: AccountRepo = await new Bus(this, this.state.repository).dispatch({
-			type: RepoRestActions.SAVE,
+			type: typeorm.Actions.SAVE,
 			payload: funding
 		})
 
-		res.json(fundingNew)
+		res.json({ funding: fundingNew })
 	}
 
 	/**
@@ -53,7 +62,7 @@ class FundingRoute extends httpRouter.Service {
 	async registerLink(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
-			type: RepoRestActions.GET_BY_ID,
+			type: typeorm.Actions.GET_BY_ID,
 			payload: userJwt.id,
 		})
 		if (!user) return res.status(404).json({ error: "User not found" });
@@ -64,22 +73,17 @@ class FundingRoute extends httpRouter.Service {
 			return res.status(400).json({ error: "User already have a stripe account" });
 		}
 
-		// Create a new Stripe account for the user
-		const account = await stripe.accounts.create({
-			type: "express", // Express account
-			country: "IT",
+		// Create Express account using StripeService
+		const expressAccountData: ExpressAccountData = {
 			email: userJwt.email,
-			capabilities: {
-				card_payments: { requested: true },
-				transfers: { requested: true },
-			},
-			metadata: { accountId: userJwt.id }
-		});
-		const accountLink = await stripe.accountLinks.create({
-			account: account.id,
-			refresh_url: "http://localhost:5173/app/feature",
-			return_url: "http://localhost:5173/app/feature",
-			type: "account_onboarding",
+			accountId: userJwt.id,
+			refreshUrl: "http://localhost:5173/app/feature",
+			returnUrl: "http://localhost:5173/app/feature",
+		};
+
+		const { account, accountLink } = await new Bus(this, this.state.stripe_service).dispatch({
+			type: Actions.CREATE_EXPRESS_ACCOUNT_URL,
+			payload: expressAccountData
 		});
 
 		res.status(200).json(

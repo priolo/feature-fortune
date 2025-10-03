@@ -89,6 +89,7 @@ class GitHubApiService {
         return response.json();
     }
 
+    
     /**
      * Get repository with detailed owner information including email
      * @param owner - Repository owner username

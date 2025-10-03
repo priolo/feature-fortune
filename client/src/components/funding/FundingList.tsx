@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, Typography, Chip, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { Box, Typography, Chip, List, ListItem, ListItemText, Divider, Button } from '@mui/material';
 import { Funding } from '@/types/Funding';
+import fundingApi from '@/api/funding';
 
 
 
@@ -8,8 +9,20 @@ interface Props {
     fundings: Funding[];
 }
 
-const FundingList: React.FC<Props> = ({ fundings }) => {
-    
+const FundingList: React.FC<Props> = ({
+    fundings
+}) => {
+
+    // HANDLERS
+    const handlePayNow = async (funding: Funding) => {
+        const result = await fundingApi.pay(funding.id);
+        console.log(result);
+    };
+
+
+
+    // RENDER
+
     const getStatusColor = (status: string) => {
         switch (status) {
             case 'completed': return 'success';
@@ -38,6 +51,11 @@ const FundingList: React.FC<Props> = ({ fundings }) => {
         });
     };
 
+    const canPayFunding = (funding: Funding) => {
+        return funding.status === 'created' || funding.status === 'pending';
+    };
+
+
     return (
         <List>
             {fundings.map((funding, index) => (
@@ -65,9 +83,22 @@ const FundingList: React.FC<Props> = ({ fundings }) => {
                                         Expires: {formatDate(funding.expiresAt)}
                                     </Typography>
                                     {funding.message && (
-                                        <Typography variant="body2" color="text.primary" sx={{ mt: 1, fontStyle: 'italic' }}>
+                                        <Typography variant="body2" color="text.primary" sx={{ mt: 1, mb: 1, fontStyle: 'italic' }}>
                                             "{funding.message}"
                                         </Typography>
+                                    )}
+                                    {canPayFunding(funding) && (
+                                        <Box sx={{ mt: 1 }}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                size="small"
+                                                onClick={() => handlePayNow(funding)}
+                                                sx={{ textTransform: 'none' }}
+                                            >
+                                                PAY NOW
+                                            </Button>
+                                        </Box>
                                     )}
                                 </Box>
                             }

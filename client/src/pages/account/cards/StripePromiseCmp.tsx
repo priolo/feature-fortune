@@ -48,7 +48,7 @@ export default function DonationForm() {
 	}
 
 	const handleDonate = async () => {
-		const result = await fundingApi.donate();
+		const result = await fundingApi.pay();
 		console.log(result);
 	}
 

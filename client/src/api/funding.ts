@@ -3,12 +3,12 @@ import { Funding } from "@/types/Funding"
 
 
 
-function index(filter:any, opt?: CallOptions): Promise<{ fundings: Funding[] }> {
+function index(filter: any, opt?: CallOptions): Promise<{ fundings: Funding[] }> {
 	return null
 	//return ajax.post(`fundings/new`, { funding }, opt)
 }
 
-function create(funding:Funding, opt?: CallOptions): Promise<{ funding: Funding }> {
+function create(funding: Funding, opt?: CallOptions): Promise<{ funding: Funding }> {
 	return ajax.post(`fundings`, { funding }, opt)
 }
 
@@ -16,8 +16,8 @@ function create(funding:Funding, opt?: CallOptions): Promise<{ funding: Funding 
 
 
 
-function donate(opt?: CallOptions): Promise<{ success: boolean }> {
-	return ajax.post(`fundings/donate`, null, opt)
+function pay(fundingId: string, opt?: CallOptions): Promise<{ funding: Funding }> {
+	return ajax.post(`fundings/pay`, { fundingId }, opt)
 }
 
 function stripeAuthorRegisterLink(opt?: CallOptions): Promise<any> {
@@ -25,9 +25,13 @@ function stripeAuthorRegisterLink(opt?: CallOptions): Promise<any> {
 }
 
 
+
+
+
 const fundingApi = {
-	donate,
+	pay,
 	stripeAuthorRegisterLink,
+
 
 	index,
 	create,

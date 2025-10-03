@@ -1,12 +1,11 @@
 import { AccountRepo } from "@/repository/Account.js";
-import { Bus, httpRouter } from "@priolo/julian";
+import { Actions } from "@/services/stripe/types.js";
+import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { RepoRestActions } from "@priolo/julian/dist/services/typeorm/types.js";
 import { Request, Response } from "express";
 import Stripe from "stripe";
 
 
-
-const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
 class PaymentRoute extends httpRouter.Service {
 
@@ -15,9 +14,10 @@ class PaymentRoute extends httpRouter.Service {
 			...super.stateDefault,
 			path: "/payments",
 			account_repo: "/typeorm/accounts",
+			stripe_service: "/stripe",
 			routers: [
 				{ path: "/", verb: "post", method: "createPayment" },
-				{ path: "/card", verb: "post", method: "saveCard" },
+				{ path: "/card", verb: "post", method: "updatePaymentCard" },
 				{ path: "/", verb: "delete", method: "removePayment" },
 				{ path: "/", verb: "get", method: "getPayment" },
 			]
@@ -25,31 +25,30 @@ class PaymentRoute extends httpRouter.Service {
 	}
 
 	/** 
-	 * ATTACH: creo eventualmente il CUSTOMER e lo associoad un PAYMENT METHOD
+	 * ATTACH 1
+	 * Create, in case not exist, the CUSTOMER 
+	 * and setupIntents where in future can save cards data
 	 */
 	async createPayment(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
-			type: RepoRestActions.GET_BY_ID,
+			type: typeorm.Actions.GET_BY_ID,
 			payload: userJwt.id,
 		})
 		if (!user) return res.status(404).json({ error: "User not found" });
 
 
-		// First, check if customer already exists in Stripe
-		let customer: Stripe.Customer | Stripe.DeletedCustomer;
-		if (user.stripeCustomerId) {
-			customer = await stripe.customers.retrieve(user.stripeCustomerId);
-		}
+		// Get or create customer using StripeService
+		const customer: Stripe.Customer = await new Bus(this, this.state.stripe_service).dispatch({
+			type: Actions.GET_OR_CREATE_CUSTOMER,
+			payload: { stripeCustomerId: user.stripeCustomerId, accountId: user.id }
+		});
+		if ( !customer.id ) return res.status(500).json({ error: "Customer not created" });
 
-		// Only create if doesn't exist
-		if (!customer) {
-			customer = await stripe.customers.create({
-				metadata: { accountId: user.id }
-			});
-			// Save the customer ID to your database for future use
+		// Save the customer ID to your database if it's new
+		if (customer.id !== user.stripeCustomerId) {
 			await new Bus(this, this.state.account_repo).dispatch({
-				type: RepoRestActions.SAVE,
+				type: typeorm.Actions.SAVE,
 				payload: {
 					id: user.id,
 					stripeCustomerId: customer.id
@@ -57,28 +56,28 @@ class PaymentRoute extends httpRouter.Service {
 			})
 		}
 
-
-		// create payment method
-		const setupIntent = await stripe.setupIntents.create({
-			customer: customer.id,
-			payment_method_types: ["card"],
+		// Create setup intent using StripeService
+		const setupIntent: Stripe.SetupIntent = await new Bus(this, this.state.stripe_service).dispatch({
+			type: Actions.CREATE_SETUP_INTENT,
+			payload: customer.id,
 		});
 
 		res.send({
 			stripeCustomerId: customer.id,
-			clientSecret: setupIntent.client_secret
+			clientSecret: setupIntent.client_secret,
 		});
 	}
 
 	/**
-	 * ATTACH2: Completo la creazione del PAYMENT METHOD 
+	 * ATTACH 2: 
+	 * Complete the paymentMethod add CARD data
 	 */
-	async saveCard(req: Request, res: Response) {
+	async updatePaymentCard(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		const { paymentMethodId } = req.body
 
 		await new Bus(this, this.state.account_repo).dispatch({
-			type: RepoRestActions.SAVE,
+			type: typeorm.Actions.SAVE,
 			payload: {
 				id: userJwt.id,
 				stripePaymentMethodId: paymentMethodId
@@ -89,12 +88,13 @@ class PaymentRoute extends httpRouter.Service {
 	}
 
 	/**
-	 * REMOVE: Rimuovo tutti i PAYMENT METHOD salvati per questo CUSTOMER
+	 * REMOVE: 
+	 * Remove alla paymentMethods saved for this CUSTOMER
 	 */
 	async removePayment(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
-			type: RepoRestActions.GET_BY_ID,
+			type: typeorm.Actions.GET_BY_ID,
 			payload: userJwt.id,
 		})
 		if (!user) return res.status(404).json({ error: "User not found" });
@@ -102,16 +102,11 @@ class PaymentRoute extends httpRouter.Service {
 		// If user has a Stripe customer ID, remove all payment methods
 		if (user.stripeCustomerId) {
 			try {
-				// List all payment methods for the customer
-				const paymentMethods = await stripe.paymentMethods.list({
-					customer: user.stripeCustomerId,
-					type: 'card', // You can also use 'all' to get all types
+				// Remove all payment methods using StripeService
+				await new Bus(this, this.state.stripe_service).dispatch({
+					type: Actions.REMOVE_ALL_PAYMENT_METHODS,
+					payload: user.stripeCustomerId
 				});
-
-				// Detach each payment method
-				for (const paymentMethod of paymentMethods.data) {
-					await stripe.paymentMethods.detach(paymentMethod.id);
-				}
 			} catch (error) {
 				console.error('Error removing payment methods:', error);
 				return res.status(500).json({ error });
@@ -120,7 +115,7 @@ class PaymentRoute extends httpRouter.Service {
 
 		// Update user record to remove the saved payment method ID
 		await new Bus(this, this.state.account_repo).dispatch({
-			type: RepoRestActions.SAVE,
+			type: typeorm.Actions.SAVE,
 			payload: {
 				id: userJwt.id,
 				stripePaymentMethodId: null
@@ -131,19 +126,24 @@ class PaymentRoute extends httpRouter.Service {
 	}
 
 	/**
-	 * GET: Recupero il PAYMENT METHOD salvato per questo CUSTOMER
+	 * GET: 
+	 * Fetch the PAYMENT METHOD saved for a CUSTOMER
 	 */
 	async getPayment(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
-			type: RepoRestActions.GET_BY_ID,
+			type: typeorm.Actions.GET_BY_ID,
 			payload: userJwt.id,
 		})
 		if (!user) return res.status(404).json({ error: "User not found" });
-
-		let paymentMethods: Stripe.Response<Stripe.PaymentMethod>
+		
+		if ( !user.stripePaymentMethodId ) return res.status(404).json({ error: "No payment method found for user" });
+		let paymentMethods: Stripe.PaymentMethod;
 		try {
-			paymentMethods = await stripe.paymentMethods.retrieve(user.stripePaymentMethodId!);
+			paymentMethods = await new Bus(this, this.state.stripe_service).dispatch({
+				type: Actions.GET_PAYMENT_METHOD,
+				payload: user.stripePaymentMethodId!
+			});
 		} catch (error) {
 			return res.status(500).json({ error });
 		}

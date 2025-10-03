@@ -1,6 +1,5 @@
 import { AccountRepo } from "@/repository/Account.js";
-import { Bus, httpRouter } from "@priolo/julian";
-import { RepoRestActions } from "@priolo/julian/dist/services/typeorm/types.js";
+import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 import Stripe from "stripe";
 
@@ -38,14 +37,13 @@ class StripeHookRoute extends httpRouter.Service {
 
 		console.log(`*** STRIPE:Event:type:${event.type}`);
 
-
 		// Handle the event
 		switch (event.type) {
 			case 'account.updated': {
 				const stripeAccount = event.data.object;
 				const accountId = stripeAccount.metadata.accountId
 				const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
-					type: RepoRestActions.GET_BY_ID,
+					type: typeorm.Actions.GET_BY_ID,
 					payload: accountId,
 				})
 
@@ -63,7 +61,7 @@ class StripeHookRoute extends httpRouter.Service {
 
 				// salvo lo stripeAccountId
 				await new Bus(this, this.state.account_repo).dispatch({
-					type: RepoRestActions.SAVE,
+					type: typeorm.Actions.SAVE,
 					payload: {
 						id: user.id,
 						stripeAccountId: stripeAccount.id

@@ -16,6 +16,8 @@ import FundingRoute from "./routers/FundingRoute.js";
 import PaymentRoute from "./routers/PaymentRoute.js";
 import StripeHookRoute from "./routers/StripeHookRoute.js";
 import { envInit } from "./types/env.js";
+import PaymentCrono from "./services/crono/PaymentCrono.js";
+import StripeService from "./services/stripe/StripeService.js";
 
 
 
@@ -37,6 +39,14 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 			onParentLog: (log) => {
 				if (!!log?.payload && ['nc:init', 'nc:destroy', "ns:set-state"].includes(log.payload.type)) return false
 			}
+		},
+
+		{
+			class: PaymentCrono,
+		},
+
+		{
+			class: StripeService,
 		},
 
 		<http.conf>{

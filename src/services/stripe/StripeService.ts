@@ -1,158 +1,152 @@
-import { AccountRepo } from "@/repository/Account.js";
-import { Bus, httpRouter } from "@priolo/julian";
-import { RepoRestActions } from "@priolo/julian/dist/services/typeorm/types.js";
-import { Request, Response } from "express";
+import { ServiceBase } from "@priolo/julian";
 import Stripe from "stripe";
+import { Actions, ExpressAccountData, PaymentIntentData } from "./types.js";
 
 
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
-class PaymentRoute extends httpRouter.Service {
+class StripeService extends ServiceBase {
 
-	get stateDefault(): httpRouter.conf & any {
+	get stateDefault() {
 		return {
 			...super.stateDefault,
-			path: "/payments",
-			account_repo: "/typeorm/accounts",
-			routers: [
-				{ path: "/", verb: "post", method: "createPayment" },
-				{ path: "/card", verb: "post", method: "saveCard" },
-				{ path: "/", verb: "delete", method: "removePayment" },
-				{ path: "/", verb: "get", method: "getPayment" },
-			]
+			name: "stripe",
+			key: "stripe",
 		}
 	}
 
-	/** 
-	 * ATTACH: creo eventualmente il CUSTOMER e lo associoad un PAYMENT METHOD
+	get executablesMap() {
+		return {
+			...super.executablesMap,
+
+			[Actions.GET_OR_CREATE_CUSTOMER]: (data: { stripeCustomerId: string | null, accountId: string }) => this.getOrCreateCustomer(data.stripeCustomerId, data.accountId),
+
+			[Actions.CREATE_SETUP_INTENT]: (customerId: string) => this.createSetupIntent(customerId),
+
+			[Actions.LIST_PAYMENT_METHODS]: (customerId: string) => this.listPaymentMethods(customerId),
+			[Actions.GET_PAYMENT_METHOD]: (paymentMethodId: string) => this.getPaymentMethod(paymentMethodId),
+			[Actions.REMOVE_ALL_PAYMENT_METHODS]: (customerId: string) => this.removeAllPaymentMethods(customerId),
+
+			[Actions.EXECUTE_PAYMENT]: (data: PaymentIntentData) => this.executePayment(data),
+
+			[Actions.CREATE_EXPRESS_ACCOUNT_URL]: (data: ExpressAccountData) => this.createExpressAccount(data),
+		}
+	}
+
+	/**
+	 * Create or retrieve a Stripe Customer
+	 * @param stripeCustomerId the id of stripe customer
+	 * @param accountId put it in stripe metadata
+	 * @returns 
 	 */
-	async createPayment(req: Request, res: Response) {
-		const userJwt: AccountRepo = req["jwtPayload"]
-		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
-			type: RepoRestActions.GET_BY_ID,
-			payload: userJwt.id,
-		})
-		if (!user) return res.status(404).json({ error: "User not found" });
-
-
+	async getOrCreateCustomer(stripeCustomerId: string | null, accountId: string): Promise<Stripe.Customer> {
 		// First, check if customer already exists in Stripe
-		let customer: Stripe.Customer | Stripe.DeletedCustomer;
-		if (user.stripeCustomerId) {
-			customer = await stripe.customers.retrieve(user.stripeCustomerId);
-		}
+		let customer: Stripe.Customer | Stripe.DeletedCustomer | null = null;
 
-		// Only create if doesn't exist
-		if (!customer) {
-			customer = await stripe.customers.create({
-				metadata: { accountId: user.id }
-			});
-			// Save the customer ID to your database for future use
-			await new Bus(this, this.state.account_repo).dispatch({
-				type: RepoRestActions.SAVE,
-				payload: {
-					id: user.id,
-					stripeCustomerId: customer.id
-				},
-			})
-		}
-
-
-		// create payment method
-		const setupIntent = await stripe.setupIntents.create({
-			customer: customer.id,
-			payment_method_types: ["card"],
-		});
-
-		res.send({
-			stripeCustomerId: customer.id,
-			clientSecret: setupIntent.client_secret
-		});
-	}
-
-	/**
-	 * ATTACH2: Completo la creazione del PAYMENT METHOD 
-	 */
-	async saveCard(req: Request, res: Response) {
-		const userJwt: AccountRepo = req["jwtPayload"]
-		const { paymentMethodId } = req.body
-
-		await new Bus(this, this.state.account_repo).dispatch({
-			type: RepoRestActions.SAVE,
-			payload: {
-				id: userJwt.id,
-				stripePaymentMethodId: paymentMethodId
-			},
-		})
-
-		res.send({ success: true })
-	}
-
-	/**
-	 * REMOVE: Rimuovo tutti i PAYMENT METHOD salvati per questo CUSTOMER
-	 */
-	async removePayment(req: Request, res: Response) {
-		const userJwt: AccountRepo = req["jwtPayload"]
-		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
-			type: RepoRestActions.GET_BY_ID,
-			payload: userJwt.id,
-		})
-		if (!user) return res.status(404).json({ error: "User not found" });
-
-		// If user has a Stripe customer ID, remove all payment methods
-		if (user.stripeCustomerId) {
+		if (stripeCustomerId) {
 			try {
-				// List all payment methods for the customer
-				const paymentMethods = await stripe.paymentMethods.list({
-					customer: user.stripeCustomerId,
-					type: 'card', // You can also use 'all' to get all types
-				});
-
-				// Detach each payment method
-				for (const paymentMethod of paymentMethods.data) {
-					await stripe.paymentMethods.detach(paymentMethod.id);
+				customer = await stripe.customers.retrieve(stripeCustomerId);
+				if (!customer.deleted) {
+					return customer as Stripe.Customer;
 				}
 			} catch (error) {
-				console.error('Error removing payment methods:', error);
-				return res.status(500).json({ error });
+				console.warn("Customer not found, creating new one");
 			}
 		}
 
-		// Update user record to remove the saved payment method ID
-		await new Bus(this, this.state.account_repo).dispatch({
-			type: RepoRestActions.SAVE,
-			payload: {
-				id: userJwt.id,
-				stripePaymentMethodId: null
-			},
-		})
-
-		res.send({ success: true })
+		// Create new customer if doesn't exist
+		return await stripe.customers.create({
+			metadata: { accountId }
+		});
 	}
 
 	/**
-	 * GET: Recupero il PAYMENT METHOD salvato per questo CUSTOMER
+	 * Setup Intent operations (for saving cards)
 	 */
-	async getPayment(req: Request, res: Response) {
-		const userJwt: AccountRepo = req["jwtPayload"]
-		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
-			type: RepoRestActions.GET_BY_ID,
-			payload: userJwt.id,
-		})
-		if (!user) return res.status(404).json({ error: "User not found" });
-
-		let paymentMethods: Stripe.Response<Stripe.PaymentMethod>
-		try {
-			paymentMethods = await stripe.paymentMethods.retrieve(user.stripePaymentMethodId!);
-		} catch (error) {
-			return res.status(500).json({ error });
-		}
-
-		res.send({ success: true, paymentMethods })
+	async createSetupIntent(customerId: string): Promise<Stripe.SetupIntent> {
+		return await stripe.setupIntents.create({
+			customer: customerId,
+			payment_method_types: ["card"],
+		});
 	}
+
+	/** 
+	 * List all payment methods for a customer
+	 */
+	async listPaymentMethods(customerId: string): Promise<Stripe.PaymentMethod[]> {
+		const paymentMethods = await stripe.paymentMethods.list({
+			customer: customerId,
+			type: 'card',
+		});
+		return paymentMethods.data;
+	}
+
+	/**
+	 * Fetch a payment method by its id
+	 */
+	async getPaymentMethod(paymentMethodId: string): Promise<Stripe.PaymentMethod> {
+		if ( !paymentMethodId ) throw new Error("No payment method id provided");
+		return await stripe.paymentMethods.retrieve(paymentMethodId);
+	}
+
+	/**
+	 * Remove all payment methods for a customer
+	 */
+	async removeAllPaymentMethods(customerId: string): Promise<void> {
+		const paymentMethods = await this.listPaymentMethods(customerId);
+
+		for (const paymentMethod of paymentMethods) {
+			await stripe.paymentMethods.detach(paymentMethod.id);
+		}
+	}
+
+	/**
+	 * Execute a memorized payment
+	 */
+	async executePayment(data: PaymentIntentData): Promise<Stripe.PaymentIntent> {
+		return await stripe.paymentIntents.create({
+			amount: data.amount,
+			currency: data.currency,
+			customer: data.customer,
+			payment_method: data.paymentMethod,
+			off_session: true,
+			confirm: true,
+			transfer_data: {
+				destination: data.destination,
+			},
+		});
+	}
+
+	/**
+	 * Create a express account URL 
+	 */
+	async createExpressAccount(data: ExpressAccountData): Promise<{ account: Stripe.Account; accountLink: Stripe.AccountLink }> {
+		const account = await stripe.accounts.create({
+			type: "express",
+			country: "IT",
+			email: data.email,
+			capabilities: {
+				card_payments: { requested: true },
+				transfers: { requested: true },
+			},
+			metadata: { accountId: data.accountId }
+		});
+
+		const accountLink = await stripe.accountLinks.create({
+			account: account.id,
+			refresh_url: data.refreshUrl,
+			return_url: data.returnUrl,
+			type: "account_onboarding",
+		});
+
+		return { account, accountLink };
+	}
+
+
 }
 
 
-export default PaymentRoute
+export default StripeService
 
 

@@ -8,7 +8,7 @@ import { FeatureRepo } from './Feature.js';
 export enum FUNDING_STATE {
 	CREATED = "created",
 	PENDING = "pending",
-	COMPLETED = "completed",
+	PAIED = "paied",
 	FAILED = "failed",
 } 
 
@@ -26,16 +26,28 @@ export class FundingRepo extends AccountAsset {
 	amount: number;
 
 	@Column({ type: 'varchar', default: FUNDING_STATE.CREATED })
-	status: FUNDING_STATE
+	status?: FUNDING_STATE
 
 	@Column({ type: 'text', nullable: true })
 	message?: string;
 
 	@Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-	createdAt: Date;
+	createdAt?: Date;
 
-	@Column({ type: 'datetime' })
-	expiresAt: Date;
+	@Column({ type: 'datetime', nullable: true })
+	expiresAt?: Date;
+
+	/**
+	 * When the fundig is paied
+	 */
+	@Column({ type: 'datetime', nullable: true })
+	paidAt?: Date;
+
+	/**
+	 * ID stripe payment
+	 */
+	@Column({ type: 'varchar', nullable: true })
+	transactionId?: string;
 
 
 	//#region RELATIONSHIPS

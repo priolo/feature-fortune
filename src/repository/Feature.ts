@@ -31,12 +31,12 @@ export class FeatureRepo extends AccountAsset {
 
 
 	/**
-	 * github repo ID
+	 * GITHUB REPO ID
 	 */
 	@Column({ type: 'bigint', nullable: true })
 	githubId: number;
 	/**
-	 * github repo name [II] da eliminare
+	 * GITHUB REPO name [II] da eliminare
 	 */
 	@Column({ type: 'varchar' })
 	githubName: string;
@@ -45,14 +45,14 @@ export class FeatureRepo extends AccountAsset {
 	//#region RELATIONSHIPS
 
 	/** 
-	 * autore del GITHUB. Non è detto che ci sia
+	 * Account autore del GITHUB. Non è detto che ci sia
 	 */
-	@ManyToOne(() => FeatureRepo)
-	@JoinColumn({ name: 'authorId' })
-	author?: Relation<AccountRepo>;
-	/** autore del GITHUB. Non è detto che ci sia */
-	@Column({ type: 'varchar', nullable: true })
-	authorId?: string;
+	// @ManyToOne(() => AccountRepo)
+	// @JoinColumn({ name: 'authorId' })
+	// author?: Relation<AccountRepo>;
+	// /** autore del GITHUB. Non è detto che ci sia */
+	// @Column({ type: 'varchar', nullable: true })
+	// authorId?: string;
 
 	/**
 	 * the accounts that funded this feature

@@ -36,10 +36,8 @@ const FeatureDetailPag: React.FC<Props> = ({
         if (id === 'new') {
             featureDetailSo.setFeature(buildNewFeature())
             featureDetailSo.setGithubRepo(null)
-            featureDetailSo.setMode(FORM_MODE.CREATE)
             return
         }
-        featureDetailSo.setMode(FORM_MODE.VIEW)
         const load = async () => {
             featureDetailSo.setFeature({ id })
             await featureDetailSo.fetch()
@@ -57,6 +55,7 @@ const FeatureDetailPag: React.FC<Props> = ({
         setDialogOpen(false)
         if (!repo) return
         featureDetailSo.setGithubRepo(repo)
+        featureDetailSo.fetchGithubOwner()
         featureDetailSo.setFeature({
             ...featureDetailSo.state.feature,
             githubName: repo.full_name,
@@ -90,6 +89,7 @@ const FeatureDetailPag: React.FC<Props> = ({
     const handleFundingDialogClose = (funding: Funding) => {
         setDialogFundingOpen(false)
         if (!funding) return
+        funding.featureId = featureDetailSo.state.feature.id
         featureDetailSo.setFundingSelected(funding)
         featureDetailSo.saveFunding()
     }
@@ -104,17 +104,32 @@ const FeatureDetailPag: React.FC<Props> = ({
     // RENDER
     const inNew = featureDetailSo.state.feature?.id == null
     const showFundings = !inNew
+    const haveFunding = featureDetailSo.state.feature?.fundings != null && featureDetailSo.state.feature.fundings.length > 0
     const title = featureDetailSo.state.feature?.title || ''
     const description = featureDetailSo.state.feature?.description || ''
+
+    const githubRepo = featureDetailSo.state.githubRepo
+    const githubOwner = featureDetailSo.state.githubOwner
 
     return (
         <Box sx={sxRoot}>
 
+
+            {/* GITHUB REPOSITORY */}
             <Card sx={{ width: '100%', mt: 2 }}>
                 <CardContent>
                     <GithubRepoCmp
-                        repository={featureDetailSo.state.githubRepo}
+                        repository={githubRepo}
                     />
+                    {!githubOwner ? (
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                            THE OWNER NOT ARE LINKED TO ANY ACCOUNT      
+                        </Typography>
+                    ):(
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                            THIS REPO IS AREADY REGISTERED! OWNER: {githubOwner.name} 
+                        </Typography>
+                    )}
                 </CardContent>
                 <CardActions>
                     <Button
@@ -123,6 +138,9 @@ const FeatureDetailPag: React.FC<Props> = ({
                 </CardActions>
             </Card>
 
+
+
+            {/* FEATURE DETAIL */}
             <Card sx={{ width: '100%', mt: 2 }}>
                 <CardContent sx={{ gap: 1, display: 'flex', flexDirection: 'column' }}>
                     <TextField fullWidth
@@ -146,7 +164,9 @@ const FeatureDetailPag: React.FC<Props> = ({
                 </CardActions>
             </Card>
 
-            {/* Fundings Section */}
+
+
+            {/* FUNDINGS SECTION */}
             {showFundings && (
                 <Card sx={{ width: '100%', mt: 2 }}>
                     <CardContent>
@@ -160,7 +180,7 @@ const FeatureDetailPag: React.FC<Props> = ({
                             >CONTRIBUTE</Button>
                         </Box>
 
-                        {featureDetailSo.state.feature?.fundings && featureDetailSo.state.feature.fundings.length > 0 ? (
+                        {haveFunding ? (
 
                             <FundingList fundings={featureDetailSo.state.feature.fundings} />
 
@@ -171,7 +191,7 @@ const FeatureDetailPag: React.FC<Props> = ({
                         )}
 
                         {/* Total funding summary */}
-                        {featureDetailSo.state.feature?.fundings && featureDetailSo.state.feature.fundings.length > 0 && (
+                        {haveFunding && (
                             <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider' }}>
                                 <Typography variant="body1" sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <strong>Total Funded:</strong>

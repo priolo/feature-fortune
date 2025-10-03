@@ -99,13 +99,15 @@ const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 
 				<Box>CREDIT CARD SETTATA</Box>
 				<CardDisplay card={paymentMethod?.card} />
-				<Button onClick={handleCCReset}>RESET</Button>
+				<Button variant="contained" 
+					onClick={handleCCReset}
+				>DETACH CARD</Button>
 
 			</> : <>
 
 				<Box>INSERISCI LA TUA CREDIT CARD</Box>
 				<CardElement className="stripe-card-element" />
-				<Button
+				<Button variant="contained"
 					onClick={handleSavePayMethodClick}
 				>SET THIS CARD</Button>
 

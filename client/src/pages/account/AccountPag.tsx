@@ -6,6 +6,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import React from 'react';
 import GithubUserCmp from './cards/GithubUserCmp';
 import StripeCreditCardCmp from './cards/StripeCreditCardCmp';
+import fundingApi from '@/api/funding';
 
 
 interface AccountPagProps {
@@ -42,36 +43,58 @@ const AccountPag: React.FC<AccountPagProps> = ({
         console.log('Login Failure:');
     }
 
+    const handleStripeRegister = async () => {
+        if (!authSo.state.user?.email) return alert('Devi prima collegare una email (Google o Github)')
+        const res = await fundingApi.stripeAuthorRegisterLink()
+        console.log(res)
+        window.location.href = res.url
+    }
+
+    const handleStripeAuthorDetach = async () => {
+        //authSo.detachStripeAuthor()
+    }
+
 
     // RENDER
+    if (!authSo.state.user) {
+        return <div style={{ display: 'flex', flexDirection: "column", gap: 10, alignItems: 'center' }}>
+            NULL
+        </div>
+    }
+
     const haveGithub = !!authSo.state.user?.githubId
     const haveGoogle = !!authSo.state.user?.googleEmail
+    const haveStripeAuthor = !!authSo.state.user?.stripeAccountId
+
 
     return (
         <Box sx={sxRoot}>
 
+            {/* EMAIL ZONE */}
 
+
+            {/* GOOGLE ZONE */}
             {haveGoogle != null ? (
-				<div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-					<div>{authSo.state.user.email} LOGGED</div>
-					<Button
-						onClick={handleGoogleDetach}
-					>DETACH</Button>
-				</div>
-			) : (
-				<div style={{ display: 'flex', flexDirection: "column", gap: 10, alignItems: 'center' }}>
-					<div>ANONYMOUS</div>
-					<GoogleOAuthProvider clientId="545902107281-qgd4s1enct9mcq4qh3vpccn45uocdk9s.apps.googleusercontent.com">
-						<div>
-							<h2>Login with Google</h2>
-							<GoogleLogin
-								onSuccess={handleLoginSuccess}
-								onError={handleLoginFailure}
-							/>
-						</div>
-					</GoogleOAuthProvider>
-				</div>
-			)}
+                <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                    <div>{authSo.state.user.email} LOGGED</div>
+                    <Button variant="contained"
+                        onClick={handleGoogleDetach}
+                    >DETACH GOOGLE</Button>
+                </div>
+            ) : (
+                <div style={{ display: 'flex', flexDirection: "column", gap: 10, alignItems: 'center' }}>
+                    <div>ANONYMOUS</div>
+                    <GoogleOAuthProvider clientId="545902107281-qgd4s1enct9mcq4qh3vpccn45uocdk9s.apps.googleusercontent.com">
+                        <div>
+                            <h2>Login with Google</h2>
+                            <GoogleLogin
+                                onSuccess={handleLoginSuccess}
+                                onError={handleLoginFailure}
+                            />
+                        </div>
+                    </GoogleOAuthProvider>
+                </div>
+            )}
 
 
             {/* GITHUB ZONE */}
@@ -83,10 +106,24 @@ const AccountPag: React.FC<AccountPagProps> = ({
                 </Button>
             )}
 
-            {/* STRIPE ZONE */}
+
+            {/* STRIPE CUSTOMER ZONE */}
             <Elements stripe={stripePromise}>
                 <StripeCreditCardCmp />
             </Elements>
+
+
+            {/* STRIPE AUTHOR ZONE */}
+            {haveStripeAuthor ? <>
+                <div>Sei registrato come autore su Stripe</div>
+                <Button variant="contained" onClick={handleStripeAuthorDetach}>
+                    DETACH AUTHOR
+                </Button>
+            </> : (
+                <Button variant="contained" onClick={handleStripeRegister}>
+                    Registrati come autore
+                </Button>
+            )}
 
         </Box>
     );
