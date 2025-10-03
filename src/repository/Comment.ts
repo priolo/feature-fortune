@@ -16,7 +16,7 @@ export class CommentRepo extends AccountAsset {
 	text: string;
 
 	@Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
-	createdAt: Date;
+	createdAt?: Date;
 
 
 	
@@ -26,7 +26,7 @@ export class CommentRepo extends AccountAsset {
      * Type of entity this comment belongs to
      */
     @Column({ type: 'varchar' })
-    entityType: 'feature' | 'funding';
+    entityType?: 'feature' | 'funding';
 
     /**
      * ID of the entity this comment belongs to
@@ -37,16 +37,16 @@ export class CommentRepo extends AccountAsset {
     /**
      * Feature entity (only populated when entityType is 'feature')
      */
-    @ManyToOne(() => FeatureRepo, feature => feature.comments)
-    @JoinColumn({ name: 'entityId' })
-    feature?: Relation<FeatureRepo>;
+    // @ManyToOne(() => FeatureRepo, feature => feature.comments)
+    // @JoinColumn({ name: 'entityId' })
+    // feature?: Relation<FeatureRepo>;
 
     /**
      * Funding entity (only populated when entityType is 'funding')
      */
-    @ManyToOne(() => FundingRepo, funding => funding.comments)
-    @JoinColumn({ name: 'entityId' })
-    funding?: Relation<FundingRepo>;
+    // @ManyToOne(() => FundingRepo, funding => funding.comments)
+    // @JoinColumn({ name: 'entityId' })
+    // funding?: Relation<FundingRepo>;
 
 	//#endregion
 }

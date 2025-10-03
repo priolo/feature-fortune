@@ -27,7 +27,9 @@ class AccountRoute extends httpRouter.Service {
 		}
 	}
 
-
+	/**
+	 * Sono loggato e voglio collegare il mio account GITHUB
+	 */
 	async getUrlAttachGithub(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({

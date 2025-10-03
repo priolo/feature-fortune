@@ -109,7 +109,7 @@ class PaymentCrono extends ServiceBase {
 
 		// load GITHUB REPO		
 		const githubRepo:GithubRepo = (await octokit.request("GET /repositories/{id}", {
-			id: funding.feature.githubId,
+			id: funding.feature.githubRepoId,
 		}))?.data
 		console.log(">>> GitHub repo data:", githubRepo)
 		

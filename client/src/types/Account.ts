@@ -3,12 +3,16 @@ import { Uuid } from "./global.js"
 
 
 export interface Account {
+
 	id: Uuid
+
 	name: string
+
 	email: string
 
-	googleEmail?: string
+	avatarUrl?: string
 
+	googleEmail?: string
 	
 	githubId?: number
 

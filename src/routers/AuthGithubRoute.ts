@@ -18,14 +18,15 @@ class AuthGithubRoute extends httpRouter.Service {
 			jwt: "/jwt",
 			routers: [
 				{ path: "/login", verb: "get", method: "login" },
-				{ path: "/register", verb: "get", method: "register" },
 				{ path: "/callback", verb: "get", method: "callback" },
 			]
 		}
 	}
 
 	/** 
-	 * Login → redirect verso GitHub
+	 * Login with GITHUB
+	 * return l'url per effetuare il login con GITHUB
+	 * GITHUB risponde al callback con `code`
 	 */
 	login(req: Request, res: Response) {
 		const url = githubOAuth.getWebFlowAuthorizationUrl({
@@ -35,21 +36,10 @@ class AuthGithubRoute extends httpRouter.Service {
 		res.json({ url: url.url })
 	}
 
-	/**
-	 * Register → redirect verso GitHub
-	 */
-	register(req: Request, res: Response) {
-		const url = githubOAuth.getWebFlowAuthorizationUrl({
-			scopes: ["read:user", "user:email"],
-			state: customDataToUrl({ act: "rgs", }),
-		});
-		res.json({ url: url.url })
-	}
-
 	/** 
 	 * WEBHOOK 
 	 * https://github.com/settings/applications/3174659
-	 * GitHub ritorna con `code` 
+	 * per il LOGIN GitHub ritorna con `code` 
 	 */
 	async callback(req: Request, res: Response) {
 		const { code, error, state } = req.query as { code: string, error: string, state: string }
@@ -70,7 +60,7 @@ class AuthGithubRoute extends httpRouter.Service {
 				if (!customData.accountId) return res.status(400).json({ error: "Invalid state parameter: no accountId" });
 				// cerco lo USER se è gia' registrato
 				user = await new Bus(this, this.state.account_repo).dispatch({
-					type: typeorm.RepoRestActions.GET_BY_ID,
+					type: typeorm.Actions.GET_BY_ID,
 					payload: customData.accountId,
 				})
 				if (!user) return res.status(404).json({ error: "User not found" });
@@ -88,7 +78,7 @@ class AuthGithubRoute extends httpRouter.Service {
 				// se non c'e allora creo un nuovo USER
 				if (!user) {
 					user = await new Bus(this, this.state.account_repo).dispatch({
-						type: typeorm.RepoRestActions.SAVE,
+						type: typeorm.Actions.SAVE,
 						payload: <AccountRepo>{
 							email: userGithub.email ?? userGithub.notification_email ?? userGithub.login,
 							name: userGithub.name || userGithub.login,
@@ -102,7 +92,7 @@ class AuthGithubRoute extends httpRouter.Service {
 			// manca githubId lo aggiorno
 			if (!user.githubId) {
 				user = await new Bus(this, this.state.account_repo).dispatch({
-					type: typeorm.RepoRestActions.SAVE,
+					type: typeorm.Actions.SAVE,
 					payload: <AccountRepo>{
 						id: user.id,
 						githubId: userGithub.id,
@@ -141,7 +131,10 @@ class AuthGithubRoute extends httpRouter.Service {
 		}
 	}
 
-	async getGithubUserByCode(code: string) {
+	/**
+	 * Utente GITHUB tramite il `code` ricevuto da GITHUB in fase di callback
+	 */
+	private async getGithubUserByCode(code: string) {
 		// creo il token di accesso e recupero info utente
 		const { authentication } = await githubOAuth.createToken({ code });
 		const response = await fetch("https://api.github.com/user", {

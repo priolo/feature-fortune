@@ -7,17 +7,17 @@ export interface Comment {
 
 	id?: string;
 	text: string;
-	createdAt: Date;
+	createdAt?: Date;
 
 	
 	//#region RELATIONSHIPS
 
-    entityType: 'feature' | 'funding';
+    entityType?: 'feature' | 'funding';
 
     /**
      * ID of the entity this comment belongs to
      */
-    entityId: string;
+    entityId?: string;
 
     /**
      * Feature entity (only populated when entityType is 'feature')

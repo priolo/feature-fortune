@@ -18,6 +18,7 @@ import StripeHookRoute from "./routers/StripeHookRoute.js";
 import { envInit } from "./types/env.js";
 import PaymentCrono from "./services/crono/PaymentCrono.js";
 import StripeService from "./services/stripe/StripeService.js";
+import CommentRoute from "./routers/CommentRoute.js";
 
 
 
@@ -81,6 +82,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 								{ class: FeatureRoute },
 								{ class: PaymentRoute },
 								{ class: FundingRoute },
+								{ class: CommentRoute },
 							],
 						},
 

@@ -8,14 +8,14 @@ import { Funding } from '../Funding';
 export interface Feature extends AccountAsset {
 	
 	id?: string;
+
 	title: string;
+
 	description: string;
+
 	createdAt: Date;
 
-
-	githubId?: number	
-	githubName: string
-
+	githubRepoId?: number	
 
 	//#region RELATIONSHIPS
 

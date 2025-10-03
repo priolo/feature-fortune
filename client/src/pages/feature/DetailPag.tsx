@@ -1,16 +1,17 @@
+import CommentDialog from '@/components/CommentDialog';
+import FundingDialog from '@/components/funding/FundingDialog';
 import FundingList from '@/components/funding/FundingList';
-import GithubRepoDialog from '@/components/github/GithubRepoDialog';
 import GithubRepoCmp from '@/components/github/GithubRepoCmp';
+import GithubRepoDialog from '@/components/github/GithubRepoDialog';
 import featureDetailSo from '@/stores/feature/detail';
+import { Comment } from '@/types/Comment';
 import { buildNewFeature } from '@/types/feature/factory';
+import { Funding } from '@/types/Funding';
 import { GitHubRepository } from '@/types/github/GitHub';
 import { Box, Button, Card, CardActions, CardContent, SxProps, TextField, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { FORM_MODE } from '@/stores/types';
-import FundingDialog from '@/components/funding/FundingDialog';
-import { Funding } from '@/types/Funding';
 
 
 
@@ -30,6 +31,7 @@ const FeatureDetailPag: React.FC<Props> = ({
     let { id } = useParams<{ id: string }>()
     const [dialogOpen, setDialogOpen] = useState(false);
     const [dialogFundingOpen, setDialogFundingOpen] = useState(false);
+    const [dialogCommentOpen, setDialogCommentOpen] = useState(false);
 
 
     useEffect(() => {
@@ -58,8 +60,7 @@ const FeatureDetailPag: React.FC<Props> = ({
         featureDetailSo.fetchGithubOwner()
         featureDetailSo.setFeature({
             ...featureDetailSo.state.feature,
-            githubName: repo.full_name,
-            githubId: repo.id
+            githubRepoId: repo.id
         })
     }
 
@@ -89,10 +90,22 @@ const FeatureDetailPag: React.FC<Props> = ({
     const handleFundingDialogClose = (funding: Funding) => {
         setDialogFundingOpen(false)
         if (!funding) return
-        funding.featureId = featureDetailSo.state.feature.id
+        
         featureDetailSo.setFundingSelected(funding)
         featureDetailSo.saveFunding()
     }
+
+
+
+    const handleCommentClick = () => {
+        setDialogCommentOpen(true)
+    };
+    const handleCommentDialogClose = (comment: Comment) => {
+        setDialogCommentOpen(false)
+        if (!comment) return
+        featureDetailSo.addComment(comment)
+    }
+
 
     const formatAmount = (amount: number) => {
         return new Intl.NumberFormat('en-US', {
@@ -123,11 +136,11 @@ const FeatureDetailPag: React.FC<Props> = ({
                     />
                     {!githubOwner ? (
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                            THE OWNER NOT ARE LINKED TO ANY ACCOUNT      
+                            THE OWNER NOT ARE LINKED TO ANY ACCOUNT
                         </Typography>
-                    ):(
+                    ) : (
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                            THIS REPO IS AREADY REGISTERED! OWNER: {githubOwner.name} 
+                            THIS REPO IS AREADY REGISTERED! OWNER: {githubOwner.name}
                         </Typography>
                     )}
                 </CardContent>
@@ -211,15 +224,67 @@ const FeatureDetailPag: React.FC<Props> = ({
 
 
 
+            {/* COMMENTS SECTION */}
+            {showFundings && (
+                <Card sx={{ width: '100%', mt: 2 }}>
+                    <CardContent>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                            <Typography variant="h6" component="h2">
+                                Comments ({featureDetailSo.state.feature?.comments?.length || 0})
+                            </Typography>
+                            <Button variant="contained" color="primary"
+                                onClick={handleCommentClick}
+                            >COMMENT</Button>
+                        </Box>
+
+                        {featureDetailSo.state.feature?.comments && featureDetailSo.state.feature.comments.length > 0 ? (
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                {featureDetailSo.state.feature.comments.map((comment) => (
+                                    <Card key={comment.id} variant="outlined" sx={{ p: 2 }}>
+                                        <Typography variant="body1" sx={{ mb: 1 }}>
+                                            {comment.text}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {new Date(comment.createdAt).toLocaleDateString('en-US', {
+                                                year: 'numeric',
+                                                month: 'short',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            })}
+                                        </Typography>
+                                    </Card>
+                                ))}
+                            </Box>
+                        ) : (
+                            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
+                                No comments yet for this feature.
+                            </Typography>
+                        )}
+                    </CardContent>
+                </Card>
+            )}
+
+
+
+
+
+
+
             <GithubRepoDialog
                 isOpen={dialogOpen}
                 onClose={handleGithubDialogClose}
             />
 
-            <FundingDialog 
+            <FundingDialog
                 isOpen={dialogFundingOpen}
                 onClose={handleFundingDialogClose}
-            /> 
+            />
+
+            <CommentDialog
+                isOpen={dialogCommentOpen}
+                onClose={handleCommentDialogClose}
+            />
 
         </Box>
     );

@@ -8,7 +8,6 @@ export function buildNewFeature(): Feature {
 		title: '',
 		description: '',
 		createdAt: new Date(),
-		githubName: null,
 		fundings: [],
 		comments: [],
 	}

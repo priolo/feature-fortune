@@ -1,8 +1,10 @@
 import authApi from "@/api/auth"
+import commentApi from "@/api/comment"
 import featureApi from "@/api/feature"
 import fundingApi from "@/api/funding"
 import gitHubApi from "@/api/github"
 import { Account } from "@/types/Account"
+import { Comment } from "@/types/Comment"
 import { Feature } from "@/types/feature/Feature"
 import { Funding } from "@/types/Funding"
 import { GitHubRepository, GitHubRepositoryDetails } from "@/types/github/GitHub"
@@ -43,7 +45,7 @@ const setup = {
 		 * in base all'ID settato nella FEATURE
 		 */
 		async fetchGithubRepo(_: void, store?: FeatureDetailStore) {
-			const repo = await gitHubApi.getRepository(store.state.feature.githubId ?? store.state.feature.githubName)
+			const repo = await gitHubApi.getRepository(store.state.feature.githubRepoId)
 			store.setGithubRepo(repo)
 		},
 
@@ -67,12 +69,22 @@ const setup = {
 			store.setFeature(feature)
 		},
 
-
 		async saveFunding(_: void, store?: FeatureDetailStore) {
 			const { funding } = await fundingApi.create(store.state.fundingSelected)
 			store.setFeature({
 				...store.state.feature,
 				fundings: store.state.feature.fundings?.concat(funding) ?? [funding]
+			})
+		},
+
+		async addComment(comment: Comment, store?: FeatureDetailStore) {
+			comment.entityType = 'feature'
+			comment.entityId = featureDetailSo.state.feature.id
+			const newComment = (await commentApi.create(comment))?.comment
+			if (!newComment) return
+			store.setFeature({
+				...featureDetailSo.state.feature,
+				comments: featureDetailSo.state.feature.comments?.concat(newComment) ?? [newComment]
 			})
 		}
 

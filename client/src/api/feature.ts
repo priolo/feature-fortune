@@ -21,8 +21,7 @@ function save(featureData: Feature, opt?: CallOptions): Promise<Feature> {
 		id: featureData.id,
 		title: featureData.title,
 		description: featureData.description,
-		githubId: featureData.githubId,
-		githubName: featureData.githubName,
+		githubId: featureData.githubRepoId,
 	}
 	return ajax.post(`features`, { feature }, opt)
 }
