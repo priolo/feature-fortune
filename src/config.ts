@@ -1,4 +1,4 @@
-import { http, httpRouter, jwt, log, typeorm } from "@priolo/julian";
+import { email, http, httpRouter, jwt, log, typeorm } from "@priolo/julian";
 import { TypeLog } from "@priolo/julian/dist/core/types.js";
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -26,9 +26,6 @@ envInit();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 export const PORT = process.env.PORT || 3000;
-export const WS_PORT = +(process.env.WS_PORT || 3010)
-
-
 
 function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 
@@ -60,7 +57,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 				{ class: AuthGoogleRoute },
 				{ class: AuthRoute },
 				{ class: StripeHookRoute },
-				
+
 
 				<httpRouter.jwt.conf>{
 					class: "http-router/jwt",
@@ -132,6 +129,21 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 			class: "jwt",
 			secret: "secret_word!!!"
 		},
+
+		{
+			class: "email",
+			account: <email.conf>{
+				// https://ethereal.email/login
+				host: process.env.EMAIL_SMTP,
+				port: process.env.EMAIL_PORT,
+				auth: {
+					user: process.env.EMAIL_USER,
+					pass: process.env.EMAIL_PASSWORD
+				}
+			},
+		}
+
+
 
 	]
 }

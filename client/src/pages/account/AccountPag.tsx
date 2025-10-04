@@ -1,5 +1,5 @@
 import authSo, { stripePromise } from '@/stores/auth/repo';
-import { Box, Button, SxProps } from '@mui/material';
+import { Box, Button, SxProps, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { Elements } from '@stripe/react-stripe-js';
@@ -66,11 +66,12 @@ const AccountPag: React.FC<AccountPagProps> = ({
     const haveGoogle = !!authSo.state.user?.googleEmail
     const haveStripeAuthor = !!authSo.state.user?.stripeAccountId
 
-
     return (
         <Box sx={sxRoot}>
 
             {/* EMAIL ZONE */}
+            <Typography>Confirm email</Typography>
+
 
 
             {/* GOOGLE ZONE */}

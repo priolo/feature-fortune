@@ -16,16 +16,15 @@
     "server_github:watch": "tsx --watch ./src/server_github_auth.ts"
   },
   "//dependencies": {
-    "@priolo/julian": "file://C:/Users/iorio/Documents/julian",
+    "@priolo/julian": "file://C:/Users/ivano.iorio/Documents/julian",
     "@priolo/jon-utils#local": "file:C://Users//iorio//Documents//jon-utils",
-    "@priolo/jon-utils": "^0.2.2",
     "@priolo/jess": "file://C:/Users/iorio/Documents/jess"
   },
   "dependencies": {
     "@octokit/oauth-app": "^8.0.1",
     "@octokit/rest": "^22.0.0",
     "@priolo/jon-utils": "^0.5.3",
-    "@priolo/julian": "file://C:/Users/ivano.iorio/Documents/julian",
+    "@priolo/julian": "^0.8.0",
     "cross-env": "^7.0.3",
     "dayjs": "^1.11.18",
     "dotenv": "^16.4.5",

@@ -1,6 +1,6 @@
 import { AccountRepo } from "@/repository/Account.js";
 import { ENV_TYPE } from "@/types/env.js";
-import { Bus, httpRouter, jwt, typeorm } from "@priolo/julian";
+import { Bus, email as emailNs, httpRouter, jwt, typeorm } from "@priolo/julian";
 import crypto from "crypto";
 import { Request, Response } from "express";
 import { FindManyOptions } from "typeorm";
@@ -22,6 +22,7 @@ class AuthRoute extends httpRouter.Service {
 			]
 		}
 	}
+	declare state: typeof this.stateDefault
 
 	/** se esiste JWT restituisce l'utente */
 	async current(req: Request, res: Response) {
@@ -121,48 +122,52 @@ class AuthRoute extends httpRouter.Service {
 	/**
 	 * Grazie all'"email" registra un nuovo utente
 	 */
-	// async registerUser(req: Request, res: Response) {
-	// 	const { email: emailPath, repository } = this.state
-	// 	const { email } = req.body
-	// 	const emailService = new PathFinder(this).getNode<emailNs.Service>(emailPath)
-	// 	const userService = new PathFinder(this).getNode<typeorm.repo>(repository)
+	async registerUser(req: Request, res: Response) {
+		const { email } = req.body
 
-	// 	// creo il codice segreto da inviare per email
-	// 	const code = process.env.NODE_ENV == ENV_TYPE.TEST ? "AAA" : crypto.randomBytes(8).toString('hex')
+		// creo il codice segreto da inviare per email
+		const code = process.env.NODE_ENV == ENV_TYPE.TEST ? "AAA" : crypto.randomBytes(8).toString('hex')
 
-	// 	// creo un utente temporaneo con il codice da attivare
-	// 	await userService.dispatch({
-	// 		type: RepoRestActions.SAVE,
-	// 		payload: {
-	// 			email,
-	// 			salt: code,
-	// 		}
-	// 	})
+		// verifico che non esista gia' un utente con questa email
+		const user = await new Bus(this, this.state.repository).dispatch({
+			type: typeorm.Actions.FIND_ONE,
+			payload: { where: { email } }
+		})
+		// if exist and is already registered 
+		if (!user) return res.status(400).json({ error: "register:email:exists" })
 
-	// 	// invio l'email per l'attivazione del codice
-	// 	await emailService.dispatch({
-	// 		type: emailNs.Actions.SEND,
-	// 		payload: {
-	// 			from: "from@test.com",
-	// 			to: "to@test.com",
-	// 			subject: "Richiesta registraziuone",
-	// 			html: `
-	// 				<div>ue ueue ti vuoi reggggistrare! he?</div> 
-	// 				<div>questo è il codice</div> 
-	// 				<div>${code}</div> 
-	// 				<a href="http://localhost:8080/api/activate?code=${code}">registrami ti prego!</a>
-	// 			`,
-	// 		}
-	// 	})
+		// creo un utente temporaneo con il codice da attivare
+		await new Bus(this, this.state.repository).dispatch({
+			type: typeorm.Actions.SAVE,
+			payload: {
+				email,
+				salt: code,
+			}
+		})
 
-	// 	res.status(200).json({ data: "activate:ok" })
-	// }
+		// invio l'email per l'attivazione del codice
+		await new Bus(this, this.state.email).dispatch({
+			type: emailNs.Actions.SEND,
+			payload: {
+				from: "from@test.com",
+				to: "to@test.com",
+				subject: "Richiesta registraziuone",
+				html: `
+					<div>ue ueue ti vuoi reggggistrare! he?</div> 
+					<div>questo è il codice</div> 
+					<div>${code}</div> 
+				`,
+			}
+		})
+
+		res.status(200).json({ data: "activate:ok" })
+	}
 
 	/**
 	 * Permette di attivare un utente confermado con il "code" e la "password"
 	 */
 	async activate(req: Request, res: Response) {
-		var { code, password } = req.body
+		var { code/*, password*/ } = req.body
 
 		const users = await new Bus(this, this.state.repository).dispatch({
 			type: typeorm.Actions.FIND,
@@ -172,13 +177,13 @@ class AuthRoute extends httpRouter.Service {
 		if (users.length == 0) return res.status(404).json({ error: "activate:code:not_found" })
 		const user = users[0]
 
-		// Creating a unique salt for a particular user 
-		user.salt = crypto.randomBytes(16).toString('hex');
-		// Hashing user's salt and password with 1000 iterations, 
-		user.password = crypto.pbkdf2Sync(password, user.salt, 1000, 64, `sha512`).toString(`hex`);
+		// // Creating a unique salt for a particular user 
+		// user.salt = crypto.randomBytes(16).toString('hex');
+		// // Hashing user's salt and password with 1000 iterations, 
+		// user.password = crypto.pbkdf2Sync(password, user.salt, 1000, 64, `sha512`).toString(`hex`);
 
 		await new Bus(this, this.state.repository).dispatch({
-			type: typeorm.RepoRestActions.SAVE,
+			type: typeorm.Actions.SAVE,
 			payload: user,
 		})
 

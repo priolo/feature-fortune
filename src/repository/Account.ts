@@ -61,7 +61,7 @@ export class AccountRepo {
 	@Column({ type: 'varchar', default: '' })
 	password?: string;
 
-	@Column({ type: 'varchar', default: '' })
+	@Column({ type: 'varchar', nullable: true })
 	salt?: string;
 
 }

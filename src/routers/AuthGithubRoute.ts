@@ -121,9 +121,9 @@ class AuthGithubRoute extends httpRouter.Service {
 
 			// Redirect alla pagina desiderata
 			if (customData?.act === "lgn") {
-				res.redirect(`${process.env.FRONTEND_URL}/app/`);
+				res.redirect(process.env.GITHUB_WEBHOOK_LOGIN)
 			} else {
-				res.redirect(`${process.env.FRONTEND_URL}/app/account/`);
+				res.redirect(process.env.GITHUB_WEBHOOK_REGISTER)
 			}
 
 		} catch (err) {

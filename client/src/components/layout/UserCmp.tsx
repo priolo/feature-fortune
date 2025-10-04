@@ -1,7 +1,7 @@
 import authSo from '@/stores/auth/repo';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Menu, MenuItem, Button } from '@mui/material';
+import { Box, Typography, Menu, MenuItem, Button, SxProps } from '@mui/material';
 import authApi from '@/api/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -45,7 +45,6 @@ const UserCmp: React.FC<UserCmpProps> = ({
 	};
 
 	const handleGithubLogin = () => {
-		console.log('GitHub login clicked');
 		authSo.loginWithGithub()
 		handleClose();
 	};
@@ -70,36 +69,58 @@ const UserCmp: React.FC<UserCmpProps> = ({
 	// RENDER
 	if (!authSo.state.user) return (
 		<Box sx={{ display: 'flex', gap: 1 }}>
-			<Box>REGISTER</Box>
-			<Button
-				variant="outlined"
+
+			<Button variant="outlined"
 				onClick={handleLoginClick}
-			>
-				LOGIN
-			</Button>
+			>LOGIN</Button>
+
 			<Menu
 				anchorEl={anchorEl}
 				open={open}
 				onClose={handleClose}
 			>
 				<MenuItem onClick={handleGoogleLogin}>
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-						🔗 GOOGLE
-					</Box>
+					🔗 GOOGLE
 				</MenuItem>
 				<MenuItem onClick={handleGithubLogin}>
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-						🐙 GITHUB
-					</Box>
+					🐙 GITHUB
 				</MenuItem>
 			</Menu>
 		</Box>
 	)
 
 	return <>
-		<Box
-			sx={{
-				display: 'flex',
+		<Box sx={sxUser}
+			onClick={handleUserClick}
+		>
+			<Typography variant="h6" className="user-avatar">
+				{authSo.state.user.name}
+			</Typography>
+
+			<Typography variant="body2" className="user-name">
+				{authSo.state.user.email}
+			</Typography>
+		</Box>
+		<Menu anchorEl={userMenuAnchorEl}
+			open={userMenuOpen}
+			onClose={handleUserMenuClose}
+		>
+			<MenuItem onClick={handleAccount}>
+				ACCOUNT
+			</MenuItem>
+			<MenuItem onClick={handleLogout}>
+				LOGOUT
+			</MenuItem>
+		</Menu>
+	</>
+};
+
+export default UserCmp;
+
+
+
+const sxUser:SxProps = {
+display: 'flex',
 				flexDirection: 'column',
 				gap: 1,
 				alignItems: 'center',
@@ -109,33 +130,4 @@ const UserCmp: React.FC<UserCmpProps> = ({
 				'&:hover': {
 					backgroundColor: 'rgba(0, 0, 0, 0.04)'
 				}
-			}}
-			onClick={handleUserClick}
-		>
-
-			<Typography variant="h6" className="user-avatar">
-				{authSo.state.user.name}
-			</Typography>
-
-			<Typography variant="body2" className="user-name">
-				{authSo.state.user.email}
-			</Typography>
-
-		</Box>
-		<Menu anchorEl={userMenuAnchorEl}
-			open={userMenuOpen}
-			onClose={handleUserMenuClose}
-		>
-			<MenuItem onClick={handleAccount}>
-				🚪 ACCOUNT
-			</MenuItem>
-			<MenuItem onClick={handleLogout}>
-				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-					🚪 LOGOUT
-				</Box>
-			</MenuItem>
-		</Menu>
-	</>
-};
-
-export default UserCmp;
+}

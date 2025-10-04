@@ -47,7 +47,7 @@ class AuthGoogleRoute extends httpRouter.Service {
 			// se non c'e' allora creo un nuovo USER
 			if (!user) {
 				user = await new Bus(this, this.state.repository).dispatch({
-					type: typeorm.RepoRestActions.SAVE,
+					type: typeorm.Actions.SAVE,
 					payload: <AccountRepo>{
 						email: payload.email,
 						name: payload.name,
