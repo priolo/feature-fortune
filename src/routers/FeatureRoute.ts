@@ -102,11 +102,11 @@ class FeatureRoute extends httpRouter.Service {
 		const id = req.params["id"]
 		const { feature }: { feature: FeatureRepo } = req.body
 		if (!id || !feature) return
-		const userUp = await new Bus(this, this.state.repository).dispatch({
+		const featureUp = await new Bus(this, this.state.repository).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: feature,
 		})
-		res.json(userUp)
+		res.json(featureUp)
 	}
 }
 

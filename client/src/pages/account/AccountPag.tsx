@@ -1,12 +1,13 @@
 import authSo, { stripePromise } from '@/stores/auth/repo';
-import { Box, Button, SxProps, Typography } from '@mui/material';
+import { Box, Button, SxProps, TextField, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { Elements } from '@stripe/react-stripe-js';
-import React from 'react';
+import React, { useState } from 'react';
 import GithubUserCmp from './cards/GithubUserCmp';
 import StripeCreditCardCmp from './cards/StripeCreditCardCmp';
 import fundingApi from '@/api/funding';
+import EmailVerifyDialog from '@/components/email/EmailVerifyDialog';
 
 
 interface AccountPagProps {
@@ -23,6 +24,7 @@ const AccountPag: React.FC<AccountPagProps> = ({
 
 
     // HOOKS
+    const [emailDialogIsOpen, setEmailDialogIsOpen] = useState(false)
 
 
     // HANDLERS
@@ -38,7 +40,6 @@ const AccountPag: React.FC<AccountPagProps> = ({
         console.log('Login Success:', response);
         authSo.attachGoogle(response.credential)
     }
-
     const handleLoginFailure = () => {
         console.log('Login Failure:');
     }
@@ -54,6 +55,10 @@ const AccountPag: React.FC<AccountPagProps> = ({
         //authSo.detachStripeAuthor()
     }
 
+    const handleEmailVerifyDialogClose = () => {
+        setEmailDialogIsOpen(false)
+    }
+
 
     // RENDER
     if (!authSo.state.user) {
@@ -64,18 +69,31 @@ const AccountPag: React.FC<AccountPagProps> = ({
 
     const haveGithub = !!authSo.state.user?.githubId
     const haveGoogle = !!authSo.state.user?.googleEmail
-    const haveStripeAuthor = !!authSo.state.user?.stripeAccountId
+    const haveStripeAuthor = authSo.state.user?.stripeHaveAccount
+    const isEmailVerified = !!authSo.state.user?.emailVerified
+    const email = authSo.state.user?.email || ''
 
     return (
         <Box sx={sxRoot}>
 
+
             {/* EMAIL ZONE */}
-            <Typography>Confirm email</Typography>
+            <Typography>{email}</Typography>
+            <Typography>
+                {isEmailVerified ? "VERIFIED" : "UNVERIFIED"}
+            </Typography>
+            <Button variant="contained" fullWidth
+                onClick={() => setEmailDialogIsOpen(true)}
+            >Verify</Button>
+            <EmailVerifyDialog
+                isOpen={emailDialogIsOpen}
+                onClose={handleEmailVerifyDialogClose}
+            />
 
 
 
             {/* GOOGLE ZONE */}
-            {haveGoogle != null ? (
+            {haveGoogle ? (
                 <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                     <div>{authSo.state.user.email} LOGGED</div>
                     <Button variant="contained"
@@ -85,14 +103,12 @@ const AccountPag: React.FC<AccountPagProps> = ({
             ) : (
                 <div style={{ display: 'flex', flexDirection: "column", gap: 10, alignItems: 'center' }}>
                     <div>ANONYMOUS</div>
-                    <GoogleOAuthProvider clientId="545902107281-qgd4s1enct9mcq4qh3vpccn45uocdk9s.apps.googleusercontent.com">
-                        <div>
-                            <h2>Login with Google</h2>
-                            <GoogleLogin
-                                onSuccess={handleLoginSuccess}
-                                onError={handleLoginFailure}
-                            />
-                        </div>
+                    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID}>
+                        <h2>Login with Google</h2>
+                        <GoogleLogin
+                            onSuccess={handleLoginSuccess}
+                            onError={handleLoginFailure}
+                        />
                     </GoogleOAuthProvider>
                 </div>
             )}

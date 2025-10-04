@@ -2,6 +2,33 @@ import ajax, { CallOptions } from "@/plugins/AjaxService"
 import { Account } from "@/types/Account"
 
 
+/**
+ * Cerco di recuperare l'attuale ACCOUNT loggato tramite JWT
+ * Se non sono loggato ritorna null
+ */
+function current(opt?: CallOptions): Promise<{ user: Account }> {
+	return ajax.get(`auth/current`, { ...opt, isLogin: true })
+}
+
+/**
+ * Effettual il logout dell'utente 
+ */
+function logout(opt?: CallOptions): Promise<{ user: Account }> {
+	return ajax.post(`auth/logout`, null, opt)
+}
+/**
+ * Verifico un EMAIL
+ */
+function emailSendCode(email: string, opt?: CallOptions): Promise<any> {
+	return ajax.post(`auth/email_code`, { email }, opt)
+}
+/**
+ * Verifico un EMAIL
+ */
+function emailVerify(code: string, opt?: CallOptions): Promise<{ user: Account }> {
+	return ajax.post(`auth/email_verify`, { code }, opt)
+}
+
 
 /**
  * Non sono loggato quindi effettuo il login 
@@ -36,38 +63,35 @@ function githubGetAccount(accountId: number, opt?: CallOptions): Promise<{ accou
 
 
 
-
-function current(opt?: CallOptions): Promise<{ user: Account }> {
-	return ajax.get(`auth/current`, { ...opt, isLogin: true })
-}
-
 function loginGoogle(token: string, opt?: CallOptions): Promise<{ user: Account }> {
-	return ajax.post(`auth/google`, { token }, { ...opt, isLogin: true })
+	return ajax.post(`auth/google/login`, { token }, { ...opt, isLogin: true })
 }
+/** 
+ * aggancio un account GOOGLE all'ACCOUNT attualmente loggato 
+ */
 function googleAttach(token: string, opt?: CallOptions): Promise<any> {
 	return ajax.post(`accounts/google`, { token }, opt)
 }
 
-
-function logout(opt?: CallOptions): Promise<{ user: Account }> {
-	return ajax.post(`auth/logout`, null, opt)
-}
 
 
 
 
 
 const authApi = {
+	current,
+	logout,
+
+	emailSendCode,
+	emailVerify,
 
 	githubGetAccount,
 	githubLoginUrl,
 	githubAttachUrl,
 	githubDetach,
 
-	current,
 	loginGoogle,
 	googleAttach,
-	logout,
 }
 
 export default authApi

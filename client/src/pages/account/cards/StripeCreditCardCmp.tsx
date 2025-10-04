@@ -16,7 +16,7 @@ interface GithubUserCmpProps {
 const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 	sx,
 }) => {
-	const havePaymentMethod = !!authSo.state.user?.stripePaymentMethodId
+	const havePaymentMethod = authSo.state.user?.stripeHaveCard
 
 	// STORES
 

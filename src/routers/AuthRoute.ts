@@ -1,4 +1,4 @@
-import { AccountRepo } from "@/repository/Account.js";
+import { AccountRepo, accountSendable, EMAIL_CODE, JWTPayload } from "@/repository/Account.js";
 import { ENV_TYPE } from "@/types/env.js";
 import { Bus, email as emailNs, httpRouter, jwt, typeorm } from "@priolo/julian";
 import crypto from "crypto";
@@ -19,6 +19,8 @@ class AuthRoute extends httpRouter.Service {
 			routers: [
 				{ path: "/current", verb: "get", method: "current" },
 				{ path: "/logout", verb: "post", method: "logout" },
+				{ path: "/email_code", verb: "post", method: "emailSendCode" },
+				{ path: "/email_verify", verb: "post", method: "emailVerify" },
 			]
 		}
 	}
@@ -32,7 +34,7 @@ class AuthRoute extends httpRouter.Service {
 		}
 
 		// ricavo JWT dai cookies
-		const token = req.cookies.jwt;
+		const token: string = req.cookies.jwt;
 		if (!token) {
 			return res.status(401).json({ user: null });
 		}
@@ -40,18 +42,22 @@ class AuthRoute extends httpRouter.Service {
 		try {
 
 			// decodifico il JWT per andare a cercarlo nel DB
-			const data = await new Bus(this, "/jwt").dispatch({
+			const userJwt: JWTPayload = await new Bus(this, "/jwt").dispatch({
 				type: jwt.Actions.DECODE,
 				payload: token,
 			})
 
 			// cerco lo USER tramite email
+			// const users: AccountRepo[] = await new Bus(this, this.state.repository).dispatch({
+			// 	type: typeorm.Actions.FIND,
+			// 	payload: <FindManyOptions<AccountRepo>>{
+			// 		//select: ["id", "email", "name", "avatar"],
+			// 		where: { email: data.email },
+			// 	}
+			// })
 			const users: AccountRepo[] = await new Bus(this, this.state.repository).dispatch({
-				type: typeorm.Actions.FIND,
-				payload: <FindManyOptions<AccountRepo>>{
-					//select: ["id", "email", "name", "avatar"],
-					where: { email: data.email },
-				}
+				type: typeorm.Actions.GET_BY_ID,
+				payload: userJwt.id
 			})
 			const user = users?.[0]
 
@@ -71,9 +77,9 @@ class AuthRoute extends httpRouter.Service {
 			//#endregion
 
 			// restituisco i dati dell'utente loggato
-			delete user.password
-			delete user.salt
-			res.status(200).json({ user });
+			res.status(200).json({
+				user: accountSendable(user),
+			});
 
 		} catch (error) {
 			// NON verificato
@@ -90,12 +96,13 @@ class AuthRoute extends httpRouter.Service {
 			}
 		})
 		// Genera il token JWT con l'email nel payload
-		const jwtToken = await new Bus(this, "/jwt").dispatch({
+		const jwtToken: string = await new Bus(this, "/jwt").dispatch({
 			type: jwt.Actions.ENCODE,
 			payload: {
-				payload: {
+				payload: <JWTPayload>{
 					id: user.id,
 					email: user.email,
+					name: user.name,
 				}
 			},
 		})
@@ -106,9 +113,9 @@ class AuthRoute extends httpRouter.Service {
 			maxAge: 24 * 60 * 60 * 1000, // 1 giorno
 		});
 		// restituisco i dati dell'utente loggato
-		delete user.password
-		delete user.salt
-		res.status(200).json({ user });
+		res.status(200).json({
+			user: accountSendable(user),
+		});
 	}
 
 	/** elimino il cookie JWT cosi da chiudere la sessione */
@@ -117,12 +124,16 @@ class AuthRoute extends httpRouter.Service {
 		res.status(200).send('Logout successful');
 	}
 
-	
+
+
+
+
+
 
 	/**
 	 * Grazie all'"email" registra un nuovo utente
 	 */
-	async registerUser(req: Request, res: Response) {
+	async emailSendCode(req: Request, res: Response) {
 		const { email } = req.body
 
 		// creo il codice segreto da inviare per email
@@ -131,17 +142,22 @@ class AuthRoute extends httpRouter.Service {
 		// verifico che non esista gia' un utente con questa email
 		const user = await new Bus(this, this.state.repository).dispatch({
 			type: typeorm.Actions.FIND_ONE,
-			payload: { where: { email } }
+			payload: <FindManyOptions<AccountRepo>>{
+				where: [
+					{ email: email, emailCode: EMAIL_CODE.VERIFIED },
+					{ googleEmail: email }
+				]
+			}
 		})
 		// if exist and is already registered 
-		if (!user) return res.status(400).json({ error: "register:email:exists" })
+		if (!!user) return res.status(400).json({ error: "register:email:exists" })
 
-		// creo un utente temporaneo con il codice da attivare
+		// altrimenti creo un utente temporaneo con il codice da attivare
 		await new Bus(this, this.state.repository).dispatch({
 			type: typeorm.Actions.SAVE,
-			payload: {
+			payload: <AccountRepo>{
 				email,
-				salt: code,
+				emailCode: code,
 			}
 		})
 
@@ -150,7 +166,7 @@ class AuthRoute extends httpRouter.Service {
 			type: emailNs.Actions.SEND,
 			payload: {
 				from: "from@test.com",
-				to: "to@test.com",
+				to: email,
 				subject: "Richiesta registraziuone",
 				html: `
 					<div>ue ueue ti vuoi reggggistrare! he?</div> 
@@ -160,34 +176,59 @@ class AuthRoute extends httpRouter.Service {
 			}
 		})
 
-		res.status(200).json({ data: "activate:ok" })
+		res.status(200).json({ data: "ok" })
 	}
 
 	/**
 	 * Permette di attivare un utente confermado con il "code" e la "password"
 	 */
-	async activate(req: Request, res: Response) {
-		var { code/*, password*/ } = req.body
+	async emailVerify(req: Request, res: Response) {
+		var { code } = req.body
 
-		const users = await new Bus(this, this.state.repository).dispatch({
-			type: typeorm.Actions.FIND,
-			payload: { where: { salt: code } }
+		// cerco lo USER tramite il codice
+		const user: AccountRepo = await new Bus(this, this.state.repository).dispatch({
+			type: typeorm.Actions.FIND_ONE,
+			payload: <FindManyOptions<AccountRepo>>{
+				where: { emailCode: code }
+			}
 		})
+		if (!user) return res.status(404).json({ error: "activate:code:not_found" })
 
-		if (users.length == 0) return res.status(404).json({ error: "activate:code:not_found" })
-		const user = users[0]
 
 		// // Creating a unique salt for a particular user 
 		// user.salt = crypto.randomBytes(16).toString('hex');
 		// // Hashing user's salt and password with 1000 iterations, 
 		// user.password = crypto.pbkdf2Sync(password, user.salt, 1000, 64, `sha512`).toString(`hex`);
 
+		// verifico l'email
+		user.emailCode = EMAIL_CODE.VERIFIED
 		await new Bus(this, this.state.repository).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: user,
 		})
 
-		res.status(200).json({ data: "activate:ok" })
+		// Genera il token JWT con l'email nel payload
+		const jwtToken: string = await new Bus(this, "/jwt").dispatch({
+			type: jwt.Actions.ENCODE,
+			payload: {
+				payload: <JWTPayload>{
+					id: user.id,
+					name: user.name ?? user.email,
+					email: user.email,
+				}
+			},
+		})
+		// memorizzo JWT nei cookies. Imposta il cookie HTTP-only
+		res.cookie('jwt', jwtToken, {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production', // Assicurati di usare secure solo in produzione
+			maxAge: 24 * 60 * 60 * 1000, // 1 giorno
+		});
+
+		// restituisco i dati dell'utente loggato
+		res.status(200).json({
+			user: accountSendable(user),
+		});
 	}
 
 	/**

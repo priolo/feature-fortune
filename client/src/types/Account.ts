@@ -9,6 +9,7 @@ export interface Account {
 	name: string
 
 	email: string
+	emailVerified?: boolean
 
 	avatarUrl?: string
 
@@ -20,14 +21,16 @@ export interface Account {
 	 * STRIPE for CONTRIBUTOR
 	 * who put the moneys
 	 */
-	stripeCustomerId?: string
+	//stripeCustomerId?: string
 	/** 
 	 * STRIPE payment method 
 	 */
-	stripePaymentMethodId?: string
+	//stripePaymentMethodId?: string
+	stripeHaveCard?: boolean
 	/** 
 	 * STRIPE for AUTHOR
 	 * who receive the moneys
 	 */
-	stripeAccountId?: string
+	//stripeAccountId?: string
+	stripeHaveAccount?: boolean
 }

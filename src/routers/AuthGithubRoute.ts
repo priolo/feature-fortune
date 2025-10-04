@@ -1,4 +1,4 @@
-import { AccountRepo } from "@/repository/Account.js";
+import { AccountRepo, JWTPayload } from "@/repository/Account.js";
 import { OAuthApp } from "@octokit/oauth-app";
 import { Bus, httpRouter, jwt, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
@@ -39,7 +39,7 @@ class AuthGithubRoute extends httpRouter.Service {
 	/** 
 	 * WEBHOOK 
 	 * https://github.com/settings/applications/3174659
-	 * per il LOGIN GitHub ritorna con `code` 
+	 * LOGIN/REGISTER GitHub ritorna con `code` 
 	 */
 	async callback(req: Request, res: Response) {
 		const { code, error, state } = req.query as { code: string, error: string, state: string }
@@ -75,12 +75,13 @@ class AuthGithubRoute extends httpRouter.Service {
 						where: { githubId: userGithub.id, },
 					}
 				})
+				
 				// se non c'e allora creo un nuovo USER
 				if (!user) {
 					user = await new Bus(this, this.state.account_repo).dispatch({
 						type: typeorm.Actions.SAVE,
 						payload: <AccountRepo>{
-							email: userGithub.email ?? userGithub.notification_email ?? userGithub.login,
+							email: userGithub.email ?? userGithub.notification_email,
 							name: userGithub.name || userGithub.login,
 							avatarUrl: userGithub.avatar_url,
 							githubId: userGithub.id,
@@ -104,7 +105,7 @@ class AuthGithubRoute extends httpRouter.Service {
 			const jwtToken = await new Bus(this, "/jwt").dispatch({
 				type: jwt.Actions.ENCODE,
 				payload: {
-					payload: {
+					payload: <JWTPayload>{
 						id: user.id,
 						email: user.email,
 						name: user.name,

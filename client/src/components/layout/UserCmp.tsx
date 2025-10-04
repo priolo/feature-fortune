@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Menu, MenuItem, Button, SxProps } from '@mui/material';
 import authApi from '@/api/auth';
 import { useNavigate } from 'react-router-dom';
+import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+import EmailVerifyDialog from '../email/EmailVerifyDialog';
 
 interface UserCmpProps {
 }
@@ -16,12 +18,18 @@ const UserCmp: React.FC<UserCmpProps> = ({
 
 	// HOOKS
 	const navigate = useNavigate();
+	useEffect(() => {
+		authSo.current()
+	}, [])
+
 
 	// STATE
 	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 	const open = Boolean(anchorEl);
 	const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<null | HTMLElement>(null);
 	const userMenuOpen = Boolean(userMenuAnchorEl);
+	const [emailVerifyOpen, setEmailVerifyOpen] = useState(false);
+
 
 	// HANDLERS
 	const handleLoginClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -36,34 +44,39 @@ const UserCmp: React.FC<UserCmpProps> = ({
 	};
 
 
+	// va alla pagina ACCOUNT
+	const handleAccount = async () => {
+		navigate('/app/account');
+		handleUserMenuClose();
+	}
+	// fa il logout
+	const handleLogout = async () => {
+		await authSo.logout()
+		handleUserMenuClose();
+	}
 
 
-	const handleGoogleLogin = () => {
-		// TODO: Implement Google login
-		console.log('Google login clicked');
-		handleClose();
-	};
+	// EMAIL
+	const handleEmailLogin = () => {
+		setEmailVerifyOpen(true)
+	}
 
+	// GOOGLE
+	// hook chiamato da google per il successo
+    const handleLoginSuccess = (response: CredentialResponse) => {
+        console.log('Login Success:', response);
+        authSo.loginWithGoogle(response.credential)
+    }
+	// hook chiamato da google per il fallimento
+    const handleLoginFailure = () => {
+        console.log('Login Failure:');
+    }
+
+	// GITHUB
 	const handleGithubLogin = () => {
 		authSo.loginWithGithub()
 		handleClose();
 	};
-
-	const handleAccount = async () => {
-		navigate('/app/account');
-		handleUserMenuClose();
-	};
-
-	const handleLogout = async () => {
-		await authSo.logout()
-		handleUserMenuClose();
-	};
-
-
-	// HOOKS
-	useEffect(() => {
-		authSo.current()
-	}, [])
 
 
 	// RENDER
@@ -79,13 +92,26 @@ const UserCmp: React.FC<UserCmpProps> = ({
 				open={open}
 				onClose={handleClose}
 			>
-				<MenuItem onClick={handleGoogleLogin}>
-					🔗 GOOGLE
+				<MenuItem onClick={handleEmailLogin}>
+					EMAIL
+				</MenuItem>
+				<MenuItem>
+					<GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID}>
+                        <GoogleLogin
+                            onSuccess={handleLoginSuccess}
+                            onError={handleLoginFailure}
+                        />
+                    </GoogleOAuthProvider>
 				</MenuItem>
 				<MenuItem onClick={handleGithubLogin}>
 					🐙 GITHUB
 				</MenuItem>
 			</Menu>
+
+			<EmailVerifyDialog
+				isOpen={emailVerifyOpen}
+				onClose={() => setEmailVerifyOpen(false)}
+			/>
 		</Box>
 	)
 
@@ -117,17 +143,15 @@ const UserCmp: React.FC<UserCmpProps> = ({
 
 export default UserCmp;
 
-
-
-const sxUser:SxProps = {
-display: 'flex',
-				flexDirection: 'column',
-				gap: 1,
-				alignItems: 'center',
-				cursor: 'pointer',
-				padding: 1,
-				borderRadius: 1,
-				'&:hover': {
-					backgroundColor: 'rgba(0, 0, 0, 0.04)'
-				}
+const sxUser: SxProps = {
+	display: 'flex',
+	flexDirection: 'column',
+	gap: 1,
+	alignItems: 'center',
+	cursor: 'pointer',
+	padding: 1,
+	borderRadius: 1,
+	'&:hover': {
+		backgroundColor: 'rgba(0, 0, 0, 0.04)'
+	}
 }

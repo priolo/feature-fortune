@@ -1,4 +1,4 @@
-import { AccountRepo } from "@/repository/Account.js";
+import { AccountRepo, accountSendable } from "@/repository/Account.js";
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 import { customDataToUrl, githubOAuth } from "./AuthGithubRoute.js";
@@ -61,7 +61,9 @@ class AccountRoute extends httpRouter.Service {
 			}
 		})
 		if (!account) return res.status(404).json({ error: "Account not found" });
-		res.json({ account })
+		res.json({ 
+			account: accountSendable(account),
+		})
 	}
 
 	async detachGithub(req: Request, res: Response) {
@@ -79,7 +81,9 @@ class AccountRoute extends httpRouter.Service {
 	}
 
 
-	/** eseguo il login con GOOGLE */
+	/** 
+	 * Aggancio un account GOOGLE all'ACCOUNT attualmente loggato
+	 */
 	async attachGoogle(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
@@ -125,7 +129,9 @@ class AccountRoute extends httpRouter.Service {
 					googleEmail: payload.email,
 				},
 			})
-			res.status(200).json({ user })
+			res.status(200).json({ 
+				user: accountSendable(user),
+			})
 
 		} catch (error) {
 			res.status(401).json({ error: 'Invalid Token' })

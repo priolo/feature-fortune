@@ -14,9 +14,9 @@ export async function seeding(root: RootService) {
 		type: typeorm.RepoStructActions.SEED,
 		payload: <AccountRepo[]>[
 			{ type: typeorm.RepoStructActions.TRUNCATE },
-			{ id: "id-user-1", name: "Giuseppe Verdi", email: "giuseppe.verdi@gmail.com", password: "test" },
-			{ id: "id-user-2", name: "Mario Rossi", email: "mario.rossi@gmail.com", password: "test" },
-			{ id: "id-user-3", name: "Luigi Bianchi", email: "luigi.bianchi@gmail.com", password: "test" },
+			{ id: "id-user-1", name: "Giuseppe Verdi", email: "giuseppe.verdi@gmail.com", },
+			{ id: "id-user-2", name: "Mario Rossi", email: "mario.rossi@gmail.com", },
+			{ id: "id-user-3", name: "Luigi Bianchi", email: "luigi.bianchi@gmail.com", },
 		]
 	});
 
@@ -26,14 +26,14 @@ export async function seeding(root: RootService) {
 			{ type: typeorm.RepoStructActions.TRUNCATE },
 			{
 				id: "id-feature-1",
-				githubName: "priolo/jack", 
+				githubRepoId: 334893295, //"priolo/jon", 
 				title: "Vorrei una funzionalità X", 
 				description: "La funzionalità X mi permetterebbe di fare Y e Z, migliorando il mio flusso di lavoro in questo modo...", 
 				accountId: accounts[0].id!,
 			},
 			{
 				id: "id-feature-2",
-				githubName: "priolo/jess", 
+				githubRepoId: 875133378, //"priolo/jess", 
 				title: "Vorrei una funzionalità Y",
 				description: "La funzionalità Y sarebbe fantastica perché mi aiuterebbe a risolvere il problema di A e B, rendendo tutto più efficiente...",
 				accountId: accounts[0].id!,

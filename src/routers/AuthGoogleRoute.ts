@@ -1,4 +1,4 @@
-import { AccountRepo } from "@/repository/Account.js";
+import { AccountRepo, accountSendable, JWTPayload } from "@/repository/Account.js";
 import { Bus, httpRouter, jwt, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 import { OAuth2Client } from 'google-auth-library';
@@ -25,7 +25,7 @@ class AuthGoogleRoute extends httpRouter.Service {
 
 	
 
-	/** eseguo il login con GOOGLE */
+	/** login/register con GOOGLE */
 	async login(req: Request, res: Response) {
 		const { token } = req.body;
 		try {
@@ -41,29 +41,36 @@ class AuthGoogleRoute extends httpRouter.Service {
 			let user: AccountRepo = await new Bus(this, this.state.repository).dispatch({
 				type: typeorm.Actions.FIND_ONE,
 				payload: <FindManyOptions<AccountRepo>>{
-					where: { email: payload.email },
+					where: [
+						{ email: payload.email },
+						{ googleEmail: payload.email },
+					],
 				}
 			})
+
 			// se non c'e' allora creo un nuovo USER
 			if (!user) {
 				user = await new Bus(this, this.state.repository).dispatch({
 					type: typeorm.Actions.SAVE,
 					payload: <AccountRepo>{
 						email: payload.email,
+						googleEmail: payload.email,
 						name: payload.name,
 						avatarUrl: payload.picture,
 					}
 				})
 			}
+
+			
 			// Genera il token JWT con l'email nel payload
-			const jwtToken = await new Bus(this, "/jwt").dispatch({
+			const jwtToken:string = await new Bus(this, "/jwt").dispatch({
 				type: jwt.Actions.ENCODE,
 				payload: {
-					payload: {
+					payload: <JWTPayload>{
 						id: user.id,
 						name: payload.name,
 						email: payload.email,
-					}
+					} 
 				},
 			})
 			// memorizzo JWT nei cookies. Imposta il cookie HTTP-only
@@ -74,9 +81,9 @@ class AuthGoogleRoute extends httpRouter.Service {
 			});
 
 			// restituisco i dati dell'utente loggato
-			delete user.password
-			delete user.salt
-			res.status(200).json({ user });
+			res.status(200).json({ 
+				user: accountSendable(user),
+			});
 
 		} catch (error) {
 			res.status(401).json({ error: 'Invalid Token' });

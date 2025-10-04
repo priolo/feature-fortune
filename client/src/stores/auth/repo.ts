@@ -7,7 +7,7 @@ import { loadStripe } from "@stripe/stripe-js";
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
-export const stripePromise = loadStripe('pk_test_51S9Cab3oUVTivUNZHbQYRGlbEErimwbDooNuVnwNewJQcSCjVU923z7Y40zJZVPwEw9xaav03rBwtQkNKnRlE3km00KRH91N8Q');
+export const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 /**
  * Contiene le info dell'utente loggato
@@ -60,7 +60,7 @@ const setup = {
 			})
 		},
 
-		
+
 		loginWithGoogle: async (token: string, store?: AuthStore) => {
 			let user: Account = null
 			try {
@@ -72,6 +72,9 @@ const setup = {
 			console.log('User data:', user);
 			authSo.setUser(user)
 		},
+		/** 
+		 * attacca un account GOOGLE all'ACCOUNT attualmente loggato 
+		 */
 		attachGoogle: async (token: string, store?: AuthStore) => {
 			const res = await authApi.googleAttach(token)
 			const user = res.user as Account
