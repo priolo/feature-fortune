@@ -2,10 +2,10 @@
   "extends": "@tsconfig/node22",
   "compilerOptions": {
 
-    "target": "ESNext",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "isolatedModules": true,
+    // "target": "ESNext",
+    // "module": "NodeNext",
+    // "moduleResolution": "NodeNext",
+    // "isolatedModules": true,
 
     "outDir": "./dist",
     "rootDir": "./src",
