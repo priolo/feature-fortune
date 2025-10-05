@@ -37,7 +37,7 @@ export async function accountEmailSendCode(node: ServiceBase, email: string, log
 	await new Bus(node, node.state.email).dispatch({
 		type: emailNs.Actions.SEND,
 		payload: {
-			from: "from@test.com",
+			from: process.env.EMAIL_SENDER ?? "from@support.com",
 			to: "to@test.com",
 			subject: "Richiesta registraziuone",
 			html: `

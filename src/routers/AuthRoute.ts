@@ -165,7 +165,7 @@ class AuthRoute extends httpRouter.Service {
 		await new Bus(this, this.state.email).dispatch({
 			type: emailNs.Actions.SEND,
 			payload: {
-				from: "from@test.com",
+				from: process.env.EMAIL_SENDER ?? "from@support.com",
 				to: email,
 				subject: "Richiesta registraziuone",
 				html: `
