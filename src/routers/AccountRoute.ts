@@ -1,4 +1,4 @@
-import { AccountRepo, accountSendable } from "@/repository/Account.js";
+import { AccountRepo, accountSendable } from "../repository/Account.js";
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 import { customDataToUrl, githubOAuth } from "./AuthGithubRoute.js";

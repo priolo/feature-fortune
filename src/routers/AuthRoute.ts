@@ -1,5 +1,5 @@
-import { AccountRepo, accountSendable, EMAIL_CODE, JWTPayload } from "@/repository/Account.js";
-import { ENV_TYPE } from "@/types/env.js";
+import { AccountRepo, accountSendable, EMAIL_CODE, JWTPayload } from "../repository/Account.js";
+import { ENV_TYPE } from "../types/env.js";
 import { Bus, email as emailNs, httpRouter, jwt, typeorm } from "@priolo/julian";
 import crypto from "crypto";
 import { Request, Response } from "express";

@@ -1,5 +1,5 @@
-import { AccountRepo } from "@/repository/Account.js";
-import { CommentRepo } from "@/repository/Comment.js";
+import { AccountRepo } from "../repository/Account.js";
+import { CommentRepo } from "../repository/Comment.js";
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 

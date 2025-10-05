@@ -10,6 +10,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production tsx src/start.ts",
     "start:dev": "cross-env NODE_ENV=development tsx src/start.ts",
+    "start:prod": "tsc && node dist/start.js",
     "test": "node --experimental-vm-modules --inspect-brk ./node_modules/jest/bin/jest.js",
     "server_stripe": "node ./src/server_stripe_webhook.js",
     "server_github": "tsx ./src/server_github_auth.ts",

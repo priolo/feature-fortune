@@ -1,4 +1,4 @@
-import { AccountRepo, JWTPayload } from "@/repository/Account.js";
+import { AccountRepo, JWTPayload } from "../repository/Account.js";
 import { OAuthApp } from "@octokit/oauth-app";
 import { Bus, httpRouter, jwt, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";

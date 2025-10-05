@@ -1,5 +1,5 @@
-import { AccountRepo } from "@/repository/Account.js";
-import { FUNDING_STATE, FundingRepo } from "@/repository/Funding.js";
+import { AccountRepo } from "../../repository/Account.js";
+import { FUNDING_STATE, FundingRepo } from "../../repository/Funding.js";
 import { Octokit } from "@octokit/rest";
 import { Bus, ServiceBase, typeorm } from "@priolo/julian";
 import { FindManyOptions, LessThan } from "typeorm";

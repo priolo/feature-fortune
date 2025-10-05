@@ -1,9 +1,8 @@
-import { AccountRepo } from "@/repository/Account.js";
-import { Actions } from "@/services/stripe/types.js";
+import { Actions } from "../services/stripe/types.js";
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
-import { RepoRestActions } from "@priolo/julian/dist/services/typeorm/types.js";
 import { Request, Response } from "express";
 import Stripe from "stripe";
+import { AccountRepo } from "../repository/Account.js";
 
 
 
