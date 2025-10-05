@@ -17,11 +17,11 @@ function get(id: string, opt?: CallOptions): Promise<Feature> {
 /** CREATE */
 function save(featureData: Feature, opt?: CallOptions): Promise<Feature> {
 	// mi assicuro mandi le cose corrette
-	const feature = {
+	const feature = <Feature>{
 		id: featureData.id,
 		title: featureData.title,
 		description: featureData.description,
-		githubId: featureData.githubRepoId,
+		githubRepoId: featureData.githubRepoId,
 	}
 	return ajax.post(`features`, { feature }, opt)
 }

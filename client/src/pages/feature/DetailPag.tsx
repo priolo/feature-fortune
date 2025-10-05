@@ -173,7 +173,7 @@ const FeatureDetailPag: React.FC<Props> = ({
                 <CardActions>
                     <Button
                         onClick={handleFeatureSaveClick}
-                    >Create Feature</Button>
+                    >{inNew ? "Create Feature": "Update Feature"}</Button>
                 </CardActions>
             </Card>
 
