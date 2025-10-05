@@ -55,11 +55,10 @@ class AuthRoute extends httpRouter.Service {
 			// 		where: { email: data.email },
 			// 	}
 			// })
-			const users: AccountRepo[] = await new Bus(this, this.state.repository).dispatch({
+			const user: AccountRepo = await new Bus(this, this.state.repository).dispatch({
 				type: typeorm.Actions.GET_BY_ID,
 				payload: userJwt.id
 			})
-			const user = users?.[0]
 
 			// se non c'e' allora errore
 			if (!user) return res.status(404).json({ user: null })

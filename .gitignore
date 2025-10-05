@@ -10,3 +10,4 @@ db/
 .env.test
 .env.production
 .env.development
+.env.remote
