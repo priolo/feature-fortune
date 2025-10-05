@@ -1,6 +1,6 @@
 {
   "name": "jen",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Agents Framework",
   "private": true,
   "author": "Iorio Ivano <iorioivano@gmail.com>",
@@ -26,7 +26,7 @@
     "@octokit/oauth-app": "^8.0.1",
     "@octokit/rest": "^22.0.0",
     "@priolo/jon-utils": "^0.5.3",
-    "@priolo/julian": "^0.8.1",
+    "@priolo/julian": "^0.8.2",
     "cross-env": "^7.0.3",
     "dayjs": "^1.11.18",
     "dotenv": "^16.4.5",
