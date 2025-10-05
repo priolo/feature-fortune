@@ -60,11 +60,11 @@ export class FundingRepo extends AccountAsset {
 	@Column({ type: 'varchar' })
 	featureId: string;
 
-	/**
-	 * comments on the feature
-	 */
-	@OneToMany(() => CommentRepo, comment => comment.funding)
-	comments?: Relation<CommentRepo[]>;
+	// /**
+	//  * comments on the feature
+	//  */
+	// @OneToMany(() => CommentRepo, comment => comment.funding)
+	// comments?: Relation<CommentRepo[]>;
 
 	//#endregion
 

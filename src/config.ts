@@ -19,6 +19,7 @@ import { envInit } from "./types/env.js";
 import PaymentCrono from "./services/crono/PaymentCrono.js";
 import StripeService from "./services/stripe/StripeService.js";
 import CommentRoute from "./routers/CommentRoute.js";
+import ReflectionRoute from "./services/reflection/ReflectionRoute.js";
 
 
 
@@ -57,6 +58,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 				{ class: AuthGoogleRoute },
 				{ class: AuthRoute },
 				{ class: StripeHookRoute },
+				{ class: ReflectionRoute },
 
 
 				<httpRouter.jwt.conf>{
@@ -130,7 +132,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 			secret: "secret_word!!!"
 		},
 
-		{
+		<email.conf>{
 			class: "email",
 			account: <email.conf>{
 				// https://ethereal.email/login
@@ -142,9 +144,6 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 				}
 			},
 		}
-
-
-
 	]
 }
 

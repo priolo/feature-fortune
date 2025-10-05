@@ -51,7 +51,7 @@ export async function accountEmailSendCode(node: ServiceBase, email: string, log
 	return true
 }
 
-export async function accountEmailVerify(code: string, email: string, logged?: AccountRepo): Promise<boolean> {
+// export async function accountEmailVerify(code: string, email: string, logged?: AccountRepo): Promise<boolean> {
 
 
-}
+// }
