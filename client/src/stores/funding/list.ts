@@ -20,8 +20,8 @@ const setup = {
 	actions: {
 
 		async fetch(_: void, store?: FundingListStore) {
-			const fundings = await fundingApi.index()
-			store.setAll(fundings)
+			//const fundings = await fundingApi.index()
+			//store.setAll(fundings)
 		},
 
 		async create(_: void, store?: FundingListStore) {

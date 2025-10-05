@@ -1,6 +1,6 @@
-import { email, http, httpRouter, jwt, log, typeorm } from "@priolo/julian";
+import { email, http, httpRouter, httpStatic, jwt, log, typeorm } from "@priolo/julian";
 import { TypeLog } from "@priolo/julian/dist/core/types.js";
-import { dirname } from 'path';
+import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { AccountRepo } from "./repository/Account.js";
 import { CommentRepo } from "./repository/Comment.js";
@@ -11,15 +11,15 @@ import AccountRoute from "./routers/AccountRoute.js";
 import AuthGithubRoute from "./routers/AuthGithubRoute.js";
 import AuthGoogleRoute from "./routers/AuthGoogleRoute.js";
 import AuthRoute from "./routers/AuthRoute.js";
+import CommentRoute from "./routers/CommentRoute.js";
 import FeatureRoute from "./routers/FeatureRoute.js";
 import FundingRoute from "./routers/FundingRoute.js";
 import PaymentRoute from "./routers/PaymentRoute.js";
 import StripeHookRoute from "./routers/StripeHookRoute.js";
-import { envInit } from "./types/env.js";
 import PaymentCrono from "./services/crono/PaymentCrono.js";
-import StripeService from "./services/stripe/StripeService.js";
-import CommentRoute from "./routers/CommentRoute.js";
 import ReflectionRoute from "./services/reflection/ReflectionRoute.js";
+import StripeService from "./services/stripe/StripeService.js";
+import { envInit } from "./types/env.js";
 
 
 
@@ -60,6 +60,12 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 				{ class: StripeHookRoute },
 				{ class: ReflectionRoute },
 
+				<httpStatic.conf>{
+					class: "http-static",
+					dir: path.join(__dirname, "../client/dist"),
+					path: "/app/",
+					spaFile: "index.html",
+				},
 
 				<httpRouter.jwt.conf>{
 					class: "http-router/jwt",
