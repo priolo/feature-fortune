@@ -139,7 +139,7 @@ class AuthRoute extends httpRouter.Service {
 		const code = process.env.NODE_ENV == ENV_TYPE.TEST ? "AAA" : crypto.randomBytes(8).toString('hex')
 
 		// verifico che non esista gia' un utente con questa email
-		const user = await new Bus(this, this.state.repository).dispatch({
+		let user = await new Bus(this, this.state.repository).dispatch({
 			type: typeorm.Actions.FIND_ONE,
 			payload: <FindManyOptions<AccountRepo>>{
 				where: [
@@ -148,16 +148,18 @@ class AuthRoute extends httpRouter.Service {
 				]
 			}
 		})
-		// if exist and is already registered 
-		if (!!user) return res.status(400).json({ error: "register:email:exists" })
 
-		// altrimenti creo un utente temporaneo con il codice da attivare
+		// se sono gia' loggato e trovo questa 
+		// email allora è un errore perchè in questo caso voglio fare un ATTACH
+		//if (!!user) return res.status(400).json({ error: "register:email:exists" })
+
+		// altrimenti creo un utente temporaneo con l'email
+		if (!user) user = { email, }
+
+		// aggiorno l'account con il codice di verifica
 		await new Bus(this, this.state.repository).dispatch({
 			type: typeorm.Actions.SAVE,
-			payload: <AccountRepo>{
-				email,
-				emailCode: code,
-			}
+			payload: { ...user, emailCode: code, },
 		})
 
 		// invio l'email per l'attivazione del codice
