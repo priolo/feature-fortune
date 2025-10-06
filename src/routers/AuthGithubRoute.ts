@@ -24,8 +24,8 @@ class AuthGithubRoute extends httpRouter.Service {
 	}
 
 	/** 
-	 * Login with GITHUB
-	 * return l'url per effetuare il login con GITHUB
+	 * Login/register with GITHUB
+	 * non sono loggato quindi effettuo login/register con GITHUB
 	 * GITHUB risponde al callback con `code`
 	 */
 	login(req: Request, res: Response) {

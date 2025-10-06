@@ -13,8 +13,8 @@ export class AccountRepo {
 	@PrimaryGeneratedColumn("uuid")
 	id?: string;
 
-	@Column({ type: 'varchar', unique: true })
-	email: string;
+	@Column({ type: 'varchar', nullable: true })
+	email?: string;
 	@Column({ type: 'varchar', default: EMAIL_CODE.UNVERIFIED, nullable: true })
 	emailCode?: string;
 

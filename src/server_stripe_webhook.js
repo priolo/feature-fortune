@@ -2,12 +2,12 @@
 import Stripe from 'stripe';
 import express from 'express';
 
-const stripe = new Stripe('sk_test_51S9Cab3oUVTivUNZyoaysY2yrobENo6QBulkV7i2fRmbFzVmWXDP4KX61rSBsNCcmTRUwYFe3TKsM2u7cUllUHd2000hexAzG8');
+const stripe = new Stripe(process.env.STRIPE_API_KEY);
 // Replace this endpoint secret with your endpoint's unique secret
 // If you are testing with the CLI, find the secret by running 'stripe listen'
 // If you are using an endpoint defined with the API or dashboard, look in your webhook settings
 // at https://dashboard.stripe.com/webhooks
-const endpointSecret = 'whsec_d5aa13a069a45123d9ebc272b742e8c76f8856eb5d59f908673d735511a53643';
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET
 const app = express();
 
 app.post('/webhook', express.raw({type: 'application/json'}))
