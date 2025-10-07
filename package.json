@@ -10,12 +10,12 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production tsx src/start.ts",
     "start:dev": "cross-env NODE_ENV=development tsx src/start.ts",
-    "build": "tsc",
     "start:prod": "node dist/start.js",
+    "build": "tsc",
     "test": "node --experimental-vm-modules --inspect-brk ./node_modules/jest/bin/jest.js",
-    "server_stripe": "node ./src/server_stripe_webhook.js",
-    "server_github": "tsx ./src/server_github_auth.ts",
-    "server_github:watch": "tsx --watch ./src/server_github_auth.ts"
+    "script:server_stripe": "node ./scripts/server_stripe_webhook.js",
+    "script:server_github": "tsx ./scripts/server_github_auth.ts",
+    "script:google_token": "node ./scripts/get-gmail-tokens.js"
   },
   "//dependencies": {
     "@priolo/julian": "file://C:/Users/ivano.iorio/Documents/julian",
@@ -32,6 +32,7 @@
     "dotenv": "^16.4.5",
     "express": "^5.1.0",
     "google-auth-library": "^10.3.0",
+    "googleapis": "^161.0.0",
     "mysql2": "^3.9.7",
     "sqlite3": "^5.1.7",
     "stripe": "^19.0.0",
@@ -40,16 +41,16 @@
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.2",
+    "@types/cors": "^2.8.19",
     "@types/express": "^4.17.8",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.1",
-    "@types/cors": "^2.8.19",
     "axios": "^1.9.0",
+    "cors": "^2.8.5",
     "jest": "^30.2.0",
     "ts-jest": "^29.4.4",
     "tsx": "^4.20.6",
-    "typescript": "^5.7.2",
-    "cors": "^2.8.5"
+    "typescript": "^5.7.2"
   },
   "engines": {
     "node": ">=18"

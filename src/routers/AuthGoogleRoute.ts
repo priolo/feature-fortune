@@ -19,6 +19,7 @@ class AuthGoogleRoute extends httpRouter.Service {
 			jwt: "/jwt",
 			routers: [
 				{ path: "/login", verb: "post", method: "login" },
+				{ path: "/callback", verb: "get", method: "callback" },
 			]
 		}
 	}
@@ -88,6 +89,11 @@ class AuthGoogleRoute extends httpRouter.Service {
 		} catch (error) {
 			res.status(401).json({ error: 'Invalid Token' });
 		}
+	}
+
+	async callback(req: Request, res: Response) {
+		console.log( "callback" )
+		debugger
 	}
 
 

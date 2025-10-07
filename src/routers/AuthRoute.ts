@@ -3,6 +3,7 @@ import { ENV_TYPE } from "../types/env.js";
 import { Bus, email as emailNs, httpRouter, jwt, typeorm } from "@priolo/julian";
 import crypto from "crypto";
 import { Request, Response } from "express";
+import { Actions } from "src/services/email/EmailService.js";
 import { FindManyOptions } from "typeorm";
 
 
@@ -13,7 +14,7 @@ class AuthRoute extends httpRouter.Service {
 		return {
 			...super.stateDefault,
 			path: "/api/auth",
-			email: "/email",
+			email: "/google-email",
 			repository: "/typeorm/accounts",
 			jwt: "/jwt",
 			routers: [
@@ -164,7 +165,7 @@ class AuthRoute extends httpRouter.Service {
 
 		// invio l'email per l'attivazione del codice
 		await new Bus(this, this.state.email).dispatch({
-			type: emailNs.Actions.SEND,
+			type: Actions.SEND,
 			payload: {
 				from: process.env.EMAIL_SENDER ?? "from@support.com",
 				to: email,

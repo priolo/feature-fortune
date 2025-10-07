@@ -20,6 +20,7 @@ import PaymentCrono from "./services/crono/PaymentCrono.js";
 import ReflectionRoute from "./services/reflection/ReflectionRoute.js";
 import StripeService from "./services/stripe/StripeService.js";
 import { envInit } from "./types/env.js";
+import EmailService from "./services/email/EmailService.js";
 
 
 
@@ -46,6 +47,10 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 
 		{
 			class: StripeService,
+		},
+
+		{
+			class: EmailService,
 		},
 
 		<http.conf>{
@@ -138,18 +143,18 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 			secret: "secret_word!!!"
 		},
 
-		<email.conf>{
-			class: "email",
-			account: <email.conf>{
-				// https://ethereal.email/login
-				host: process.env.EMAIL_SMTP,
-				port: process.env.EMAIL_PORT,
-				auth: {
-					user: process.env.EMAIL_USER,
-					pass: process.env.EMAIL_PASSWORD
-				}
-			},
-		}
+		// <email.conf>{
+		// 	class: "email",
+		// 	account: <email.conf>{
+		// 		// https://ethereal.email/login
+		// 		host: process.env.EMAIL_SMTP,
+		// 		port: process.env.EMAIL_PORT,
+		// 		auth: {
+		// 			user: process.env.EMAIL_USER,
+		// 			pass: process.env.EMAIL_PASSWORD
+		// 		}
+		// 	},
+		// }
 	]
 }
 
