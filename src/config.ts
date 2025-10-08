@@ -21,6 +21,7 @@ import ReflectionRoute from "./services/reflection/ReflectionRoute.js";
 import StripeService from "./services/stripe/StripeService.js";
 import { envInit } from "./types/env.js";
 import EmailService from "./services/email/EmailService.js";
+import AuthEmailRoute from "./routers/AuthEmailRoute.js";
 
 
 
@@ -59,9 +60,11 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 			rawPaths: ["/api/fundings/webhook"],
 			children: [
 
+				{ class: AuthRoute },
+				{ class: AuthEmailRoute },
 				{ class: AuthGithubRoute },
 				{ class: AuthGoogleRoute },
-				{ class: AuthRoute },
+				
 				{ class: StripeHookRoute },
 				{ class: ReflectionRoute },
 

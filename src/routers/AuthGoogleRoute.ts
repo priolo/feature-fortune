@@ -24,7 +24,7 @@ class AuthGoogleRoute extends httpRouter.Service {
 		}
 	}
 
-	
+
 
 	/** login/register con GOOGLE */
 	async login(req: Request, res: Response) {
@@ -38,7 +38,9 @@ class AuthGoogleRoute extends httpRouter.Service {
 			});
 			const payload = ticket.getPayload();
 
-			// cerco lo USER tramite email
+
+
+			// FIND ACCOUNT
 			let user: AccountRepo = await new Bus(this, this.state.repository).dispatch({
 				type: typeorm.Actions.FIND_ONE,
 				payload: <FindManyOptions<AccountRepo>>{
@@ -49,29 +51,37 @@ class AuthGoogleRoute extends httpRouter.Service {
 				}
 			})
 
-			// se non c'e' allora creo un nuovo USER
-			if (!user) {
-				user = await new Bus(this, this.state.repository).dispatch({
-					type: typeorm.Actions.SAVE,
-					payload: <AccountRepo>{
-						email: payload.email,
-						googleEmail: payload.email,
-						name: payload.name,
-						avatarUrl: payload.picture,
-					}
-				})
-			}
+			// IF NOT EXIST ...
+			if (!user) user = {}
+			// 	email: payload.email,
+			// 	googleEmail: payload.email,
+			// 	name: payload.name,
+			// 	avatarUrl: payload.picture,
+			// }
 
-			
+			// ACCOUNT UPDATE
+			await new Bus(this, this.state.repository).dispatch({
+				type: typeorm.Actions.SAVE,
+				payload: {
+					...user,
+					email: user.email ?? payload.email,
+					googleEmail: payload.email,
+					name: user.name ?? payload.name,
+					avatarUrl: user.avatarUrl ?? payload.picture,
+				},
+			})
+
+
+
 			// Genera il token JWT con l'email nel payload
-			const jwtToken:string = await new Bus(this, "/jwt").dispatch({
+			const jwtToken: string = await new Bus(this, "/jwt").dispatch({
 				type: jwt.Actions.ENCODE,
 				payload: {
 					payload: <JWTPayload>{
 						id: user.id,
 						name: payload.name,
 						email: payload.email,
-					} 
+					}
 				},
 			})
 			// memorizzo JWT nei cookies. Imposta il cookie HTTP-only
@@ -81,8 +91,10 @@ class AuthGoogleRoute extends httpRouter.Service {
 				maxAge: 24 * 60 * 60 * 1000, // 1 giorno
 			});
 
+
+
 			// restituisco i dati dell'utente loggato
-			res.status(200).json({ 
+			res.status(200).json({
 				user: accountSendable(user),
 			});
 
@@ -92,7 +104,7 @@ class AuthGoogleRoute extends httpRouter.Service {
 	}
 
 	async callback(req: Request, res: Response) {
-		console.log( "callback" )
+		console.log("callback")
 		debugger
 	}
 

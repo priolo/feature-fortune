@@ -36,7 +36,7 @@ class AuthGithubRoute extends httpRouter.Service {
 		res.json({ url: url.url })
 	}
 
-	/** 
+	/** >
 	 * WEBHOOK 
 	 * https://github.com/settings/applications/3174659
 	 * LOGIN/REGISTER GitHub ritorna con `code` 
@@ -55,8 +55,24 @@ class AuthGithubRoute extends httpRouter.Service {
 			const userGithub: any = await this.getGithubUserByCode(code)
 			let user: AccountRepo
 
+			// CHECK EMAIL
+			let email = userGithub.email ?? userGithub.notification_email
+			if (!!email) {
+				const userByEmail = await new Bus(this, this.state.account_repo).dispatch({
+					type: typeorm.Actions.FIND_ONE,
+					payload: <FindManyOptions<AccountRepo>>{
+						where: [
+							{ email: email },
+							{ googleEmail: email },
+						]
+					}
+				})
+				if (!!userByEmail) email = null
+			}
+
 			// ATTACH to existing user
 			if (customData.act == "att") {
+
 				if (!customData.accountId) return res.status(400).json({ error: "Invalid state parameter: no accountId" });
 				// cerco lo USER se è gia' registrato
 				user = await new Bus(this, this.state.account_repo).dispatch({
@@ -65,30 +81,40 @@ class AuthGithubRoute extends httpRouter.Service {
 				})
 				if (!user) return res.status(404).json({ error: "User not found" });
 
+				
 				// LOGIN or REGISTER
 			} else {
 
-				// cerco lo USER se è gia' registrato
+				// FIND ACCOUNT
 				user = await new Bus(this, this.state.account_repo).dispatch({
 					type: typeorm.Actions.FIND_ONE,
 					payload: <FindManyOptions<AccountRepo>>{
 						where: { githubId: userGithub.id, },
 					}
 				})
-				
-				// se non c'e allora creo un nuovo USER
-				if (!user) {
-					user = await new Bus(this, this.state.account_repo).dispatch({
-						type: typeorm.Actions.SAVE,
-						payload: <AccountRepo>{
-							email: userGithub.email ?? userGithub.notification_email,
-							name: userGithub.name || userGithub.login,
-							avatarUrl: userGithub.avatar_url,
-							githubId: userGithub.id,
-						}
-					})
-				}
+
+				// IF NOT EXIST ...
+				if (!user) user = {}
+
+				// ACCOUNT UPDATE
+				user = await new Bus(this, this.state.account_repo).dispatch({
+					type: typeorm.Actions.SAVE,
+					payload: <AccountRepo>{
+						...user,
+						email: user.email ?? email,
+						name: user.name ?? userGithub.name ?? userGithub.login,
+						avatarUrl: user.avatarUrl ?? userGithub.avatar_url,
+						githubId: userGithub.id,
+					}
+				})
+
 			}
+
+
+
+
+
+
 
 			// manca githubId lo aggiorno
 			if (!user.githubId) {
@@ -101,6 +127,10 @@ class AuthGithubRoute extends httpRouter.Service {
 				})
 			}
 
+
+
+
+
 			// Genera il token JWT con l'email nel payload
 			const jwtToken = await new Bus(this, "/jwt").dispatch({
 				type: jwt.Actions.ENCODE,
@@ -112,13 +142,14 @@ class AuthGithubRoute extends httpRouter.Service {
 					}
 				},
 			})
-
 			// memorizzo JWT nei cookies. Imposta il cookie HTTP-only
 			res.cookie('jwt', jwtToken, {
 				httpOnly: true,
 				secure: process.env.NODE_ENV === 'production', // Assicurati di usare secure solo in produzione
 				maxAge: 24 * 60 * 60 * 1000, // 1 giorno
 			});
+
+
 
 			// Redirect alla pagina desiderata
 			if (customData?.act === "lgn") {

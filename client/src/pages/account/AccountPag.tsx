@@ -32,29 +32,36 @@ const AccountPag: React.FC<AccountPagProps> = ({
         authSo.attachGithub()
     }
 
+
+
+    // GOOGLE
     const handleGoogleDetach = async () => {
         //authSo.attachGithub()
     }
-
-    const handleLoginSuccess = (response: CredentialResponse) => {
+    const handleGoogleLoginSuccess = (response: CredentialResponse) => {
         console.log('Login Success:', response);
         authSo.attachGoogle(response.credential)
     }
-    const handleLoginFailure = () => {
+    const handleGoogleLoginFailure = () => {
         console.log('Login Failure:');
     }
 
+
+
+    // STRIPE
     const handleStripeRegister = async () => {
         if (!authSo.state.user?.email) return alert('Devi prima collegare una email (Google o Github)')
         const res = await fundingApi.stripeAuthorRegisterLink()
         console.log(res)
         window.location.href = res.url
     }
-
     const handleStripeAuthorDetach = async () => {
         //authSo.detachStripeAuthor()
     }
 
+
+
+    // EMAIL
     const handleEmailVerifyDialogClose = () => {
         setEmailDialogIsOpen(false)
     }
@@ -106,12 +113,13 @@ const AccountPag: React.FC<AccountPagProps> = ({
                     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID}>
                         <h2>Login with Google</h2>
                         <GoogleLogin
-                            onSuccess={handleLoginSuccess}
-                            onError={handleLoginFailure}
+                            onSuccess={handleGoogleLoginSuccess}
+                            onError={handleGoogleLoginFailure}
                         />
                     </GoogleOAuthProvider>
                 </div>
             )}
+
 
 
             {/* GITHUB ZONE */}
@@ -124,10 +132,12 @@ const AccountPag: React.FC<AccountPagProps> = ({
             )}
 
 
+
             {/* STRIPE CUSTOMER ZONE */}
             <Elements stripe={stripePromise}>
                 <StripeCreditCardCmp />
             </Elements>
+
 
 
             {/* STRIPE AUTHOR ZONE */}

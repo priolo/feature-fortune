@@ -1,4 +1,5 @@
 import authApi from "@/api/auth";
+import authEmailApi from "@/api/authEmail";
 import authSo from "@/stores/auth/repo";
 import { Button, Dialog, DialogActions, DialogTitle, TextField } from "@mui/material";
 import React, { FunctionComponent, useEffect, useState } from "react";
@@ -49,7 +50,7 @@ const EmailVerifyDialog: FunctionComponent<Partial<Props>> = ({
 	const handleSendCodeClick = async () => {
 		if (!email) return alert('Devi inserire una email valida')
 		try {
-			await authApi.emailSendCode(email)
+			await authEmailApi.emailSendCode(email)
 			alert('Codice inviato con successo, controlla la tua email')
 		} catch (err) {
 			alert('Errore nell\'invio del codice')
@@ -64,7 +65,7 @@ const EmailVerifyDialog: FunctionComponent<Partial<Props>> = ({
 	const handleVerifyAndClose = async () => {
 		if (!code) return alert('Devi inserire il codice')
 		try {
-			const user = (await authApi.emailVerify(code))?.user
+			const user = (await authEmailApi.emailVerify(code))?.user
 			authSo.setUser(user)
 			alert('Email verificata con successo')
 			onClose()

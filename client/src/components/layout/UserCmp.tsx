@@ -33,7 +33,8 @@ const UserCmp: React.FC<UserCmpProps> = ({
 
 	// HANDLERS
 	const handleLoginClick = (event: React.MouseEvent<HTMLElement>) => {
-		setAnchorEl(event.currentTarget);
+		navigate('/app/login');
+		//setAnchorEl(event.currentTarget);
 	};
 	const handleClose = () => setAnchorEl(null);
 	const handleUserClick = (event: React.MouseEvent<HTMLElement>) => {

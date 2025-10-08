@@ -1,4 +1,5 @@
 import authApi from "@/api/auth";
+import authEmailApi from "@/api/authEmail";
 import { Account } from "@/types/Account.js";
 import { StoreCore, createStore } from "@priolo/jon";
 import { loadStripe } from "@stripe/stripe-js";
@@ -42,9 +43,21 @@ const setup = {
 		},
 
 
+
+		/**
+		 * Invia il codice di verifica all'email specificata
+		 */
+		emailSendCode: async (email: string, store?: AuthStore) => {
+			await authEmailApi.emailSendCode(email)
+		},
+		emailVerifyCode : async (code: string, store?: AuthStore) => {
+			const user = (await authEmailApi.emailVerify(code))?.user
+			store.setUser(user)
+		},
+
+
 		loginWithGithub: async (_: void, store?: AuthStore) => {
 			const res = await authApi.githubLoginUrl()
-			console.log(res)
 			window.location.href = res.url
 		},
 		attachGithub: async (_: void, store?: AuthStore) => {

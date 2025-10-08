@@ -4,6 +4,7 @@ import AccountPag from './pages/account/AccountPag';
 import FeatureListPag from './pages/feature/ListPag';
 import './styles/pages.css';
 import FeatureDetailPag from './pages/feature/DetailPag';
+import LoginPag from './pages/login/LoginPag';
 
 
 
@@ -15,6 +16,7 @@ function App() {
 
 					<Route index element={<FeatureListPag />} />
 					<Route path="account" element={<AccountPag />} />
+					<Route path="login" element={<LoginPag />} />
 					<Route path="feature/:id" element={<FeatureDetailPag />} />
 
 					{/* <Route path="register" element={<AuthorRegisterPag />} /> */}

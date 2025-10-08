@@ -20,8 +20,6 @@ class AuthRoute extends httpRouter.Service {
 			routers: [
 				{ path: "/current", verb: "get", method: "current" },
 				{ path: "/logout", verb: "post", method: "logout" },
-				{ path: "/email_code", verb: "post", method: "emailSendCode" },
-				{ path: "/email_verify", verb: "post", method: "emailVerify" },
 			]
 		}
 	}
@@ -129,109 +127,6 @@ class AuthRoute extends httpRouter.Service {
 
 
 
-
-	/**
-	 * Grazie all'"email" registra un nuovo utente
-	 */
-	async emailSendCode(req: Request, res: Response) {
-		const { email } = req.body
-
-		// creo il codice segreto da inviare per email
-		const code = process.env.NODE_ENV == ENV_TYPE.TEST ? "AAA" : crypto.randomBytes(8).toString('hex')
-
-		// verifico che non esista gia' un utente con questa email
-		let user = await new Bus(this, this.state.repository).dispatch({
-			type: typeorm.Actions.FIND_ONE,
-			payload: <FindManyOptions<AccountRepo>>{
-				where: [
-					{ email: email, emailCode: EMAIL_CODE.VERIFIED },
-					{ googleEmail: email }
-				]
-			}
-		})
-
-		// se sono gia' loggato e trovo questa 
-		// email allora è un errore perchè in questo caso voglio fare un ATTACH
-		//if (!!user) return res.status(400).json({ error: "register:email:exists" })
-
-		// altrimenti creo un utente temporaneo con l'email
-		if (!user) user = { email, }
-
-		// aggiorno l'account con il codice di verifica
-		await new Bus(this, this.state.repository).dispatch({
-			type: typeorm.Actions.SAVE,
-			payload: { ...user, emailCode: code, },
-		})
-
-		// invio l'email per l'attivazione del codice
-		await new Bus(this, this.state.email).dispatch({
-			type: Actions.SEND,
-			payload: {
-				from: process.env.EMAIL_SENDER ?? "from@support.com",
-				to: email,
-				subject: "Richiesta registraziuone",
-				html: `
-					<div>ue ueue ti vuoi reggggistrare! he?</div> 
-					<div>questo è il codice</div> 
-					<div>${code}</div> 
-				`,
-			}
-		})
-
-		res.status(200).json({ data: "ok" })
-	}
-
-	/**
-	 * Permette di attivare un utente confermado con il "code" e la "password"
-	 */
-	async emailVerify(req: Request, res: Response) {
-		var { code } = req.body
-
-		// cerco lo USER tramite il codice
-		const user: AccountRepo = await new Bus(this, this.state.repository).dispatch({
-			type: typeorm.Actions.FIND_ONE,
-			payload: <FindManyOptions<AccountRepo>>{
-				where: { emailCode: code }
-			}
-		})
-		if (!user) return res.status(404).json({ error: "activate:code:not_found" })
-
-
-		// // Creating a unique salt for a particular user 
-		// user.salt = crypto.randomBytes(16).toString('hex');
-		// // Hashing user's salt and password with 1000 iterations, 
-		// user.password = crypto.pbkdf2Sync(password, user.salt, 1000, 64, `sha512`).toString(`hex`);
-
-		// verifico l'email
-		user.emailCode = EMAIL_CODE.VERIFIED
-		await new Bus(this, this.state.repository).dispatch({
-			type: typeorm.Actions.SAVE,
-			payload: user,
-		})
-
-		// Genera il token JWT con l'email nel payload
-		const jwtToken: string = await new Bus(this, "/jwt").dispatch({
-			type: jwt.Actions.ENCODE,
-			payload: {
-				payload: <JWTPayload>{
-					id: user.id,
-					name: user.name ?? user.email,
-					email: user.email,
-				}
-			},
-		})
-		// memorizzo JWT nei cookies. Imposta il cookie HTTP-only
-		res.cookie('jwt', jwtToken, {
-			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production', // Assicurati di usare secure solo in produzione
-			maxAge: 24 * 60 * 60 * 1000, // 1 giorno
-		});
-
-		// restituisco i dati dell'utente loggato
-		res.status(200).json({
-			user: accountSendable(user),
-		});
-	}
 
 	/**
 	 * eseguo il login grazie a "email" e "password"

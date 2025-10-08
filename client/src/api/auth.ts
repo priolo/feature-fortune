@@ -16,18 +16,7 @@ function current(opt?: CallOptions): Promise<{ user: Account }> {
 function logout(opt?: CallOptions): Promise<{ user: Account }> {
 	return ajax.post(`auth/logout`, null, opt)
 }
-/**
- * Verifico un EMAIL
- */
-function emailSendCode(email: string, opt?: CallOptions): Promise<any> {
-	return ajax.post(`auth/email_code`, { email }, opt)
-}
-/**
- * Verifico un EMAIL
- */
-function emailVerify(code: string, opt?: CallOptions): Promise<{ user: Account }> {
-	return ajax.post(`auth/email_verify`, { code }, opt)
-}
+
 
 
 /**
@@ -82,8 +71,6 @@ const authApi = {
 	current,
 	logout,
 
-	emailSendCode,
-	emailVerify,
 
 	githubGetAccount,
 	githubLoginUrl,
