@@ -17,6 +17,8 @@ export interface Feature extends AccountAsset {
 
 	githubRepoId?: number	
 
+	githubUserId?: number
+
 	//#region RELATIONSHIPS
 
 	/**

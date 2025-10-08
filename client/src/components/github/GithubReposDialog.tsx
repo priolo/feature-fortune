@@ -20,7 +20,7 @@ interface Props {
 
 }
 
-const GithubRepoDialog: FunctionComponent<Partial<Props>> = ({
+const GithubReposDialog: FunctionComponent<Partial<Props>> = ({
 	isOpen,
 	onClose,
 }) => {
@@ -66,7 +66,7 @@ const GithubRepoDialog: FunctionComponent<Partial<Props>> = ({
 		onClose(null)
 	}
 
-	const handleItemClick = (repo: GitHubRepository) => {
+	const handleItemClick = async (repo: GitHubRepository) => {
 		onClose(repo)
 	}
 
@@ -76,7 +76,7 @@ const GithubRepoDialog: FunctionComponent<Partial<Props>> = ({
 
 
 	// RENDER 
-	
+
 	return (
 
 		<Dialog onClose={handleClose} open={isOpen} maxWidth="sm" fullWidth>
@@ -136,7 +136,7 @@ const GithubRepoDialog: FunctionComponent<Partial<Props>> = ({
 }
 
 
-export default GithubRepoDialog
+export default GithubReposDialog
 
 
 

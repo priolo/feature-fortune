@@ -47,14 +47,18 @@ class AuthGithubRoute extends httpRouter.Service {
 		if (!code) return res.status(400).json({ error: "No authorization code received" });
 
 		const customData = urlToCustomData(state)
-		if (["lgn", "rgs", "att"].includes(customData?.act) === false) {
+		if (["lgn", "att"].includes(customData?.act) === false) {
 			return res.status(400).json({ error: "Invalid state parameter" });
 		}
 
 		try {
+			// GITHUB ACCOUNT
 			const userGithub: any = await this.getGithubUserByCode(code)
+			if (!userGithub?.id) {
+				return res.status(400).json({ error: "Failed to retrieve user information from GitHub" });
+			}
+			// MY USER ACCOUNT
 			let user: AccountRepo
-
 			// CHECK EMAIL
 			let email = userGithub.email ?? userGithub.notification_email
 			if (!!email) {
@@ -81,7 +85,6 @@ class AuthGithubRoute extends httpRouter.Service {
 				})
 				if (!user) return res.status(404).json({ error: "User not found" });
 
-				
 				// LOGIN or REGISTER
 			} else {
 
@@ -91,45 +94,23 @@ class AuthGithubRoute extends httpRouter.Service {
 					payload: <FindManyOptions<AccountRepo>>{
 						where: { githubId: userGithub.id, },
 					}
-				})
-
-				// IF NOT EXIST ...
-				if (!user) user = {}
-
-				// ACCOUNT UPDATE
-				user = await new Bus(this, this.state.account_repo).dispatch({
-					type: typeorm.Actions.SAVE,
-					payload: <AccountRepo>{
-						...user,
-						email: user.email ?? email,
-						name: user.name ?? userGithub.name ?? userGithub.login,
-						avatarUrl: user.avatarUrl ?? userGithub.avatar_url,
-						githubId: userGithub.id,
-					}
-				})
+				}) ?? {}
 
 			}
 
+			// ACCOUNT UPDATE
+			user = await new Bus(this, this.state.account_repo).dispatch({
+				type: typeorm.Actions.SAVE,
+				payload: <AccountRepo>{
+					email: email,
+					name: userGithub.name ?? userGithub.login,
+					avatarUrl: userGithub.avatar_url,
+					...user,
+					githubId: userGithub.id,
+				}
+			})
 
-
-
-
-
-
-			// manca githubId lo aggiorno
-			if (!user.githubId) {
-				user = await new Bus(this, this.state.account_repo).dispatch({
-					type: typeorm.Actions.SAVE,
-					payload: <AccountRepo>{
-						id: user.id,
-						githubId: userGithub.id,
-					}
-				})
-			}
-
-
-
-
+			
 
 			// Genera il token JWT con l'email nel payload
 			const jwtToken = await new Bus(this, "/jwt").dispatch({
@@ -220,6 +201,6 @@ function urlToCustomData(state: string): CustomData | null {
 }
 
 export type CustomData = {
-	act?: "lgn" | "rgs" | "att",
+	act?: "lgn" | "att",
 	accountId?: string,
 }

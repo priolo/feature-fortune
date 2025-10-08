@@ -13,6 +13,7 @@ export interface GitHubUser {
     followers: number;
     following: number;
     created_at: string;
+    type: "User" | "Organization" | "Bot";
 }
 
 export interface GitHubRepository {
@@ -34,13 +35,7 @@ export interface GitHubRepository {
     pushed_at: string;
     default_branch: string;
     topics: string[];
-    owner: {
-        id: number;
-        login: string;
-        avatar_url: string;
-        html_url: string;
-        type: string;
-    };
+    owner: GitHubUser
     license: {
         key: string;
         name: string;

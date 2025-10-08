@@ -49,25 +49,17 @@ class AuthGoogleRoute extends httpRouter.Service {
 						{ googleEmail: payload.email },
 					],
 				}
-			})
-
-			// IF NOT EXIST ...
-			if (!user) user = {}
-			// 	email: payload.email,
-			// 	googleEmail: payload.email,
-			// 	name: payload.name,
-			// 	avatarUrl: payload.picture,
-			// }
+			}) ?? {}
 
 			// ACCOUNT UPDATE
 			await new Bus(this, this.state.repository).dispatch({
 				type: typeorm.Actions.SAVE,
 				payload: {
+					email: payload.email,
+					name: payload.name,
+					avatarUrl: payload.picture,
 					...user,
-					email: user.email ?? payload.email,
 					googleEmail: payload.email,
-					name: user.name ?? payload.name,
-					avatarUrl: user.avatarUrl ?? payload.picture,
 				},
 			})
 

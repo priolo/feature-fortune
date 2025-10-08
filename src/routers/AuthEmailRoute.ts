@@ -46,10 +46,7 @@ class AuthEmailRoute extends httpRouter.Service {
 					{ googleEmail: email }
 				]
 			}
-		})
-
-		// IF NOT EXIST ...
-		if (!user) user = { email, }
+		}) ?? { email }
 
 		// ACCOUNT UPDATE
 		await new Bus(this, this.state.repository).dispatch({
@@ -95,18 +92,15 @@ class AuthEmailRoute extends httpRouter.Service {
 		})
 		if (!user) return res.status(404).json({ error: "activate:code:not_found" })
 
-
-		// // Creating a unique salt for a particular user 
-		// user.salt = crypto.randomBytes(16).toString('hex');
-		// // Hashing user's salt and password with 1000 iterations, 
-		// user.password = crypto.pbkdf2Sync(password, user.salt, 1000, 64, `sha512`).toString(`hex`);
-
 		// verifico l'email
 		user.emailCode = EMAIL_CODE.VERIFIED
 		await new Bus(this, this.state.repository).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: user,
 		})
+
+
+
 
 		// Genera il token JWT con l'email nel payload
 		const jwtToken: string = await new Bus(this, "/jwt").dispatch({

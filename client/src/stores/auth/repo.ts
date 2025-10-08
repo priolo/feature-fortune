@@ -58,7 +58,7 @@ const setup = {
 
 		loginWithGithub: async (_: void, store?: AuthStore) => {
 			const res = await authApi.githubLoginUrl()
-			window.location.href = res.url
+			window.location.href = `${res.url}&prompt=select_account`
 		},
 		attachGithub: async (_: void, store?: AuthStore) => {
 			const res = await authApi.githubAttachUrl()
