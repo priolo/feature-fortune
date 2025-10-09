@@ -1,11 +1,10 @@
 import authSo from '@/stores/auth/repo';
+import { Box, Button, Menu, MenuItem, SxProps, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Menu, MenuItem, Button, SxProps } from '@mui/material';
-import authApi from '@/api/auth';
 import { useNavigate } from 'react-router-dom';
-import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
-import EmailVerifyDialog from '../email/EmailVerifyDialog';
+
+
 
 interface UserCmpProps {
 }
@@ -16,6 +15,7 @@ const UserCmp: React.FC<UserCmpProps> = ({
 	// STORES
 	useStore(authSo)
 
+	
 	// HOOKS
 	const navigate = useNavigate();
 	useEffect(() => {
@@ -24,11 +24,8 @@ const UserCmp: React.FC<UserCmpProps> = ({
 
 
 	// STATE
-	const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-	const open = Boolean(anchorEl);
 	const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<null | HTMLElement>(null);
 	const userMenuOpen = Boolean(userMenuAnchorEl);
-	const [emailVerifyOpen, setEmailVerifyOpen] = useState(false);
 
 
 	// HANDLERS
@@ -36,7 +33,6 @@ const UserCmp: React.FC<UserCmpProps> = ({
 		navigate('/app/login');
 		//setAnchorEl(event.currentTarget);
 	};
-	const handleClose = () => setAnchorEl(null);
 	const handleUserClick = (event: React.MouseEvent<HTMLElement>) => {
 		setUserMenuAnchorEl(event.currentTarget);
 	};
@@ -44,12 +40,12 @@ const UserCmp: React.FC<UserCmpProps> = ({
 		setUserMenuAnchorEl(null);
 	};
 
-
 	// va alla pagina ACCOUNT
 	const handleAccount = async () => {
 		navigate('/app/account');
 		handleUserMenuClose();
 	}
+
 	// fa il logout
 	const handleLogout = async () => {
 		await authSo.logout()
@@ -57,63 +53,11 @@ const UserCmp: React.FC<UserCmpProps> = ({
 	}
 
 
-	// EMAIL
-	const handleEmailLogin = () => {
-		setEmailVerifyOpen(true)
-	}
-
-	// GOOGLE
-	// hook chiamato da google per il successo
-    const handleLoginSuccess = (response: CredentialResponse) => {
-        console.log('Login Success:', response);
-        authSo.loginWithGoogle(response.credential)
-    }
-	// hook chiamato da google per il fallimento
-    const handleLoginFailure = () => {
-        console.log('Login Failure:');
-    }
-
-	// GITHUB
-	const handleGithubLogin = () => {
-		authSo.loginWithGithub()
-		handleClose();
-	};
-
-
 	// RENDER
 	if (!authSo.state.user) return (
-		<Box sx={{ display: 'flex', gap: 1 }}>
-
-			<Button variant="outlined"
-				onClick={handleLoginClick}
-			>LOGIN</Button>
-
-			<Menu
-				anchorEl={anchorEl}
-				open={open}
-				onClose={handleClose}
-			>
-				<MenuItem onClick={handleEmailLogin}>
-					EMAIL
-				</MenuItem>
-				<MenuItem>
-					<GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID}>
-                        <GoogleLogin
-                            onSuccess={handleLoginSuccess}
-                            onError={handleLoginFailure}
-                        />
-                    </GoogleOAuthProvider>
-				</MenuItem>
-				<MenuItem onClick={handleGithubLogin}>
-					🐙 GITHUB
-				</MenuItem>
-			</Menu>
-
-			<EmailVerifyDialog
-				isOpen={emailVerifyOpen}
-				onClose={() => setEmailVerifyOpen(false)}
-			/>
-		</Box>
+		<Button
+			onClick={handleLoginClick}
+		>LOGIN</Button>
 	)
 
 	return <>

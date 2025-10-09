@@ -3,11 +3,12 @@ import { Box, Button, SxProps, TextField, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { Elements } from '@stripe/react-stripe-js';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import GithubUserCmp from './cards/GithubUserCmp';
 import StripeCreditCardCmp from './cards/StripeCreditCardCmp';
 import fundingApi from '@/api/funding';
 import EmailVerifyDialog from '@/components/email/EmailVerifyDialog';
+import locationSo, { LOCATION_PAGE } from '@/stores/location';
 
 
 interface AccountPagProps {
@@ -25,13 +26,15 @@ const AccountPag: React.FC<AccountPagProps> = ({
 
     // HOOKS
     const [emailDialogIsOpen, setEmailDialogIsOpen] = useState(false)
+    useEffect(() => {
+        locationSo.setCurrent(LOCATION_PAGE.Account)
+    }, [])
 
 
     // HANDLERS
     const handleGithubAttach = async () => {
         authSo.attachGithub()
     }
-
 
 
     // GOOGLE

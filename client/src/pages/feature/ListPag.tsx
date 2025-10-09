@@ -1,5 +1,7 @@
+import Framework from '@/layout/Framework';
 import featureListSo from '@/stores/feature/list';
-import { Avatar, Box, Button, Card, CardContent, Container, List, ListItemAvatar, ListItemButton, ListItemText, Typography } from '@mui/material';
+import locationSo, { LOCATION_PAGE } from '@/stores/location';
+import { Avatar, Box, Card, CardContent, List, ListItemAvatar, ListItemButton, ListItemText, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -16,13 +18,11 @@ const FeatureListPag: React.FC = () => {
 
 	// HOOCKS
 	useEffect(() => {
+		locationSo.setCurrent(LOCATION_PAGE.FeaturesList)
 		featureListSo.fetch()
 	}, [])
 
 	// HANDLERS
-	const handleNewFeatureClick = async () => {
-		navigate('/app/feature/new')
-	}
 	const handleFeatureClick = (id: string) => {
 		navigate(`/app/feature/${id}`)
 	}
@@ -32,60 +32,49 @@ const FeatureListPag: React.FC = () => {
 
 	const features = featureListSo.state.all ?? [];
 
-	return (
-		<Container maxWidth="lg" sx={{ py: 4 }}>
+	return <Framework>
 
-			{/* Page Header */}
-			<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4, pb: 2, borderBottom: 2, borderColor: 'divider' }}>
-				<Typography variant="h3" component="h1" sx={{ color: 'text.primary', fontWeight: 600 }}>
-					Features
-				</Typography>
-				<Button variant="contained" color="primary" sx={{ textTransform: 'none' }}
-					onClick={handleNewFeatureClick}
-				>New Feature</Button>
-			</Box>
+		<Card>
+			<CardContent>
+				<List>
+					{features.map((feature, index) => (
 
-			<Card>
-				<CardContent>
-					<List>
-						{features.map((feature, index) => (
+						<ListItemButton divider key={feature.id}
+							onClick={() => handleFeatureClick(feature.id)}
+						>
+							<ListItemAvatar>
+								<Avatar sx={{ bgcolor: 'primary.main' }}>
+									📦
+								</Avatar>
+							</ListItemAvatar>
+							<ListItemText
+								primary={
+									<Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+										{feature.title}
+									</Typography>
+								}
+								secondary={
+									<Typography variant="body2" color="text.secondary">
+										{feature.description}
+									</Typography>
+								}
+							/>
+						</ListItemButton>
 
-							<ListItemButton divider key={feature.id}
-								onClick={()=>handleFeatureClick(feature.id)}
-							>
-								<ListItemAvatar>
-									<Avatar sx={{ bgcolor: 'primary.main' }}>
-										📦
-									</Avatar>
-								</ListItemAvatar>
-								<ListItemText
-									primary={
-										<Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-											{feature.title}
-										</Typography>
-									}
-									secondary={
-										<Typography variant="body2" color="text.secondary">
-											{feature.description}
-										</Typography>
-									}
-								/>
-							</ListItemButton>
+					))}
 
-						))}
+					{features.length === 0 && (
+						<Box sx={{ textAlign: 'center', py: 4 }}>
+							<Typography variant="body1" color="text.secondary">
+								No features found. Create your first feature to get started!
+							</Typography>
+						</Box>
+					)}
+				</List>
+			</CardContent>
+		</Card>
 
-						{features.length === 0 && (
-							<Box sx={{ textAlign: 'center', py: 4 }}>
-								<Typography variant="body1" color="text.secondary">
-									No features found. Create your first feature to get started!
-								</Typography>
-							</Box>
-						)}
-					</List>
-				</CardContent>
-			</Card>
-		</Container>
-	);
-};
+	</Framework>
+}
 
 export default FeatureListPag;

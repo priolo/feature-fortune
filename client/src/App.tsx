@@ -1,5 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import Layout from './components/layout/Layout';
+import Layout from './layout/Layout';
 import AccountPag from './pages/account/AccountPag';
 import FeatureListPag from './pages/feature/ListPag';
 import FeatureDetailPag from './pages/feature/DetailPag';

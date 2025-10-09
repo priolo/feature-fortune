@@ -2,10 +2,11 @@
 import authSo from '@/stores/auth/repo';
 import { Box, SxProps } from '@mui/material';
 import { useStore } from '@priolo/jon';
-import React from 'react';
+import React, { useEffect } from 'react';
 import EmailLoginCmp from './EmailLoginCmp';
 import GoogleLoginCmp from './GoogleLoginCmp';
 import GithubLoginCmp from './GithubLoginCmp';
+import locationSo, { LOCATION_PAGE } from '@/stores/location';
 
 
 
@@ -21,6 +22,10 @@ const LoginPag: React.FC<Props> = ({
     // STORES
 
     // HOOKS
+    useEffect(() => {
+        locationSo.setCurrent(LOCATION_PAGE.Login)
+    }, [])
+
 
     // HANDLERS
 

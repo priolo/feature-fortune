@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, SxProps } from '@mui/material';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import HeaderCmp from './HeaderCmp';
@@ -8,7 +8,7 @@ import HeaderCmp from './HeaderCmp';
 const Layout: React.FC = () => {
 
 	// RENDER
-	
+
 	return (
 		<Box sx={{
 			display: 'flex',
@@ -17,23 +17,13 @@ const Layout: React.FC = () => {
 		}}>
 
 			{/* Main Content */}
-			<Box sx={{
-				flex: 1,
-				display: 'flex',
-				flexDirection: 'column',
-				overflow: 'hidden'
-			}}>
+			<Box sx={sxRoot}>
 
 				{/* Header */}
 				<HeaderCmp />
 
 				{/* Main Content Area */}
-				<Box component="main" sx={{
-					flex: 1,
-					overflowY: 'auto',
-					padding: '2rem',
-					backgroundColor: '#f8f9fa'
-				}}>
+				<Box component="main" sx={sxMain}>
 					<Outlet />
 				</Box>
 			</Box>
@@ -42,3 +32,16 @@ const Layout: React.FC = () => {
 };
 
 export default Layout;
+
+const sxRoot: SxProps = {
+	flex: 1,
+	display: 'flex',
+	flexDirection: 'column',
+	overflow: 'hidden'
+}
+
+const sxMain: SxProps = {
+	flex: 1,
+	overflowY: 'auto',
+	backgroundColor: '#f8f9fa',
+}

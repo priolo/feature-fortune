@@ -18,13 +18,8 @@ const setup = {
 
 		/** FEATURE in show/edit */
 		feature: <Partial<Feature>>null,
-		/** dettaglio GITHUB della FEATURE */
-		githubRepo: <GitHubRepository>null,
-		/** GITHUB owner */
-		githubOwner: <GitHubUser>null,
-
+		/** the ACCOUNT that owns the GITHUB REPO */
 		owner: <Account>null,
-
 		// [II] move in another STORE fundingSo
 		fundingSelected: <Funding>null,
 	},
@@ -43,16 +38,16 @@ const setup = {
 		},
 
 		/**
-		 * Carica l'ACCOUNT GITHUB proprietario della REPO 
-		 * caricata e selezionata
+		 * Carica l'ACCOUNT collegato al REPO GITHUB
 		 */
 		async fetchOwner(_: void, store?: FeatureDetailStore) {
-			if ( !store.state.githubOwner?.id ) {
+			const githubUserId = store.state.feature?.githubUserId
+			if ( !githubUserId ) {
 				store.setOwner(null)
 				return
 			}
 			try {
-				const { account } = await authApi.githubGetAccount(store.state.githubOwner.id)
+				const { account } = await authApi.githubGetAccount(githubUserId)
 				store.setOwner(account)
 			} catch (error) {
 				store.setOwner(null)
@@ -89,11 +84,6 @@ const setup = {
 
 	mutators: {
 		setFeature: (feature: Partial<Feature>) => ({ feature }),
-		//setFunding: (funding: Funding) => ({ funding }),
-		setGithubRepo: (githubRepo: GitHubRepositoryDetails, store?: FeatureDetailStore) => {
-			return { githubRepo }
-		},
-		setGithubOwner: (githubOwner: GitHubUser) => ({ githubOwner }),
 		setOwner: (owner: Account) => ({ owner }),
 		setFundingSelected: (fundingSelected: Funding) => ({ fundingSelected })
 	},

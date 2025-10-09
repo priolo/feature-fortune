@@ -32,10 +32,9 @@ const locationSo = createStore<LocationState>(setup)
 export default locationSo as LocationStore
 
 export enum LOCATION_PAGE {
-	Home = "Home",
-	FeatureDetail = "Feature Detail",
-	Login = "Login",
-	Register = "Register",
-	Account = "Account",
-	NotFound = "Not Found"
+	FeaturesList = "feature-list",
+	FeatureDetail = "feature-detail",
+
+	Login = "auth-login",
+	Account = "auth-account",
 }
