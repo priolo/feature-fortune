@@ -7,7 +7,7 @@ import { Account } from "@/types/Account"
 import { Comment } from "@/types/Comment"
 import { Feature } from "@/types/feature/Feature"
 import { Funding } from "@/types/Funding"
-import { GitHubRepository, GitHubRepositoryDetails } from "@/types/github/GitHub"
+import { GitHubRepository, GitHubRepositoryDetails, GitHubUser } from "@/types/github/GitHub"
 import { createStore, StoreCore } from "@priolo/jon"
 
 
@@ -21,7 +21,9 @@ const setup = {
 		/** dettaglio GITHUB della FEATURE */
 		githubRepo: <GitHubRepository>null,
 		/** GITHUB owner */
-		githubOwner: <Account>null,
+		githubOwner: <GitHubUser>null,
+
+		owner: <Account>null,
 
 		// [II] move in another STORE fundingSo
 		fundingSelected: <Funding>null,
@@ -41,24 +43,19 @@ const setup = {
 		},
 
 		/**
-		 * Carica a seleziona una REPO GITHUB 
-		 * in base all'ID settato nella FEATURE
-		 */
-		async fetchGithubRepo(_: void, store?: FeatureDetailStore) {
-			const repo = await gitHubApi.getRepository(store.state.feature.githubRepoId)
-			store.setGithubRepo(repo)
-		},
-
-		/**
 		 * Carica l'ACCOUNT GITHUB proprietario della REPO 
 		 * caricata e selezionata
 		 */
-		async fetchGithubOwner(_: void, store?: FeatureDetailStore) {
+		async fetchOwner(_: void, store?: FeatureDetailStore) {
+			if ( !store.state.githubOwner?.id ) {
+				store.setOwner(null)
+				return
+			}
 			try {
-				const { account } = await authApi.githubGetAccount(store.state.githubRepo.owner.id)
-				store.setGithubOwner(account)
+				const { account } = await authApi.githubGetAccount(store.state.githubOwner.id)
+				store.setOwner(account)
 			} catch (error) {
-				store.setGithubOwner(null)
+				store.setOwner(null)
 			}
 		},
 
@@ -93,9 +90,11 @@ const setup = {
 	mutators: {
 		setFeature: (feature: Partial<Feature>) => ({ feature }),
 		//setFunding: (funding: Funding) => ({ funding }),
-		setGithubRepo: (githubRepo: GitHubRepositoryDetails | null) => ({ githubRepo }),
-		setGithubOwner: (githubOwner: Account) => ({ githubOwner }),
-		//setAuthorUser: (authorUser: Account) => ({ authorUser }),
+		setGithubRepo: (githubRepo: GitHubRepositoryDetails, store?: FeatureDetailStore) => {
+			return { githubRepo }
+		},
+		setGithubOwner: (githubOwner: GitHubUser) => ({ githubOwner }),
+		setOwner: (owner: Account) => ({ owner }),
 		setFundingSelected: (fundingSelected: Funding) => ({ fundingSelected })
 	},
 

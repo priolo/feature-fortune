@@ -1,7 +1,6 @@
 import CommentDialog from '@/components/CommentDialog';
 import FundingDialog from '@/components/funding/FundingDialog';
 import FundingList from '@/components/funding/FundingList';
-import GithubRepoOwnerSelector from '@/components/github/GithubRepoOwnerSelector';
 import featureDetailSo from '@/stores/feature/detail';
 import { Comment } from '@/types/Comment';
 import { buildNewFeature } from '@/types/feature/factory';
@@ -10,6 +9,9 @@ import { Box, Button, Card, CardActions, CardContent, SxProps, TextField, Typogr
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import GithubRepoSelector from '../../components/github/repos/GithubRepoSelector';
+import GithubUserSelector from '../../components/github/users/GithubUserSelector';
+import locationSo, { LOCATION_PAGE } from '@/stores/location';
 
 
 
@@ -31,15 +33,17 @@ const FeatureDetailPag: React.FC<Props> = ({
     const [dialogCommentOpen, setDialogCommentOpen] = useState(false);
 
     useEffect(() => {
+        locationSo.setCurrent(LOCATION_PAGE.FeatureDetail)
+
         if (id === 'new') {
             featureDetailSo.setFeature(buildNewFeature())
             featureDetailSo.setGithubRepo(null)
+            featureDetailSo.setGithubOwner(null)
             return
         }
         const load = async () => {
             featureDetailSo.setFeature({ id })
             await featureDetailSo.fetch()
-            featureDetailSo.fetchGithubRepo()
         }
         load();
     }, [id])
@@ -106,7 +110,25 @@ const FeatureDetailPag: React.FC<Props> = ({
         <Box sx={sxRoot}>
 
             {/* GITHUB REPOSITORY */}
-            <GithubRepoOwnerSelector />
+            <GithubRepoSelector 
+                githubRepoId={featureDetailSo.state.feature?.githubRepoId}
+                onChange={() => featureDetailSo.setFeature({
+                    ...featureDetailSo.state.feature, 
+                    githubRepoId: featureDetailSo.state.githubRepo?.id,
+                })}
+            />
+            <GithubUserSelector
+                //users={featureDetailSo.state.githubUsers}
+                githubOwnerId={featureDetailSo.state.feature?.githubUserId}
+                onChange={() => featureDetailSo.setFeature({
+                    ...featureDetailSo.state.feature, 
+                    githubUserId: featureDetailSo.state.githubOwner?.id,
+                })}
+            />
+
+
+{/* 
+            <GithubRepoOwnerSelector /> */}
 
 
             {/* FEATURE DETAIL */}

@@ -1,23 +1,22 @@
 import { GitHubRepository } from '@/types/github/GitHub';
 import { Avatar, Box, Chip, Link, Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 
 
-interface GithubRepoCmpProps {
+interface Props {
     repository: GitHubRepository;
 }
 
-const GithubRepoCmp: React.FC<GithubRepoCmpProps> = ({
+const GithubRepoViewer: React.FC<Props> = ({
     repository
 }) => {
 
-
-    
-
     // RENDER
 
-    if (!repository) return null
+    if (!repository) return <Typography variant="body2" color="text.secondary">
+        void
+    </Typography>
 
     return (
         <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 2 }}>
@@ -61,4 +60,4 @@ const GithubRepoCmp: React.FC<GithubRepoCmpProps> = ({
     )
 };
 
-export default GithubRepoCmp;
+export default GithubRepoViewer;

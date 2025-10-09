@@ -4,19 +4,19 @@ import React from 'react';
 
 
 
-interface GithubUserCmpProps {
+interface Props {
     user: GitHubUser;
 }
 
-const GithubUserCmp: React.FC<GithubUserCmpProps> = ({
+const GithubUserViewer: React.FC<Props> = ({
     user
 }) => {
 
-
-
     // RENDER
 
-    if (!user) return null
+    if (!user) return <Typography variant="body2" color="text.secondary">
+        void
+    </Typography>
 
     return (
         <Card sx={{ width: '100%', mt: 2 }}>
@@ -141,4 +141,4 @@ const GithubUserCmp: React.FC<GithubUserCmpProps> = ({
     );
 };
 
-export default GithubUserCmp;
+export default GithubUserViewer;

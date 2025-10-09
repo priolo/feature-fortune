@@ -27,6 +27,27 @@ class GitHubApiService {
         return response.json();
     }
 
+    /**
+     * Search for users on GitHub
+     * @param query - Search query (username, email, full name, etc.)
+     * @param per_page - Number of results per page (default: 10, max: 100)
+     * @param page - Page number (default: 1)
+     */
+    async searchUsers(query: string, per_page = 10, page = 1): Promise<GitHubUser[]> {
+        const searchParams = new URLSearchParams({
+            q: query,
+            per_page: per_page.toString(),
+            page: page.toString(),
+            sort: 'followers',
+            order: 'desc'
+        });
+
+        const response = await fetch(`${this.baseUrl}/search/users?${searchParams}`);
+        if (!response.ok) throw new Error(`GitHub API Error: ${response.status} ${response.statusText}`);
+        const data = await response.json();
+        return data.items as GitHubUser[];
+    }
+
     
 
     /**

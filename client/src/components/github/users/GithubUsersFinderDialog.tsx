@@ -1,7 +1,7 @@
-import { GitHubRepository } from "@/types/github/GitHub";
-import { Dialog, DialogTitle, List, ListItem, ListItemButton, ListItemText, TextField, Box, DialogActions, Button } from "@mui/material";
-import React, { FunctionComponent, useEffect } from "react";
 import gitHubApi from "@/api/github";
+import { GitHubUser } from "@/types/github/GitHub";
+import { Box, Button, Dialog, DialogActions, DialogTitle, List, ListItem, ListItemButton, ListItemText, TextField } from "@mui/material";
+import React, { FunctionComponent, useEffect } from "react";
 
 
 
@@ -16,11 +16,11 @@ interface Props {
 	 * chiamata quando si clicca sul btt colose o fuori dalla dialog 
 	 * restituisce l'item selezionato o null se si è chiusa senza selezionare nulla
 	 */
-	onClose: (repo: GitHubRepository | null) => void
+	onClose: (repo: GitHubUser) => void
 
 }
 
-const GithubReposDialog: FunctionComponent<Partial<Props>> = ({
+const GithubUsersFinderDialog: FunctionComponent<Partial<Props>> = ({
 	isOpen,
 	onClose,
 }) => {
@@ -28,7 +28,7 @@ const GithubReposDialog: FunctionComponent<Partial<Props>> = ({
 
 	// HOOKs
 	const [filterText, setFilterText] = React.useState('')
-	const [items, setItems] = React.useState<GitHubRepository[]>([])
+	const [items, setItems] = React.useState<GitHubUser[]>([])
 	const [loading, setLoading] = React.useState(false)
 	const [error, setError] = React.useState<string | null>(null)
 
@@ -38,8 +38,8 @@ const GithubReposDialog: FunctionComponent<Partial<Props>> = ({
 				setLoading(true)
 				setError(null)
 				try {
-					const result = await gitHubApi.searchRepositories(filterText, 10)
-					setItems(result.items)
+					const result = await gitHubApi.searchUsers(filterText, 10)
+					setItems(result)
 				} catch (err) {
 					setError('Failed to search repositories')
 					setItems([])
@@ -66,8 +66,8 @@ const GithubReposDialog: FunctionComponent<Partial<Props>> = ({
 		onClose(null)
 	}
 
-	const handleItemClick = async (repo: GitHubRepository) => {
-		onClose(repo)
+	const handleItemClick = async (user: GitHubUser) => {
+		onClose(user)
 	}
 
 	const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +81,7 @@ const GithubReposDialog: FunctionComponent<Partial<Props>> = ({
 
 		<Dialog onClose={handleClose} open={isOpen} maxWidth="sm" fullWidth>
 
-			<DialogTitle>Select GitHub Repository</DialogTitle>
+			<DialogTitle>Select GitHub User</DialogTitle>
 
 			<Box sx={{ px: 3, pb: 2 }}>
 				<TextField
@@ -111,17 +111,17 @@ const GithubReposDialog: FunctionComponent<Partial<Props>> = ({
 						<ListItemText primary="No repositories found" />
 					</ListItem>
 				)}
-				{!loading && !error && items.map((repo) => (
-					<ListItem key={repo.id} disablePadding>
-						<ListItemButton onClick={() => handleItemClick(repo)}>
+				{!loading && !error && items.map((user) => (
+					<ListItem key={user.id} disablePadding>
+						<ListItemButton onClick={() => handleItemClick(user)}>
 							<ListItemText
-								primary={repo.full_name}
-								secondary={
-									<>
-										{repo.description && <div>{repo.description}</div>}
-										<div>⭐ {repo.stargazers_count} stars • {repo.language || 'Unknown'}</div>
-									</>
-								}
+								primary={user.login}
+								// secondary={
+								// 	<>
+								// 		{user. && <div>{user.description}</div>}
+								// 		<div>⭐ {user.stargazers_count} stars • {user.language || 'Unknown'}</div>
+								// 	</>
+								// }
 							/>
 						</ListItemButton>
 					</ListItem>
@@ -136,7 +136,7 @@ const GithubReposDialog: FunctionComponent<Partial<Props>> = ({
 }
 
 
-export default GithubReposDialog
+export default GithubUsersFinderDialog
 
 
 
