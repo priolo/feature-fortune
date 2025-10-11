@@ -8,15 +8,13 @@ import React, { useState } from 'react';
 
 
 
-
-
 interface Props {
 }
 
 /**
- * login and register new accout
+ * validazione email per login e registrazione
  */
-const EmailLoginCmp: React.FC<Props> = ({
+const EmailLoginCard: React.FC<Props> = ({
 }) => {
 
     // STORES
@@ -120,7 +118,7 @@ const EmailLoginCmp: React.FC<Props> = ({
     </>
 };
 
-export default EmailLoginCmp;
+export default EmailLoginCard;
 
 const sxDialogContent: SxProps = {
     display: 'flex',

@@ -1,4 +1,3 @@
-import fundingApi from '@/api/funding';
 import stripeApi from '@/api/stripe';
 import Card from '@/components/Card';
 import authSo from '@/stores/auth/repo';
@@ -9,6 +8,9 @@ import React from 'react';
 
 
 
+/**
+ * Permette di registrarsi come Stripe express account
+ */
 const StripeAuthorCard: React.FC = () => {
 
 	// STORES

@@ -5,11 +5,11 @@ import { useStore } from '@priolo/jon';
 import { Elements } from '@stripe/react-stripe-js';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import EmailLoginCmp from '../../components/email/EmailLoginCmp';
-import GoogleLoginCmp from '../../components/google/GoogleLoginCmp';
-import GithubLoginCmp from '../login/GithubLoginCmp';
-import StripeAuthorCard from './cards/StripeAuthorCard';
-import StripeCreditCardCmp from './cards/StripeCreditCardCmp';
+import EmailLoginCard from '../../components/email/EmailLoginCard';
+import GoogleLoginCard from '../../components/google/GoogleLoginCard';
+import GithubLoginCard from '../../components/github/GithubLoginCard';
+import StripeAuthorCard from '../../components/stripe/StripeAuthorCard';
+import StripeCreditCard from '../../components/stripe/StripeCreditCard';
 
 
 
@@ -51,17 +51,17 @@ const AccountPag: React.FC<AccountPagProps> = ({
         <Box sx={sxRoot}>
 
             {/* EMAIL ZONE */}
-            <EmailLoginCmp />
+            <EmailLoginCard />
 
             {/* GOOGLE ZONE */}
-            <GoogleLoginCmp />
+            <GoogleLoginCard />
 
             {/* GITHUB ZONE */}
-            <GithubLoginCmp />
+            <GithubLoginCard />
 
             {/* STRIPE CUSTOMER ZONE */}
             <Elements stripe={stripePromise}>
-                <StripeCreditCardCmp />
+                <StripeCreditCard />
             </Elements>
 
             {/* STRIPE AUTHOR ZONE */}

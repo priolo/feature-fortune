@@ -1,6 +1,6 @@
 import { ServiceBase } from "@priolo/julian";
 import Stripe from "stripe";
-import { Actions, ExpressAccountData, PaymentIntentData } from "./types.js";
+import { Actions, PaymentIntentData } from "./types.js";
 
 
 

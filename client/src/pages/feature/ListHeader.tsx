@@ -1,6 +1,6 @@
 import { Box, Button, SxProps, Typography } from '@mui/material';
 import React from 'react';
-import BackButton from './BackButton';
+import BackButton from '../../layout/BackButton';
 import { useNavigate } from 'react-router-dom';
 
 

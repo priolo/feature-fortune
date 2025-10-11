@@ -3,9 +3,9 @@ import authSo from '@/stores/auth/repo';
 import { Box, SxProps } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';
-import EmailLoginCmp from '../../components/email/EmailLoginCmp';
-import GoogleLoginCmp from '../../components/google/GoogleLoginCmp';
-import GithubLoginCmp from './GithubLoginCmp';
+import EmailLoginCard from '../../components/email/EmailLoginCard';
+import GoogleLoginCard from '../../components/google/GoogleLoginCard';
+import GithubLoginCard from '../../components/github/GithubLoginCard';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
 import { useNavigate } from 'react-router-dom';
 
@@ -42,11 +42,11 @@ const LoginPag: React.FC<Props> = ({
     return (
         <Box sx={sxRoot}>
 
-            <EmailLoginCmp />
+            <EmailLoginCard />
 
-            <GoogleLoginCmp />
+            <GoogleLoginCard />
 
-            <GithubLoginCmp />
+            <GithubLoginCard />
 
         </Box>
     );

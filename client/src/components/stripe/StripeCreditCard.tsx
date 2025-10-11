@@ -7,16 +7,17 @@ import { useStore } from "@priolo/jon";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { PaymentMethod } from "@stripe/stripe-js";
 import { useEffect, useState } from "react";
-import CreditCardViewer from "../../../components/stripe/CreditCardViewer";
+import CreditCardViewer from "./CreditCardViewer";
 
 
 
-interface GithubUserCmpProps {
-	sx?: SxProps
+interface Props {
 }
 
-const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
-	sx,
+/**
+ * Permette di salvare e rimuovere una carta di credito per i pagamenti
+ */
+const StripeCreditCard: React.FC<Props> = ({
 }) => {
 	const havePaymentMethod = authSo.state.user?.stripeHaveCard
 
@@ -128,7 +129,7 @@ const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 	)
 }
 
-export default StripeCreditCardCmp;
+export default StripeCreditCard;
 
 const sxActions: SxProps = {
 	display: 'flex',

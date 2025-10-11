@@ -16,7 +16,7 @@ interface Props {
 /**
  * login and register new accout
  */
-const GoogleLoginCmp: React.FC<Props> = ({
+const GoogleLoginCard: React.FC<Props> = ({
 }) => {
 
     // STORES
@@ -68,7 +68,7 @@ const GoogleLoginCmp: React.FC<Props> = ({
     );
 };
 
-export default GoogleLoginCmp;
+export default GoogleLoginCard;
 
 const sxLoginContainer: SxProps = {
     display: 'flex',

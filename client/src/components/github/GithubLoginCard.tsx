@@ -16,7 +16,7 @@ interface Props {
 /**
  * login and register new accout
  */
-const GithubLoginCmp: React.FC<Props> = ({
+const GithubLoginCard: React.FC<Props> = ({
 }) => {
 
     // STORES
@@ -86,7 +86,7 @@ const GithubLoginCmp: React.FC<Props> = ({
     );
 };
 
-export default GithubLoginCmp;
+export default GithubLoginCard;
 
 const sxActions: SxProps = {
     display: 'flex',

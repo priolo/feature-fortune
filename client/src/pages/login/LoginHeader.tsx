@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import React from 'react';
-import BackButton from '../feature/BackButton';
+import BackButton from '../../layout/BackButton';
 
 
 
