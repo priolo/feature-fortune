@@ -23,6 +23,7 @@ class AuthGoogleRoute extends httpRouter.Service {
 			]
 		}
 	}
+	declare state: typeof this.stateDefault
 
 
 
@@ -52,7 +53,7 @@ class AuthGoogleRoute extends httpRouter.Service {
 			}) ?? {}
 
 			// ACCOUNT UPDATE
-			await new Bus(this, this.state.repository).dispatch({
+			user = await new Bus(this, this.state.repository).dispatch({
 				type: typeorm.Actions.SAVE,
 				payload: {
 					email: payload.email,

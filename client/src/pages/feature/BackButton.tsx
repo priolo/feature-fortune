@@ -4,8 +4,12 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-
-const BackButton: React.FC = () => {
+interface Props {
+	toHome?: boolean
+}
+const BackButton: React.FC<Props> = ({
+	toHome = false,
+}) => {
 
 	// STORES
 	
@@ -14,11 +18,13 @@ const BackButton: React.FC = () => {
 
 	// HANDLERS
 	const handleGoBack = () => {
-		if (window.history.length > 2) {
+		if ( toHome ) {
+			navigate('/app');
+		} else if (window.history.length > 2) {
 			navigate(-1);
-			return;
+		} else {
+			navigate('/app');
 		}
-		navigate('/app');
 	}
 
 	// RENDER

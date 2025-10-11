@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Box, BoxProps, Collapse, IconButton, Paper, PaperProps, SxProps, Typography } from '@mui/material';
 import { ExpandLess, ExpandMore, InfoOutlined } from '@mui/icons-material';
+import { Box, Collapse, IconButton, Paper, PaperProps, SxProps, Typography } from '@mui/material';
+import React, { useState } from 'react';
 
 
 
@@ -9,11 +9,8 @@ interface CardProps {
 	icon?: React.ReactNode;
 	collapsible?: boolean;
 	defaultExpanded?: boolean;
-	onToggle?: (expanded: boolean) => void;
-	action?: React.ReactNode;
 	children?: React.ReactNode;
 	sx?: PaperProps['sx'];
-	contentProps?: BoxProps;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -21,69 +18,54 @@ const Card: React.FC<CardProps> = ({
 	icon,
 	collapsible = false,
 	defaultExpanded = true,
-	onToggle,
-	action,
 	children,
 	sx,
-	contentProps,
 }) => {
+
+	// HOOKS
 	const [expanded, setExpanded] = useState(defaultExpanded);
 
+	// HANDLERS
 	const handleToggle = () => {
-		if (!collapsible) return;
-		setExpanded((prev) => {
-			const next = !prev;
-			onToggle?.(next);
-			return next;
-		});
-	};
+		if (!collapsible) return
+		setExpanded(!expanded)
+	}
 
-	const { sx: contentSx, ...restContentProps } = contentProps ?? {};
-
+	// RENDER
 	return (
-		<Paper elevation={4} sx={[sxPaper, sx] as SxProps}>
+		<Paper elevation={3} sx={sxPaper}>
 
 			<Box sx={sxTitle}>
 
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
 					{icon ?? <InfoOutlined fontSize="small" color="primary" />}
-					<Typography variant="h6">
+					<Typography variant="h6" sx={{mt: "-3px"}}>
 						{title}
 					</Typography>
 				</Box>
 
-				{collapsible ? (
+				{collapsible && (
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-						{action}
-						<IconButton size="small" onClick={handleToggle} aria-label={expanded ? 'Collapse card' : 'Expand card'}>
+						<IconButton size="small" onClick={handleToggle}>
 							{expanded ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}
 						</IconButton>
 					</Box>
-				) : (
-					action
 				)}
 			</Box>
 
 			<Collapse in={!collapsible || expanded} unmountOnExit={collapsible}>
-				<Box
-					sx={[
-						{
-							display: 'flex',
-							flexDirection: 'column',
-							gap: 2,
-						},
-						...(Array.isArray(contentSx) ? contentSx : contentSx ? [contentSx] : []),
-					]}
-					{...restContentProps}
-				>
+				<Box sx={[sxContent, sx] as SxProps}>
 					{children}
 				</Box>
 			</Collapse>
+			
 		</Paper>
-	);
-};
+	)
+}
 
 export default Card;
+
+
 
 const sxPaper: SxProps = {
 	borderRadius: 3,
@@ -91,7 +73,7 @@ const sxPaper: SxProps = {
 	py: 2,
 	display: 'flex',
 	flexDirection: 'column',
-	gap: 2,
+	gap: 1,
 }
 
 const sxTitle: SxProps = {
@@ -99,4 +81,10 @@ const sxTitle: SxProps = {
 	alignItems: 'center',
 	justifyContent: 'space-between',
 	gap: 2,
+}
+
+const sxContent: SxProps = {
+	display: 'flex',
+	flexDirection: 'column',
+	gap: 1,
 }

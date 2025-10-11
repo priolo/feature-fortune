@@ -30,7 +30,8 @@ class StripeService extends ServiceBase {
 
 			[Actions.EXECUTE_PAYMENT]: (data: PaymentIntentData) => this.executePayment(data),
 
-			[Actions.CREATE_EXPRESS_ACCOUNT_URL]: (data: ExpressAccountData) => this.createExpressAccount(data),
+			[Actions.EXPRESS_ACCOUNT_CREATE]: (data: { email: string, accountId: string }) => this.expressAccountCreate(data),
+			[Actions.EXPRESS_ACCOUNT_URL]: (stripeAccountId: string) => this.expressAccountUrl(stripeAccountId),
 		}
 	}
 
@@ -86,7 +87,7 @@ class StripeService extends ServiceBase {
 	 * Fetch a payment method by its id
 	 */
 	async getPaymentMethod(paymentMethodId: string): Promise<Stripe.PaymentMethod> {
-		if ( !paymentMethodId ) throw new Error("No payment method id provided");
+		if (!paymentMethodId) throw new Error("No payment method id provided");
 		return await stripe.paymentMethods.retrieve(paymentMethodId);
 	}
 
@@ -118,31 +119,38 @@ class StripeService extends ServiceBase {
 		});
 	}
 
+
 	/**
-	 * Create a express account URL 
+	 * Create a express account for AUTHOR
 	 */
-	async createExpressAccount(data: ExpressAccountData): Promise<{ account: Stripe.Account; accountLink: Stripe.AccountLink }> {
+	async expressAccountCreate(data: { email: string, accountId: string }): Promise<Stripe.Account> {
+		const { email, accountId } = data
 		const account = await stripe.accounts.create({
 			type: "express",
 			country: "IT",
-			email: data.email,
+			email: email,
 			capabilities: {
 				card_payments: { requested: true },
 				transfers: { requested: true },
 			},
-			metadata: { accountId: data.accountId }
-		});
+			metadata: { accountId: accountId }
+		})
+		return account
+	}
 
+	/**
+	 * Create a express account link for AUTHOR
+	 */
+	async expressAccountUrl(stripeAccountId: string): Promise<string> {
 		const accountLink = await stripe.accountLinks.create({
-			account: account.id,
-			refresh_url: data.refreshUrl,
-			return_url: data.returnUrl,
+			account: stripeAccountId,
+			refresh_url: process.env.STRIPE_REFESH_URL,
+			return_url: process.env.STRIPE_RETURN_URL,
 			type: "account_onboarding",
 		});
 
-		return { account, accountLink };
+		return accountLink.url
 	}
-
 
 }
 

@@ -1,0 +1,99 @@
+
+import authSo from '@/stores/auth/repo';
+import Card from '@/components/Card';
+import GoogleIcon from '@mui/icons-material/Google';
+import { Box, Button, SxProps, Typography } from '@mui/material';
+import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+import React from 'react';
+import { useStore } from '@priolo/jon';
+import { Done } from '@mui/icons-material';
+
+
+
+interface Props {
+}
+
+/**
+ * login and register new accout
+ */
+const GoogleLoginCmp: React.FC<Props> = ({
+}) => {
+
+    // STORES
+    useStore(authSo)
+
+    // HOOKS
+
+    // HANDLERS
+    // hook chiamato da google per il successo
+    const handleLoginSuccess = (response: CredentialResponse) => {
+        console.log('Login Success:', response);
+        authSo.loginWithGoogle(response.credential)
+    }
+    // hook chiamato da google per il fallimento
+    const handleLoginFailure = () => {
+        console.log('Login Failure:');
+    }
+    const handleGoogleDetach = async () => {
+        authSo.detachGoogle()
+    }
+
+    // RENDER
+    const logged = !!authSo.state.user;
+    const haveGoogle = !!authSo.state.user?.googleEmail
+
+    return (
+        <Card
+            title="Google access"
+            icon={<GoogleIcon color="primary" />}
+        >
+            <Typography variant="body2" color="text.secondary">
+                <Message logged={logged} haveGoogle={haveGoogle} />
+            </Typography>
+            <Box sx={sxLoginContainer}>
+                {!!logged && haveGoogle ? (
+                    <Button 
+                        onClick={handleGoogleDetach}
+                    >Detach</Button>
+                ) : (
+                    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID}>
+                        <GoogleLogin
+                            onSuccess={handleLoginSuccess}
+                            onError={handleLoginFailure}
+                        />
+                    </GoogleOAuthProvider>
+                )}
+            </Box>
+        </Card>
+    );
+};
+
+export default GoogleLoginCmp;
+
+const sxLoginContainer: SxProps = {
+    display: 'flex',
+    justifyContent: 'end',
+    paddingTop: 1,
+}
+
+
+interface MessageProps {
+    logged?: boolean;
+    haveGoogle: boolean;
+}
+
+const Message: React.FC<MessageProps> = ({ 
+    logged, 
+    haveGoogle,
+}) => {
+    if (haveGoogle) {
+        return <span>
+            <Done color="success" sx={{ fontSize: '1.4em', verticalAlign: 'text-bottom', mx: "2px" }} />
+            La tua email è verificata.
+        </span>;
+    }
+
+    return <span>
+        Collega il tuo account Google per un accesso più rapido e sicuro.
+    </span>;
+};

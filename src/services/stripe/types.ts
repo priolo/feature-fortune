@@ -21,7 +21,8 @@ export enum Actions {
 	 * this for receive moneys
 	 * Registration completion is notified in the WEBHOOK
 	 */
-	CREATE_EXPRESS_ACCOUNT_URL = "stripe:createExpressAccount"
+	EXPRESS_ACCOUNT_CREATE = "stripe:express:create",
+	EXPRESS_ACCOUNT_URL = "stripe:express:url",
 }
 
 /**
@@ -40,7 +41,9 @@ export interface PaymentIntentData {
  */
 export interface ExpressAccountData {
 	email: string;
+	/** id dell'ACCOUNT */
 	accountId: string;
+	stripeAccountId?: string;
 	refreshUrl: string;
 	returnUrl: string;
 }

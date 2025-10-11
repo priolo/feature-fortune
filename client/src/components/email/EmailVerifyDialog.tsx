@@ -1,4 +1,3 @@
-import authApi from "@/api/auth";
 import authEmailApi from "@/api/authEmail";
 import authSo from "@/stores/auth/repo";
 import { Button, Dialog, DialogActions, DialogTitle, TextField } from "@mui/material";
@@ -35,18 +34,15 @@ const EmailVerifyDialog: FunctionComponent<Partial<Props>> = ({
 	}, [isOpen])
 
 
-
-
 	// HANDLERS
 	const handleClose = () => {
 		onClose()
 	}
 
-
-
 	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setEmail(e.target.value)
 	}
+
 	const handleSendCodeClick = async () => {
 		if (!email) return alert('Devi inserire una email valida')
 		try {
@@ -57,11 +53,10 @@ const EmailVerifyDialog: FunctionComponent<Partial<Props>> = ({
 		}
 	}
 
-
-
 	const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setCode(e.target.value)
 	}
+
 	const handleVerifyAndClose = async () => {
 		if (!code) return alert('Devi inserire il codice')
 		try {
@@ -106,8 +101,4 @@ const EmailVerifyDialog: FunctionComponent<Partial<Props>> = ({
 	)
 }
 
-
 export default EmailVerifyDialog
-
-
-

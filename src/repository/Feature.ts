@@ -34,7 +34,13 @@ export class FeatureRepo extends AccountAsset {
 	 * GITHUB REPO ID
 	 */
 	@Column({ type: 'bigint', nullable: true })
-	githubRepoId: number;
+	githubRepoId?: number;
+
+	/**
+	 * GITHUB USER ID of the repo owner
+	 */
+	@Column({ type: 'bigint', nullable: true })
+	githubUserId?: number;
 	
 
 

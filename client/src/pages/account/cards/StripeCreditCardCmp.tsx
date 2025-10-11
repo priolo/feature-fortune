@@ -1,11 +1,13 @@
-import fundingApi from "@/api/funding";
 import paymentApi from "@/api/payment";
+import Card from "@/components/Card";
 import authSo from "@/stores/auth/repo";
-import { Box, Button, SxProps } from "@mui/material";
+import { Money } from "@mui/icons-material";
+import { Box, Button, SxProps, Typography } from "@mui/material";
 import { useStore } from "@priolo/jon";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { PaymentMethod } from "@stripe/stripe-js";
 import { useEffect, useState } from "react";
+import CreditCardViewer from "../../../components/stripe/CreditCardViewer";
 
 
 
@@ -18,17 +20,15 @@ const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 }) => {
 	const havePaymentMethod = authSo.state.user?.stripeHaveCard
 
-	// STORES
 
+	// STORES
 	useStore(authSo)
-	const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(null)
 
 
 	// HOOKS
-
 	const stripe = useStripe();
 	const elements = useElements();
-
+	const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(null)
 	useEffect(() => {
 		if (!havePaymentMethod) return
 		async function load() {
@@ -40,7 +40,6 @@ const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 
 
 	// HANDLERS
-
 	const handleSavePayMethodClick = async () => {
 		if (!stripe || !elements) return;
 
@@ -66,8 +65,7 @@ const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 			alert("Metodo di pagamento salvato! Sarai addebitato quando l'autore sarà pronto.");
 			authSo.setUser({
 				...authSo.state.user,
-				stripeCustomerId: resIntent.stripeCustomerId,
-				stripePaymentMethodId
+				stripeHaveCard: true,
 			})
 		} else {
 			alert(resCard.error.message)
@@ -80,7 +78,7 @@ const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 			alert("Metodo di pagamento rimosso.");
 			authSo.setUser({
 				...authSo.state.user,
-				stripePaymentMethodId: null
+				stripeHaveCard: false,
 			})
 			setPaymentMethod(null)
 		} else {
@@ -88,61 +86,54 @@ const StripeCreditCardCmp: React.FC<GithubUserCmpProps> = ({
 		}
 	}
 
+
 	// RENDER
-
-
-
 	return (
-		<Box sx={[sxRoot, sx] as SxProps}>
+		<Card
+			title="Credit Card"
+			icon={<Money color="primary" />}
+		>
 
-			{havePaymentMethod ? <>
+			<Typography variant="body2" color="text.secondary">
+				{!havePaymentMethod
+					? "Non hai ancora una carta di credito salvata."
+					: "Hai una carta di credito salvata."
+				}
+			</Typography>
 
-				<Box>CREDIT CARD SETTATA</Box>
-				<CardDisplay card={paymentMethod?.card} />
-				<Button variant="contained" 
-					onClick={handleCCReset}
-				>DETACH CARD</Button>
 
-			</> : <>
-
-				<Box>INSERISCI LA TUA CREDIT CARD</Box>
+			{!!havePaymentMethod ? (
+				<CreditCardViewer card={paymentMethod?.card} />
+			) : (
 				<CardElement className="stripe-card-element" />
-				<Button variant="contained"
-					onClick={handleSavePayMethodClick}
-				>SET THIS CARD</Button>
+			)}
 
-			</>}
+			<Box sx={sxActions}>
+				{havePaymentMethod ? <>
 
-		</Box>
+					<Button
+						onClick={handleCCReset}
+					>DETACH</Button>
+
+				</> : <>
+
+					<Button
+						onClick={handleSavePayMethodClick}
+					>SET CARD</Button>
+
+				</>}
+			</Box>
+
+		</Card>
 	)
 }
 
 export default StripeCreditCardCmp;
 
-const sxRoot: SxProps = {
+const sxActions: SxProps = {
 	display: 'flex',
-	flexDirection: 'column',
-	gap: 1,
-}
+	justifyContent: 'end',
+	paddingTop: 1,
+};
 
 
-
-const CardDisplay = ({ card }: { card: PaymentMethod.Card }) => {
-	if (!card) return <Box>No Card Data</Box>
-
-	return <Box sx={{
-		border: '1px solid #ccc',
-		borderRadius: 1,
-		p: 2,
-		display: 'flex',
-		alignItems: 'center',
-		gap: 2
-	}}>
-		<Box sx={{ fontSize: '1.2em' }}>
-			**** **** **** {card.last4}
-		</Box>
-		<Box sx={{ fontSize: '0.9em', color: 'text.secondary' }}>
-			{card.brand.toUpperCase()} {card.exp_month}/{card.exp_year}
-		</Box>
-	</Box>
-}

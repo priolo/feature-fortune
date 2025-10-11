@@ -56,6 +56,8 @@ const setup = {
 		},
 
 
+
+		
 		loginWithGithub: async (_: void, store?: AuthStore) => {
 			const res = await authApi.githubLoginUrl()
 			window.location.href = `${res.url}&prompt=select_account`
@@ -92,9 +94,16 @@ const setup = {
 			const res = await authApi.googleAttach(token)
 			const user = res.user as Account
 			console.log(user)
-			store.setUser(<Partial<Account>>{
+			store.setUser(<Account>{
 				...store.state.user,
 				googleEmail: user.googleEmail,
+			})
+		},
+		detachGoogle: async (_: void, store?: AuthStore) => {
+			const res = await authApi.googleDetach()
+			store.setUser({
+				...store.state.user,
+				googleEmail: null,
 			})
 		},
 
@@ -107,7 +116,7 @@ const setup = {
 	},
 
 	mutators: {
-		setUser: (user) => ({ user }),
+		setUser: (user:Account) => ({ user }),
 		setClientSecret: (clientSecret: string) => ({ clientSecret }),
 	},
 }

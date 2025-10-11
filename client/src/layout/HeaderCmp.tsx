@@ -6,6 +6,7 @@ import React, { useMemo } from 'react';
 import UserCmp from './UserCmp';
 import FeatureDetailHeader from '@/pages/feature/DetailHeader';
 import LoginHeader from '@/pages/login/LoginHeader';
+import AccountHeader from '@/pages/account/AccountHeader';
 
 
 
@@ -24,7 +25,7 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 			[LOCATION_PAGE.FeaturesList]: <FeatureListHeader />,
 			[LOCATION_PAGE.FeatureDetail]: <FeatureDetailHeader />,
 			[LOCATION_PAGE.Login]: <LoginHeader />,
-			[LOCATION_PAGE.Account]: null,
+			[LOCATION_PAGE.Account]: <AccountHeader />,
 		}[locationSo.state.current]
 	}, [locationSo.state.current])
 

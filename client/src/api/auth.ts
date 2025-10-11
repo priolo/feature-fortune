@@ -61,7 +61,12 @@ function loginGoogle(token: string, opt?: CallOptions): Promise<{ user: Account 
 function googleAttach(token: string, opt?: CallOptions): Promise<any> {
 	return ajax.post(`accounts/google`, { token }, opt)
 }
-
+/** 
+ * stacco l'account GOOGLE dall'ACCOUNT attualmente loggato 
+ */
+function googleDetach(opt?: CallOptions): Promise<any> {
+	return ajax.delete(`accounts/google`, opt)
+}
 
 
 
@@ -79,6 +84,7 @@ const authApi = {
 
 	loginGoogle,
 	googleAttach,
+	googleDetach,
 }
 
 export default authApi

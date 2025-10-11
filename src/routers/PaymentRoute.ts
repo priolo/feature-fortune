@@ -22,6 +22,7 @@ class PaymentRoute extends httpRouter.Service {
 			]
 		}
 	}
+	declare state: typeof this.stateDefault
 
 	/** 
 	 * ATTACH 1

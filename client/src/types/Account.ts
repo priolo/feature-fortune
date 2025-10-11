@@ -33,4 +33,6 @@ export interface Account {
 	 */
 	//stripeAccountId?: string
 	stripeHaveAccount?: boolean
+
+	stripeAccountStatus?: "pending" | "ready";
 }

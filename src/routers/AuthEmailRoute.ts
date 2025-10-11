@@ -49,7 +49,7 @@ class AuthEmailRoute extends httpRouter.Service {
 		}) ?? { email }
 
 		// ACCOUNT UPDATE
-		await new Bus(this, this.state.repository).dispatch({
+		user = await new Bus(this, this.state.repository).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: { 
 				...user, 

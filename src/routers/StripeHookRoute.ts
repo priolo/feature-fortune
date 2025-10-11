@@ -20,6 +20,7 @@ class StripeHookRoute extends httpRouter.Service {
 			]
 		}
 	}
+	declare state: typeof this.stateDefault
 
 	/**
 	 * eventi da STRIPE
@@ -47,28 +48,26 @@ class StripeHookRoute extends httpRouter.Service {
 					payload: accountId,
 				})
 
-				// dont find the user
 				if (!user) return response.status(404).json({ error: "User not found" });
-				// already linked with another stripe account!
-				if (!!user.stripeAccountId && user.stripeAccountId != stripeAccount.id) {
+				if (!user.stripeAccountId) return response.status(404).json({ error: "User not linked with any stripe account" });
+				if (user.stripeAccountId != stripeAccount.id) {
 					return response.status(401).json({ error: "Account already linked with another stripe account" });
 				}
-				
-				// already linked with this stripe account!
-				if ( !!user.stripeAccountId && user.stripeAccountId == stripeAccount.id ) {
-					return response.status(200).json({ message: "Account already linked" });
+
+				// se lo stripe account è cambiato lo aggiorno
+				const canReceiveMoney = stripeAccount.charges_enabled && stripeAccount.payouts_enabled;
+				const newStatus = canReceiveMoney ? "ready" : "pending";
+				if (user.stripeAccountStatus !== newStatus) {
+					await new Bus(this, this.state.account_repo).dispatch({
+						type: typeorm.Actions.SAVE,
+						payload: {
+							id: user.id,
+							stripeAccountStatus: newStatus
+						},
+					})
+					return response.status(200).json({ message: `Account status updated: ${newStatus}` });
 				}
-
-				// salvo lo stripeAccountId
-				await new Bus(this, this.state.account_repo).dispatch({
-					type: typeorm.Actions.SAVE,
-					payload: {
-						id: user.id,
-						stripeAccountId: stripeAccount.id
-					},
-				})
-
-				break;
+				break
 			}
 
 			case 'payment_intent.amount_capturable_updated':

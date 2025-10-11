@@ -21,11 +21,13 @@ class AccountRoute extends httpRouter.Service {
 				{ path: "/github", verb: "delete", method: "detachGithub" },
 
 				{ path: "/google", verb: "post", method: "attachGoogle" },
+				{ path: "/google", verb: "delete", method: "detachGoogle" },
 
 
 			]
 		}
 	}
+	declare state: typeof this.stateDefault
 
 	/**
 	 * Sono loggato e voglio collegare il mio account GITHUB
@@ -138,6 +140,19 @@ class AccountRoute extends httpRouter.Service {
 		}
 	}
 
+	async detachGoogle(req: Request, res: Response) {
+		const userJwt: AccountRepo = req["jwtPayload"]
+
+		await new Bus(this, this.state.account_repo).dispatch({
+			type: typeorm.Actions.SAVE,
+			payload: <Partial<AccountRepo>>{
+				id: userJwt.id,
+				googleEmail: null,
+			},
+		})
+
+		res.send({ success: true })
+	}
 }
 
 export default AccountRoute

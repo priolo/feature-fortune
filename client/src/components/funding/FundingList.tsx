@@ -1,7 +1,7 @@
-import React from 'react';
-import { Box, Typography, Chip, List, ListItem, ListItemText, Divider, Button } from '@mui/material';
+import stripeApi from '@/api/stripe';
 import { Funding } from '@/types/Funding';
-import fundingApi from '@/api/funding';
+import { Box, Button, Chip, Divider, List, ListItem, ListItemText, Typography } from '@mui/material';
+import React from 'react';
 
 
 
@@ -15,7 +15,7 @@ const FundingList: React.FC<Props> = ({
 
     // HANDLERS
     const handlePayNow = async (funding: Funding) => {
-        const result = await fundingApi.pay(funding.id);
+        const result = await stripeApi.pay(funding.id);
         console.log(result);
     };
 

@@ -4,7 +4,7 @@ import BackButton from '../feature/BackButton';
 
 
 
-const LoginHeader: React.FC = () => {
+const AccountHeader: React.FC = () => {
 
 	// STORES
 
@@ -14,12 +14,12 @@ const LoginHeader: React.FC = () => {
 	
 	// RENDER
 	return <>
-		<BackButton toHome />
+		<BackButton />
 		<Typography variant="h5">
-			LOGIN
+			MY ACCOUNT
 		</Typography>
 		<Box sx={{ flex: 1 }}></Box>
 	</>
 }
 
-export default LoginHeader;
+export default AccountHeader;

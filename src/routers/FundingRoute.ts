@@ -24,6 +24,7 @@ class FundingRoute extends httpRouter.Service {
 			]
 		}
 	}
+	declare state: typeof this.stateDefault
 
 	async pay(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
@@ -77,14 +78,14 @@ class FundingRoute extends httpRouter.Service {
 		const expressAccountData: ExpressAccountData = {
 			email: userJwt.email,
 			accountId: userJwt.id,
-			refreshUrl: "http://localhost:5173/app/feature",
-			returnUrl: "http://localhost:5173/app/feature",
-		};
+			refreshUrl: process.env.STRIPE_REFESH_URL,
+			returnUrl: process.env.STRIPE_RETURN_URL,
+		}
 
 		const { account, accountLink } = await new Bus(this, this.state.stripe_service).dispatch({
 			type: Actions.CREATE_EXPRESS_ACCOUNT_URL,
 			payload: expressAccountData
-		});
+		})
 
 		res.status(200).json(
 			{ url: accountLink.url }

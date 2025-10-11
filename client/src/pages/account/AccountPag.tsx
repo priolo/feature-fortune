@@ -1,14 +1,16 @@
 import authSo, { stripePromise } from '@/stores/auth/repo';
-import { Box, Button, SxProps, TextField, Typography } from '@mui/material';
-import { useStore } from '@priolo/jon';
-import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
-import { Elements } from '@stripe/react-stripe-js';
-import React, { useEffect, useState } from 'react';
-import GithubUserCmp from './cards/GithubUserCmp';
-import StripeCreditCardCmp from './cards/StripeCreditCardCmp';
-import fundingApi from '@/api/funding';
-import EmailVerifyDialog from '@/components/email/EmailVerifyDialog';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
+import { Box, SxProps } from '@mui/material';
+import { useStore } from '@priolo/jon';
+import { Elements } from '@stripe/react-stripe-js';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import EmailLoginCmp from '../../components/email/EmailLoginCmp';
+import GoogleLoginCmp from '../../components/google/GoogleLoginCmp';
+import GithubLoginCmp from '../login/GithubLoginCmp';
+import StripeAuthorCard from './cards/StripeAuthorCard';
+import StripeCreditCardCmp from './cards/StripeCreditCardCmp';
+
 
 
 interface AccountPagProps {
@@ -25,51 +27,19 @@ const AccountPag: React.FC<AccountPagProps> = ({
 
 
     // HOOKS
-    const [emailDialogIsOpen, setEmailDialogIsOpen] = useState(false)
+    const navigate = useNavigate()
     useEffect(() => {
+        if (!authSo.state.user) {
+            navigate('/app/')
+            return;
+        }
         locationSo.setCurrent(LOCATION_PAGE.Account)
     }, [])
 
 
     // HANDLERS
-    const handleGithubAttach = async () => {
-        authSo.attachGithub()
-    }
-
-
-    // GOOGLE
-    const handleGoogleDetach = async () => {
-        //authSo.attachGithub()
-    }
-    const handleGoogleLoginSuccess = (response: CredentialResponse) => {
-        console.log('Login Success:', response);
-        authSo.attachGoogle(response.credential)
-    }
-    const handleGoogleLoginFailure = () => {
-        console.log('Login Failure:');
-    }
-
-
-
-    // STRIPE
-    const handleStripeRegister = async () => {
-        if (!authSo.state.user?.email) return alert('Devi prima collegare una email (Google o Github)')
-        const res = await fundingApi.stripeAuthorRegisterLink()
-        console.log(res)
-        window.location.href = res.url
-    }
-    const handleStripeAuthorDetach = async () => {
-        //authSo.detachStripeAuthor()
-    }
-
-
-
-    // EMAIL
-    const handleEmailVerifyDialogClose = () => {
-        setEmailDialogIsOpen(false)
-    }
-
-
+    
+    
     // RENDER
     if (!authSo.state.user) {
         return <div style={{ display: 'flex', flexDirection: "column", gap: 10, alignItems: 'center' }}>
@@ -77,83 +47,25 @@ const AccountPag: React.FC<AccountPagProps> = ({
         </div>
     }
 
-    const haveGithub = !!authSo.state.user?.githubId
-    const haveGoogle = !!authSo.state.user?.googleEmail
-    const haveStripeAuthor = authSo.state.user?.stripeHaveAccount
-    const isEmailVerified = !!authSo.state.user?.emailVerified
-    const email = authSo.state.user?.email || ''
-
     return (
         <Box sx={sxRoot}>
 
-
             {/* EMAIL ZONE */}
-            <Typography>{email}</Typography>
-            <Typography>
-                {isEmailVerified ? "VERIFIED" : "UNVERIFIED"}
-            </Typography>
-            <Button variant="contained" fullWidth
-                onClick={() => setEmailDialogIsOpen(true)}
-            >Verify</Button>
-            <EmailVerifyDialog
-                isOpen={emailDialogIsOpen}
-                onClose={handleEmailVerifyDialogClose}
-            />
-
-
+            <EmailLoginCmp />
 
             {/* GOOGLE ZONE */}
-            {haveGoogle ? (
-                <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                    <div>{authSo.state.user.email} LOGGED</div>
-                    <Button variant="contained"
-                        onClick={handleGoogleDetach}
-                    >DETACH GOOGLE</Button>
-                </div>
-            ) : (
-                <div style={{ display: 'flex', flexDirection: "column", gap: 10, alignItems: 'center' }}>
-                    <div>ANONYMOUS</div>
-                    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID}>
-                        <h2>Login with Google</h2>
-                        <GoogleLogin
-                            onSuccess={handleGoogleLoginSuccess}
-                            onError={handleGoogleLoginFailure}
-                        />
-                    </GoogleOAuthProvider>
-                </div>
-            )}
-
-
+            <GoogleLoginCmp />
 
             {/* GITHUB ZONE */}
-            {haveGithub ? (
-                <GithubUserCmp userId={authSo.state.user.githubId} />
-            ) : (
-                <Button variant="contained" onClick={handleGithubAttach}>
-                    Accedi con GitHub
-                </Button>
-            )}
-
-
+            <GithubLoginCmp />
 
             {/* STRIPE CUSTOMER ZONE */}
             <Elements stripe={stripePromise}>
                 <StripeCreditCardCmp />
             </Elements>
 
-
-
             {/* STRIPE AUTHOR ZONE */}
-            {haveStripeAuthor ? <>
-                <div>Sei registrato come autore su Stripe</div>
-                <Button variant="contained" onClick={handleStripeAuthorDetach}>
-                    DETACH AUTHOR
-                </Button>
-            </> : (
-                <Button variant="contained" onClick={handleStripeRegister}>
-                    Registrati come autore
-                </Button>
-            )}
+            <StripeAuthorCard />
 
         </Box>
     );

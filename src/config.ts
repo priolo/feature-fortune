@@ -22,6 +22,7 @@ import StripeService from "./services/stripe/StripeService.js";
 import { envInit } from "./types/env.js";
 import EmailService from "./services/email/EmailService.js";
 import AuthEmailRoute from "./routers/AuthEmailRoute.js";
+import StripeRoute from "./routers/StripeRoute.js";
 
 
 
@@ -96,6 +97,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 								{ class: PaymentRoute },
 								{ class: FundingRoute },
 								{ class: CommentRoute },
+								{ class: StripeRoute },
 							],
 						},
 

@@ -14,25 +14,7 @@ function create(funding: Funding, opt?: CallOptions): Promise<{ funding: Funding
 
 
 
-
-
-function pay(fundingId: string, opt?: CallOptions): Promise<{ funding: Funding }> {
-	return ajax.post(`fundings/pay`, { fundingId }, opt)
-}
-
-function stripeAuthorRegisterLink(opt?: CallOptions): Promise<any> {
-	return ajax.post(`fundings/link`, null, opt)
-}
-
-
-
-
-
 const fundingApi = {
-	pay,
-	stripeAuthorRegisterLink,
-
-
 	index,
 	create,
 }

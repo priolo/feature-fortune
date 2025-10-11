@@ -22,6 +22,7 @@ class AuthGithubRoute extends httpRouter.Service {
 			]
 		}
 	}
+	declare state: typeof this.stateDefault
 
 	/** 
 	 * Login/register with GITHUB
