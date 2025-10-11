@@ -1,20 +1,20 @@
 
 export enum Actions {
 	/** execute a memorized payment  */
-	EXECUTE_PAYMENT = "stripe:executePayment",
+	PAYMENT_EXECUTE = "stripe:payment:execute",
 
 	/** get o create new if not exist */
-	GET_OR_CREATE_CUSTOMER = "stripe:getOrCreateCustomer",
+	CUSTOMER_GET_CREATE = "stripe:customer:get-create",
 
 	/** create a setup intent where in future save cards data */
-	CREATE_SETUP_INTENT = "stripe:createSetupIntent",
+	INTENT_SETUP = "stripe:intent:setup",
 
 	/** all payment methods for a stripe customer */
-	LIST_PAYMENT_METHODS = "stripe:listPaymentMethods",
+	PAYMENT_METHOD_LIST = "stripe:payment:list",
 	/** fetch a payment method with its id*/
-	GET_PAYMENT_METHOD = "stripe:getPaymentMethod",
+	PAYMENT_METHOD_GET = "stripe:payment:get",
 	/** remove all payment method for a CUTOMER */
-	REMOVE_ALL_PAYMENT_METHODS = "stripe:removeAllPaymentMethods",
+	PAYMENT_METHOD_REMOVE_ALL = "stripe:payment:remove-all",
 	/**
 	 * Create a express account URL
 	 * for register in STRIPE web-app for AUTHOR
@@ -36,15 +36,5 @@ export interface PaymentIntentData {
 	destination: string;
 }
 
-/**
- * Data needed for create a express account
- */
-export interface ExpressAccountData {
-	email: string;
-	/** id dell'ACCOUNT */
-	accountId: string;
-	stripeAccountId?: string;
-	refreshUrl: string;
-	returnUrl: string;
-}
+
 

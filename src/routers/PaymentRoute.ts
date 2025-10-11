@@ -40,7 +40,7 @@ class PaymentRoute extends httpRouter.Service {
 
 		// Get or create customer using StripeService
 		const customer: Stripe.Customer = await new Bus(this, this.state.stripe_service).dispatch({
-			type: Actions.GET_OR_CREATE_CUSTOMER,
+			type: Actions.CUSTOMER_GET_CREATE,
 			payload: { stripeCustomerId: user.stripeCustomerId, accountId: user.id }
 		});
 		if ( !customer.id ) return res.status(500).json({ error: "Customer not created" });
@@ -58,7 +58,7 @@ class PaymentRoute extends httpRouter.Service {
 
 		// Create setup intent using StripeService
 		const setupIntent: Stripe.SetupIntent = await new Bus(this, this.state.stripe_service).dispatch({
-			type: Actions.CREATE_SETUP_INTENT,
+			type: Actions.INTENT_SETUP,
 			payload: customer.id,
 		});
 
@@ -104,7 +104,7 @@ class PaymentRoute extends httpRouter.Service {
 			try {
 				// Remove all payment methods using StripeService
 				await new Bus(this, this.state.stripe_service).dispatch({
-					type: Actions.REMOVE_ALL_PAYMENT_METHODS,
+					type: Actions.PAYMENT_METHOD_REMOVE_ALL,
 					payload: user.stripeCustomerId
 				});
 			} catch (error) {
@@ -141,7 +141,7 @@ class PaymentRoute extends httpRouter.Service {
 		let paymentMethods: Stripe.PaymentMethod;
 		try {
 			paymentMethods = await new Bus(this, this.state.stripe_service).dispatch({
-				type: Actions.GET_PAYMENT_METHOD,
+				type: Actions.PAYMENT_METHOD_GET,
 				payload: user.stripePaymentMethodId!
 			});
 		} catch (error) {

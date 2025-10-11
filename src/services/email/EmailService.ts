@@ -26,7 +26,9 @@ export interface Email {
 }
 
 
-
+/**
+ * invia un email tramite un servizio esterno google 
+ */
 export type EmailServiceConf = Partial<EmailService['stateDefault']>
 
 class EmailService extends ServiceBase {
@@ -71,7 +73,4 @@ class EmailService extends ServiceBase {
 
 }
 
-
 export default EmailService
-
-

@@ -136,7 +136,7 @@ class PaymentCrono extends ServiceBase {
 
 		// Execute the payment using StripeService
 		const paymentIntent = await new Bus(this, this.state.stripe_service).dispatch({
-			type: Actions.EXECUTE_PAYMENT,
+			type: Actions.PAYMENT_EXECUTE,
 			payload: {
 				amount: amount,
 				currency: "EUR",

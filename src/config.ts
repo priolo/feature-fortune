@@ -1,4 +1,4 @@
-import { email, http, httpRouter, httpStatic, jwt, log, typeorm } from "@priolo/julian";
+import { http, httpRouter, httpStatic, jwt, log, typeorm } from "@priolo/julian";
 import { TypeLog } from "@priolo/julian/dist/core/types.js";
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -8,6 +8,7 @@ import { getDBConnectionConfig } from './repository/dbConfig.js';
 import { FeatureRepo } from "./repository/Feature.js";
 import { FundingRepo } from "./repository/Funding.js";
 import AccountRoute from "./routers/AccountRoute.js";
+import AuthEmailRoute from "./routers/AuthEmailRoute.js";
 import AuthGithubRoute from "./routers/AuthGithubRoute.js";
 import AuthGoogleRoute from "./routers/AuthGoogleRoute.js";
 import AuthRoute from "./routers/AuthRoute.js";
@@ -16,13 +17,12 @@ import FeatureRoute from "./routers/FeatureRoute.js";
 import FundingRoute from "./routers/FundingRoute.js";
 import PaymentRoute from "./routers/PaymentRoute.js";
 import StripeHookRoute from "./routers/StripeHookRoute.js";
+import StripeRoute from "./routers/StripeRoute.js";
 import PaymentCrono from "./services/crono/PaymentCrono.js";
+import EmailService from "./services/email/EmailService.js";
 import ReflectionRoute from "./services/reflection/ReflectionRoute.js";
 import StripeService from "./services/stripe/StripeService.js";
 import { envInit } from "./types/env.js";
-import EmailService from "./services/email/EmailService.js";
-import AuthEmailRoute from "./routers/AuthEmailRoute.js";
-import StripeRoute from "./routers/StripeRoute.js";
 
 
 
@@ -119,11 +119,6 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 					class: "typeorm/repo",
 					model: AccountRepo,
 				},
-				// {
-				// 	name: "providers",
-				// 	class: "typeorm/repo",
-				// 	model: ProviderRepo,
-				// },
 				{
 					name: "features",
 					class: "typeorm/repo",

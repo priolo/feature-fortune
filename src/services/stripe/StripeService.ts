@@ -20,15 +20,15 @@ class StripeService extends ServiceBase {
 		return {
 			...super.executablesMap,
 
-			[Actions.GET_OR_CREATE_CUSTOMER]: (data: { stripeCustomerId: string | null, accountId: string }) => this.getOrCreateCustomer(data.stripeCustomerId, data.accountId),
+			[Actions.CUSTOMER_GET_CREATE]: (data: { stripeCustomerId: string | null, accountId: string }) => this.getOrCreateCustomer(data.stripeCustomerId, data.accountId),
 
-			[Actions.CREATE_SETUP_INTENT]: (customerId: string) => this.createSetupIntent(customerId),
+			[Actions.INTENT_SETUP]: (customerId: string) => this.createSetupIntent(customerId),
 
-			[Actions.LIST_PAYMENT_METHODS]: (customerId: string) => this.listPaymentMethods(customerId),
-			[Actions.GET_PAYMENT_METHOD]: (paymentMethodId: string) => this.getPaymentMethod(paymentMethodId),
-			[Actions.REMOVE_ALL_PAYMENT_METHODS]: (customerId: string) => this.removeAllPaymentMethods(customerId),
+			[Actions.PAYMENT_METHOD_LIST]: (customerId: string) => this.listPaymentMethods(customerId),
+			[Actions.PAYMENT_METHOD_GET]: (paymentMethodId: string) => this.getPaymentMethod(paymentMethodId),
+			[Actions.PAYMENT_METHOD_REMOVE_ALL]: (customerId: string) => this.removeAllPaymentMethods(customerId),
 
-			[Actions.EXECUTE_PAYMENT]: (data: PaymentIntentData) => this.executePayment(data),
+			[Actions.PAYMENT_EXECUTE]: (data: PaymentIntentData) => this.executePayment(data),
 
 			[Actions.EXPRESS_ACCOUNT_CREATE]: (data: { email: string, accountId: string }) => this.expressAccountCreate(data),
 			[Actions.EXPRESS_ACCOUNT_URL]: (stripeAccountId: string) => this.expressAccountUrl(stripeAccountId),
