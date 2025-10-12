@@ -4,8 +4,14 @@ import { Account } from "../types/Account";
 
 
 /** INDEX */
-function index(opt?: CallOptions): Promise<Account[]> {
-	return ajax.get(`accounts`, opt)
+function index(filter?: { text?: string }, opt?: CallOptions): Promise<Account[]> {
+	const params = new URLSearchParams();
+	if (filter?.text) {
+		params.append('text', filter.text);
+	}
+	const queryString = params.toString();
+	const url = queryString ? `accounts?${queryString}` : 'accounts';
+	return ajax.get(url, opt)
 }
 
 /** GET */
@@ -15,32 +21,17 @@ async function get(id: string, opt?: CallOptions): Promise<Account> {
 	return user
 }
 
-
-
-/** DELETE */
-function remove(id: string, opt?: CallOptions): Promise<void> {
-	if (!id) return
-	return ajax.delete(`accounts/${id}`, null, opt)
-}
-
-/** CREATE */
-function create(user: Account, opt?: CallOptions): Promise<Account> {
-	if (!user) return
-	return ajax.post(`accounts`, user, opt)
-}
-
-/** UPDATE */
-function update(user: Account, opt?: CallOptions): Promise<Account> {
-	if (!user) return
-	return ajax.post(`accounts/${user.id}`, user, opt)
+async function getByGithubUserId(githubUserId: number, opt?: CallOptions): Promise<{ account: Account }> {
+	if (!githubUserId) return
+	const user = await ajax.get(`accounts/github/${githubUserId}`, opt)
+	return user
 }
 
 
 const accountApi = {
 	index,
 	get,
-	remove,
-	create,
-	update,
+	getByGithubUserId,
 }
+
 export default accountApi

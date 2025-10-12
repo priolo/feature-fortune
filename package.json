@@ -18,14 +18,14 @@
   },
   "//dependencies": {
     "@priolo/julian": "file://C:/Users/ivano.iorio/Documents/julian",
-    "@priolo/jon-utils#local": "file:C://Users//iorio//Documents//jon-utils",
+    "@priolo/jon-utils": "file:C://Users//iorio//Documents//jon-utils",
     "@priolo/jess": "file://C:/Users/iorio/Documents/jess"
   },
   "dependencies": {
     "@octokit/oauth-app": "^8.0.1",
     "@octokit/rest": "^22.0.0",
     "@priolo/jon-utils": "^0.5.4",
-    "@priolo/julian": "^0.8.2",
+    "@priolo/julian": "file://C:/Users/ivano.iorio/Documents/julian",
     "cross-env": "^7.0.3",
     "dayjs": "^1.11.18",
     "dotenv": "^16.4.5",

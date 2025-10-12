@@ -46,7 +46,8 @@ class StripeRoute extends httpRouter.Service {
 			payload: userJwt.id,
 		})
 		if (!user) return res.status(404).json({ error: "User not found" });
-
+		const email = user.email ?? user.googleEmail
+		if (!email) return res.status(400).json({ error: "User has no email" });
 		// check if the user have already a stripe account and are READY
 		if (!!user.stripeAccountId && user.stripeAccountStatus === "ready") {
 			return res.status(400).json({ error: "User already have a stripe account" });
@@ -56,7 +57,10 @@ class StripeRoute extends httpRouter.Service {
 		if (!user.stripeAccountId) {
 			const stripeAccount = await new Bus(this, this.state.stripe_service).dispatch({
 				type: Actions.EXPRESS_ACCOUNT_CREATE,
-				payload: { email: userJwt.email, accountId: userJwt.id }
+				payload: { 
+					email: email, 
+					accountId: userJwt.id 
+				}
 			})
 			// salvo lo stripe account id
 			user = await new Bus(this, this.state.account_repo).dispatch({

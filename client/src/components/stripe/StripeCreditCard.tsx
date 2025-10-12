@@ -44,6 +44,24 @@ const StripeCreditCard: React.FC<Props> = ({
 	const handleSavePayMethodClick = async () => {
 		if (!stripe || !elements) return;
 
+		// Validate the card element before proceeding
+		const cardElement = elements.getElement(CardElement);
+		if (!cardElement) {
+			alert("Errore: elemento carta non trovato.");
+			return;
+		}
+
+		// Check if the card is complete and valid
+		const { error: validationError, paymentMethod: testPaymentMethod } = await stripe.createPaymentMethod({
+			type: 'card',
+			card: cardElement,
+		});
+
+		if (validationError) {
+			alert("Carta non valida: " + validationError.message);
+			return;
+		}
+
 		// Creo il PaymentMethod 
 		const resIntent = await paymentApi.create()
 		if (!resIntent) return // error
@@ -53,10 +71,14 @@ const StripeCreditCard: React.FC<Props> = ({
 			resIntent.clientSecret,
 			{
 				payment_method: {
-					card: elements.getElement(CardElement)!,
+					card: cardElement,
 				}
 			}
 		)
+		if (resCard.error) {
+			alert("Errore nella conferma della carta: " + resCard.error.message)
+			return
+		}
 
 		// 3) Salvo il PaymentMethod 
 		const stripePaymentMethodId = resCard.setupIntent.payment_method as string

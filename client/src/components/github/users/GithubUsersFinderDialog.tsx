@@ -1,4 +1,4 @@
-import gitHubApi from "@/api/github";
+import gitHubApi from "@/api/githubService";
 import { GitHubUser } from "@/types/github/GitHub";
 import { Box, Button, Dialog, DialogActions, DialogTitle, List, ListItem, ListItemButton, ListItemText, TextField } from "@mui/material";
 import React, { FunctionComponent, useEffect } from "react";

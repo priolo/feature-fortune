@@ -1,18 +1,20 @@
-import CommentDialog from '@/components/CommentDialog';
-import FundingDialog from '@/components/funding/FundingDialog';
-import FundingList from '@/components/funding/FundingList';
+import AccountSelector from '@/components/account/AccountSelector';
+import Framework from '@/layout/Framework';
+import CommentsCard from '@/pages/feature/CommentsCard';
+import FundingsCard from '@/pages/feature/FundingsCard';
 import featureDetailSo from '@/stores/feature/detail';
-import { Comment } from '@/types/Comment';
+import locationSo, { LOCATION_PAGE } from '@/stores/location';
 import { buildNewFeature } from '@/types/feature/factory';
-import { Funding } from '@/types/Funding';
-import { Box, Button, Card, CardActions, CardContent, SxProps, TextField, Typography } from '@mui/material';
+import { Feature } from '@/types/feature/Feature';
+import { Card, CardContent, TextField } from '@mui/material';
 import { useStore } from '@priolo/jon';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import GithubRepoSelector from '../../components/github/repos/GithubRepoSelector';
 import GithubUserSelector from '../../components/github/users/GithubUserSelector';
-import locationSo, { LOCATION_PAGE } from '@/stores/location';
-import Framework from '@/layout/Framework';
+import { GitHubUser } from '@/types/github/GitHub';
+import accountApi from '@/api/account';
+import { Account } from '@/types/Account';
 
 
 
@@ -28,11 +30,9 @@ const FeatureDetailPag: React.FC<Props> = ({
     // STORES
     useStore(featureDetailSo)
 
+    
     // HOOKS
     let { id } = useParams<{ id: string }>()
-    const [dialogFundingOpen, setDialogFundingOpen] = useState(false);
-    const [dialogCommentOpen, setDialogCommentOpen] = useState(false);
-
     useEffect(() => {
         locationSo.setCurrent(LOCATION_PAGE.FeatureDetail)
 
@@ -49,65 +49,38 @@ const FeatureDetailPag: React.FC<Props> = ({
 
 
     // HANDLERS
-    const handleFeatureTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handlePropChange = (prop: Partial<Feature>) => {
         featureDetailSo.setFeature({
             ...featureDetailSo.state.feature,
-            title: e.target.value
+            ...prop
         })
     };
-    const handleFeatureDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    const handleGithubUserChange = async (githubUser: GitHubUser) => {
         featureDetailSo.setFeature({
-            ...featureDetailSo.state.feature,
-            description: e.target.value
+            ...featureDetailSo.state.feature,   
+            githubUserId: githubUser?.id,
         })
-    }
-    const handleFeatureSaveClick = () => {
-        featureDetailSo.saveFeature()
-    }
-
-
-
-    const handleFundingCreateClick = () => {
-        setDialogFundingOpen(true)
+        const res = await accountApi.getByGithubUserId(githubUser?.id)
+        handleAccountChange(res.account)
     };
-    const handleFundingDialogClose = (funding: Funding) => {
-        setDialogFundingOpen(false)
-        if (!funding) return
 
-        featureDetailSo.setFundingSelected(funding)
-        featureDetailSo.saveFunding()
-    }
-
-
-
-    const handleCommentClick = () => {
-        setDialogCommentOpen(true)
-    };
-    const handleCommentDialogClose = (comment: Comment) => {
-        setDialogCommentOpen(false)
-        if (!comment) return
-        featureDetailSo.addComment(comment)
-    }
-
-
-    const formatAmount = (amount: number) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD'
-        }).format(amount);
+    const handleAccountChange = async (account:Account) => {
+        featureDetailSo.setFeature({
+            ...featureDetailSo.state.feature,   
+            devAccountId: account?.id,
+        })
     };
 
 
     // RENDER
     const inNew = featureDetailSo.state.feature?.id == null
     const showFundings = !inNew
-    const haveFunding = featureDetailSo.state.feature?.fundings != null && featureDetailSo.state.feature.fundings.length > 0
     const title = featureDetailSo.state.feature?.title || ''
     const description = featureDetailSo.state.feature?.description || ''
 
     return <Framework>
 
-        {/* GITHUB REPOSITORY */}
         <GithubRepoSelector
             githubRepoId={featureDetailSo.state.feature?.githubRepoId}
             onChange={() => featureDetailSo.setFeature({
@@ -117,12 +90,12 @@ const FeatureDetailPag: React.FC<Props> = ({
         />
         <GithubUserSelector
             githubOwnerId={featureDetailSo.state.feature?.githubUserId}
-            onChange={() => featureDetailSo.setFeature({
-                ...featureDetailSo.state.feature,
-                githubUserId: featureDetailSo.state.feature?.githubUserId,
-            })}
+            onChange={handleGithubUserChange}
         />
-
+        <AccountSelector 
+            accountId={featureDetailSo.state.feature?.devAccountId}
+            onChange={handleAccountChange}
+        />
 
 
         {/* FEATURE DETAIL */}
@@ -131,121 +104,30 @@ const FeatureDetailPag: React.FC<Props> = ({
                 <TextField fullWidth
                     label="Title"
                     value={title}
-                    onChange={handleFeatureTitleChange}
+                    onChange={(e) => handlePropChange({ title: e.target.value })}
                     placeholder="Enter a short title for the feature"
                 />
                 <TextField fullWidth multiline
                     label="Feature Description"
                     rows={6}
                     value={description}
-                    onChange={handleFeatureDescriptionChange}
+                    onChange={(e) => handlePropChange({ description: e.target.value })}
                     placeholder="Enter a complete description of the feature..."
                 />
             </CardContent>
-            <CardActions>
-                <Button
-                    onClick={handleFeatureSaveClick}
-                >{inNew ? "Create Feature" : "Update Feature"}</Button>
-            </CardActions>
         </Card>
 
 
         {/* FUNDINGS SECTION */}
         {showFundings && (
-            <Card sx={{ width: '100%', mt: 2 }}>
-                <CardContent>
-
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                        <Typography variant="h6" component="h2">
-                            Fundings ({featureDetailSo.state.feature?.fundings?.length || 0})
-                        </Typography>
-                        <Button variant="contained" color="primary"
-                            onClick={handleFundingCreateClick}
-                        >CONTRIBUTE</Button>
-                    </Box>
-
-                    {haveFunding ? (
-
-                        <FundingList fundings={featureDetailSo.state.feature.fundings} />
-
-                    ) : (
-                        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
-                            No fundings yet for this feature.
-                        </Typography>
-                    )}
-
-                    {/* Total funding summary */}
-                    {haveFunding && (
-                        <Box sx={{ mt: 2, pt: 2, borderTop: 1, borderColor: 'divider' }}>
-                            <Typography variant="body1" sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                <strong>Total Funded:</strong>
-                                <strong>
-                                    {formatAmount(
-                                        featureDetailSo.state.feature.fundings
-                                            .filter(f => f.status === 'completed')
-                                            .reduce((sum, f) => sum + f.amount, 0)
-                                    )}
-                                </strong>
-                            </Typography>
-                        </Box>
-                    )}
-                </CardContent>
-            </Card>
+            <FundingsCard />
         )}
 
 
         {/* COMMENTS SECTION */}
         {showFundings && (
-            <Card sx={{ width: '100%', mt: 2 }}>
-                <CardContent>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                        <Typography variant="h6" component="h2">
-                            Comments ({featureDetailSo.state.feature?.comments?.length || 0})
-                        </Typography>
-                        <Button variant="contained" color="primary"
-                            onClick={handleCommentClick}
-                        >COMMENT</Button>
-                    </Box>
-
-                    {featureDetailSo.state.feature?.comments && featureDetailSo.state.feature.comments.length > 0 ? (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            {featureDetailSo.state.feature.comments.map((comment) => (
-                                <Card key={comment.id} variant="outlined" sx={{ p: 2 }}>
-                                    <Typography variant="body1" sx={{ mb: 1 }}>
-                                        {comment.text}
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {new Date(comment.createdAt).toLocaleDateString('en-US', {
-                                            year: 'numeric',
-                                            month: 'short',
-                                            day: 'numeric',
-                                            hour: '2-digit',
-                                            minute: '2-digit'
-                                        })}
-                                    </Typography>
-                                </Card>
-                            ))}
-                        </Box>
-                    ) : (
-                        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
-                            No comments yet for this feature.
-                        </Typography>
-                    )}
-                </CardContent>
-            </Card>
+            <CommentsCard />
         )}
-
-
-        {/* DIALOGS */}
-        <FundingDialog
-            isOpen={dialogFundingOpen}
-            onClose={handleFundingDialogClose}
-        />
-
-        <CommentDialog
-            isOpen={dialogCommentOpen}
-            onClose={handleCommentDialogClose}
-        />
 
     </Framework>
 }

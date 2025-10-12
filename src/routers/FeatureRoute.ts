@@ -8,11 +8,11 @@ import { Request, Response } from "express";
 
 class FeatureRoute extends httpRouter.Service {
 
-	get stateDefault(): httpRouter.conf & any {
+	get stateDefault() {
 		return {
 			...super.stateDefault,
 			path: "/features",
-			repository: "/typeorm/features",
+			feature_repo: "/typeorm/features",
 			comment_repo: "/typeorm/comments",
 			routers: [
 				{ path: "/", verb: "get", method: "getAll" },
@@ -26,7 +26,7 @@ class FeatureRoute extends httpRouter.Service {
 	declare state: typeof this.stateDefault
 
 	async getAll(req: Request, res: Response) {
-		const features = await new Bus(this, this.state.repository).dispatch({
+		const features = await new Bus(this, this.state.feature_repo).dispatch({
 			type: typeorm.Actions.ALL
 		})
 		res.json(features)
@@ -35,7 +35,7 @@ class FeatureRoute extends httpRouter.Service {
 	async getById(req: Request, res: Response) {
 		const id = req.params["id"]
 
-		const feature: FeatureRepo = await new Bus(this, this.state.repository).dispatch({
+		const feature: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
 			type: typeorm.Actions.FIND_ONE,
 			payload: {
 				where: { id: id },
@@ -43,7 +43,7 @@ class FeatureRoute extends httpRouter.Service {
 			}
 		})
 
-		const comments:CommentRepo[] = await new Bus(this, this.state.comment_repo).dispatch({
+		const comments: CommentRepo[] = await new Bus(this, this.state.comment_repo).dispatch({
 			type: typeorm.Actions.FIND,
 			payload: {
 				where: { entityId: id, entityType: 'feature' },
@@ -58,17 +58,18 @@ class FeatureRoute extends httpRouter.Service {
 
 	async save(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
+		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
 		let { feature }: { feature: FeatureRepo } = req.body
-		if (!feature) return
+		if (!feature) return res.status(400).json({ error: "Feature data is required" })
 		feature.accountId = userJwt.id
 
 		// se è nuovo lo creo
 		if (feature.id == null) {
 			delete feature.id
 
-		// verifico che lo possa modificare
+			// verifico che lo possa modificare
 		} else {
-			const featureOld: FeatureRepo = await new Bus(this, this.state.repository).dispatch({
+			const featureOld: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
 				type: typeorm.Actions.GET_BY_ID,
 				payload: feature.id
 			})
@@ -81,7 +82,7 @@ class FeatureRoute extends httpRouter.Service {
 		delete feature.fundings
 
 		// salvo
-		const featureNew: AccountRepo = await new Bus(this, this.state.repository).dispatch({
+		const featureNew: AccountRepo = await new Bus(this, this.state.feature_repo).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: feature
 		})
@@ -91,7 +92,7 @@ class FeatureRoute extends httpRouter.Service {
 
 	async delete(req: Request, res: Response) {
 		const id = req.params["id"]
-		await new Bus(this, this.state.repository).dispatch({
+		await new Bus(this, this.state.feature_repo).dispatch({
 			type: typeorm.Actions.DELETE,
 			payload: id
 		})
@@ -102,7 +103,7 @@ class FeatureRoute extends httpRouter.Service {
 		const id = req.params["id"]
 		const { feature }: { feature: FeatureRepo } = req.body
 		if (!id || !feature) return
-		const featureUp = await new Bus(this, this.state.repository).dispatch({
+		const featureUp = await new Bus(this, this.state.feature_repo).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: feature,
 		})

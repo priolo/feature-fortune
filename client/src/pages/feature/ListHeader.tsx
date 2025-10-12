@@ -1,6 +1,7 @@
-import { Box, Button, SxProps, Typography } from '@mui/material';
+import authSo from '@/stores/auth/repo';
+import { Box, Button, Typography } from '@mui/material';
+import { useStore } from '@priolo/jon';
 import React from 'react';
-import BackButton from '../../layout/BackButton';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -8,26 +9,30 @@ import { useNavigate } from 'react-router-dom';
 const FeatureListHeader: React.FC = () => {
 
 	// STORES
+	useStore(authSo)
 
 	// HOOKS
 	const navigate = useNavigate()
-	
+
 	// HANDLERS
 	const handleNewFeatureClick = () => {
 		navigate('/app/feature/new')
 	}
-	
+
 	// RENDER
+	const logged = !!authSo.state.user
+
 	return <>
-		<BackButton />
 		<Typography variant="h5">
 			FEATURES
 		</Typography>
 		<Box sx={{ flex: 1 }}></Box>
 
-		<Button variant="contained" color="primary"
-			onClick={handleNewFeatureClick}
-		>New Feature</Button>
+		{logged &&
+			<Button variant="contained" color="primary"
+				onClick={handleNewFeatureClick}
+			>New Feature</Button>
+		}
 	</>
 }
 

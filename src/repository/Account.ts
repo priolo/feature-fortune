@@ -71,6 +71,7 @@ export type JWTPayload = {
 }
 
 export function accountSendable(account: AccountRepo) {
+	if ( !account ) return null
 	const { id, email, name, avatarUrl, googleEmail, githubId, stripeAccountStatus } = account
 	return {
 		id, email, name, avatarUrl, googleEmail, githubId,

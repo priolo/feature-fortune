@@ -1,8 +1,8 @@
-import gitHubApi from '@/api/github';
+import gitHubApi from '@/api/githubService';
 import GithubRepoViewer from '@/components/github/repos/GithubRepoViewer';
 import GithubReposFinderDialog from '@/components/github/repos/GithubReposFinderDialog';
 import { GitHubRepository } from '@/types/github/GitHub';
-import { Button, Card, CardActions, CardContent, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 
@@ -26,8 +26,11 @@ const GithubRepoSelector: React.FC<Props> = ({
     const [repo, setRepo] = useState<GitHubRepository>(null);
 
     useEffect(() => {
-        setRepo(null)
-        if (!githubRepoId) return
+        if (!githubRepoId) {
+			setRepo(null)
+			return
+		}
+		if ( repo?.id === githubRepoId ) return
         const load = async () => {
             const repo = await gitHubApi.getRepository(githubRepoId)
             setRepo(repo)

@@ -19,7 +19,7 @@ const StripeAuthorCard: React.FC = () => {
 
 	// HANDLERS
 	const handleRegister = async () => {
-		if (!authSo.state.user?.email || !authSo.state.user?.googleEmail) {
+		if (!authSo.state.user?.email && !authSo.state.user?.googleEmail) {
 			alert('Devi prima collegare una email (Google o Github)');
 			return;
 		}

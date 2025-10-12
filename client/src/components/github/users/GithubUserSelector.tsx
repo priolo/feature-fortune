@@ -1,6 +1,5 @@
-import gitHubApi from '@/api/github';
+import gitHubApi from '@/api/githubService';
 import GithubUserViewer from '@/components/github/users/GithubUserViewer';
-import GithubUsersDialog from '@/components/github/users/GithubUsersDialog';
 import GithubUsersFinderDialog from '@/components/github/users/GithubUsersFinderDialog';
 import { GitHubUser } from '@/types/github/GitHub';
 import { Button, Card, CardActions, CardContent } from '@mui/material';
@@ -28,8 +27,11 @@ const GithubUserSelector: React.FC<Props> = ({
     const [owner, setOwner] = useState<GitHubUser>(null);
 
     useEffect(() => {
-        setOwner(null)
-        if (!githubOwnerId) return
+        if (!githubOwnerId) {
+			setOwner(null)
+			return
+		}
+		if ( owner?.id === githubOwnerId ) return
         const load = async () => {
             const owner = await gitHubApi.getUserById(githubOwnerId)
             setOwner(owner)
@@ -40,7 +42,6 @@ const GithubUserSelector: React.FC<Props> = ({
 
     // HANDLERS
     const handleSelectUserClick = () => {
-
         setDialogOpen(true)
     }
     const handleUserDialogClose = async (user: GitHubUser) => {
@@ -70,12 +71,7 @@ const GithubUserSelector: React.FC<Props> = ({
             isOpen={dialogOpen}
             onClose={handleUserDialogClose}
         />
-        {/* <GithubUsersDialog
-            isOpen={dialogOpen}
-            users={users}
-            onClose={handleUserDialogClose}
-        /> */}
-
+        
     </>
 };
 

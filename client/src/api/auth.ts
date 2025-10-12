@@ -19,6 +19,7 @@ function logout(opt?: CallOptions): Promise<{ user: Account }> {
 
 
 
+
 /**
  * Non sono loggato quindi effettuo il login 
  * oppure la registrazione se non esiste l'ACCOUNT
@@ -31,14 +32,14 @@ function githubLoginUrl(opt?: CallOptions): Promise<any> {
  * Sono loggato e voglio collegare il mio ACCOUNT-GITHUB
  */
 function githubAttachUrl(opt?: CallOptions): Promise<any> {
-	return ajax.get(`accounts/github/link`, opt)
+	return ajax.get(`github/link`, opt)
 }
 
 /**
  * Elimina la connessione dell'ACCOUNT con ACCOUNT-GITHUB
  */
 function githubDetach(opt?: CallOptions): Promise<any> {
-	return ajax.delete(`accounts/github`, opt)
+	return ajax.delete(`github`, opt)
 }
 
 /**
@@ -59,13 +60,13 @@ function loginGoogle(token: string, opt?: CallOptions): Promise<{ user: Account 
  * aggancio un account GOOGLE all'ACCOUNT attualmente loggato 
  */
 function googleAttach(token: string, opt?: CallOptions): Promise<any> {
-	return ajax.post(`accounts/google`, { token }, opt)
+	return ajax.post(`google`, { token }, opt)
 }
 /** 
  * stacco l'account GOOGLE dall'ACCOUNT attualmente loggato 
  */
 function googleDetach(opt?: CallOptions): Promise<any> {
-	return ajax.delete(`accounts/google`, opt)
+	return ajax.delete(`google`, opt)
 }
 
 

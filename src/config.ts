@@ -7,7 +7,7 @@ import { CommentRepo } from "./repository/Comment.js";
 import { getDBConnectionConfig } from './repository/dbConfig.js';
 import { FeatureRepo } from "./repository/Feature.js";
 import { FundingRepo } from "./repository/Funding.js";
-import AccountRoute from "./routers/AccountRoute.js";
+import GoogleRoute from "./routers/GoogleRoute.js";
 import AuthEmailRoute from "./routers/AuthEmailRoute.js";
 import AuthGithubRoute from "./routers/AuthGithubRoute.js";
 import AuthGoogleRoute from "./routers/AuthGoogleRoute.js";
@@ -23,6 +23,8 @@ import EmailService from "./services/email/EmailService.js";
 import ReflectionRoute from "./services/reflection/ReflectionRoute.js";
 import StripeService from "./services/stripe/StripeService.js";
 import { envInit } from "./types/env.js";
+import GithubRoute from "./routers/GithubRoute.js";
+import AccountRoute from "./routers/AccountRoute.js";
 
 
 
@@ -65,7 +67,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 				{ class: AuthEmailRoute },
 				{ class: AuthGithubRoute },
 				{ class: AuthGoogleRoute },
-				
+
 				{ class: StripeHookRoute },
 				{ class: ReflectionRoute },
 
@@ -76,33 +78,42 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 					spaFile: "index.html",
 				},
 
-				<httpRouter.jwt.conf>{
-					class: "http-router/jwt",
-					repository: "/typeorm/user",
-					jwt: "/jwt",
-					//disabled: true,
+				<httpRouter.conf>{
+					class: "http-router",
+					path: "/api",
+					cors: {
+						"origin": "*",
+						// "allowedHeaders": "*",
+						// "credentials": true,
+					},
 					children: [
-
-						<httpRouter.conf>{
-							class: "http-router",
-							path: "/api",
-							cors: {
-								"origin": "*",
-								// "allowedHeaders": "*",
-								// "credentials": true,
-							},
+						<httpRouter.jwt.conf>{
+							class: "http-router/jwt",
+							repository: "/typeorm/user",
+							jwt: "/jwt",
+							noError: true,
 							children: [
-								{ class: AccountRoute },
 								{ class: FeatureRoute },
+								{ class: AccountRoute },
+							]
+						},
+						<httpRouter.jwt.conf>{
+							class: "http-router/jwt",
+							repository: "/typeorm/user",
+							jwt: "/jwt",
+							children: [
+								{ class: GithubRoute },
+								{ class: GoogleRoute },
 								{ class: PaymentRoute },
 								{ class: FundingRoute },
 								{ class: CommentRoute },
 								{ class: StripeRoute },
-							],
+							]
 						},
-
-					]
+					],
 				},
+
+
 
 			]
 		},

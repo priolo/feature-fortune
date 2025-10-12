@@ -71,7 +71,7 @@ class GitHubApiService {
 
 
     /**
-     * Get GitHub account data by account ID
+     * Get GitHub account data by ID
      * serve in ACCOUNT PAGE
      * @param accountId - GitHub user account ID (numeric)
      */

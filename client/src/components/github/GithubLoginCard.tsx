@@ -1,4 +1,4 @@
-import gitHubApi from '@/api/github';
+import gitHubApi from '@/api/githubService';
 import Card from '@/components/Card';
 import GithubUserViewer from '@/components/github/users/GithubUserViewer';
 import authSo from '@/stores/auth/repo';

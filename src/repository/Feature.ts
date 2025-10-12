@@ -42,6 +42,11 @@ export class FeatureRepo extends AccountAsset {
 	@Column({ type: 'bigint', nullable: true })
 	githubUserId?: number;
 	
+	/**
+	 * ACCOUNT a cui è assegnata questa feature
+	 */
+	@Column({ type: 'bigint', nullable: true })
+	devAccountId?: string;
 
 
 	//#region RELATIONSHIPS

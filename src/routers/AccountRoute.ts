@@ -1,158 +1,82 @@
-import { AccountRepo, accountSendable } from "../repository/Account.js";
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
-import { customDataToUrl, githubOAuth } from "./AuthGithubRoute.js";
-import { client } from "./AuthGoogleRoute.js";
-import { FindManyOptions } from "typeorm";
+import { FindManyOptions, Like } from "typeorm";
+import { AccountRepo, accountSendable } from "../repository/Account.js";
 
 
-
+/**
+ * tutto sugli Account del progetto
+ */
 class AccountRoute extends httpRouter.Service {
 
-	get stateDefault(): httpRouter.conf & any {
+	get stateDefault() {
 		return {
 			...super.stateDefault,
 			path: "/accounts",
-			repository: "/typeorm/accounts",
 			account_repo: "/typeorm/accounts",
 			routers: [
-				{ path: "/github/link", verb: "get", method: "getUrlAttachGithub" },
-				{ path: "/github/:id", verb: "get", method: "getAccountGithub" },
-				{ path: "/github", verb: "delete", method: "detachGithub" },
-
-				{ path: "/google", verb: "post", method: "attachGoogle" },
-				{ path: "/google", verb: "delete", method: "detachGoogle" },
-
-
+				{ path: "/", verb: "get", method: "getAll" },
+				{ path: "/:id", verb: "get", method: "getById" },
+				{ path: "/github/:id", verb: "get", method: "getByGithubUserId" },
 			]
 		}
 	}
 	declare state: typeof this.stateDefault
 
-	/**
-	 * Sono loggato e voglio collegare il mio account GITHUB
-	 */
-	async getUrlAttachGithub(req: Request, res: Response) {
-		const userJwt: AccountRepo = req["jwtPayload"]
-		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
-			type: typeorm.Actions.GET_BY_ID,
-			payload: userJwt.id,
-		})
-		if (!user) return res.status(404).json({ error: "User not found" });
 
-		const url = githubOAuth.getWebFlowAuthorizationUrl({
-			scopes: ["read:user", "user:email"],
-			state: customDataToUrl({
-				act: "att",
-				accountId: user.id
-			}),
+	async getAll(req: Request, res: Response) {
+		const { text } = req.query as { text?: string };
+
+		let findOptions: FindManyOptions<AccountRepo> = {
+			take: 10  // Limit to 10 results
+		};
+
+		// If text filter is provided, search in text properties
+		if (text && text.trim()) {
+			const searchText = `%${text.trim()}%`;
+			findOptions.where = [
+				{ name: Like(searchText) },
+				{ email: Like(searchText) },
+				{ googleEmail: Like(searchText) }
+			];
+		}
+
+		const accounts = await new Bus(this, this.state.account_repo).dispatch({
+			type: typeorm.Actions.FIND,
+			payload: findOptions
 		});
-		res.json({ url: url.url })
+
+		res.json(accounts);
+	}
+
+	async getById(req: Request, res: Response) {
+		const id = req.params["id"];
+
+		const account: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
+			type: typeorm.Actions.GET_BY_ID,
+			payload: id
+		});
+		if (!account) return res.status(404).json({ error: "Account not found" });
+
+		res.json(account);
 	}
 
 	/**
-	 * Return the ACCOUNT, if exist, owner of the GITHUB repo
+	 * Return the ACCOUNT, if exist, by the GITHUB user id
 	 */
-	async getAccountGithub(req: Request, res: Response) {
+	async getByGithubUserId(req: Request, res: Response) {
 		const githubId = parseInt(req.params.id)
-		
-		const account: AccountRepo = await new Bus(this, this.state.repository).dispatch({
+		const account: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
 			type: typeorm.Actions.FIND_ONE,
 			payload: <FindManyOptions<AccountRepo>>{
 				where: { githubId: githubId },
 			}
 		})
-		if (!account) return res.status(404).json({ error: "Account not found" });
-		res.json({ 
+		res.json({
 			account: accountSendable(account),
 		})
 	}
 
-	async detachGithub(req: Request, res: Response) {
-		const userJwt: AccountRepo = req["jwtPayload"]
-
-		await new Bus(this, this.state.account_repo).dispatch({
-			type: typeorm.Actions.SAVE,
-			payload: <Partial<AccountRepo>>{
-				id: userJwt.id,
-				githubId: null,
-			},
-		})
-
-		res.send({ success: true })
-	}
-
-
-	/** 
-	 * Aggancio un account GOOGLE all'ACCOUNT attualmente loggato
-	 */
-	async attachGoogle(req: Request, res: Response) {
-		const userJwt: AccountRepo = req["jwtPayload"]
-		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
-			type: typeorm.Actions.GET_BY_ID,
-			payload: userJwt.id,
-		})
-		if (!user) return res.status(404).json({ error: "User not found" })
-
-
-
-		const { token } = req.body
-		try {
-
-			// Verifico GOOGLE token e ricavo PAYLOAD
-			const ticket = await client.verifyIdToken({
-				idToken: token,
-				audience: process.env.GOOGLE_CLIENT_ID,
-			})
-			const payload = ticket.getPayload()
-
-			// se è gia' settato come email google allora tutto ok
-			if (user.googleEmail === payload.email) {
-				return res.status(200).json({ user })
-			}
-
-			// cerco lo USER tramite l'email
-			const userDuplicate: AccountRepo = await new Bus(this, this.state.repository).dispatch({
-				type: typeorm.Actions.FIND_ONE,
-				payload: <FindManyOptions<AccountRepo>>{
-					where: { googleEmail: payload.email },
-				}
-			})
-			
-			// se c'e' allora l'email è gia' utilizzata
-			if (!!userDuplicate) {
-				return res.status(400).json({ error: "Email already in use" });
-			}
-
-			await new Bus(this, this.state.account_repo).dispatch({
-				type: typeorm.Actions.SAVE,
-				payload: <Partial<AccountRepo>>{
-					id: userJwt.id,
-					googleEmail: payload.email,
-				},
-			})
-			res.status(200).json({ 
-				user: accountSendable(user),
-			})
-
-		} catch (error) {
-			res.status(401).json({ error: 'Invalid Token' })
-		}
-	}
-
-	async detachGoogle(req: Request, res: Response) {
-		const userJwt: AccountRepo = req["jwtPayload"]
-
-		await new Bus(this, this.state.account_repo).dispatch({
-			type: typeorm.Actions.SAVE,
-			payload: <Partial<AccountRepo>>{
-				id: userJwt.id,
-				googleEmail: null,
-			},
-		})
-
-		res.send({ success: true })
-	}
 }
 
 export default AccountRoute
