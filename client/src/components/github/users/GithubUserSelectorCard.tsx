@@ -1,8 +1,10 @@
 import gitHubApi from '@/api/githubService';
+import Card, { sxActionCard } from '@/components/Card';
 import GithubUserViewer from '@/components/github/users/GithubUserViewer';
 import GithubUsersFinderDialog from '@/components/github/users/GithubUsersFinderDialog';
 import { GitHubUser } from '@/types/github/GitHub';
-import { Button, Card, CardActions, CardContent } from '@mui/material';
+import { GitHub } from '@mui/icons-material';
+import { Box, Button, Typography  } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 
@@ -16,7 +18,7 @@ interface Props {
 /**
  * si occupa di crerae e collegare l'account del current user ai vari servizi
  */
-const GithubUserSelector: React.FC<Props> = ({
+const GithubUserSelectorCard: React.FC<Props> = ({
     users,
     githubOwnerId,
     onChange,
@@ -54,17 +56,25 @@ const GithubUserSelector: React.FC<Props> = ({
     // RENDER
     return <>
 
-        <Card sx={{ width: '100%', mt: 2 }}>
-            <CardContent>
-                <GithubUserViewer user={owner} />
-            </CardContent>
-            <CardActions>
+        <Card 
+            title="GitHub User"
+            icon={<GitHub />}
+        >
+
+            <Typography variant="body2" color="text.secondary">
+                Select the GitHub user to be used as the owner of the repositories.
+            </Typography>
+            
+            <GithubUserViewer user={owner} />
+            
+            <Box sx={sxActionCard}>
                 <Button
                     onClick={handleSelectUserClick}
                 >
                     {users && users.length > 1 ? 'SELECT USER' : 'SELECT'}
                 </Button>
-            </CardActions>
+            </Box>
+
         </Card>
 
         <GithubUsersFinderDialog
@@ -75,4 +85,4 @@ const GithubUserSelector: React.FC<Props> = ({
     </>
 };
 
-export default GithubUserSelector;
+export default GithubUserSelectorCard;

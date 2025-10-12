@@ -7,7 +7,6 @@ export function buildNewFeature(): Feature {
 		id: null,
 		title: '',
 		description: '',
-		createdAt: new Date(),
 		fundings: [],
 		comments: [],
 	}

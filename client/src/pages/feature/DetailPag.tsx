@@ -1,20 +1,21 @@
-import AccountSelector from '@/components/account/AccountSelector';
+import AccountSelectorCard from '@/components/account/AccountSelectorCard';
 import Framework from '@/layout/Framework';
 import CommentsCard from '@/pages/feature/CommentsCard';
 import FundingsCard from '@/pages/feature/FundingsCard';
+import FeatureDetailCard from '@/pages/feature/FeatureDetailCard';
 import featureDetailSo from '@/stores/feature/detail';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
 import { buildNewFeature } from '@/types/feature/factory';
 import { Feature } from '@/types/feature/Feature';
-import { Card, CardContent, TextField } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import GithubRepoSelector from '../../components/github/repos/GithubRepoSelector';
-import GithubUserSelector from '../../components/github/users/GithubUserSelector';
-import { GitHubUser } from '@/types/github/GitHub';
+import GithubRepoSelectorCard from '../../components/github/repos/GithubRepoSelectorCard';
+import GithubUserSelectorCard from '../../components/github/users/GithubUserSelectorCard';
+import { GitHubRepository, GitHubUser } from '@/types/github/GitHub';
 import accountApi from '@/api/account';
 import { Account } from '@/types/Account';
+import authSo from '@/stores/auth/repo';
 
 
 
@@ -36,7 +37,7 @@ const FeatureDetailPag: React.FC<Props> = ({
     useEffect(() => {
         locationSo.setCurrent(LOCATION_PAGE.FeatureDetail)
 
-        if (id === 'new') {
+        if (id === 'new' || !id) {
             featureDetailSo.setFeature(buildNewFeature())
             return
         }
@@ -49,74 +50,66 @@ const FeatureDetailPag: React.FC<Props> = ({
 
 
     // HANDLERS
-    const handlePropChange = (prop: Partial<Feature>) => {
-        featureDetailSo.setFeature({
-            ...featureDetailSo.state.feature,
-            ...prop
-        })
-    };
+    const handleDetailChange = (feature: Feature) => {
+        featureDetailSo.setFeature(feature)
+    }
 
-    const handleGithubUserChange = async (githubUser: GitHubUser) => {
+    const handleGithubRepoChange = async (repo: GitHubRepository) => {
         featureDetailSo.setFeature({
             ...featureDetailSo.state.feature,   
-            githubUserId: githubUser?.id,
+            githubRepoId: repo?.id,
+        })
+    }
+
+    const handleGithubDevChange = async (githubUser: GitHubUser) => {
+        featureDetailSo.setFeature({
+            ...featureDetailSo.state.feature,   
+            githubDevId: githubUser?.id,
         })
         const res = await accountApi.getByGithubUserId(githubUser?.id)
-        handleAccountChange(res.account)
+        handleAccountDevChange(res.account)
     };
 
-    const handleAccountChange = async (account:Account) => {
+    const handleAccountDevChange = async (account:Account) => {
         featureDetailSo.setFeature({
             ...featureDetailSo.state.feature,   
-            devAccountId: account?.id,
+            accountDevId: account?.id,
         })
     };
 
 
     // RENDER
-    const inNew = featureDetailSo.state.feature?.id == null
-    const showFundings = !inNew
-    const title = featureDetailSo.state.feature?.title || ''
-    const description = featureDetailSo.state.feature?.description || ''
+    const feature = featureDetailSo.state.feature
+    const inNew = feature?.id == null
+    const logged = !!authSo.state.user
+    const isOwner = feature?.accountId === authSo.state.user?.id
+    const isDev = feature?.accountDevId === authSo.state.user?.id
+    const showFundings = !inNew 
+    const title = feature?.title || ''
+    const description = feature?.description || ''
 
-    return <Framework>
+    return <Framework sx={{ py: 2}}>
 
-        <GithubRepoSelector
-            githubRepoId={featureDetailSo.state.feature?.githubRepoId}
-            onChange={() => featureDetailSo.setFeature({
-                ...featureDetailSo.state.feature,
-                githubRepoId: featureDetailSo.state.feature?.githubRepoId,
-            })}
-        />
-        <GithubUserSelector
-            githubOwnerId={featureDetailSo.state.feature?.githubUserId}
-            onChange={handleGithubUserChange}
-        />
-        <AccountSelector 
-            accountId={featureDetailSo.state.feature?.devAccountId}
-            onChange={handleAccountChange}
+        <GithubRepoSelectorCard
+            githubRepoId={feature?.githubRepoId}
+            onChange={handleGithubRepoChange}
         />
 
+        <GithubUserSelectorCard
+            githubOwnerId={feature?.githubDevId}
+            onChange={handleGithubDevChange}
+        />
+
+        <AccountSelectorCard 
+            accountId={feature?.accountDevId}
+            onChange={handleAccountDevChange}
+        />
 
         {/* FEATURE DETAIL */}
-        <Card sx={{ width: '100%', mt: 2 }}>
-            <CardContent sx={{ gap: 1, display: 'flex', flexDirection: 'column' }}>
-                <TextField fullWidth
-                    label="Title"
-                    value={title}
-                    onChange={(e) => handlePropChange({ title: e.target.value })}
-                    placeholder="Enter a short title for the feature"
-                />
-                <TextField fullWidth multiline
-                    label="Feature Description"
-                    rows={6}
-                    value={description}
-                    onChange={(e) => handlePropChange({ description: e.target.value })}
-                    placeholder="Enter a complete description of the feature..."
-                />
-            </CardContent>
-        </Card>
-
+        <FeatureDetailCard
+            feature={feature}
+            onChange={handleDetailChange}
+        />
 
         {/* FUNDINGS SECTION */}
         {showFundings && (

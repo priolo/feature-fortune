@@ -1,6 +1,6 @@
 
 import authSo from '@/stores/auth/repo';
-import Card from '@/components/Card';
+import Card, { sxActionCard } from '@/components/Card';
 import GoogleIcon from '@mui/icons-material/Google';
 import { Box, Button, SxProps, Typography } from '@mui/material';
 import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
@@ -50,7 +50,7 @@ const GoogleLoginCard: React.FC<Props> = ({
             <Typography variant="body2" color="text.secondary">
                 <Message logged={logged} haveGoogle={haveGoogle} />
             </Typography>
-            <Box sx={sxLoginContainer}>
+            <Box sx={sxActionCard}>
                 {!!logged && haveGoogle ? (
                     <Button 
                         onClick={handleGoogleDetach}
@@ -69,12 +69,6 @@ const GoogleLoginCard: React.FC<Props> = ({
 };
 
 export default GoogleLoginCard;
-
-const sxLoginContainer: SxProps = {
-    display: 'flex',
-    justifyContent: 'end',
-    paddingTop: 1,
-}
 
 
 interface MessageProps {

@@ -13,13 +13,14 @@ export interface Feature extends AccountAsset {
 
 	description: string;
 
-	createdAt: Date;
+	createdAt?: Date;
+	
 
 	githubRepoId?: number	
 
-	githubUserId?: number
+	githubDevId?: number
 
-	devAccountId?: string
+	accountDevId?: string
 
 	//#region RELATIONSHIPS
 

@@ -17,7 +17,7 @@ const setup = {
 	state: {
 
 		/** FEATURE in show/edit */
-		feature: <Partial<Feature>>null,
+		feature: <Feature>null,
 		/** the ACCOUNT that owns the GITHUB REPO */
 		owner: <Account>null,
 		// [II] move in another STORE fundingSo
@@ -41,7 +41,7 @@ const setup = {
 		 * Carica l'ACCOUNT collegato al REPO GITHUB
 		 */
 		async fetchOwner(_: void, store?: FeatureDetailStore) {
-			const githubUserId = store.state.feature?.githubUserId
+			const githubUserId = store.state.feature?.githubDevId
 			if ( !githubUserId ) {
 				store.setOwner(null)
 				return

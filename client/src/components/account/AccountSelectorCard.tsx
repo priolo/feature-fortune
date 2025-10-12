@@ -1,9 +1,11 @@
 import accountApi from '@/api/account';
-import AccountViewer from '@/components/account/AccountViewer';
 import AccountFinderDialog from '@/components/account/AccountFinderDialog';
+import AccountViewer from '@/components/account/AccountViewer';
 import { Account } from '@/types/Account';
-import { Button, Card, CardActions, CardContent } from '@mui/material';
+import { AppBlocking } from '@mui/icons-material';
+import { Box, Button, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import Card, { sxActionCard } from '../Card';
 
 
 
@@ -15,7 +17,7 @@ interface Props {
 /**
  * si occupa di crerae e collegare l'account del current user ai vari servizi
  */
-const AccountSelector: React.FC<Props> = ({
+const AccountSelectorCard: React.FC<Props> = ({
     accountId,
     onChange,
 }) => {
@@ -27,10 +29,10 @@ const AccountSelector: React.FC<Props> = ({
 
     useEffect(() => {
         if (!accountId) {
-			setAccount(null)
-			return
-		}
-		if ( account?.id === accountId ) return
+            setAccount(null)
+            return
+        }
+        if (account?.id === accountId) return
         const load = async () => {
             const account = await accountApi.get(accountId)
             setAccount(account)
@@ -54,19 +56,24 @@ const AccountSelector: React.FC<Props> = ({
 
     return <>
 
-        <Card sx={{ width: '100%', mt: 2 }}>
-            <CardContent>
-                <AccountViewer account={account} />
-            </CardContent>
-            <CardActions>
+        <Card
+            title="Account"
+            icon={<AppBlocking color="primary" />}
+        >
+            <Typography variant="body2" color="text.secondary">
+                Select the account that will be used to open issues and pull requests on GitHub.
+            </Typography>
+
+            <AccountViewer account={account} />
+
+            <Box sx={sxActionCard}>
                 <Button
                     onClick={handleFindAccountClick}
                 >
                     {!!account ? 'CHANGE ACCOUNT' : 'SELECT ACCOUNT'}
                 </Button>
-            </CardActions>
+            </Box>
         </Card>
-
 
         <AccountFinderDialog
             isOpen={dialogOpen}
@@ -76,4 +83,4 @@ const AccountSelector: React.FC<Props> = ({
     </>
 };
 
-export default AccountSelector;
+export default AccountSelectorCard;

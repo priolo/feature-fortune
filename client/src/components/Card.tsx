@@ -65,7 +65,11 @@ const Card: React.FC<CardProps> = ({
 
 export default Card;
 
-
+export const sxActionCard: SxProps = {
+	display: 'flex',
+    justifyContent: 'end',
+    paddingTop: 1,
+}
 
 const sxPaper: SxProps = {
 	borderRadius: 3,

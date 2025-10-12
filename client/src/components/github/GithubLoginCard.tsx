@@ -1,5 +1,5 @@
 import gitHubApi from '@/api/githubService';
-import Card from '@/components/Card';
+import Card, { sxActionCard } from '@/components/Card';
 import GithubUserViewer from '@/components/github/users/GithubUserViewer';
 import authSo from '@/stores/auth/repo';
 import { GitHubUser } from '@/types/github/GitHub';
@@ -66,7 +66,7 @@ const GithubLoginCard: React.FC<Props> = ({
                 Autenticati con GitHub per collegare rapidamente i tuoi repository e le tue richieste.
             </Typography>
 
-            <Box sx={sxActions}>
+            <Box sx={sxActionCard}>
                 {!!logged && !haveGithub ? (
                     <Button
                         onClick={handleAttach}
@@ -87,9 +87,3 @@ const GithubLoginCard: React.FC<Props> = ({
 };
 
 export default GithubLoginCard;
-
-const sxActions: SxProps = {
-    display: 'flex',
-    justifyContent: 'end',
-    paddingTop: 1,
-};

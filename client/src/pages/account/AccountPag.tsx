@@ -1,13 +1,13 @@
+import Framework from '@/layout/Framework';
 import authSo, { stripePromise } from '@/stores/auth/repo';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
-import { Box, SxProps } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import { Elements } from '@stripe/react-stripe-js';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EmailLoginCard from '../../components/email/EmailLoginCard';
-import GoogleLoginCard from '../../components/google/GoogleLoginCard';
 import GithubLoginCard from '../../components/github/GithubLoginCard';
+import GoogleLoginCard from '../../components/google/GoogleLoginCard';
 import StripeAuthorCard from '../../components/stripe/StripeAuthorCard';
 import StripeCreditCard from '../../components/stripe/StripeCreditCard';
 
@@ -38,8 +38,8 @@ const AccountPag: React.FC<AccountPagProps> = ({
 
 
     // HANDLERS
-    
-    
+
+
     // RENDER
     if (!authSo.state.user) {
         return <div style={{ display: 'flex', flexDirection: "column", gap: 10, alignItems: 'center' }}>
@@ -47,38 +47,27 @@ const AccountPag: React.FC<AccountPagProps> = ({
         </div>
     }
 
-    return (
-        <Box sx={sxRoot}>
+    return <Framework sx={{ py: 2 }}>
 
-            {/* EMAIL ZONE */}
-            <EmailLoginCard />
+        {/* EMAIL ZONE */}
+        <EmailLoginCard />
 
-            {/* GOOGLE ZONE */}
-            <GoogleLoginCard />
+        {/* GOOGLE ZONE */}
+        <GoogleLoginCard />
 
-            {/* GITHUB ZONE */}
-            <GithubLoginCard />
+        {/* GITHUB ZONE */}
+        <GithubLoginCard />
 
-            {/* STRIPE CUSTOMER ZONE */}
-            <Elements stripe={stripePromise}>
-                <StripeCreditCard />
-            </Elements>
+        {/* STRIPE CUSTOMER ZONE */}
+        <Elements stripe={stripePromise}>
+            <StripeCreditCard />
+        </Elements>
 
-            {/* STRIPE AUTHOR ZONE */}
-            <StripeAuthorCard />
+        {/* STRIPE AUTHOR ZONE */}
+        <StripeAuthorCard />
 
-        </Box>
-    );
-};
+    </Framework>
+
+}
 
 export default AccountPag;
-
-const sxRoot: SxProps = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 2,
-    //alignItems: 'center',
-    maxWidth: 800,
-    margin: '0 auto',
-    padding: 2
-}

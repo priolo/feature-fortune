@@ -1,4 +1,4 @@
-import Card from '@/components/Card';
+import Card, { sxActionCard } from '@/components/Card';
 import authSo from '@/stores/auth/repo';
 import { Done, WarningAmber } from '@mui/icons-material';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
@@ -78,7 +78,7 @@ const EmailLoginCard: React.FC<Props> = ({
                 placeholder="Type your email"
             />
 
-            <Box sx={{ display: "flex", justifyContent: "end" }} >
+            <Box sx={sxActionCard} >
                 <Button
                     onClick={handleSendEmailClick}
                 >Invia codice</Button>

@@ -1,8 +1,10 @@
 import gitHubApi from '@/api/githubService';
+import Card, { sxActionCard } from '@/components/Card';
 import GithubRepoViewer from '@/components/github/repos/GithubRepoViewer';
 import GithubReposFinderDialog from '@/components/github/repos/GithubReposFinderDialog';
 import { GitHubRepository } from '@/types/github/GitHub';
-import { Button, Card, CardActions, CardContent } from '@mui/material';
+import { AccessAlarm } from '@mui/icons-material';
+import { Box, Button,  CardActions, CardContent, SxProps, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 
@@ -15,7 +17,7 @@ interface Props {
 /**
  * si occupa di crerae e collegare l'account del current user ai vari servizi
  */
-const GithubRepoSelector: React.FC<Props> = ({
+const GithubRepoSelectorCard: React.FC<Props> = ({
     githubRepoId,
     onChange,
 }) => {
@@ -54,19 +56,24 @@ const GithubRepoSelector: React.FC<Props> = ({
 
     return <>
 
-        <Card sx={{ width: '100%', mt: 2 }}>
-            <CardContent>
-                <GithubRepoViewer repository={repo} />
-            </CardContent>
-            <CardActions>
+        <Card
+            title="GithubRepository"
+            icon={<AccessAlarm color="primary" />}
+        >
+            <Typography variant="body2" color="text.secondary">
+                Select the repository to use for this feature
+            </Typography>
+
+            <GithubRepoViewer repository={repo} />
+
+            <Box sx={sxActionCard}>
                 <Button
                     onClick={handleFindRepoClick}
                 >
                     {!!repo ? 'CHANGE REPOSITORY' : 'SELECT REPOSITORY'}
                 </Button>
-            </CardActions>
+            </Box>
         </Card>
-
 
         <GithubReposFinderDialog
             isOpen={dialogOpen}
@@ -76,4 +83,4 @@ const GithubRepoSelector: React.FC<Props> = ({
     </>
 };
 
-export default GithubRepoSelector;
+export default GithubRepoSelectorCard;

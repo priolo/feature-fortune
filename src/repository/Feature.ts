@@ -31,22 +31,22 @@ export class FeatureRepo extends AccountAsset {
 
 
 	/**
-	 * GITHUB REPO ID
+	 * GITHUB REPO ID collegato a questa FEATURE
 	 */
 	@Column({ type: 'bigint', nullable: true })
 	githubRepoId?: number;
 
 	/**
-	 * GITHUB USER ID of the repo owner
+	 * GITHUB USER ID del DEV a cui è assegnata questa feature
 	 */
 	@Column({ type: 'bigint', nullable: true })
-	githubUserId?: number;
+	githubDevId?: number;
 	
 	/**
-	 * ACCOUNT a cui è assegnata questa feature
+	 * ACCOUNT ID APP del DEV a cui è assegnata questa feature
 	 */
 	@Column({ type: 'bigint', nullable: true })
-	devAccountId?: string;
+	accountDevId?: string;
 
 
 	//#region RELATIONSHIPS
