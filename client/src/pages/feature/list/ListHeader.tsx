@@ -1,4 +1,5 @@
 import authSo from '@/stores/auth/repo';
+import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 import { Box, Button, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React from 'react';

@@ -1,6 +1,4 @@
-import featureApi from "@/api/feature"
 import fundingApi from "@/api/funding"
-import { Feature } from "@/types/feature/Feature"
 import { Funding } from "@/types/Funding"
 import { createStore, StoreCore } from "@priolo/jon"
 
@@ -10,6 +8,7 @@ import { createStore, StoreCore } from "@priolo/jon"
 const setup = {
 
 	state: {
+		filter: <any>null,
 		all: <Funding[]>null,
 		selected: <Funding>null,
 	},
@@ -19,19 +18,23 @@ const setup = {
 
 	actions: {
 
-		async fetch(_: void, store?: FundingListStore) {
-			//const fundings = await fundingApi.index()
-			//store.setAll(fundings)
+		async fetch(filter?: any, store?: FundingListStore) {
+			store.state.filter = filter ?? store.state.filter
+			const res = await fundingApi.index(store.state.filter)
+			store.setAll(res?.fundings)
 		},
 
-		async create(_: void, store?: FundingListStore) {
-			
+		async saveSelected(_: void, store?: FundingListStore) {
+			const { funding } = await fundingApi.save(store.state.selected)
+			store.setSelected(funding)
+			await store.fetch()
 		}
 
 	},
 
 	mutators: {
-		setAll: (all: Feature[]) => ({ all }),
+		setAll: (all: Funding[]) => ({ all }),
+		setSelected: (selected: Funding) => ({ selected })
 	},
 }
 

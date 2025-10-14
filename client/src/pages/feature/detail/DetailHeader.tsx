@@ -3,20 +3,23 @@ import featureDetailSo from '@/stores/feature/detail';
 import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import BackButton from '../../layout/BackButton';
+import BackButton from '../../../layout/BackButton';
+import { useStore } from '@priolo/jon';
 
 
 
 const FeatureDetailHeader: React.FC = () => {
 
 	// STORES
+	useStore(featureDetailSo)
 
 	// HOOKS
 	const navigate = useNavigate()
 
 	// HANDLERS
-	const handleSaveClick = () => {
-		featureDetailSo.saveFeature()
+	const handleSaveClick = async () => {
+		await featureDetailSo.saveFeature()
+
 	}
 	const handleCancelClick = () => {
 		navigate(-1)

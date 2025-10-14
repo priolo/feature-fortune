@@ -4,11 +4,11 @@ import { Funding } from "@/types/Funding"
 
 
 function index(filter: any, opt?: CallOptions): Promise<{ fundings: Funding[] }> {
-	return null
-	//return ajax.post(`fundings/new`, { funding }, opt)
+	const query = new URLSearchParams(filter).toString()
+	return ajax.get(`fundings?${query}`, opt)
 }
 
-function create(funding: Funding, opt?: CallOptions): Promise<{ funding: Funding }> {
+function save(funding: Funding, opt?: CallOptions): Promise<{ funding: Funding }> {
 	return ajax.post(`fundings`, { funding }, opt)
 }
 
@@ -16,6 +16,6 @@ function create(funding: Funding, opt?: CallOptions): Promise<{ funding: Funding
 
 const fundingApi = {
 	index,
-	create,
+	save,
 }
 export default fundingApi

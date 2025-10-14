@@ -125,31 +125,40 @@ class StripeService extends ServiceBase {
 	 */
 	async expressAccountCreate(data: { email: string, accountId: string }): Promise<Stripe.Account> {
 		const { email, accountId } = data
-		const account = await stripe.accounts.create({
-			type: "express",
-			country: "IT",
-			email: email,
-			capabilities: {
-				card_payments: { requested: true },
-				transfers: { requested: true },
-			},
-			metadata: { accountId: accountId }
-		})
-		return account
+		try {
+			const account = await stripe.accounts.create({
+				type: "express",
+				country: "IT",
+				email: email,
+				capabilities: {
+					card_payments: { requested: true },
+					transfers: { requested: true },
+				},
+				metadata: { accountId: accountId }
+			})
+			return account
+		} catch (error) {
+			console.error("Error creating express account:", error);
+			throw error;
+		}
 	}
 
 	/**
 	 * Create a express account link for AUTHOR
 	 */
 	async expressAccountUrl(stripeAccountId: string): Promise<string> {
-		const accountLink = await stripe.accountLinks.create({
-			account: stripeAccountId,
-			refresh_url: process.env.STRIPE_REFESH_URL,
-			return_url: process.env.STRIPE_RETURN_URL,
-			type: "account_onboarding",
-		});
-
-		return accountLink.url
+		try {
+			const accountLink = await stripe.accountLinks.create({
+				account: stripeAccountId,
+				refresh_url: process.env.STRIPE_REFESH_URL,
+				return_url: process.env.STRIPE_RETURN_URL,
+				type: "account_onboarding",
+			});
+			return accountLink.url
+		} catch (error) {
+			console.error("Error creating account link:", error);
+			throw error;
+		}
 	}
 
 }

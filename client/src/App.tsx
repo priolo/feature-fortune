@@ -1,14 +1,15 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Layout from './layout/Layout';
 import AccountPag from './pages/account/AccountPag';
-import FeatureListPag from './pages/feature/ListPag';
-import FeatureDetailPag from './pages/feature/DetailPag';
+import FeatureListPag from './pages/feature/list/ListPag';
+import FeatureDetailPag from './pages/feature/detail/DetailPag';
 import LoginPag from './pages/login/LoginPag';
+import MsgBox from './layout/MsgBox';
 
 
 
 function App() {
-	return (
+	return <>
 		<Router>
 			<Routes>
 				<Route path="/app" element={<Layout />}>
@@ -21,7 +22,9 @@ function App() {
 				</Route>
 			</Routes>
 		</Router>
-	);
+
+		<MsgBox />
+	</>
 }
 
 export default App;

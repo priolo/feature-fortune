@@ -1,21 +1,20 @@
 import AccountSelectorCard from '@/components/account/AccountSelectorCard';
 import Framework from '@/layout/Framework';
-import CommentsCard from '@/pages/feature/CommentsCard';
-import FundingsCard from '@/pages/feature/FundingsCard';
-import FeatureDetailCard from '@/pages/feature/FeatureDetailCard';
+import CommentsCard from '@/pages/feature/detail/CommentsCard';
+import FeatureDetailCard from '@/pages/feature/detail/FeatureDetailCard';
+import FundingsCard from '@/pages/feature/detail/FundingsCard';
+import authSo from '@/stores/auth/repo';
 import featureDetailSo from '@/stores/feature/detail';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
+import { Account } from '@/types/Account';
 import { buildNewFeature } from '@/types/feature/factory';
 import { Feature } from '@/types/feature/Feature';
+import { GitHubRepository, GitHubUser } from '@/types/github/GitHub';
 import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import GithubRepoSelectorCard from '../../components/github/repos/GithubRepoSelectorCard';
-import GithubUserSelectorCard from '../../components/github/users/GithubUserSelectorCard';
-import { GitHubRepository, GitHubUser } from '@/types/github/GitHub';
-import accountApi from '@/api/account';
-import { Account } from '@/types/Account';
-import authSo from '@/stores/auth/repo';
+import GithubRepoSelectorCard from '../../../components/github/repos/GithubRepoSelectorCard';
+import GithubUserSelectorCard from '../../../components/github/users/GithubUserSelectorCard';
 
 
 
@@ -61,13 +60,13 @@ const FeatureDetailPag: React.FC<Props> = ({
         })
     }
 
-    const handleGithubDevChange = async (githubUser: GitHubUser) => {
+    const handleGithubDevChange = async (githubDev: GitHubUser) => {
         featureDetailSo.setFeature({
             ...featureDetailSo.state.feature,   
-            githubDevId: githubUser?.id,
+            githubDevId: githubDev?.id,
         })
-        const res = await accountApi.getByGithubUserId(githubUser?.id)
-        handleAccountDevChange(res.account)
+        // const res = await accountApi.getByGithubUserId(githubDev?.id)
+        // handleAccountDevChange(res.account)
     };
 
     const handleAccountDevChange = async (account:Account) => {
@@ -105,22 +104,18 @@ const FeatureDetailPag: React.FC<Props> = ({
             onChange={handleAccountDevChange}
         />
 
-        {/* FEATURE DETAIL */}
         <FeatureDetailCard
             feature={feature}
             onChange={handleDetailChange}
         />
 
-        {/* FUNDINGS SECTION */}
-        {showFundings && (
-            <FundingsCard />
-        )}
+        <FundingsCard 
+            featureId={feature?.id} 
+        />
 
-
-        {/* COMMENTS SECTION */}
-        {showFundings && (
-            <CommentsCard />
-        )}
+        <CommentsCard 
+            featureId={feature?.id} 
+        />
 
     </Framework>
 }

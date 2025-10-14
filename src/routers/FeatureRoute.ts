@@ -39,18 +39,18 @@ class FeatureRoute extends httpRouter.Service {
 			type: typeorm.Actions.FIND_ONE,
 			payload: {
 				where: { id: id },
-				relations: { fundings: true, account: true }
+				//relations: { fundings: true }
 			}
 		})
 
-		const comments: CommentRepo[] = await new Bus(this, this.state.comment_repo).dispatch({
-			type: typeorm.Actions.FIND,
-			payload: {
-				where: { entityId: id, entityType: 'feature' },
-				//relations: { account: true }
-			}
-		})
-		feature.comments = comments
+		// const comments: CommentRepo[] = await new Bus(this, this.state.comment_repo).dispatch({
+		// 	type: typeorm.Actions.FIND,
+		// 	payload: {
+		// 		where: { entityId: id, entityType: 'feature' },
+		// 		//relations: { account: true }
+		// 	}
+		// })
+		// feature.comments = comments
 
 		res.json(feature)
 	}

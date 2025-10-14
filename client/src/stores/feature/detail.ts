@@ -1,13 +1,9 @@
-import authApi from "@/api/auth"
 import commentApi from "@/api/comment"
 import featureApi from "@/api/feature"
 import fundingApi from "@/api/funding"
-import gitHubApi from "@/api/githubService"
-import { Account } from "@/types/Account"
 import { Comment } from "@/types/Comment"
 import { Feature } from "@/types/feature/Feature"
 import { Funding } from "@/types/Funding"
-import { GitHubRepository, GitHubRepositoryDetails, GitHubUser } from "@/types/github/GitHub"
 import { createStore, StoreCore } from "@priolo/jon"
 
 
@@ -18,10 +14,7 @@ const setup = {
 
 		/** FEATURE in show/edit */
 		feature: <Feature>null,
-		/** the ACCOUNT that owns the GITHUB REPO */
-		owner: <Account>null,
-		// [II] move in another STORE fundingSo
-		fundingSelected: <Funding>null,
+		
 	},
 
 	getters: {
@@ -37,42 +30,16 @@ const setup = {
 			store.setFeature(feature)
 		},
 
-		/**
-		 * Carica l'ACCOUNT collegato al REPO GITHUB
-		 */
-		async fetchOwner(_: void, store?: FeatureDetailStore) {
-			const githubUserId = store.state.feature?.githubDevId
-			if ( !githubUserId ) {
-				store.setOwner(null)
-				return
-			}
-			try {
-				const { account } = await authApi.githubGetAccount(githubUserId)
-				store.setOwner(account)
-			} catch (error) {
-				store.setOwner(null)
-			}
-		},
-
-
-
 		async saveFeature(_: void, store?: FeatureDetailStore) {
 			const feature = await featureApi.save(store.state.feature as Feature)
 			store.setFeature(feature)
 		},
 
-		async saveFunding(_: void, store?: FeatureDetailStore) {
-			const { funding } = await fundingApi.create(store.state.fundingSelected)
-			store.setFeature({
-				...store.state.feature,
-				fundings: store.state.feature.fundings?.concat(funding) ?? [funding]
-			})
-		},
-
+		
 		async addComment(comment: Comment, store?: FeatureDetailStore) {
 			comment.entityType = 'feature'
 			comment.entityId = featureDetailSo.state.feature.id
-			const newComment = (await commentApi.create(comment))?.comment
+			const newComment = (await commentApi.save(comment))?.comment
 			if (!newComment) return
 			store.setFeature({
 				...featureDetailSo.state.feature,
@@ -84,8 +51,6 @@ const setup = {
 
 	mutators: {
 		setFeature: (feature: Partial<Feature>) => ({ feature }),
-		setOwner: (owner: Account) => ({ owner }),
-		setFundingSelected: (fundingSelected: Funding) => ({ fundingSelected })
 	},
 
 }

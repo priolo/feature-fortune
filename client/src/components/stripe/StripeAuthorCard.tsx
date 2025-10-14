@@ -24,6 +24,7 @@ const StripeAuthorCard: React.FC = () => {
 			return;
 		}
 		const res = await stripeApi.registerLink();
+		if ( !res.url ) return alert('Errore durante la registrazione a Stripe')
 		window.location.href = res.url;
 	};
 
@@ -57,9 +58,9 @@ const StripeAuthorCard: React.FC = () => {
 						DETACH
 					</Button>
 				)}
-				{haveStripeAuthor && !accountReady && (
+				{haveStripeAuthor && (
 					<Button onClick={handleRegister}>
-						COMPLETE
+						{accountReady ? "MODIFY" : "COMPLETE"}
 					</Button>
 				)}
 				{!haveStripeAuthor && (

@@ -1,10 +1,10 @@
-import FeatureListHeader from '@/pages/feature/ListHeader';
+import FeatureListHeader from '@/pages/feature/list/ListHeader';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
 import { Box, SxProps } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useMemo } from 'react';
 import UserCmp from './UserCmp';
-import FeatureDetailHeader from '@/pages/feature/DetailHeader';
+import FeatureDetailHeader from '@/pages/feature/detail/DetailHeader';
 import LoginHeader from '@/pages/login/LoginHeader';
 import AccountHeader from '@/pages/account/AccountHeader';
 

@@ -11,21 +11,43 @@ class FundingRoute extends httpRouter.Service {
 		return {
 			...super.stateDefault,
 			path: "/fundings",
-			repository: "/typeorm/fundings",
+			funding_repo: "/typeorm/fundings",
 			account_repo: "/typeorm/accounts",
 			stripe_service: "/stripe",
 			routers: [
-				{ path: "/", verb: "post", method: "create" },
+				{ path: "/", verb: "get", method: "index" },
+				{ path: "/", verb: "post", method: "save" },
 			]
 		}
 	}
 	declare state: typeof this.stateDefault
 
+	async index(req: Request, res: Response) {
+		const { featureId } = req.query as { featureId?: string };
+
+		// If no featureId filter is provided, return empty array
+		if (!featureId) {
+			return res.json({ fundings: [] });
+		}
+
+		// Get fundings filtered by feature ID
+		const fundings: FundingRepo[] = await new Bus(this, this.state.funding_repo).dispatch({
+			type: typeorm.Actions.FIND,
+			payload: {
+				where: {
+					featureId: featureId
+				},
+				order: { createdAt: 'DESC' }  // Order by creation date, newest first
+			}
+		});
+
+		res.json({ fundings });
+	}
 
 	/**
 	 * 
 	 */
-	async create(req: Request, res: Response) {
+	async save(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		let { funding }: { funding: FundingRepo } = req.body
 		if (!funding) return
@@ -36,7 +58,7 @@ class FundingRoute extends httpRouter.Service {
 		funding.status = FUNDING_STATE.PENDING
 
 		// salvo
-		const fundingNew: AccountRepo = await new Bus(this, this.state.repository).dispatch({
+		const fundingNew: AccountRepo = await new Bus(this, this.state.funding_repo).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: funding
 		})

@@ -60,7 +60,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 		<http.conf>{
 			class: "http",
 			port: PORT,
-			rawPaths: ["/api/fundings/webhook"],
+			rawPaths: ["/api/stripe/webhook"],
 			children: [
 
 				{ class: AuthRoute },

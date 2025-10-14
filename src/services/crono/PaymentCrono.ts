@@ -99,7 +99,7 @@ class PaymentCrono extends ServiceBase {
 				where: { id: fundingId },
 				relations: {
 					feature: true,
-					account: true
+					account: true,
 				}
 			}
 		})
@@ -107,33 +107,25 @@ class PaymentCrono extends ServiceBase {
 		if (funding.status !== FUNDING_STATE.PENDING) throw new Error("Funding not pending");
 
 
-		// load GITHUB REPO		
-		const githubRepo:GithubRepo = (await octokit.request("GET /repositories/{id}", {
-			id: funding.feature.githubRepoId,
-		}))?.data
-		console.log(">>> GitHub repo data:", githubRepo)
-		
 
 		// load the owner of GITHUB. how get the money
-		const githubOwner: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
-			type: typeorm.Actions.FIND_ONE,
-			payload: <FindManyOptions<AccountRepo>>{
-				where: { githubId: githubRepo.owner.id },
-			}
+		const dev: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
+			type: typeorm.Actions.GET_BY_ID,
+			payload: funding.feature.accountDevId
 		})
-		if (!githubOwner) {
-			throw new Error(`GitHub repository owner not found in accounts: ${githubRepo.owner.login}`)
+		if (!dev) {
+			throw new Error(`Developer not found for feature ${funding.feature.id}`);
 		}
+
 
 
 		// setup DATA
 		const amount = funding.amount
-		const destination = githubOwner.stripeAccountId
+		const destination = dev.stripeAccountId
 		const customer = funding.account.stripeCustomerId
 		const paymentMethod = funding.account.stripePaymentMethodId
 		console.log(">>> paymentFunding", { amount, destination, customer, paymentMethod })
-
-
+		
 		// Execute the payment using StripeService
 		const paymentIntent = await new Bus(this, this.state.stripe_service).dispatch({
 			type: Actions.PAYMENT_EXECUTE,
@@ -147,14 +139,18 @@ class PaymentCrono extends ServiceBase {
 		});
 
 
+
 		// update funding in DB
-		funding.status = FUNDING_STATE.PAIED
-		funding.paidAt = new Date()
-		funding.transactionId = paymentIntent.id
-		await new Bus(this, this.state.funding_repo).dispatch({
+		const featureUp = await new Bus(this, this.state.funding_repo).dispatch({
 			type: typeorm.Actions.SAVE,
-			payload: funding
+			payload: {
+				id: funding.id,
+				status: FUNDING_STATE.PAIED,
+				paidAt: new Date(),
+				transactionId: paymentIntent.id,
+			}
 		})
+		funding.feature = featureUp
 
 		return funding
 	}

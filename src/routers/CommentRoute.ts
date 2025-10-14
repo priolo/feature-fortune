@@ -13,11 +13,36 @@ class CommentRoute extends httpRouter.Service {
 			path: "/comments",
 			comment_repo: "/typeorm/comments",
 			routers: [
+				{ path: "/", verb: "get", method: "index" },
 				{ path: "/", verb: "post", method: "save" },
 			]
 		}
 	}
 	declare state: typeof this.stateDefault
+
+	async index(req: Request, res: Response) {
+		const { featureId } = req.query as { featureId?: string };
+
+		// If no featureId filter is provided, return empty array
+		if (!featureId) {
+			return res.json({ comments: [] });
+		}
+
+		// Get comments filtered by feature ID
+		const comments: CommentRepo[] = await new Bus(this, this.state.comment_repo).dispatch({
+			type: typeorm.Actions.FIND,
+			payload: {
+				where: {
+					entityId: featureId,
+					entityType: 'feature'
+				},
+				order: { createdAt: 'DESC' }  // Order by creation date, newest first
+			}
+		});
+
+		res.json({ comments });
+	}
+
 
 	async save(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]

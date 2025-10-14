@@ -26,7 +26,7 @@ class StripeRoute extends httpRouter.Service {
 		}
 	}
 	declare state: typeof this.stateDefault
-
+	
 	async pay(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		let { fundingId }: { fundingId: string } = req.body
@@ -62,6 +62,8 @@ class StripeRoute extends httpRouter.Service {
 					accountId: userJwt.id 
 				}
 			})
+			if ( !stripeAccount.id ) return res.status(500).json({ error: "Stripe account not created" });
+			
 			// salvo lo stripe account id
 			user = await new Bus(this, this.state.account_repo).dispatch({
 				type: typeorm.Actions.SAVE,

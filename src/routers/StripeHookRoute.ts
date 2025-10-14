@@ -13,7 +13,7 @@ class StripeHookRoute extends httpRouter.Service {
 	get stateDefault(): httpRouter.conf & any {
 		return {
 			...super.stateDefault,
-			path: "/api/fundings",
+			path: "/api/stripe",
 			account_repo: "/typeorm/accounts",
 			routers: [
 				{ path: "/webhook", verb: "post", method: "webhook" },

@@ -1,5 +1,5 @@
 import { Bus, RootService, typeorm } from "@priolo/julian";
-import { AccountRepo } from "./repository/Account.js";
+import { AccountRepo, EMAIL_CODE } from "./repository/Account.js";
 import { FeatureRepo } from "./repository/Feature.js";
 import { FundingRepo } from "./repository/Funding.js";
 import { envInit } from "./types/env.js";
@@ -14,7 +14,12 @@ export async function seeding(root: RootService) {
 		type: typeorm.RepoStructActions.SEED,
 		payload: <AccountRepo[]>[
 			{ type: typeorm.RepoStructActions.TRUNCATE },
-			{ id: "id-user-1", name: "Giuseppe Verdi", email: "giuseppe.verdi@gmail.com", },
+			{ 
+				id: "id-user-1", 
+				name: "Giuseppe Verdi", 
+				email: "giuseppe.verdi@gmail.com", 
+				emailCode: EMAIL_CODE.VERIFIED,
+			},
 			{ id: "id-user-2", name: "Mario Rossi", email: "mario.rossi@gmail.com", },
 			{ id: "id-user-3", name: "Luigi Bianchi", email: "luigi.bianchi@gmail.com", },
 		]
