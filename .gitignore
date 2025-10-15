@@ -11,3 +11,4 @@ db/
 .env.production
 .env.development
 .env.remote
+.env.render
