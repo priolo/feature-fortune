@@ -26,7 +26,7 @@ class StripeRoute extends httpRouter.Service {
 		}
 	}
 	declare state: typeof this.stateDefault
-	
+
 	async pay(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		let { fundingId }: { fundingId: string } = req.body
@@ -45,25 +45,42 @@ class StripeRoute extends httpRouter.Service {
 			type: typeorm.Actions.GET_BY_ID,
 			payload: userJwt.id,
 		})
+
+
+
 		if (!user) return res.status(404).json({ error: "User not found" });
 		const email = user.email ?? user.googleEmail
 		if (!email) return res.status(400).json({ error: "User has no email" });
+
 		// check if the user have already a stripe account and are READY
 		if (!!user.stripeAccountId && user.stripeAccountStatus === "ready") {
 			return res.status(400).json({ error: "User already have a stripe account" });
 		}
 
+		// [DA CONTROLLARE] controllo che non ci sia un altro account con la stessa email
+		const userEmail = await new Bus(this, this.state.account_repo).dispatch({
+			type: typeorm.Actions.FIND_ONE,
+			payload: {
+				where: [{ email: email }, { googleEmail: email }]
+			}
+		})
+		if (userEmail && userEmail.id !== user.id && !!userEmail.stripeAccountId) {
+			return res.status(400).json({ error: "Another user with the same email already have a stripe account" });
+		}
+
+
+
 		// se l'account non ha ancora uno stripe account lo creo
 		if (!user.stripeAccountId) {
 			const stripeAccount = await new Bus(this, this.state.stripe_service).dispatch({
 				type: Actions.EXPRESS_ACCOUNT_CREATE,
-				payload: { 
-					email: email, 
-					accountId: userJwt.id 
+				payload: {
+					email: email,
+					accountId: userJwt.id
 				}
 			})
-			if ( !stripeAccount.id ) return res.status(500).json({ error: "Stripe account not created" });
-			
+			if (!stripeAccount.id) return res.status(500).json({ error: "Stripe account not created" });
+
 			// salvo lo stripe account id
 			user = await new Bus(this, this.state.account_repo).dispatch({
 				type: typeorm.Actions.SAVE,

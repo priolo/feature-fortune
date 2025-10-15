@@ -72,12 +72,12 @@ export type JWTPayload = {
 
 export function accountSendable(account: AccountRepo) {
 	if ( !account ) return null
-	const { id, email, name, avatarUrl, googleEmail, githubId, stripeAccountStatus } = account
+	const { id, email, name, avatarUrl, googleEmail, githubId, stripeAccountStatus, stripeAccountId } = account
 	return {
-		id, email, name, avatarUrl, googleEmail, githubId,
-		stripeHaveAccount: !!account.stripeAccountId,
+		id, email, name, avatarUrl, googleEmail, githubId, stripeAccountId, stripeAccountStatus,
+
 		stripeHaveCard: !!account.stripePaymentMethodId,
-		stripeAccountStatus,
+		
 		// se c'e' emailCode allora non e' verificata
 		emailVerified: account.emailCode == EMAIL_CODE.VERIFIED,
 	}

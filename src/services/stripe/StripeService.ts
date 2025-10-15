@@ -127,14 +127,33 @@ class StripeService extends ServiceBase {
 		const { email, accountId } = data
 		try {
 			const account = await stripe.accounts.create({
-				type: "express",
+				//type: "express",
+				type: "standard",
 				country: "IT",
 				email: email,
+				// controller: {
+				// 	// Account è responsabile dei pagamenti delle commissioni
+				// 	fees: {
+				// 		payer: 'account'
+				// 	},
+				// 	// Stripe è responsabile per le perdite/negativi
+				// 	losses: {
+				// 		payments: 'stripe'
+				// 	},
+				// 	// Stripe gestisce la raccolta dei requisiti
+				// 	requirement_collection: 'stripe',
+				// 	// Dashboard Express per l'utente
+				// 	// stripe_dashboard: {
+				// 	// 	type: 'express'
+				// 	// }
+				// },
 				capabilities: {
 					card_payments: { requested: true },
 					transfers: { requested: true },
 				},
-				metadata: { accountId: accountId }
+				metadata: {
+					accountId: accountId
+				}
 			})
 			return account
 		} catch (error) {

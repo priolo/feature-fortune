@@ -47,7 +47,7 @@ const AccountViewer: React.FC<Props> = ({
                     {account.stripeHaveCard && (
                         <Chip label="💳 Card" size="small" />
                     )}
-                    {account.stripeHaveAccount && (
+                    {!!account.stripeAccountId && (
                         <Chip 
                             label={`Stripe ${account.stripeAccountStatus || 'Account'}`} 
                             size="small" 

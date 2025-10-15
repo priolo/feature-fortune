@@ -24,7 +24,7 @@ const StripeAuthorCard: React.FC = () => {
 			return;
 		}
 		const res = await stripeApi.registerLink();
-		if ( !res.url ) return alert('Errore durante la registrazione a Stripe')
+		if (!res.url) return alert('Errore durante la registrazione a Stripe')
 		window.location.href = res.url;
 	};
 
@@ -32,13 +32,19 @@ const StripeAuthorCard: React.FC = () => {
 		const res = await stripeApi.unregister();
 		authSo.setUser({
 			...authSo.state.user,
-			stripeHaveAccount: false,
+			stripeAccountId: null,
 			stripeAccountStatus: null,
 		})
 	};
 
+	const handleStripeDashboard = () => {
+		if (!authSo.state.user?.stripeAccountId) return alert('Errore: account Stripe non trovato');
+		const url = `https://dashboard.stripe.com/${authSo.state.user?.stripeAccountId}/home`;
+		window.open(url, '_blank');
+	}
+
 	// RENDER
-	const haveStripeAuthor = authSo.state.user?.stripeHaveAccount;
+	const haveStripeAuthor = !!authSo.state.user?.stripeAccountId
 	const accountReady = authSo.state.user?.stripeAccountStatus == "ready";
 
 	return (
@@ -54,15 +60,18 @@ const StripeAuthorCard: React.FC = () => {
 
 			<Box sx={sxActions}>
 				{haveStripeAuthor && (
-					<Button variant="contained" onClick={handleDetach}>
+					<Button onClick={handleDetach}>
 						DETACH
 					</Button>
 				)}
-				{haveStripeAuthor && (
+				{haveStripeAuthor && <>
 					<Button onClick={handleRegister}>
 						{accountReady ? "MODIFY" : "COMPLETE"}
 					</Button>
-				)}
+					<Button onClick={handleStripeDashboard}>
+						STRIPE DASHBOARD
+					</Button>
+				</>}
 				{!haveStripeAuthor && (
 					<Button onClick={handleRegister}>
 						REGISTER

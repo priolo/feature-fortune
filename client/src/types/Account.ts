@@ -22,17 +22,18 @@ export interface Account {
 	 * who put the moneys
 	 */
 	//stripeCustomerId?: string
+	
 	/** 
 	 * STRIPE payment method 
 	 */
 	//stripePaymentMethodId?: string
 	stripeHaveCard?: boolean
+
 	/** 
 	 * STRIPE for AUTHOR
 	 * who receive the moneys
 	 */
-	//stripeAccountId?: string
-	stripeHaveAccount?: boolean
+	stripeAccountId?: string
 
 	stripeAccountStatus?: "pending" | "ready";
 }

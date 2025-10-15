@@ -99,9 +99,6 @@ class AuthEmailRoute extends httpRouter.Service {
 			payload: user,
 		})
 
-
-
-
 		// Genera il token JWT con l'email nel payload
 		const jwtToken: string = await new Bus(this, "/jwt").dispatch({
 			type: jwt.Actions.ENCODE,
