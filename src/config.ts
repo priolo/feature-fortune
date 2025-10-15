@@ -1,5 +1,4 @@
-import { http, httpRouter, httpStatic, jwt, log, typeorm } from "@priolo/julian";
-import { TypeLog } from "@priolo/julian/dist/core/types.js";
+import { http, httpRouter, httpStatic, jwt, log, typeorm, types } from "@priolo/julian";
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { AccountRepo } from "./repository/Account.js";
@@ -39,7 +38,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 
 		<log.conf>{
 			class: "log",
-			exclude: [TypeLog.SYSTEM],
+			exclude: [types.TypeLog.SYSTEM],
 			onParentLog: (log) => {
 				if (!!log?.payload && ['nc:init', 'nc:destroy', "ns:set-state"].includes(log.payload.type)) return false
 			}
