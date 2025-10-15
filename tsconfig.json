@@ -4,7 +4,8 @@
     // "target": "ESNext",
     // "module": "NodeNext",
     // "moduleResolution": "NodeNext",
-    // "isolatedModules": true,
+    
+    "isolatedModules": true,
     "outDir": "./dist",
     "rootDir": "./src",
     "esModuleInterop": true,

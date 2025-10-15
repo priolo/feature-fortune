@@ -33,11 +33,16 @@ export class AccountRepo {
 	googleEmail?: string;
 
 
+	
 	/**
 	 * ACCOUNT GITHUB that are the owner
 	 */
 	@Column({ type: 'bigint', nullable: true })
 	githubId?: number;
+
+
+
+	//#region STRIPE
 
 	/** 
 	 * STRIPE for CONTRIBUTOR
@@ -60,6 +65,8 @@ export class AccountRepo {
 	 */
 	@Column({ type: 'varchar', nullable: true })
 	stripeAccountStatus?: "pending" | "ready";
+
+	//#endregion STRIPE
 	
 
 }

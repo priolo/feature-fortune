@@ -127,10 +127,13 @@ class StripeService extends ServiceBase {
 		const { email, accountId } = data
 		try {
 			const account = await stripe.accounts.create({
-				//type: "express",
 				type: "standard",
-				country: "IT",
+
 				email: email,
+				
+				//country: "IT",
+				//business_type: "individual",
+
 				// controller: {
 				// 	// Account è responsabile dei pagamenti delle commissioni
 				// 	fees: {
