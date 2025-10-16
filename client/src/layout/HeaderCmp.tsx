@@ -1,14 +1,16 @@
 import FeatureListHeader from '@/pages/feature/list/ListHeader';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
 import { Box, SxProps, IconButton, Tooltip, Select, MenuItem, SelectChangeEvent } from '@mui/material';
-import { Brightness4 as DarkModeIcon, Brightness7 as LightModeIcon, Language as LanguageIcon } from '@mui/icons-material';
+import { Brightness4 as DarkModeIcon, Brightness7 as LightModeIcon, Language as LanguageIcon, Mail as MailIcon } from '@mui/icons-material';
 import { useStore } from '@priolo/jon';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import UserCmp from './UserCmp';
 import FeatureDetailHeader from '@/pages/feature/detail/DetailHeader';
 import LoginHeader from '@/pages/login/LoginHeader';
 import AccountHeader from '@/pages/account/AccountHeader';
+import MessageHeader from '@/pages/message/MessageHeader';
 import themeSo from '@/stores/layout/theme';
 
 
@@ -25,6 +27,7 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 
 	// HOOKS
 	const { i18n } = useTranslation();
+	const navigate = useNavigate();
 
 	const header = useMemo(() => {
 		return {
@@ -32,6 +35,7 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 			[LOCATION_PAGE.FeatureDetail]: <FeatureDetailHeader />,
 			[LOCATION_PAGE.Login]: <LoginHeader />,
 			[LOCATION_PAGE.Account]: <AccountHeader />,
+			[LOCATION_PAGE.Messages]: <MessageHeader />,
 		}[locationSo.state.current]
 	}, [locationSo.state.current])
 
@@ -42,6 +46,10 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 
 	const handleLanguageChange = (event: SelectChangeEvent<string>) => {
 		i18n.changeLanguage(event.target.value);
+	};
+
+	const handleMessagesClick = () => {
+		navigate('/app/messages');
 	};
 
 	// RENDER
@@ -56,6 +64,12 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 			</Box>
 
 			<Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 1 }}>
+
+				<Tooltip title="Messages">
+					<IconButton onClick={handleMessagesClick} color="inherit" size="medium">
+						<MailIcon />
+					</IconButton>
+				</Tooltip>
 
 				<Select
 					value={i18n.language}

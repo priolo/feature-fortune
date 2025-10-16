@@ -37,4 +37,5 @@ export enum LOCATION_PAGE {
 
 	Login = "auth-login",
 	Account = "auth-account",
+	Messages = "messages",
 }

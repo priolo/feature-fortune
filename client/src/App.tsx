@@ -4,6 +4,7 @@ import AccountPag from './pages/account/AccountPag';
 import FeatureListPag from './pages/feature/list/ListPag';
 import FeatureDetailPag from './pages/feature/detail/DetailPag';
 import LoginPag from './pages/login/LoginPag';
+import MessagePag from './pages/message/MessagePag';
 import MsgBox from './layout/MsgBox';
 import { useStore } from '@priolo/jon';
 import themeSo from './stores/layout/theme';
@@ -34,6 +35,7 @@ function App() {
 					<Route index element={<FeatureListPag />} />
 					<Route path="account" element={<AccountPag />} />
 					<Route path="login" element={<LoginPag />} />
+					<Route path="messages" element={<MessagePag />} />
 					<Route path="feature/:id" element={<FeatureDetailPag />} />
 
 				</Route>
