@@ -1,0 +1,36 @@
+{
+	"common": {
+		"save": "Save",
+		"cancel": "Cancel",
+		"delete": "Delete",
+		"edit": "Edit",
+		"close": "Close",
+		"loading": "Loading...",
+		"error": "Error",
+		"success": "Success"
+	},
+	"auth": {
+		"login": "Login",
+		"logout": "Logout",
+		"email": "Email",
+		"password": "Password"
+	},
+	"feature": {
+		"title": "Features",
+		"detail": "Feature Detail",
+		"list": "Feature List"
+	},
+	"account": {
+		"title": "Account",
+		"profile": "Profile"
+	},
+	"comment": {
+		"add": "Add Comment",
+		"edit": "Edit Comment",
+		"delete": "Delete Comment"
+	},
+	"funding": {
+		"title": "Funding",
+		"amount": "Amount"
+	}
+}

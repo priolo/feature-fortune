@@ -13,7 +13,6 @@ const Layout: React.FC = () => {
 		<Box sx={{
 			display: 'flex',
 			height: '100vh',
-			backgroundColor: '#f5f5f5'
 		}}>
 
 			{/* Main Content */}
@@ -43,5 +42,4 @@ const sxRoot: SxProps = {
 const sxMain: SxProps = {
 	flex: 1,
 	overflowY: 'auto',
-	backgroundColor: '#f8f9fa',
 }

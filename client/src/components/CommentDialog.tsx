@@ -1,6 +1,5 @@
 import { Comment } from "@/types/Comment";
-import { Funding } from "@/types/Funding";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
 import { FunctionComponent, useEffect, useState } from "react";
 
 

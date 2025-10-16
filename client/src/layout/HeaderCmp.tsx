@@ -1,12 +1,15 @@
 import FeatureListHeader from '@/pages/feature/list/ListHeader';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
-import { Box, SxProps } from '@mui/material';
+import { Box, SxProps, IconButton, Tooltip, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { Brightness4 as DarkModeIcon, Brightness7 as LightModeIcon, Language as LanguageIcon } from '@mui/icons-material';
 import { useStore } from '@priolo/jon';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import UserCmp from './UserCmp';
 import FeatureDetailHeader from '@/pages/feature/detail/DetailHeader';
 import LoginHeader from '@/pages/login/LoginHeader';
 import AccountHeader from '@/pages/account/AccountHeader';
+import themeSo from '@/stores/layout/theme';
 
 
 
@@ -18,8 +21,11 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 
 	// STORES
 	useStore(locationSo)
+	const themeSa = useStore(themeSo);
 
 	// HOOKS
+	const { i18n } = useTranslation();
+
 	const header = useMemo(() => {
 		return {
 			[LOCATION_PAGE.FeaturesList]: <FeatureListHeader />,
@@ -28,6 +34,15 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 			[LOCATION_PAGE.Account]: <AccountHeader />,
 		}[locationSo.state.current]
 	}, [locationSo.state.current])
+
+	// HANDLERS
+	const handleThemeToggle = () => {
+		themeSo.toggleMode();
+	};
+
+	const handleLanguageChange = (event: SelectChangeEvent<string>) => {
+		i18n.changeLanguage(event.target.value);
+	};
 
 	// RENDER
 	return (
@@ -40,8 +55,32 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 				{header}
 			</Box>
 
-			<Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
+			<Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 1 }}>
+
+				<Select
+					value={i18n.language}
+					onChange={handleLanguageChange}
+					variant="standard"
+					sx={{
+						color: 'text.primary',
+						'&:before': { borderBottom: 'none' },
+						'&:after': { borderBottom: 'none' },
+						'&:hover:not(.Mui-disabled):before': { borderBottom: 'none' },
+						'.MuiSelect-select': { paddingTop: 0, paddingBottom: 0 }
+					}}
+				>
+					<MenuItem value="en">English</MenuItem>
+					{/* Add more languages here as needed */}
+				</Select>
+
+				<Tooltip title={themeSa.mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
+					<IconButton onClick={handleThemeToggle} color="inherit" size="medium">
+						{themeSa.mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
+					</IconButton>
+				</Tooltip>
+
 				<UserCmp />
+				
 			</Box>
 
 		</Box>
@@ -51,14 +90,15 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 export default HeaderCmp;
 
 const sxRoot: SxProps = {
-	backgroundColor: 'white',
-	borderBottom: '1px solid #e1e5e9',
+	backgroundColor: 'background.paper',
+	borderBottom: 1,
+	borderColor: 'divider',
 	padding: '0 2rem',
 	height: '70px',
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'space-between',
-	boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+	boxShadow: 1,
 	flexShrink: 0
 }
 

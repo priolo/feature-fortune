@@ -15,6 +15,7 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import GithubRepoSelectorCard from '../../../components/github/repos/GithubRepoSelectorCard';
 import GithubUserSelectorCard from '../../../components/github/users/GithubUserSelectorCard';
+import accountApi from '@/api/account';
 
 
 
@@ -65,8 +66,9 @@ const FeatureDetailPag: React.FC<Props> = ({
             ...featureDetailSo.state.feature,   
             githubDevId: githubDev?.id,
         })
-        // const res = await accountApi.getByGithubUserId(githubDev?.id)
-        // handleAccountDevChange(res.account)
+        if ( featureDetailSo.state.feature?.accountDevId ) return; // non sovrascrive se gia' presente
+        const res = await accountApi.getByGithubUserId(githubDev?.id)
+        handleAccountDevChange(res.account)
     };
 
     const handleAccountDevChange = async (account:Account) => {

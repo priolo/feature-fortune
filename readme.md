@@ -38,11 +38,18 @@ manda uno specifico evento Stripe mock
 ### GITHB
 [https://github.com/settings/applications/3174659]
 
-cambiare il paramentro di:  
+cambiare i paramentri:  
+
+`Homepage URL`
+- "local"  
+http://localhost:3000/app/
+- "render"  
+https://feature-fortune.onrender.com/app/
+
 `Authorization callback URL`  
-da "local"  
+- "local"  
 http://localhost:3000/api/auth/github/callback  
-a "render"  
+- "render"  
 https://feature-fortune.onrender.com/api/auth/github/callback  
 
 

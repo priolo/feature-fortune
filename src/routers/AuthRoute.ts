@@ -85,6 +85,7 @@ class AuthRoute extends httpRouter.Service {
 		}
 	}
 	private async currentDemo(req: Request, res: Response) {
+
 		// carico l'account DEMO
 		const user: AccountRepo = await new Bus(this, this.state.repository).dispatch({
 			type: typeorm.Actions.FIND_ONE,
@@ -93,6 +94,7 @@ class AuthRoute extends httpRouter.Service {
 				where: { id: "id-user-1" },
 			}
 		})
+		
 		// Genera il token JWT con l'email nel payload
 		const jwtToken: string = await new Bus(this, "/jwt").dispatch({
 			type: jwt.Actions.ENCODE,

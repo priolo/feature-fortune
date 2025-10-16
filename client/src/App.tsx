@@ -5,11 +5,28 @@ import FeatureListPag from './pages/feature/list/ListPag';
 import FeatureDetailPag from './pages/feature/detail/DetailPag';
 import LoginPag from './pages/login/LoginPag';
 import MsgBox from './layout/MsgBox';
+import { useStore } from '@priolo/jon';
+import themeSo from './stores/layout/theme';
+import { useMemo } from 'react';
+import { darkTheme, lightTheme } from './theme/theme';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 
 
 
 function App() {
-	return <>
+
+	// STORES
+	const themeSa = useStore(themeSo);
+
+	// HOOKS
+	const theme = useMemo(() => {
+		return themeSa.mode === 'light' ? lightTheme : darkTheme;
+	}, [themeSa.mode]);
+
+
+	return <ThemeProvider theme={theme}>
+		<CssBaseline />
+
 		<Router>
 			<Routes>
 				<Route path="/app" element={<Layout />}>
@@ -24,7 +41,8 @@ function App() {
 		</Router>
 
 		<MsgBox />
-	</>
+
+	</ThemeProvider>
 }
 
 export default App;
