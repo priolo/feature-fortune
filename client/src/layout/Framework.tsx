@@ -5,11 +5,13 @@ import React from 'react';
 interface Props {
 	children?: React.ReactNode
 	sx?: SxProps
+	leftRender?: React.ReactNode
 }
 
 const Framework: React.FC<Props> = ({
 	children,
 	sx,
+	leftRender,
 }) => {
 
 	// RENDER
@@ -17,7 +19,9 @@ const Framework: React.FC<Props> = ({
 	return (
 		<Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
 
-			<Box sx={sxSide} />
+			<Box sx={sxSide}>
+				{leftRender}
+			</Box>
 
 			<Box sx={[sxRoot, sx] as SxProps}>
 				{children}

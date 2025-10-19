@@ -6,6 +6,7 @@ import { CommentRepo } from "./repository/Comment.js";
 import { getDBConnectionConfig } from './repository/dbConfig.js';
 import { FeatureRepo } from "./repository/Feature.js";
 import { FundingRepo } from "./repository/Funding.js";
+import { MessageRepo } from "./repository/Message.js";
 import GoogleRoute from "./routers/GoogleRoute.js";
 import AuthEmailRoute from "./routers/AuthEmailRoute.js";
 import AuthGithubRoute from "./routers/AuthGithubRoute.js";
@@ -14,6 +15,7 @@ import AuthRoute from "./routers/AuthRoute.js";
 import CommentRoute from "./routers/CommentRoute.js";
 import FeatureRoute from "./routers/FeatureRoute.js";
 import FundingRoute from "./routers/FundingRoute.js";
+import MessageRoute from "./routers/MessageRoute.js";
 import PaymentRoute from "./routers/PaymentRoute.js";
 import StripeHookRoute from "./routers/StripeHookRoute.js";
 import StripeRoute from "./routers/StripeRoute.js";
@@ -106,6 +108,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 								{ class: PaymentRoute },
 								{ class: FundingRoute },
 								{ class: CommentRoute },
+								{ class: MessageRoute },
 								{ class: StripeRoute },
 							]
 						},
@@ -143,6 +146,11 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 					name: "comments",
 					class: "typeorm/repo",
 					model: CommentRepo,
+				},
+				{
+					name: "messages",
+					class: "typeorm/repo",
+					model: MessageRepo,
 				},
 
 			],

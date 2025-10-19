@@ -2,6 +2,7 @@ import { Account } from "@/types/Account";
 import { Dialog, DialogTitle, List, ListItem, ListItemButton, ListItemText, TextField, Box, DialogActions, Button, Avatar } from "@mui/material";
 import React, { FunctionComponent, useEffect } from "react";
 import accountApi from "@/api/account";
+import AvatarCmp from "../AvatarCmp";
 
 
 
@@ -114,13 +115,7 @@ const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 				{!loading && !error && items.map((account) => (
 					<ListItem key={account.id} disablePadding>
 						<ListItemButton onClick={() => handleItemClick(account)}>
-							<Avatar
-								src={account.avatarUrl}
-								alt={account.name}
-								sx={{ width: 40, height: 40, mr: 2 }}
-							>
-								{!account.avatarUrl && account.name?.charAt(0).toUpperCase()}
-							</Avatar>
+							<AvatarCmp account={account} />
 							<ListItemText
 								primary={account.name}
 								secondary={

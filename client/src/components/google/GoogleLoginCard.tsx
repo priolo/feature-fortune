@@ -43,7 +43,7 @@ const GoogleLoginCard: React.FC<Props> = ({
     const haveGoogle = !!authSo.state.user?.googleEmail
 
     return (
-        <Card
+        <Card id="google-login-card"
             title="Google access"
             icon={<GoogleIcon color="primary" />}
         >

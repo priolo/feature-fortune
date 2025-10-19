@@ -1,75 +1,50 @@
-import { Box, TextField, MenuItem, InputAdornment } from "@mui/material";
-import { FunctionComponent, useState, useEffect } from "react";
+import { Box, MenuItem, TextField } from "@mui/material";
+import { FunctionComponent } from "react";
+
+
 
 interface Props {
-	/** The current numeric value */
+	/** The ammount in cents */
 	value?: number;
-	
+	/** currency */
+	currency?: string;
 	/** Callback when the value changes */
-	onChange?: (value: number) => void;
-	
-	/** Label for the field */
-	label?: string;
-	
-	/** Default currency */
-	defaultCurrency?: string;
-	
+	onChange?: (value: number, currency: string) => void;
+
 	/** Available currencies */
 	currencies?: string[];
-	
-	/** If true, the field is disabled */
-	disabled?: boolean;
-	
-	/** If true, the field is required */
-	required?: boolean;
 }
 
 const CurrencyField: FunctionComponent<Props> = ({
-	value = 0,
+	value,
+	currency = "USD",
 	onChange,
-	label = "Amount",
-	defaultCurrency = "USD",
+
 	currencies = ["USD", "EUR", "GBP", "JPY"],
-	disabled = false,
-	required = false,
 }) => {
-	const [currency, setCurrency] = useState<string>(defaultCurrency);
-	const [amountInteger, setAmountInteger] = useState<string>('0');
-	const [amountDecimal, setAmountDecimal] = useState<string>('00');
 
-	// Initialize from value prop
-	useEffect(() => {
-		const amountStr = value.toString();
-		const parts = amountStr.split('.');
-		setAmountInteger(parts[0] || '0');
-		setAmountDecimal(parts[1] || '00');
-	}, [value]);
+	// HOOKS
 
-	const handleAmountIntegerChange = (inputValue: string) => {
-		// Only allow numbers
-		const numericValue = inputValue.replace(/[^0-9]/g, '');
-		setAmountInteger(numericValue);
-		const amount = parseFloat(`${numericValue}.${amountDecimal}`);
-		onChange?.(isNaN(amount) ? 0 : amount);
-	};
+	// HANDLERS
+	const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const amount = parseInt(e.target.value) * 100
+		onChange?.(isNaN(amount) ? null : amount, currency);
+	}
+	const handleCurrencyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const curr = e.target.value;
+		onChange?.(value, curr);
+	}
 
-	const handleAmountDecimalChange = (inputValue: string) => {
-		// Only allow numbers, max 2 digits
-		const numericValue = inputValue.replace(/[^0-9]/g, '').slice(0, 2);
-		setAmountDecimal(numericValue);
-		const amount = parseFloat(`${amountInteger}.${numericValue}`);
-		onChange?.(isNaN(amount) ? 0 : amount);
-	};
+
+	// RENDER
+	const valueStr = value != null ? (value / 100).toFixed(0) : '';
 
 	return (
-		<Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
-			<TextField 
-				select 
-				label="Currency" 
+		<Box sx={{ display: 'flex', gap: 1 }}>
+
+			<TextField select sx={{ minWidth: 100 }}
 				value={currency}
-				onChange={(e) => setCurrency(e.target.value)}
-				sx={{ minWidth: 100 }}
-				disabled={disabled}
+				onChange={handleCurrencyChange}
 			>
 				{currencies.map((curr) => (
 					<MenuItem key={curr} value={curr}>
@@ -78,30 +53,11 @@ const CurrencyField: FunctionComponent<Props> = ({
 				))}
 			</TextField>
 
-			<TextField 
-				label={label} 
-				fullWidth
-				value={amountInteger}
-				onChange={(e) => handleAmountIntegerChange(e.target.value)}
-				disabled={disabled}
-				required={required}
-				InputProps={{
-					endAdornment: (
-						<InputAdornment position="end">
-							.{amountDecimal.padEnd(2, '0')}
-						</InputAdornment>
-					),
-				}}
+			<TextField fullWidth type="number"
+				value={valueStr}
+				onChange={handleValueChange}
 			/>
 
-			<TextField 
-				label="Decimals" 
-				value={amountDecimal}
-				onChange={(e) => handleAmountDecimalChange(e.target.value)}
-				sx={{ width: 100 }}
-				inputProps={{ maxLength: 2 }}
-				disabled={disabled}
-			/>
 		</Box>
 	);
 };

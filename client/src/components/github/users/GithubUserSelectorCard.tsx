@@ -3,14 +3,13 @@ import Card, { sxActionCard } from '@/components/Card';
 import GithubUserViewer from '@/components/github/users/GithubUserViewer';
 import GithubUsersFinderDialog from '@/components/github/users/GithubUsersFinderDialog';
 import { GitHubUser } from '@/types/github/GitHub';
-import { GitHub } from '@mui/icons-material';
-import { Box, Button, Typography  } from '@mui/material';
+import { GitHub, InfoOutline } from '@mui/icons-material';
+import { Box, Button, SxProps, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 
 
 interface Props {
-    users?: GitHubUser[]
     githubOwnerId?: number
     onChange?: (owner: GitHubUser) => void
 }
@@ -19,60 +18,78 @@ interface Props {
  * si occupa di crerae e collegare l'account del current user ai vari servizi
  */
 const GithubUserSelectorCard: React.FC<Props> = ({
-    users,
     githubOwnerId,
     onChange,
 }) => {
 
     // HOOKS
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [owner, setOwner] = useState<GitHubUser>(null);
+    const [user, setUser] = useState<GitHubUser>(null);
 
     useEffect(() => {
         if (!githubOwnerId) {
-			setOwner(null)
-			return
-		}
-		if ( owner?.id === githubOwnerId ) return
+            setUser(null)
+            return
+        }
+        if (user?.id === githubOwnerId) return
         const load = async () => {
             const owner = await gitHubApi.getUserById(githubOwnerId)
-            setOwner(owner)
+            setUser(owner)
         }
         load();
-    },[githubOwnerId])
+    }, [githubOwnerId])
 
 
     // HANDLERS
     const handleSelectUserClick = () => {
         setDialogOpen(true)
     }
-    const handleUserDialogClose = async (user: GitHubUser) => {
+    const handleUserDialogClose = (user: GitHubUser) => {
         setDialogOpen(false)
-        setOwner(user)
+        if (!user) return
         onChange?.(user)
+    }
+    const handleRemoveClick = () => {
+        onChange?.(null)
     }
 
 
     // RENDER
+
+    const isSelected = !!user;
+
     return <>
 
-        <Card 
-            title="GitHub User"
+        <Card
+            title="GITHUB USER"
             icon={<GitHub />}
         >
 
             <Typography variant="body2" color="text.secondary">
-                Select the GitHub user to be used as the owner of the repositories.
+                {isSelected
+                    ? <span>
+                        <InfoOutline color="primary" sx={sxIcon} />
+                        Questo è solo un segnaposto dell'utente Github collegato al feature.
+                        Chi dovrà occuparsi di implementare la feature è il <strong>DEVELOPER</strong>.
+                    </span>
+                    : <span>
+                        Facoltativo: seleziona un utente GitHub collegato al feature.
+                    </span>
+                }
+
             </Typography>
-            
-            <GithubUserViewer user={owner} />
-            
+
+            <GithubUserViewer user={user} />
+
             <Box sx={sxActionCard}>
+                {isSelected && (
+                    <Button
+                        onClick={handleRemoveClick}
+                    >REMOVE</Button>
+                )}
                 <Button
                     onClick={handleSelectUserClick}
-                >
-                    {users && users.length > 1 ? 'SELECT USER' : 'SELECT'}
-                </Button>
+                >{isSelected ? 'CHANGE' : 'SELECT'}</Button>
             </Box>
 
         </Card>
@@ -81,8 +98,15 @@ const GithubUserSelectorCard: React.FC<Props> = ({
             isOpen={dialogOpen}
             onClose={handleUserDialogClose}
         />
-        
+
     </>
 };
 
 export default GithubUserSelectorCard;
+
+const sxIcon: SxProps = {
+    fontSize: '1.4em',
+    verticalAlign: 'text-bottom',
+    ml: "2px",
+    mr: "6px",
+}

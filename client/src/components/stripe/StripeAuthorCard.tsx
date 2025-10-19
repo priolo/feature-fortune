@@ -48,7 +48,7 @@ const StripeAuthorCard: React.FC = () => {
 	const accountReady = authSo.state.user?.stripeAccountStatus == "ready";
 
 	return (
-		<Card
+		<Card id="stripe-author-card"
 			title="Stripe author access"
 			icon={<ManageAccountsIcon color="primary" />}
 		>

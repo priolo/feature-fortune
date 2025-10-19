@@ -1,6 +1,6 @@
 import AccountSelectorCard from '@/components/account/AccountSelectorCard';
 import Framework from '@/layout/Framework';
-import CommentsCard from '@/pages/feature/detail/CommentsCard';
+import CommentsCard from '@/components/comment/CommentsCard';
 import FeatureDetailCard from '@/pages/feature/detail/FeatureDetailCard';
 import FundingsCard from '@/pages/feature/detail/FundingsCard';
 import authSo from '@/stores/auth/repo';
@@ -81,13 +81,6 @@ const FeatureDetailPag: React.FC<Props> = ({
 
     // RENDER
     const feature = featureDetailSo.state.feature
-    const inNew = feature?.id == null
-    const logged = !!authSo.state.user
-    const isOwner = feature?.accountId === authSo.state.user?.id
-    const isDev = feature?.accountDevId === authSo.state.user?.id
-    const showFundings = !inNew 
-    const title = feature?.title || ''
-    const description = feature?.description || ''
 
     return <Framework sx={{ py: 2}}>
 

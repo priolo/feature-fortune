@@ -5,12 +5,33 @@ import { FeatureRepo } from './Feature.js';
 
 
 
-export enum FUNDING_STATE {
-	CREATED = "created",
+export enum FUNDING_STATUS {
+	/** 
+	 * viene controllato per le verifiche 
+	 * next: CANCELLED | PAYABLE
+	 * */
 	PENDING = "pending",
+	/**
+	 * il pagamento è stato annullato 
+	 * next: (nessuno)
+	 */
+	CANCELLED = "cancelled",
+	/**
+	 * è dichiarato "pagabile" dal proprietario o dal sistema
+	 * next: PAIED | ERROR
+	 */
+	PAYABLE = "payable",
+	/**
+	 * è stato pagato
+	 * next: (nessuno)
+	 */
 	PAIED = "paied",
-	FAILED = "failed",
-} 
+	/** 
+	 * si è verificato un errore nel pagamento
+	 * next: PAYABLE | CANCELLED
+	 */
+	ERROR = "error",
+}
 
 
 @Entity('fundings')
@@ -19,14 +40,16 @@ export class FundingRepo extends AccountAsset {
 	@PrimaryGeneratedColumn("uuid")
 	id?: string;
 
-	/**
-	 * in centesimi. Per esempio 2000 = 2 euro
-	 */
-	@Column({ type: 'decimal', precision: 10, scale: 2 })
+
+	/** currency code ISO 4217, per esempio "eur" o "usd" */
+	@Column({ type: 'varchar', length: 3, default: 'eur' })
+	currency: string;
+	/** in centesimi. Per esempio 2000 = 2 euro */
+	@Column({ type: 'int' })
 	amount: number;
 
-	@Column({ type: 'varchar', default: FUNDING_STATE.CREATED })
-	status?: FUNDING_STATE
+	@Column({ type: 'varchar', default: FUNDING_STATUS.PENDING })
+	status?: FUNDING_STATUS
 
 	@Column({ type: 'text', nullable: true })
 	message?: string;

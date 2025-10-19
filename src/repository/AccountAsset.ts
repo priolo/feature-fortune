@@ -7,15 +7,13 @@ import { AccountRepo } from './Account.js';
  */
 export abstract class AccountAsset {
 
-	//#region RELATIONSHIPS
-
 	/** l'ACCOUNT proprietario */
 	@ManyToOne(() => AccountRepo, { nullable: true })
 	@JoinColumn({ name: 'accountId' })
 	account?: AccountRepo
+
+	/** l'ID dell'ACCOUNT proprietario */
 	@Column({ type: 'varchar', default: null })
 	accountId?: string
-
-	//#endregion
 
 }

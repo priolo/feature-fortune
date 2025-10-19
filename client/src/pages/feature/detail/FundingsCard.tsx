@@ -1,8 +1,11 @@
+import Card from '@/components/Card';
 import FundingDialog from '@/components/funding/FundingDialog';
 import FundingList from '@/components/funding/FundingList';
+import MessageBanner from '@/components/MessageBanner';
 import fundingListSo from '@/stores/funding/list';
 import { Funding } from '@/types/Funding';
-import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import { Add } from '@mui/icons-material';
+import { Button } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';
 
@@ -51,36 +54,32 @@ const FundingsCard: React.FC<Props> = ({
     const isVoid = fundings.length == 0;
 
     return <>
-        <Card sx={{ width: '100%', mt: 2 }}>
-            <CardContent>
+    
+        <Card id="funding-card"
+            title="FUNDINGS"
+            titleEndRender={
+                <Button variant="contained" size="small"
+                    startIcon={<Add />}
+                    onClick={handleCreateClick}
+                >CONTRIBUTE</Button>
+            }
+        >
 
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                    <Typography variant="h6" component="h2">
-                        Fundings ({fundings?.length || 0})
-                    </Typography>
-                    <Button variant="contained" color="primary"
-                        onClick={handleCreateClick}
-                    >CONTRIBUTE</Button>
-                </Box>
+            {!isVoid ? (
+                <FundingList fundings={fundings} />
+            ) : (
+                <MessageBanner>
+                    No fundings yet for this feature.
+                </MessageBanner>
+            )}
 
-                {!isVoid ? (
-
-                    <FundingList fundings={fundings} />
-
-                ) : (
-                    <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
-                        No fundings yet for this feature.
-                    </Typography>
-                )}
-
-            </CardContent>
         </Card>
 
-        {/* DIALOGS */}
         <FundingDialog
             isOpen={dialogOpen}
             onClose={handleDialogClose}
         />
+
     </>
 }
 

@@ -14,12 +14,15 @@ export class AccountRepo {
 	id?: string;
 
 	@Column({ type: 'varchar', nullable: true })
+	name?: string;
+	@Column({ type: 'varchar', nullable: true })
+	language?: string;
+
+	@Column({ type: 'varchar', nullable: true })
 	email?: string;
 	@Column({ type: 'varchar', default: EMAIL_CODE.UNVERIFIED, nullable: true })
 	emailCode?: string;
 
-	@Column({ type: 'varchar', nullable: true })
-	name?: string;
 
 	@Column({ type: 'varchar', nullable: true })
 	avatarUrl?: string;

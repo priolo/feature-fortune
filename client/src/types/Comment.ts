@@ -1,14 +1,12 @@
-import { Feature } from "./feature/Feature";
-import { Funding } from "./Funding";
+import { AccountAsset } from "./AccountAsset";
 
 
 
-export interface Comment {
+export interface Comment extends AccountAsset {
 
 	id?: string;
 	text: string;
 	createdAt?: Date;
-
 	
 	//#region RELATIONSHIPS
 
@@ -19,20 +17,5 @@ export interface Comment {
      */
     entityId?: string;
 
-    /**
-     * Feature entity (only populated when entityType is 'feature')
-     */
-    feature?: Feature;
-
-    /**
-     * Funding entity (only populated when entityType is 'funding')
-     */
-    funding?: Funding;
-
 	//#endregion
 }
-
- 
-  
-
-

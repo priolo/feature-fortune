@@ -3,8 +3,8 @@ import Card, { sxActionCard } from '@/components/Card';
 import GithubRepoViewer from '@/components/github/repos/GithubRepoViewer';
 import GithubReposFinderDialog from '@/components/github/repos/GithubReposFinderDialog';
 import { GitHubRepository } from '@/types/github/GitHub';
-import { AccessAlarm } from '@mui/icons-material';
-import { Box, Button,  CardActions, CardContent, SxProps, Typography } from '@mui/material';
+import { AccessAlarm, CheckCircleOutline, GitHub } from '@mui/icons-material';
+import { Box, Button, SxProps, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 
@@ -29,10 +29,10 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
 
     useEffect(() => {
         if (!githubRepoId) {
-			setRepo(null)
-			return
-		}
-		if ( repo?.id === githubRepoId ) return
+            setRepo(null)
+            return
+        }
+        if (repo?.id === githubRepoId) return
         const load = async () => {
             const repo = await gitHubApi.getRepository(githubRepoId)
             setRepo(repo)
@@ -47,21 +47,29 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
     }
     const handleRepoDialogClose = async (repo: GitHubRepository) => {
         setDialogOpen(false)
-        setRepo(repo)
         onChange?.(repo)
     }
 
 
     // RENDER
+    const isSelected = !!repo;
 
     return <>
 
         <Card
-            title="GithubRepository"
-            icon={<AccessAlarm color="primary" />}
+            title="GITHUB REPOSITORY"
+            icon={<GitHub />}
         >
+
             <Typography variant="body2" color="text.secondary">
-                Select the repository to use for this feature
+                {isSelected
+                    ? <span>
+                        <CheckCircleOutline color="success" sx={sxIcon} />Questo è il repo su cui si chiede la feature.
+                    </span>
+                    : <span>
+                        Seleziona un repository GitHub su cui si vuole la feature.
+                    </span>
+                }
             </Typography>
 
             <GithubRepoViewer repository={repo} />
@@ -70,9 +78,10 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
                 <Button
                     onClick={handleFindRepoClick}
                 >
-                    {!!repo ? 'CHANGE REPOSITORY' : 'SELECT REPOSITORY'}
+                    {isSelected ? 'CHANGE' : 'SELECT'}
                 </Button>
             </Box>
+
         </Card>
 
         <GithubReposFinderDialog
@@ -84,3 +93,10 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
 };
 
 export default GithubRepoSelectorCard;
+
+const sxIcon: SxProps = {
+    fontSize: '16px',
+    verticalAlign: 'text-bottom',
+    ml: "2px",
+    mr: "6px",
+}

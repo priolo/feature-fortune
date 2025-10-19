@@ -5,19 +5,23 @@ import React, { useState } from 'react';
 
 
 interface CardProps {
-	title: string;
+	id?: string;
+	title?: string;
 	icon?: React.ReactNode;
 	collapsible?: boolean;
 	defaultExpanded?: boolean;
+	titleEndRender?: React.ReactNode;
 	children?: React.ReactNode;
 	sx?: PaperProps['sx'];
 }
 
 const Card: React.FC<CardProps> = ({
+	id,
 	title,
 	icon,
 	collapsible = false,
 	defaultExpanded = true,
+	titleEndRender,
 	children,
 	sx,
 }) => {
@@ -33,16 +37,18 @@ const Card: React.FC<CardProps> = ({
 
 	// RENDER
 	return (
-		<Paper elevation={3} sx={sxPaper}>
+		<Paper id={id} sx={sxPaper}>
 
-			<Box sx={sxTitle}>
+			<Box sx={sxTitleBox}>
 
-				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-					{icon ?? <InfoOutlined fontSize="small" color="primary" />}
-					<Typography variant="h6" sx={{mt: "-3px"}}>
+				{!!title && <Box sx={sxTitle}>
+					{icon}
+					<Typography variant="h6">
 						{title}
 					</Typography>
-				</Box>
+				</Box>}
+
+				{titleEndRender}
 
 				{collapsible && (
 					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -58,7 +64,7 @@ const Card: React.FC<CardProps> = ({
 					{children}
 				</Box>
 			</Collapse>
-			
+
 		</Paper>
 	)
 }
@@ -67,8 +73,8 @@ export default Card;
 
 export const sxActionCard: SxProps = {
 	display: 'flex',
-    justifyContent: 'end',
-    paddingTop: 1,
+	justifyContent: 'end',
+	gap: 1,
 }
 
 const sxPaper: SxProps = {
@@ -77,14 +83,24 @@ const sxPaper: SxProps = {
 	py: 2,
 	display: 'flex',
 	flexDirection: 'column',
-	gap: 1,
+	gap: 2,
+}
+
+const sxTitleBox: SxProps = {
+	position: "sticky",
+	top: 0,
+	backgroundColor: '#292929',
+	zIndex: 1,
+	display: 'flex',
+	alignItems: 'center',
+	gap: 2,
 }
 
 const sxTitle: SxProps = {
+	flex: 1,
 	display: 'flex',
 	alignItems: 'center',
-	justifyContent: 'space-between',
-	gap: 2,
+	gap: 1.5
 }
 
 const sxContent: SxProps = {

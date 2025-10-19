@@ -1,3 +1,4 @@
+import { FindManyOptions } from "typeorm";
 import { AccountRepo } from "../repository/Account.js";
 import { CommentRepo } from "../repository/Comment.js";
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
@@ -31,10 +32,20 @@ class CommentRoute extends httpRouter.Service {
 		// Get comments filtered by feature ID
 		const comments: CommentRepo[] = await new Bus(this, this.state.comment_repo).dispatch({
 			type: typeorm.Actions.FIND,
-			payload: {
+			payload: <FindManyOptions<CommentRepo>>{
 				where: {
 					entityId: featureId,
 					entityType: 'feature'
+				},
+				relations: {
+					account: true
+				},
+				select: {
+					account: {
+						id: true,
+						name: true,
+						avatarUrl: true
+					}
 				},
 				order: { createdAt: 'DESC' }  // Order by creation date, newest first
 			}

@@ -1,17 +1,15 @@
 import FeatureListHeader from '@/pages/feature/list/ListHeader';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
-import { Box, SxProps, IconButton, Tooltip, Select, MenuItem, SelectChangeEvent } from '@mui/material';
-import { Brightness4 as DarkModeIcon, Brightness7 as LightModeIcon, Language as LanguageIcon, Mail as MailIcon } from '@mui/icons-material';
+import { Box, SxProps, IconButton, Tooltip } from '@mui/material';
+import { Mail as MailIcon } from '@mui/icons-material';
 import { useStore } from '@priolo/jon';
 import React, { useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import UserCmp from './UserCmp';
 import FeatureDetailHeader from '@/pages/feature/detail/DetailHeader';
 import LoginHeader from '@/pages/login/LoginHeader';
 import AccountHeader from '@/pages/account/AccountHeader';
 import MessageHeader from '@/pages/message/MessageHeader';
-import themeSo from '@/stores/layout/theme';
 
 
 
@@ -23,10 +21,8 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 
 	// STORES
 	useStore(locationSo)
-	const themeSa = useStore(themeSo);
 
 	// HOOKS
-	const { i18n } = useTranslation();
 	const navigate = useNavigate();
 
 	const header = useMemo(() => {
@@ -40,14 +36,6 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 	}, [locationSo.state.current])
 
 	// HANDLERS
-	const handleThemeToggle = () => {
-		themeSo.toggleMode();
-	};
-
-	const handleLanguageChange = (event: SelectChangeEvent<string>) => {
-		i18n.changeLanguage(event.target.value);
-	};
-
 	const handleMessagesClick = () => {
 		navigate('/app/messages');
 	};
@@ -68,28 +56,6 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 				<Tooltip title="Messages">
 					<IconButton onClick={handleMessagesClick} color="inherit" size="medium">
 						<MailIcon />
-					</IconButton>
-				</Tooltip>
-
-				<Select
-					value={i18n.language}
-					onChange={handleLanguageChange}
-					variant="standard"
-					sx={{
-						color: 'text.primary',
-						'&:before': { borderBottom: 'none' },
-						'&:after': { borderBottom: 'none' },
-						'&:hover:not(.Mui-disabled):before': { borderBottom: 'none' },
-						'.MuiSelect-select': { paddingTop: 0, paddingBottom: 0 }
-					}}
-				>
-					<MenuItem value="en">English</MenuItem>
-					{/* Add more languages here as needed */}
-				</Select>
-
-				<Tooltip title={themeSa.mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
-					<IconButton onClick={handleThemeToggle} color="inherit" size="medium">
-						{themeSa.mode === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
 					</IconButton>
 				</Tooltip>
 

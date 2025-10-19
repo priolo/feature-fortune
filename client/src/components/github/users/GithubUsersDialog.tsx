@@ -114,7 +114,6 @@ const GithubUsersDialog: FunctionComponent<Partial<Props>> = ({
 								<Avatar 
 									src={user.avatar_url} 
 									alt={user.login}
-									sx={{ width: 40, height: 40 }}
 								/>
 							</ListItemAvatar>
 							<ListItemText

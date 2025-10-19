@@ -112,7 +112,7 @@ const StripeCreditCard: React.FC<Props> = ({
 
 	// RENDER
 	return (
-		<Card
+		<Card id="stripe-credit-card"
 			title="Credit Card"
 			icon={<Money color="primary" />}
 		>

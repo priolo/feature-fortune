@@ -1,5 +1,5 @@
 import { AccountRepo } from "../../repository/Account.js";
-import { FUNDING_STATE, FundingRepo } from "../../repository/Funding.js";
+import { FUNDING_STATUS, FundingRepo } from "../../repository/Funding.js";
 import { Octokit } from "@octokit/rest";
 import { Bus, ServiceBase, typeorm } from "@priolo/julian";
 import { FindManyOptions, LessThan } from "typeorm";
@@ -77,7 +77,7 @@ class PaymentCrono extends ServiceBase {
 			type: typeorm.Actions.FIND,
 			payload: {
 				where: {
-					status: FUNDING_STATE.PENDING,
+					status: FUNDING_STATUS.PENDING,
 					expiresAt: LessThan(new Date()),
 				}
 			} as FindManyOptions<FundingRepo>
@@ -104,7 +104,7 @@ class PaymentCrono extends ServiceBase {
 			}
 		})
 		if (!funding) throw new Error("Funding not found");
-		if (funding.status !== FUNDING_STATE.PENDING) throw new Error("Funding not pending");
+		if (funding.status !== FUNDING_STATUS.PENDING) throw new Error("Funding not pending");
 
 
 
@@ -145,7 +145,7 @@ class PaymentCrono extends ServiceBase {
 			type: typeorm.Actions.SAVE,
 			payload: {
 				id: funding.id,
-				status: FUNDING_STATE.PAIED,
+				status: FUNDING_STATUS.PAIED,
 				paidAt: new Date(),
 				transactionId: paymentIntent.id,
 			}

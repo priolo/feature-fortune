@@ -54,7 +54,7 @@ const GithubLoginCard: React.FC<Props> = ({
     const haveGithub = !!authSo.state.user?.githubId
 
     return (
-        <Card
+        <Card id="github-login-card"
             title="GitHub access"
             icon={<GitHubIcon color="primary" />}
         >

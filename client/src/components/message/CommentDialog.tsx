@@ -54,7 +54,7 @@ const CommentDialog: FunctionComponent<Partial<Props>> = ({
 
 		<Dialog onClose={handleClose} open={isOpen} maxWidth="sm" fullWidth>
 
-			<DialogTitle>Contribute</DialogTitle>
+			<DialogTitle>COMMENT</DialogTitle>
 
 			<DialogContent>
 				<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>

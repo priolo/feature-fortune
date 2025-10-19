@@ -1,6 +1,9 @@
 import { Account } from '@/types/Account';
-import { Avatar, Box, Chip, Typography } from '@mui/material';
+import { Done, PriorityHigh, WarningAmber } from '@mui/icons-material';
+import { Box, Chip, Typography } from '@mui/material';
 import React from 'react';
+import AvatarCmp from '../AvatarCmp';
+import MessageBanner from '../MessageBanner';
 
 
 
@@ -14,46 +17,51 @@ const AccountViewer: React.FC<Props> = ({
 
     // RENDER
 
-    if (!account) return <Typography variant="body2" color="text.secondary">
+    if (!account) return <MessageBanner>
         void
-    </Typography>
+    </MessageBanner>
+
+    const stripeAccProps: any = !!account.stripeAccountId
+        ? (account.stripeAccountStatus === 'ready'
+            ? { color: 'success', icon: <Done />, label: 'Stripe Ready' }
+            : { color: 'warning', icon: <WarningAmber />, label: 'Stripe incomplete' }
+        ) : { color: 'error', icon: <PriorityHigh sx={{ width: 14, height: 14 }} />, label: 'NO STRIPE' }
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, mb: 2 }}>
-            <Avatar
-                src={account.avatarUrl}
-                alt={account.name}
-                sx={{ width: 64, height: 64 }}
-            >
-                {!account.avatarUrl && account.name?.charAt(0).toUpperCase()}
-            </Avatar>
-            <Box sx={{ flex: 1 }}>
-                <Typography variant="h6" component="h2">
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+
+            <AvatarCmp account={account} />
+
+            <Box sx={{ flex: 1, display: "flex", flexDirection: "column", overflow: 'hidden', gap: .5 }} >
+
+                <Typography>
                     {account.name}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                    {account.email}
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 1 }}>
+
+                <Box sx={{ display: 'flex', gap: .5, flexWrap: 'wrap' }}>
                     {account.emailVerified && (
-                        <Chip label="✓ Verified" size="small" color="success" />
-                    )}
-                    {account.googleEmail && (
-                        <Chip label="Google" size="small" color="primary" />
-                    )}
-                    {account.githubId && (
-                        <Chip label="GitHub" size="small" color="primary" />
-                    )}
-                    {account.stripeHaveCard && (
-                        <Chip label="💳 Card" size="small" />
-                    )}
-                    {!!account.stripeAccountId && (
-                        <Chip 
-                            label={`Stripe ${account.stripeAccountStatus || 'Account'}`} 
-                            size="small" 
-                            color={account.stripeAccountStatus === 'ready' ? 'success' : 'warning'}
+                        <Chip icon={<Done />} color="success"
+                            label="Verified"
                         />
                     )}
+                    {account.googleEmail && (
+                        <Chip color="primary"
+                            label="Google"
+                        />
+                    )}
+                    {account.githubId && (
+                        <Chip color="primary"
+                            label="GitHub"
+                        />
+                    )}
+                    {account.stripeHaveCard && (
+                        <Chip
+                            label="Card"
+                        />
+                    )}
+
+                    <Chip {...stripeAccProps} />
+
                 </Box>
             </Box>
         </Box>

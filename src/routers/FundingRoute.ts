@@ -1,7 +1,8 @@
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 import { AccountRepo } from "../repository/Account.js";
-import { FUNDING_STATE, FundingRepo } from "../repository/Funding.js";
+import { FUNDING_STATUS, FundingRepo } from "../repository/Funding.js";
+import { FindManyOptions } from "typeorm";
 
 
 
@@ -33,9 +34,19 @@ class FundingRoute extends httpRouter.Service {
 		// Get fundings filtered by feature ID
 		const fundings: FundingRepo[] = await new Bus(this, this.state.funding_repo).dispatch({
 			type: typeorm.Actions.FIND,
-			payload: {
+			payload: <FindManyOptions<FundingRepo>>{
 				where: {
 					featureId: featureId
+				},
+				relations: {
+					account: true
+				},
+				select: {
+					account: {
+						id: true,
+						name: true,
+						avatarUrl: true
+					}
 				},
 				order: { createdAt: 'DESC' }  // Order by creation date, newest first
 			}
@@ -55,7 +66,7 @@ class FundingRoute extends httpRouter.Service {
 		// è sempre nuovo
 		delete funding.id
 		funding.accountId = userJwt.id
-		funding.status = FUNDING_STATE.PENDING
+		funding.status = FUNDING_STATUS.PENDING
 
 		// salvo
 		const fundingNew: AccountRepo = await new Bus(this, this.state.funding_repo).dispatch({

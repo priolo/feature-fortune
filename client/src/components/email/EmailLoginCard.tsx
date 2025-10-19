@@ -1,6 +1,7 @@
 import Card, { sxActionCard } from '@/components/Card';
+import Paragraph from '@/layout/Paragraph';
 import authSo from '@/stores/auth/repo';
-import { Done, WarningAmber } from '@mui/icons-material';
+import { Done, InfoOutline, WarningAmber } from '@mui/icons-material';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, SxProps, TextField, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
@@ -64,7 +65,7 @@ const EmailLoginCard: React.FC<Props> = ({
     const isVerified = !!authSo.state.user?.emailVerified;
 
     return <>
-        <Card
+        <Card id="email-login-card"
             title="Email access"
             icon={<MailOutlineIcon color="primary" />}
         >
@@ -72,16 +73,18 @@ const EmailLoginCard: React.FC<Props> = ({
                 <Message logged={logged} haveEmail={haveEmail} isVerified={isVerified} />
             </Typography>
 
-            <TextField fullWidth label="Email" size="small"
-                value={email}
-                onChange={handleEmailChange}
-                placeholder="Type your email"
-            />
+            <Paragraph title="EMAIL ADDRESS">
+                <TextField fullWidth size="small"
+                    value={email}
+                    onChange={handleEmailChange}
+                    placeholder="Type your email"
+                />
+            </Paragraph>
 
             <Box sx={sxActionCard} >
                 <Button
                     onClick={handleSendEmailClick}
-                >Invia codice</Button>
+                >{isVerified ? "REINVIA" : "INVIA CODICE"}</Button>
             </Box>
         </Card>
 
@@ -133,21 +136,23 @@ interface MessageProps {
     isVerified: boolean;
 }
 
-const Message: React.FC<MessageProps> = ({ 
-    logged, 
-    haveEmail, 
-    isVerified 
+const Message: React.FC<MessageProps> = ({
+    logged,
+    haveEmail,
+    isVerified
 }) => {
-    
+
     if (!logged) {
         return <span>
-            Inserisci il tuo indirizzo email per ricevere un codice di accesso temporaneo.
+            <InfoOutline color="primary" sx={sxIcon} />
+            Inserisci la tua email. Riceverai un codice di conferma.<br />
+            Ti permetterà di ricevere le notifiche e di accedere al tuo account senza password.
         </span>;
     }
 
     if (!haveEmail) {
         return <span>
-            <WarningAmber color="warning" sx={{ fontSize: '1.4em', verticalAlign: 'text-bottom', mx: "2px" }} />
+            <WarningAmber color="warning" sx={sxIcon} />
             Il tuo account non ha ancora una email associata.
             Inseriscila qui sotto per ricevere un codice di accesso temporaneo.
         </span>;
@@ -155,14 +160,21 @@ const Message: React.FC<MessageProps> = ({
 
     if (!isVerified) {
         return <span>
-            <WarningAmber color="warning" sx={{ fontSize: '1.4em', verticalAlign: 'text-bottom', mx: "2px" }} />
+            <WarningAmber color="warning" sx={sxIcon} />
             La tua email non è ancora verificata.
             Inseriscila qui sotto per ricevere un codice di accesso temporaneo.
         </span>;
     }
 
     return <span>
-        <Done color="success" sx={{ fontSize: '1.4em', verticalAlign: 'text-bottom', mx: "2px" }} />
+        <Done color="success" sx={sxIcon} />
         La tua email è verificata.
     </span>;
 };
+
+const sxIcon: SxProps = {
+    fontSize: '1.4em',
+    verticalAlign: 'text-bottom',
+    ml: "2px",
+    mr: "6px",
+}

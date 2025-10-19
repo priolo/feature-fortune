@@ -1,20 +1,17 @@
-import { Uuid } from "./global.js"
 import { Account } from "./Account.js"
+import { AccountAsset } from "./AccountAsset.js"
+import { Uuid } from "./global.js"
 
 
 
-export interface Message {
+export interface Message extends AccountAsset {
 
-	id: Uuid
-
-	senderId: Uuid
-	sender?: Account
+	id?: Uuid
+	text: string
+	isRead?: boolean
+	createdAt?: string
 
 	receiverId: Uuid
 	receiver?: Account
 
-	text: string
-
-	createdAt?: string
-	updatedAt?: string
 }
