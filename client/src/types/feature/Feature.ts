@@ -4,6 +4,18 @@ import { Comment } from '../Comment';
 import { Funding } from '../Funding';
 
 
+/**
+ * Metadati essenziali del repository GitHub
+ * memorizzati per evitare chiamate API ripetute
+ */
+export interface GithubRepoMetadata {
+	name: string;
+	full_name: string;
+	avatar_url: string; // avatar del owner
+	description?: string;
+	html_url?: string;
+}
+
 
 export enum FEATURE_STATUS {
 	/**
@@ -48,6 +60,11 @@ export interface Feature extends AccountAsset {
 	
 
 	githubRepoId?: number	
+
+	/**
+	 * Metadati del repository GitHub (nome, avatar, ecc.)
+	 */
+	githubRepoMetadata?: GithubRepoMetadata
 
 	githubDevId?: number
 

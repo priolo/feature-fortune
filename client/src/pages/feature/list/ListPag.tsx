@@ -1,4 +1,5 @@
 import Card from '@/components/Card';
+import GithubRepoMetadataViewer from '@/components/github/repos/GithubRepoMetadataViewer';
 import MessageBanner from '@/components/MessageBanner';
 import Framework from '@/layout/Framework';
 import featureListSo from '@/stores/feature/list';
@@ -7,6 +8,7 @@ import { Avatar, List, ListItemAvatar, ListItemButton, ListItemText, Typography 
 import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import FeatureRow from './FeatureRow';
 
 
 
@@ -43,23 +45,7 @@ const FeatureListPag: React.FC = () => {
 					<ListItemButton divider key={feature.id}
 						onClick={() => handleFeatureClick(feature.id)}
 					>
-						<ListItemAvatar>
-							<Avatar sx={{ bgcolor: 'primary.main' }}>
-								📦
-							</Avatar>
-						</ListItemAvatar>
-						<ListItemText
-							primary={
-								<Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-									{feature.title}
-								</Typography>
-							}
-							secondary={
-								<Typography variant="body2" color="text.secondary">
-									{feature.description}
-								</Typography>
-							}
-						/>
+						<FeatureRow feature={feature} />
 					</ListItemButton>
 
 				))}

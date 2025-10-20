@@ -1,7 +1,8 @@
 import gitHubApi from "@/api/githubService";
 import { GitHubUser } from "@/types/github/GitHub";
-import { Box, Button, Dialog, DialogActions, DialogTitle, List, ListItem, ListItemButton, ListItemText, TextField } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, List, ListItem, ListItemButton, ListItemText, TextField } from "@mui/material";
 import React, { FunctionComponent, useEffect } from "react";
+import GithubUserViewer from "./GithubUserViewer";
 
 
 
@@ -30,24 +31,20 @@ const GithubUsersFinderDialog: FunctionComponent<Partial<Props>> = ({
 	const [filterText, setFilterText] = React.useState('')
 	const [items, setItems] = React.useState<GitHubUser[]>([])
 	const [loading, setLoading] = React.useState(false)
-	const [error, setError] = React.useState<string | null>(null)
 
 	useEffect(() => {
+		if (!isOpen) return
+
 		const searchRepositories = async () => {
-			if (filterText.length >= 3) {
-				setLoading(true)
-				setError(null)
-				try {
-					const result = await gitHubApi.searchUsers(filterText, 10)
-					setItems(result)
-				} catch (err) {
-					setError('Failed to search repositories')
-					setItems([])
-				} finally {
-					setLoading(false)
-				}
-			} else {
+			if (filterText.length < 3) return
+			setLoading(true)
+			try {
+				const result = await gitHubApi.searchUsers(filterText, 10)
+				setItems(result)
+			} catch (err) {
 				setItems([])
+			} finally {
+				setLoading(false)
 			}
 		}
 
@@ -79,54 +76,36 @@ const GithubUsersFinderDialog: FunctionComponent<Partial<Props>> = ({
 
 	return (
 
-		<Dialog onClose={handleClose} open={isOpen} maxWidth="sm" fullWidth>
+		<Dialog onClose={handleClose} open={isOpen} maxWidth="xs">
 
 			<DialogTitle>Select GitHub User</DialogTitle>
 
+			{loading && <LinearProgress />}
+
 			<Box sx={{ px: 3, pb: 2 }}>
 				<TextField
-					fullWidth
-					label="Search"
-					variant="outlined"
-					size="small"
 					value={filterText || ''}
 					onChange={handleFilterChange}
 					placeholder="Type to filter items..."
 				/>
 			</Box>
 
-			<List sx={{ maxHeight: 400, overflow: 'auto' }}>
-				{loading && (
-					<ListItem>
-						<ListItemText primary="Searching..." />
-					</ListItem>
-				)}
-				{error && (
-					<ListItem>
-						<ListItemText primary={error} />
-					</ListItem>
-				)}
-				{!loading && !error && items.length === 0 && filterText.length >= 3 && (
-					<ListItem>
-						<ListItemText primary="No repositories found" />
-					</ListItem>
-				)}
-				{!loading && !error && items.map((user) => (
-					<ListItem key={user.id} disablePadding>
-						<ListItemButton onClick={() => handleItemClick(user)}>
-							<ListItemText
-								primary={user.login}
-								// secondary={
-								// 	<>
-								// 		{user. && <div>{user.description}</div>}
-								// 		<div>⭐ {user.stargazers_count} stars • {user.language || 'Unknown'}</div>
-								// 	</>
-								// }
-							/>
-						</ListItemButton>
-					</ListItem>
-				))}
-			</List>
+			<DialogContent>
+				<List sx={{ maxHeight: 400, overflow: 'auto' }}>
+					{loading && (
+						<ListItem>
+							<ListItemText primary="Searching..." />
+						</ListItem>
+					)}
+					{!loading && items.map((user) => (
+						<ListItem key={user.id} disablePadding>
+							<ListItemButton onClick={() => handleItemClick(user)}>
+								<GithubUserViewer user={user} />
+							</ListItemButton>
+						</ListItem>
+					))}
+				</List>
+			</DialogContent>
 
 			<DialogActions>
 				<Button onClick={() => handleClose()}>Cancel</Button>
@@ -134,7 +113,6 @@ const GithubUsersFinderDialog: FunctionComponent<Partial<Props>> = ({
 		</Dialog>
 	)
 }
-
 
 export default GithubUsersFinderDialog
 

@@ -56,7 +56,3 @@ export interface GitHubSearchResponse {
     incomplete_results: boolean;
     items: GitHubRepository[];
 }
-
-export interface GitHubRepositoryDetails extends GitHubRepository {
-    owner_details?: GitHubUser;
-}

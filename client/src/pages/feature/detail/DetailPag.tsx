@@ -58,6 +58,13 @@ const FeatureDetailPag: React.FC<Props> = ({
         featureDetailSo.setFeature({
             ...featureDetailSo.state.feature,   
             githubRepoId: repo?.id,
+            githubRepoMetadata: repo ? {
+                name: repo.name,
+                full_name: repo.full_name,
+                avatar_url: repo.owner.avatar_url,
+                description: repo.description,
+                html_url: repo.html_url,
+            } : null,
         })
     }
 

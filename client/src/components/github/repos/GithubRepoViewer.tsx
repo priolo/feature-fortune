@@ -35,13 +35,13 @@ const GithubRepoViewer: React.FC<Props> = ({
                         {repository.full_name}
                     </Link>
                     <Typography variant="body2" color="text.secondary">
-                        {repository.description ?? 'No description available'}
+                        {repository.description?.slice(0, 200) ?? 'No description available'}
                     </Typography>
                 </Box>
             </Box>
 
 
-            <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+            <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', ml: "44px" }}>
 
                 <Chip size="small" icon={<Star />}
                     label={repository.stargazers_count}

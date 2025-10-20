@@ -46,20 +46,20 @@ const GithubUserViewer: React.FC<Props> = ({
                     {user.location && <Chip size="small"
                         label={user.location}
                     />}
-                    <Chip size="small"
+                    {user.public_repos && <Chip
                         label={`Repo: ${user.public_repos}`}
-                    />
-                    <Chip size="small"
+                    />}
+                    {user.followers && <Chip
                         label={`Followers: ${user.followers}`}
-                    />
-                    <Chip size="small"
+                    />}
+                    {user.following && <Chip
                         label={`Following: ${user.following}`}
-                    />
+                    />}
                 </Box>
 
             </Box>
         </Box>
-   )
+    )
 }
 
 export default GithubUserViewer;

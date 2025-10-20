@@ -1,7 +1,8 @@
 import { GitHubRepository } from "@/types/github/GitHub";
-import { Dialog, DialogTitle, List, ListItem, ListItemButton, ListItemText, TextField, Box, DialogActions, Button } from "@mui/material";
+import { Dialog, DialogTitle, List, ListItem, ListItemButton, ListItemText, TextField, Box, DialogActions, Button, LinearProgress, DialogContent } from "@mui/material";
 import React, { FunctionComponent, useEffect } from "react";
 import gitHubApi from "@/api/githubService";
+import GithubRepoViewer from "./GithubRepoViewer";
 
 
 
@@ -25,40 +26,33 @@ const GithubReposFinderDialog: FunctionComponent<Partial<Props>> = ({
 	onClose,
 }) => {
 
-
 	// HOOKs
 	const [filterText, setFilterText] = React.useState('')
 	const [items, setItems] = React.useState<GitHubRepository[]>([])
 	const [loading, setLoading] = React.useState(false)
-	const [error, setError] = React.useState<string | null>(null)
 
 	useEffect(() => {
+		if (!isOpen) return
+
 		const searchRepositories = async () => {
-			if (filterText.length >= 3) {
-				setLoading(true)
-				setError(null)
-				try {
-					const result = await gitHubApi.searchRepositories(filterText, 10)
-					setItems(result.items)
-				} catch (err) {
-					setError('Failed to search repositories')
-					setItems([])
-				} finally {
-					setLoading(false)
-				}
-			} else {
+			if (filterText.length < 3) return
+			setLoading(true)
+			try {
+				const result = await gitHubApi.searchRepositories(filterText, 10)
+				setItems(result.items)
+			} catch (err) {
 				setItems([])
+			} finally {
+				setLoading(false)
 			}
 		}
 
 		const debounceTimer = setTimeout(() => {
 			searchRepositories()
-		}, 300)
+		}, 800)
 
 		return () => clearTimeout(debounceTimer)
 	}, [filterText])
-
-
 
 
 	// HANDLERS
@@ -83,50 +77,33 @@ const GithubReposFinderDialog: FunctionComponent<Partial<Props>> = ({
 
 			<DialogTitle>Select GitHub Repository</DialogTitle>
 
+			{loading && <LinearProgress />}
+
 			<Box sx={{ px: 3, pb: 2 }}>
 				<TextField
-					fullWidth
-					label="Search"
-					variant="outlined"
-					size="small"
-					value={filterText || ''}
+					value={filterText ?? ''}
 					onChange={handleFilterChange}
 					placeholder="Type to filter items..."
 				/>
 			</Box>
 
-			<List sx={{ maxHeight: 400, overflow: 'auto' }}>
-				{loading && (
-					<ListItem>
-						<ListItemText primary="Searching..." />
-					</ListItem>
-				)}
-				{error && (
-					<ListItem>
-						<ListItemText primary={error} />
-					</ListItem>
-				)}
-				{!loading && !error && items.length === 0 && filterText.length >= 3 && (
-					<ListItem>
-						<ListItemText primary="No repositories found" />
-					</ListItem>
-				)}
-				{!loading && !error && items.map((repo) => (
-					<ListItem key={repo.id} disablePadding>
-						<ListItemButton onClick={() => handleItemClick(repo)}>
-							<ListItemText
-								primary={repo.full_name}
-								secondary={
-									<>
-										{repo.description && <div>{repo.description}</div>}
-										<div>⭐ {repo.stargazers_count} stars • {repo.language || 'Unknown'}</div>
-									</>
-								}
-							/>
-						</ListItemButton>
-					</ListItem>
-				))}
-			</List>
+			<DialogContent>
+				<List sx={{ maxHeight: 400, overflow: 'auto' }}>
+					{loading && (
+						<ListItem>
+							<ListItemText primary="Searching..." />
+						</ListItem>
+					)}
+
+					{!loading && items.map((repo) => (
+						<ListItem key={repo.id} disablePadding>
+							<ListItemButton onClick={() => handleItemClick(repo)}>
+								<GithubRepoViewer repository={repo} />
+							</ListItemButton>
+						</ListItem>
+					))}
+				</List>
+			</DialogContent>
 
 			<DialogActions>
 				<Button onClick={() => handleClose()}>Cancel</Button>
@@ -134,7 +111,6 @@ const GithubReposFinderDialog: FunctionComponent<Partial<Props>> = ({
 		</Dialog>
 	)
 }
-
 
 export default GithubReposFinderDialog
 

@@ -47,7 +47,11 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
     }
     const handleRepoDialogClose = async (repo: GitHubRepository) => {
         setDialogOpen(false)
+        if (!repo) return;
         onChange?.(repo)
+    }
+    const handleRemoveClick = () => {
+        onChange?.(null)
     }
 
 
@@ -75,6 +79,11 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
             <GithubRepoViewer repository={repo} />
 
             <Box sx={sxActionCard}>
+                {isSelected && (
+                    <Button
+                        onClick={handleRemoveClick}
+                    >REMOVE</Button>
+                )}
                 <Button
                     onClick={handleFindRepoClick}
                 >
@@ -95,7 +104,7 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
 export default GithubRepoSelectorCard;
 
 const sxIcon: SxProps = {
-    fontSize: '16px',
+    fontSize: '1.4em',
     verticalAlign: 'text-bottom',
     ml: "2px",
     mr: "6px",

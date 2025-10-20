@@ -22,6 +22,7 @@ function save(featureData: Feature, opt?: CallOptions): Promise<Feature> {
 		title: featureData.title,
 		description: featureData.description,
 		githubRepoId: featureData.githubRepoId,
+		githubRepoMetadata: featureData.githubRepoMetadata,
 		githubDevId: featureData.githubDevId,
 		accountDevId: featureData.accountDevId,
 	}

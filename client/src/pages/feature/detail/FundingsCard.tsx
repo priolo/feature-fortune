@@ -4,7 +4,7 @@ import FundingList from '@/components/funding/FundingList';
 import MessageBanner from '@/components/MessageBanner';
 import fundingListSo from '@/stores/funding/list';
 import { Funding } from '@/types/Funding';
-import { Add } from '@mui/icons-material';
+import { Add, Payment } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';
@@ -56,6 +56,7 @@ const FundingsCard: React.FC<Props> = ({
     return <>
     
         <Card id="funding-card"
+            icon={<Payment />}
             title="FUNDINGS"
             titleEndRender={
                 <Button variant="contained" size="small"
