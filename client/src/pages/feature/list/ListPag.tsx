@@ -1,14 +1,13 @@
 import Card from '@/components/Card';
-import GithubRepoMetadataViewer from '@/components/github/repos/GithubRepoMetadataViewer';
 import MessageBanner from '@/components/MessageBanner';
 import Framework from '@/layout/Framework';
 import featureListSo from '@/stores/feature/list';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
-import { Avatar, List, ListItemAvatar, ListItemButton, ListItemText, Typography } from '@mui/material';
+import { List, ListItemButton } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import FeatureRow from './FeatureRow';
+import FeatureView from './FeatureView';
 
 
 
@@ -42,10 +41,12 @@ const FeatureListPag: React.FC = () => {
 			<List>
 				{features.map((feature, index) => (
 
-					<ListItemButton divider key={feature.id}
+					<ListItemButton divider={index<features.length-1}  key={feature.id}
 						onClick={() => handleFeatureClick(feature.id)}
 					>
-						<FeatureRow feature={feature} />
+						<FeatureView sx={{flex: 1, my: 1}} 
+							feature={feature} 
+						/>
 					</ListItemButton>
 
 				))}

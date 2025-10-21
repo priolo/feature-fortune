@@ -65,7 +65,7 @@ const GithubUserSelectorCard: React.FC<Props> = ({
             icon={<GitHub />}
         >
 
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" sx={{ mb: 1 }} color="text.secondary">
                 {isSelected
                     ? <span>
                         <InfoOutline color="primary" sx={sxIcon} />

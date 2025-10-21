@@ -1,9 +1,8 @@
 import stripeApi from '@/api/stripe';
 import { Funding } from '@/types/Funding';
-import { Done } from '@mui/icons-material';
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, List, ListItemButton } from '@mui/material';
 import React from 'react';
-import FundingRow from './FundingRow';
+import FundingView from './FundingView';
 
 
 
@@ -23,18 +22,22 @@ const FundingList: React.FC<Props> = ({
 
 
     // RENDER
-    
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <List>
+                {fundings.map((funding, index) => (
 
-            {fundings.map(funding => (
-                <FundingRow 
-                    key={funding.id}
-                    funding={funding}
-                    onClick={handlePayNow}
-                />
-            ))}
-
+                    <ListItemButton key={funding.id}
+                        divider={index < fundings.length - 1}
+                        onClick={() => handlePayNow(funding)}
+                    >
+                        <FundingView
+                            funding={funding}
+                        />
+                    </ListItemButton>
+                    
+                ))}
+            </List>
         </Box>
     );
 };

@@ -39,25 +39,27 @@ const Card: React.FC<CardProps> = ({
 	return (
 		<Paper id={id} sx={sxPaper}>
 
-			<Box sx={sxTitleBox}>
+			{!!title &&
+				<Box sx={sxTitleBox}>
 
-				{!!title && <Box sx={sxTitle}>
-					{icon}
-					<Typography variant="h6">
-						{title}
-					</Typography>
-				</Box>}
-
-				{titleEndRender}
-
-				{collapsible && (
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-						<IconButton size="small" onClick={handleToggle}>
-							{expanded ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}
-						</IconButton>
+					<Box sx={sxTitle}>
+						{icon}
+						<Typography variant="h6">
+							{title}
+						</Typography>
 					</Box>
-				)}
-			</Box>
+
+					{titleEndRender}
+
+					{collapsible && (
+						<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+							<IconButton size="small" onClick={handleToggle}>
+								{expanded ? <ExpandLess fontSize="small" /> : <ExpandMore fontSize="small" />}
+							</IconButton>
+						</Box>
+					)}
+				</Box>
+			}
 
 			<Collapse in={!collapsible || expanded} unmountOnExit={collapsible}>
 				<Box sx={[sxContent, sx] as SxProps}>

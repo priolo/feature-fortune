@@ -22,11 +22,13 @@ const CurrencyLabel: FunctionComponent<Props> = ({
 	}
 
 	return (
-		<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+		<Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
+
 			<Typography>
 				{amount.toLocaleString()}
 			</Typography>
-			<Typography variant="overline" color="textSecondary">
+			
+			<Typography variant="overline" color="textSecondary" sx={{ fontFamily: 'monospace' }}>
 				{currency}
 			</Typography>
 

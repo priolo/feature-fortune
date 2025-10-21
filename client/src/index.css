@@ -22,28 +22,6 @@ code {
     monospace;
 }
 
-/* Remove default link styles */
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* Remove default button styles */
-button {
-  font-family: inherit;
-  font-size: inherit;
-}
-
-/* Remove default list styles */
-ul, ol {
-  list-style: none;
-}
-
-/* Remove default input styles */
-input, textarea, select {
-  font-family: inherit;
-  font-size: inherit;
-}
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
@@ -51,16 +29,17 @@ input, textarea, select {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #00000023;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: #8b8b8b;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: #d1d1d1;
 }
 
 

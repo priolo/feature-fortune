@@ -21,14 +21,14 @@ const GithubUserViewer: React.FC<Props> = ({
     </MessageBanner>
 
     return (
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'start' }}>
 
             <Avatar
                 src={user.avatar_url}
                 alt={user.login}
             />
 
-            <Box sx={{ flex: 1, display: "flex", flexDirection: "column", overflow: 'hidden' }} >
+            <Box sx={{ display: 'flex', flexDirection: "column", gap: .5,  overflow: 'hidden' }}>
 
                 <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }} >
                     <Link href={user.html_url}>
