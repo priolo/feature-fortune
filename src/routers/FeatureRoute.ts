@@ -1,8 +1,11 @@
+import Stripe from "stripe";
 import { AccountRepo } from "../repository/Account.js";
 import { CommentRepo } from "../repository/Comment.js";
 import { FeatureRepo } from "../repository/Feature.js";
+import { FundingRepo } from "../repository/Funding.js";
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
+import { FindManyOptions, FindOptionsWhere } from "typeorm";
 
 
 
@@ -26,10 +29,48 @@ class FeatureRoute extends httpRouter.Service {
 	declare state: typeof this.stateDefault
 
 	async getAll(req: Request, res: Response) {
+
 		const features = await new Bus(this, this.state.feature_repo).dispatch({
-			type: typeorm.Actions.ALL
+			type: typeorm.Actions.ALL,
+			payload: <FindManyOptions<FeatureRepo>>{
+				relations: {
+					fundings: { account: true }
+				},
+				select: {
+					fundings: {
+						id: true, amount: true, currency: true, status: true,
+						account: { id: true, name: true, avatarUrl: true }
+					}
+				}
+			}
 		})
-		res.json(features)
+
+		// const userJwt: AccountRepo = req["jwtPayload"]
+		// const myId = userJwt?.id
+		// const { filter } = req.query as { filter: FEATURE_API_FILTER };
+
+		// const where: FindOptionsWhere<FeatureRepo> = {}
+		// if (filter == FEATURE_API_FILTER.MY) where.accountId = myId
+		// else if (filter == FEATURE_API_FILTER.DEVELOPED) where.accountDevId = myId
+		// else if (filter == FEATURE_API_FILTER.FINANCED) where.fundings = { accountId: myId }
+
+		// const features = await new Bus(this, this.state.feature_repo).dispatch({
+		// 	type: typeorm.Actions.FIND,
+		// 	payload: <FindManyOptions<FeatureRepo>>{
+		// 		where,
+		// 		relations: {
+		// 			fundings: { account: true }
+		// 		},
+		// 		select: {
+		// 			fundings: {
+		// 				id: true, amount: true, currency: true, status: true,
+		// 				account: { id: true, name: true, avatarUrl: true }
+		// 			}
+		// 		}
+		// 	}
+		// })
+
+		res.json({ features })
 	}
 
 	async getById(req: Request, res: Response) {
@@ -114,3 +155,9 @@ class FeatureRoute extends httpRouter.Service {
 export default FeatureRoute
 
 
+enum FEATURE_API_FILTER {
+	RECENT = "recent",
+	MY = "my",
+	FINANCED = "financed",
+	DEVELOPED = "developed",
+}

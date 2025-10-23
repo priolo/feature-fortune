@@ -37,7 +37,7 @@ const Card: React.FC<CardProps> = ({
 
 	// RENDER
 	return (
-		<Paper id={id} sx={sxPaper}>
+		<Paper id={id} sx={[sxPaper, sx] as SxProps}>
 
 			{!!title &&
 				<Box sx={sxTitleBox}>
@@ -62,7 +62,7 @@ const Card: React.FC<CardProps> = ({
 			}
 
 			<Collapse in={!collapsible || expanded} unmountOnExit={collapsible}>
-				<Box sx={[sxContent, sx] as SxProps}>
+				<Box sx={sxContent}>
 					{children}
 				</Box>
 			</Collapse>

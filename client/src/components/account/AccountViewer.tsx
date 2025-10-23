@@ -4,6 +4,7 @@ import { Box, Chip, Typography } from '@mui/material';
 import React from 'react';
 import AvatarCmp from '../AvatarCmp';
 import MessageBanner from '../MessageBanner';
+import { sxClips, sxContent, sxRoot } from '@/theme/AvatarStyle';
 
 
 
@@ -28,17 +29,17 @@ const AccountViewer: React.FC<Props> = ({
         ) : { color: 'error', icon: <PriorityHigh sx={{ width: 14, height: 14 }} />, label: 'NO STRIPE' }
 
     return (
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+        <Box sx={sxRoot}>
 
             <AvatarCmp account={account} />
 
-            <Box sx={{ flex: 1, display: "flex", flexDirection: "column", overflow: 'hidden', gap: .5 }} >
+            <Box sx={sxContent} >
 
                 <Typography>
                     {account.name}
                 </Typography>
 
-                <Box sx={{ display: 'flex', gap: .5, flexWrap: 'wrap' }}>
+                <Box sx={sxClips}>
                     {account.emailVerified && (
                         <Chip icon={<Done />} color="success"
                             label="Verified"

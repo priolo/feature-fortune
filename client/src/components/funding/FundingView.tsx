@@ -1,9 +1,10 @@
 import { Funding } from '@/types/Funding';
-import { Box, Typography } from '@mui/material';
+import { Box, SxProps, Typography } from '@mui/material';
 import React from 'react';
 import AvatarCmp from '../AvatarCmp';
 import CurrencyLabel from '../CurrencyLabel';
 import StatusChip from './StatusChip';
+import { sxContent, sxRoot } from '@/theme/AvatarStyle';
 
 
 
@@ -16,17 +17,17 @@ const FundingView: React.FC<Props> = ({
 }) => {
 	
 	return (
-		<Box sx={{ flex: 1, display: 'flex', gap: 1.5, alignItems: 'start' }}>
+		<Box sx={sxRoot}>
 
 			<AvatarCmp account={funding.account} />
 
-			<Box sx={{ flex: 1, display: 'flex', flexDirection: "column", gap: .5,  overflow: 'hidden' }}>
+			<Box sx={sxContent}>
 
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 					<Typography sx={{ flex: 1 }}>
 						{funding.account?.name ?? "Unknown Account"}
 					</Typography>
-					<CurrencyLabel amount={funding.amount} currency="USD" />
+					<CurrencyLabel amount={funding.amount} currency={funding.currency} />
 				</Box>
 
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

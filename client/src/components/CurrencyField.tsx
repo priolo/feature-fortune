@@ -1,4 +1,4 @@
-import { Box, MenuItem, TextField } from "@mui/material";
+import { Box, MenuItem, Select, TextField } from "@mui/material";
 import { FunctionComponent } from "react";
 
 
@@ -40,9 +40,9 @@ const CurrencyField: FunctionComponent<Props> = ({
 	const valueStr = value != null ? (value / 100).toFixed(0) : '';
 
 	return (
-		<Box sx={{ display: 'flex', gap: 1 }}>
+		<Box sx={{ flex: 1, display: 'flex', gap: 1 }}>
 
-			<TextField select sx={{ minWidth: 100 }}
+			{/* <TextField select
 				value={currency}
 				onChange={handleCurrencyChange}
 			>
@@ -51,7 +51,17 @@ const CurrencyField: FunctionComponent<Props> = ({
 						{curr}
 					</MenuItem>
 				))}
-			</TextField>
+			</TextField> */}
+			<Select
+				value={currency}
+				onChange={handleCurrencyChange}
+			>
+				{currencies.map((curr) => (
+					<MenuItem key={curr} value={curr}>
+						{curr}
+					</MenuItem>
+				))}
+			</Select>
 
 			<TextField fullWidth type="number"
 				value={valueStr}

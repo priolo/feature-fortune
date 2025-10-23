@@ -1,4 +1,5 @@
 import featureApi from "@/api/feature"
+import { FEATURE_FILTER } from "./types"
 import { Feature } from "@/types/feature/Feature"
 import { createStore, StoreCore } from "@priolo/jon"
 
@@ -16,13 +17,12 @@ const setup = {
 
 	actions: {
 
-		async fetch(_: void, store?: FeatureListStore) {
-			const features = await featureApi.index()
+		async fetch(_:void, store?: FeatureListStore) {
+			const features = (await featureApi.index())?.features
 			store.setAll(features)
 		},
 
 		async create(_: void, store?: FeatureListStore) {
-			
 		}
 
 	},

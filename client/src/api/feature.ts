@@ -2,9 +2,10 @@ import ajax, { CallOptions } from "@/plugins/AjaxService"
 import { Feature } from "@/types/feature/Feature"
 
 
-
 /** INDEX */
-function index(opt?: CallOptions): Promise<Feature[]> {
+function index(/*filter?: FEATURE_API_FILTER,*/ opt?: CallOptions): Promise<{ features: Feature[] }> {
+	//const filterQuery = filter ? `?filter=${filter}` : ''
+	//return ajax.get(`features${filterQuery}`, opt)
 	return ajax.get(`features`, opt)
 }
 

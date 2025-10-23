@@ -1,8 +1,11 @@
+import CurrencyLabel from '@/components/CurrencyLabel';
+import { sxClips, sxContent, sxRoot } from '@/theme/AvatarStyle';
 import { Comment } from '@/types/Comment';
 import { Feature } from '@/types/feature/Feature';
 import { Avatar, Box, Link, SxProps, Typography } from '@mui/material';
 import React from 'react';
-
+import FeatureStatusChip from '../detail/StatusChip';
+import { array } from '@priolo/jon-utils'
 
 
 interface Props {
@@ -18,29 +21,54 @@ const FeatureView: React.FC<Props> = ({
 	// RENDER
 	const repo = feature.githubRepoMetadata
 
+	//const values = array.groupByKey(feature.fundings, (funding) => funding.currency)
+
+	let haveValues = false;
+	const valuesDic = feature.fundings.reduce((acc, funding) => {
+		const key = funding.currency;
+		const amount = funding.amount ?? 0;
+		if (amount > 0) haveValues = true;
+		let subtotal = acc[key] ?? 0;
+		subtotal = subtotal == null ? amount : subtotal + amount;
+		acc[key] = subtotal;
+		return acc;
+	}, {} as Record<string, number>)
+	const values = Object.entries(valuesDic)
+
+	
+
 	return (
-		<Box sx={[{ display: 'flex', gap: 1.5, alignItems: 'start' }, sx] as SxProps}>
+		<Box sx={[sxRoot, sx] as SxProps}>
 
 			<Avatar
 				src={repo?.avatar_url}
 				alt={repo?.full_name}
 			/>
 
-			<Box sx={{ flex: 1, display: 'flex', flexDirection: "column", gap: .5, overflow: 'hidden' }}>
+			<Box sx={sxContent}>
 
 				<Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }} >
 					<Link href={repo?.html_url} sx={{ flex: 1 }}>
 						{repo?.full_name}
 					</Link>
-					<Typography>
-						100 $
-					</Typography>
+					<Box sx={{display: "flex", alignItems: "baseline", gap: 1 }}>
+						{ !haveValues && '--' }
+						{values.map(([currency, amount], index) => <>
+							<CurrencyLabel key={currency} amount={amount} currency={currency} />
+							{index < values.length - 1 && <span>+</span>}
+						</>)}
+					</Box>
 				</Box>
 
-				<Typography variant="body2" color="text.secondary">
-					{feature.title ?? feature.description.slice(0, 200)}
-				</Typography>
-				
+				<Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }} >
+					<Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
+						{feature.title ?? feature.description.slice(0, 200)}
+					</Typography>
+					<Box sx={sxClips}>
+						<FeatureStatusChip status={feature.status} />
+					</Box>
+				</Box>
+
 			</Box>
 		</Box>
 	)

@@ -3,6 +3,7 @@ import { Box, Paper, SxProps, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
 import AvatarCmp from '../AvatarCmp';
+import { sxContent } from '@/theme/AvatarStyle';
 
 
 
@@ -26,7 +27,7 @@ const CommentRow: React.FC<Props> = ({
 		>
 			<AvatarCmp account={comment.account} />
 
-			<Box sx={{ flex: 1, display: "flex", flexDirection: "column", overflow: 'hidden', gap: .5 }} >
+			<Box sx={sxContent}>
 
 				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
 					<Typography sx={{ flex: 1 }}>

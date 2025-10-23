@@ -10,7 +10,7 @@ interface Props {
     onClick?: React.MouseEventHandler<HTMLDivElement>
 }
 
-const StatusChip: React.FC<Props> = ({
+const FeatureStatusChip: React.FC<Props> = ({
     status,
     onClick,
 }) => {
@@ -30,7 +30,7 @@ const StatusChip: React.FC<Props> = ({
     );
 };
 
-export default StatusChip; 
+export default FeatureStatusChip; 
 
 
 

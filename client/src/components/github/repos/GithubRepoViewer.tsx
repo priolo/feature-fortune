@@ -1,4 +1,5 @@
 import MessageBanner from '@/components/MessageBanner';
+import { sxClips, sxContent, sxRoot } from '@/theme/AvatarStyle';
 import { GitHubRepository } from '@/types/github/GitHub';
 import { Star } from '@mui/icons-material';
 import { Avatar, Box, Chip, Link, SxProps, Typography } from '@mui/material';
@@ -23,14 +24,14 @@ const GithubRepoViewer: React.FC<Props> = ({
     const haveTopics = repository.topics && repository.topics.length > 0;
 
     return (
-        <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'start' }}>
+        <Box sx={sxRoot}>
 
             <Avatar
                 src={repository.owner.avatar_url}
                 alt={repository.owner.login}
             />
 
-            <Box sx={{ display: 'flex', flexDirection: "column", gap: .5,  overflow: 'hidden' }}>
+            <Box sx={sxContent}>
 
                 <Link href={repository.html_url}>
                     {repository.full_name}
@@ -40,7 +41,7 @@ const GithubRepoViewer: React.FC<Props> = ({
                     {repository.description?.slice(0, 200) ?? 'No description available'}
                 </Typography>
 
-                <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                <Box sx={sxClips}>
 
                     <Chip size="small" icon={<Star />}
                         label={repository.stargazers_count}

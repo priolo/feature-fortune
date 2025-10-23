@@ -12,24 +12,21 @@ interface Props {
 
 const CurrencyLabel: FunctionComponent<Props> = ({
 	amount,
-	currency = "USD",
+	currency,
 }) => {
 
 	// RENDER
-
-	if (amount == null) {
-		return null;
-	}
+	const displayAmount = amount !=null ?  Math.round(amount/100).toLocaleString() : "--";
 
 	return (
 		<Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
 
 			<Typography>
-				{amount.toLocaleString()}
+				{displayAmount}
 			</Typography>
 			
 			<Typography variant="overline" color="textSecondary" sx={{ fontFamily: 'monospace' }}>
-				{currency}
+				{currency ?? "---"}
 			</Typography>
 
 		</Box>

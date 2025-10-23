@@ -1,8 +1,9 @@
-import { Funding } from "@/types/Funding";
+import { Funding, FUNDING_STATUS } from "@/types/Funding";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box } from "@mui/material";
 import { FunctionComponent, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import CurrencyField from "../CurrencyField";
+import Paragraph from "@/layout/Paragraph";
 
 
 
@@ -31,7 +32,7 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 		const defaultFunding = fundingToEdit ?? {
 			currency: 'USD',
 			amount: 500,
-			status: 'created',
+			status: FUNDING_STATUS.PENDING,
 			message: '',
 			expiresAt: dayjs().add(10, 'day').toDate(),
 			featureId: null,
@@ -46,7 +47,7 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 		setFunding(last => ({ ...last, ...newProp }))
 	}
 
-	const handleClose = (reason?: 'backdropClick' | 'escapeKeyDown') => {
+	const handleClose = () => {
 		onClose?.(null);
 	}
 
@@ -67,21 +68,25 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 			<DialogContent>
 				<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
 
-					{/* Amount Section */}
-					<CurrencyField 
-						currency={funding.currency}
-						value={funding.amount}
-						onChange={(amount) => handlePropChange({ amount })}
-					/>
+					<Paragraph title="AMOUNT">
+						<CurrencyField
+							currency={funding.currency}
+							value={funding.amount}
+							onChange={(value, currency) => handlePropChange({ amount: value, currency })}
+						/>
+					</Paragraph>
 
-					<TextField label="Expiration Date" type="date" fullWidth
-						value={funding.expiresAt ? dayjs(funding.expiresAt).format('YYYY-MM-DD') : ""}
-						onChange={(e) => handlePropChange({ expiresAt: dayjs(e.target.value).toDate() })}
-					/>
+					<Paragraph title="EXPIRATION">
+						<TextField type="date" fullWidth
+							value={funding.expiresAt ? dayjs(funding.expiresAt).format('YYYY-MM-DD') : ""}
+							onChange={(e) => handlePropChange({ expiresAt: dayjs(e.target.value).toDate() })}
+						/>
+					</Paragraph>
 
-					<TextField label="Message" multiline fullWidth rows={4}
+					<TextField multiline fullWidth rows={4}
 						value={funding.message ?? ""}
 						onChange={(e) => handlePropChange({ message: e.target.value })}
+						placeholder="Message..."
 					/>
 
 				</Box>
@@ -90,7 +95,7 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 			<DialogActions>
 
 				<Button
-					onClick={() => handleClose()}
+					onClick={handleClose}
 				>CANCEL</Button>
 
 				<Button variant="contained" color="primary"

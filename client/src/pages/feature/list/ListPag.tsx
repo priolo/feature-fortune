@@ -5,9 +5,12 @@ import featureListSo from '@/stores/feature/list';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
 import { List, ListItemButton } from '@mui/material';
 import { useStore } from '@priolo/jon';
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import FeatureView from './FeatureView';
+import { FEATURE_FILTER, FEATURE_SORT } from "@/stores/feature/types";
+import { filterByAccount, filterByText, sort } from '@/stores/feature/utils';
+import authSo from '@/stores/auth/repo';
 
 
 
@@ -18,12 +21,22 @@ const FeatureListPag: React.FC = () => {
 
 	// HOOKS
 	const navigate = useNavigate()
+	const [searchParams, setSearchParams] = useSearchParams();
 
 	// HOOCKS
 	useEffect(() => {
 		locationSo.setCurrent(LOCATION_PAGE.FeaturesList)
 		featureListSo.fetch()
 	}, [])
+
+	const features = useMemo(() => {
+		const params = Object.fromEntries(searchParams.entries())
+		let features = featureListSo.state.all ?? []
+		features = filterByAccount(features, params.filter as FEATURE_FILTER, authSo.state.user?.id)
+		features = filterByText(features, params.search as string)
+		features = sort(features, params.sort as FEATURE_SORT)
+		return features
+	}, [searchParams, featureListSo.state.all]);
 
 	// HANDLERS
 	const handleFeatureClick = (id: string) => {
@@ -32,20 +45,18 @@ const FeatureListPag: React.FC = () => {
 
 
 	// RENDER
-
-	const features = featureListSo.state.all ?? [];
-
 	return <Framework>
 
-		<Card id="feature-list-card">
+		<Card id="feature-list-card" sx={{ mt: 3 }}>
 			<List>
 				{features.map((feature, index) => (
 
-					<ListItemButton divider={index<features.length-1}  key={feature.id}
+					<ListItemButton
+						divider={index < features.length - 1} key={feature.id}
 						onClick={() => handleFeatureClick(feature.id)}
 					>
-						<FeatureView sx={{flex: 1, my: 1}} 
-							feature={feature} 
+						<FeatureView
+							feature={feature}
 						/>
 					</ListItemButton>
 
@@ -62,4 +73,4 @@ const FeatureListPag: React.FC = () => {
 	</Framework>
 }
 
-export default FeatureListPag;
+export default FeatureListPag

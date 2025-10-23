@@ -15,10 +15,10 @@ const AvatarCmp: React.FC<Props> = ({
 
     return (
         <Avatar
-            src={account.avatarUrl}
-            alt={account.name}
+            src={account?.avatarUrl}
+            alt={account?.name}
         >
-            {!account.avatarUrl && (
+            {!account?.avatarUrl && (
                 !!account
                     ? account.name?.charAt(0).toUpperCase()
                     : <InfoOutlined color="action" />

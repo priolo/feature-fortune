@@ -1,6 +1,7 @@
 import MessageBanner from '@/components/MessageBanner';
+import { sxClips, sxContent, sxRoot } from '@/theme/AvatarStyle';
 import { GitHubUser } from '@/types/github/GitHub';
-import { Avatar, Box, Card, CardContent, Chip, Link, SxProps, Typography } from '@mui/material';
+import { Avatar, Box, Chip, Link, SxProps, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
 
@@ -21,14 +22,14 @@ const GithubUserViewer: React.FC<Props> = ({
     </MessageBanner>
 
     return (
-        <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'start' }}>
+        <Box sx={sxRoot}>
 
             <Avatar
                 src={user.avatar_url}
                 alt={user.login}
             />
 
-            <Box sx={{ display: 'flex', flexDirection: "column", gap: .5,  overflow: 'hidden' }}>
+            <Box sx={sxContent}>
 
                 <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }} >
                     <Link href={user.html_url}>
@@ -39,7 +40,7 @@ const GithubUserViewer: React.FC<Props> = ({
                     </Typography>
                 </Box>
 
-                <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                <Box sx={sxClips}>
                     <Chip size="small"
                         label={dayjs(user.created_at).format('MMM YYYY')}
                     />

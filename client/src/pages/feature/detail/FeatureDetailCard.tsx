@@ -6,7 +6,7 @@ import { FeatureStatusItems } from './StatusChip';
 import { FeaturedPlayList } from '@mui/icons-material';
 import { Chip, TextField } from '@mui/material';
 import React from 'react';
-import StatusChip from './StatusChip';
+import FeatureStatusChip from './StatusChip';
 
 interface Props {
 	feature: Feature
@@ -64,7 +64,7 @@ const FeatureDetailCard: React.FC<Props> = ({
 			</Paragraph>
 
 			<Paragraph title="STATUS">
-				<StatusChip
+				<FeatureStatusChip
 					status={feature?.status}
 					onClick={handleStatusClick}
 				/>
