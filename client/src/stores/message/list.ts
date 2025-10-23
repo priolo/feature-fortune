@@ -7,7 +7,6 @@ import { createStore, StoreCore } from "@priolo/jon"
 const setup = {
 
 	state: {
-		filter: <any>null,
 		all: <Message[]>null,
 		selected: <Message>null,
 	},
@@ -17,10 +16,9 @@ const setup = {
 
 	actions: {
 
-		async fetch(filter?: any, store?: MessageListStore) {
-			store.state.filter = filter ?? store.state.filter
-			const res = await messageApi.index(store.state.filter)
-			store.setAll(res?.messages)
+		async fetch(_:void, store?: MessageListStore) {
+			const messages = (await messageApi.index())?.messages
+			store.setAll(messages)
 		},
 
 		async saveSelected(_: void, store?: MessageListStore) {

@@ -3,9 +3,8 @@ import { Message } from "@/types/Message"
 
 
 
-function index(filter: any, opt?: CallOptions): Promise<{ messages: Message[] }> {
-	const query = new URLSearchParams(filter).toString()
-	return ajax.get(`messages?${query}`, opt)
+function index(_:void, opt?: CallOptions): Promise<{ messages: Message[] }> {
+	return ajax.get(`messages`, opt)
 }
 
 function save(message: Message, opt?: CallOptions): Promise<{ message: Message }> {

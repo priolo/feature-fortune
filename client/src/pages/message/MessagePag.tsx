@@ -8,6 +8,7 @@ import { Account } from '@/types/Account';
 import authSo from '@/stores/auth/repo';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
 import Framework from '@/layout/Framework';
+import MessageView from '@/components/message/MessageView';
 
 
 
@@ -60,10 +61,16 @@ const MessagePag: React.FC = () => {
 
 	// RENDER
 	const messages = messageListSo.state.all
+	const selected = messageListSo.state.selected
 	const currentUserId = authSa.user?.id
 
 	return <Framework sx={{ py: 2 }}>
 
+		{/* Compose Message */}
+
+		<MessageView
+			message={selected}
+		>
 
 		{/* Messages List */}
 		<Card sx={{ flex: 1, mb: 2, overflow: 'auto' }}>
@@ -132,47 +139,7 @@ const MessagePag: React.FC = () => {
 			</CardContent>
 		</Card>
 
-		{/* Compose Message */}
-		<Card>
-			<CardContent>
-				<Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-					Send New Message
-				</Typography>
 
-				<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-					<Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-						<Typography variant="body2">To:</Typography>
-						<Button
-							variant="outlined"
-							onClick={handleSelectReceiver}
-							sx={{ flex: 1, justifyContent: 'flex-start' }}
-						>
-							{selectedReceiver ? selectedReceiver.name : 'Select Recipient'}
-						</Button>
-					</Box>
-
-					<TextField
-						fullWidth
-						multiline
-						rows={3}
-						placeholder="Type your message..."
-						value={newMessageText}
-						onChange={(e) => setNewMessageText(e.target.value)}
-						disabled={!selectedReceiver}
-					/>
-
-					<Button
-						variant="contained"
-						color="primary"
-						onClick={handleSendMessage}
-						disabled={!newMessageText.trim() || !selectedReceiver}
-						sx={{ alignSelf: 'flex-end' }}
-					>
-						Send Message
-					</Button>
-				</Box>
-			</CardContent>
-		</Card>
 
 		<AccountFinderDialog
 			isOpen={accountDialogOpen}
