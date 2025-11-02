@@ -1,6 +1,6 @@
 import FeatureListHeader from '@/pages/feature/list/ListHeader';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
-import { Box, SxProps, IconButton, Tooltip } from '@mui/material';
+import { Box, SxProps, IconButton, Tooltip, Button } from '@mui/material';
 import { Mail as MailIcon } from '@mui/icons-material';
 import { useStore } from '@priolo/jon';
 import React, { useMemo } from 'react';
@@ -39,12 +39,18 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 	const handleMessagesClick = () => {
 		navigate('/app/messages');
 	};
+	const handleLogoClick = () => {
+		navigate('/app/');
+	}
 
 	// RENDER
 	return (
 		<Box sx={sxRoot}>
 
 			<Box sx={{ flex: 1 }}>
+				<Button
+					onClick={handleLogoClick}
+				>LOGO</Button>
 			</Box>
 
 			<Box sx={{ flex: 1, display: "flex", minWidth: "800px", alignItems: "center", gap: 2 }}>

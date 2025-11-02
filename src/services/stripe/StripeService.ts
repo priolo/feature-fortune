@@ -106,17 +106,22 @@ class StripeService extends ServiceBase {
 	 * Execute a memorized payment
 	 */
 	async executePayment(data: PaymentIntentData): Promise<Stripe.PaymentIntent> {
-		return await stripe.paymentIntents.create({
-			amount: data.amount,
-			currency: data.currency,
-			customer: data.customer,
-			payment_method: data.paymentMethod,
-			off_session: true,
-			confirm: true,
-			transfer_data: {
-				destination: data.destination,
+		return await stripe.paymentIntents.create(
+			{
+				amount: data.amount,
+				currency: data.currency,
+				customer: data.customer,
+				payment_method: data.paymentMethod,
+				off_session: true,
+				confirm: true,
+				// transfer_data: {
+				// 	destination: data.destination,
+				// },
 			},
-		});
+			{
+				stripeAccount: data.destination,
+			}
+		);
 	}
 
 
@@ -127,10 +132,11 @@ class StripeService extends ServiceBase {
 		const { email, accountId } = data
 		try {
 			const account = await stripe.accounts.create({
-				type: "standard",
+				//type: "standard",
+				type: "express",
 
 				email: email,
-				
+
 				//country: "IT",
 				//business_type: "individual",
 

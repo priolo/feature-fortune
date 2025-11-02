@@ -44,7 +44,7 @@ const GithubUserSelectorCard: React.FC<Props> = ({
     const handleSelectUserClick = () => {
         setDialogOpen(true)
     }
-    const handleUserDialogClose = (user: GitHubUser) => {
+    const handleDialogClose = (user: GitHubUser) => {
         setDialogOpen(false)
         if (!user) return
         onChange?.(user)
@@ -96,7 +96,7 @@ const GithubUserSelectorCard: React.FC<Props> = ({
 
         <GithubUsersFinderDialog
             isOpen={dialogOpen}
-            onClose={handleUserDialogClose}
+            onClose={handleDialogClose}
         />
 
     </>

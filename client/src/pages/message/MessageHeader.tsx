@@ -2,6 +2,7 @@ import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
 import BackButton from '../../layout/BackButton';
 import { Add } from '@mui/icons-material';
+import messageListSo from '@/stores/message/list';
 
 
 
@@ -13,6 +14,7 @@ const MessageHeader: React.FC = () => {
 
 	// HANDLERS
 	const handleNewMessageClick = () => {
+		messageListSo.createAndSelect()
 	}
 
 	// RENDER

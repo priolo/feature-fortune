@@ -1,5 +1,6 @@
 import { AccountRepo } from "../repository/Account.js";
-import { MessageRepo } from "../repository/Message.js";
+import { MessageContentRepo } from "../repository/MessageContent.js";
+import { MESSAGE_ROLE, MessageRepo } from "../repository/Message.js";
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 
@@ -12,6 +13,7 @@ class MessageRoute extends httpRouter.Service {
 			...super.stateDefault,
 			path: "/messages",
 			message_repo: "/typeorm/messages",
+			message_content_repo: "/typeorm/messages-content",
 			routers: [
 				{ path: "/", verb: "get", method: "index" },
 				{ path: "/", verb: "post", method: "save" },
@@ -28,16 +30,40 @@ class MessageRoute extends httpRouter.Service {
 	async index(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 
-		// Get all messages where the user is either sender or receiver
+		const { role: roleStr } = req.query as { role?: string }
+		const role: MESSAGE_ROLE = roleStr === "sender" ? MESSAGE_ROLE.SENDER : MESSAGE_ROLE.RECEIVER
+
 		const messages: MessageRepo[] = await new Bus(this, this.state.message_repo).dispatch({
 			type: typeorm.Actions.FIND,
 			payload: {
-				where: [
-					{ senderId: userJwt.id },
-					{ receiverId: userJwt.id }
-				],
-				order: { createdAt: 'DESC' },  // Order by creation date, newest first
-				relations: ['sender', 'receiver']  // Include sender and receiver account details
+				where: {
+					role: role,
+					accountId: userJwt.id,
+				},
+				relations: {
+					content: {
+						account: true,
+					},
+				},
+				select: {
+					id: true,
+					contentId: true,
+					accountId: true,
+					role: true,
+					isRead: true,
+					createdAt: true,
+					updatedAt: true,
+					content: {
+						id: true,
+						text: true,
+						accountId: true,
+						createdAt: true,
+						account: {
+							name: true,
+							avatarUrl: true,
+						},
+					},
+				},
 			}
 		});
 
@@ -50,27 +76,43 @@ class MessageRoute extends httpRouter.Service {
 	 */
 	async save(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
-		let { message }: { message: MessageRepo } = req.body
-		if (!message) return res.status(400).json({ error: "Message data is required" })
+		let { content, receiverId }: { content: MessageContentRepo, receiverId: string } = req.body
+		if (!content) return res.status(400).json({ error: "'content' data is required" })
+		if (!content.text || !content.text.trim()) return res.status(400).json({ error: "Message text is required" })
+		if (!receiverId) return res.status(400).json({ error: "'receiverId' data is required" })
 
-		// Validate required fields
-		if (!message.receiverId) return res.status(400).json({ error: "Receiver ID is required" })
-		if (!message.text || !message.text.trim()) return res.status(400).json({ error: "Message text is required" })
-
-		// Set the sender as the logged-in user
-		message.senderId = userJwt.id
-		message.isRead = false
-
-		// For new messages only (no editing)
-		delete message.id
-
-		// Save the message
-		const messageNew: MessageRepo = await new Bus(this, this.state.message_repo).dispatch({
+		// Save content
+		content.accountId = userJwt.id
+		const contentNew: MessageContentRepo = await new Bus(this, this.state.message_content_repo).dispatch({
 			type: typeorm.Actions.SAVE,
-			payload: message
+			payload: content
 		})
 
-		res.json({ message: messageNew })
+		// crerate message for the receiver
+		const msgReceiver: MessageRepo = await new Bus(this, this.state.message_repo).dispatch({
+			type: typeorm.Actions.SAVE,
+			payload: {
+				contentId: contentNew.id,
+				accountId: receiverId,
+				role: MESSAGE_ROLE.RECEIVER,
+				isRead: false,
+				isArchived: false,
+			} as MessageRepo
+		})
+
+		// create message for the sender
+		const msgSender: MessageRepo = await new Bus(this, this.state.message_repo).dispatch({
+			type: typeorm.Actions.SAVE,
+			payload: {
+				contentId: contentNew.id,
+				accountId: userJwt.id,
+				role: MESSAGE_ROLE.SENDER,
+				isRead: true,
+				isArchived: false,
+			} as MessageRepo
+		})
+
+		res.json({ content, msgReceiver, msgSender });
 	}
 
 
@@ -92,18 +134,20 @@ class MessageRoute extends httpRouter.Service {
 		if (!message) return res.status(404).json({ error: "Message not found" })
 
 		// Only the receiver can mark the message as read
-		if (message.receiverId !== userJwt.id) {
+		if (message.accountId !== userJwt.id) {
 			return res.status(403).json({ error: "You are not allowed to mark this message as read" })
 		}
 
 		// Update the message
-		message.isRead = true
-		const messageUpdated: MessageRepo = await new Bus(this, this.state.message_repo).dispatch({
+		const messageUpdated: MessageContentRepo = await new Bus(this, this.state.message_repo).dispatch({
 			type: typeorm.Actions.SAVE,
-			payload: message
+			payload: {
+				id: message.id,
+				isRead: true,
+			}
 		})
 
-		res.json({ message: messageUpdated })
+		res.status(200)
 	}
 
 
@@ -113,27 +157,42 @@ class MessageRoute extends httpRouter.Service {
 	async delete(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		const { id } = req.params
-
 		if (!id) return res.status(400).json({ error: "Message ID is required" })
 
-		// Get the message
+
+		// CHECK Get the message
 		const message: MessageRepo = await new Bus(this, this.state.message_repo).dispatch({
 			type: typeorm.Actions.GET_BY_ID,
 			payload: id
 		})
-
 		if (!message) return res.status(404).json({ error: "Message not found" })
-
-		// Only the sender or receiver can delete the message
-		if (message.senderId !== userJwt.id && message.receiverId !== userJwt.id) {
+		if (message.accountId !== userJwt.id) {
 			return res.status(403).json({ error: "You are not allowed to delete this message" })
 		}
+
 
 		// Delete the message
 		await new Bus(this, this.state.message_repo).dispatch({
 			type: typeorm.Actions.DELETE,
 			payload: id
 		})
+		// Check if there are other messages with the same contentId
+		const otherMessages: MessageRepo[] = await new Bus(this, this.state.message_repo).dispatch({
+			type: typeorm.Actions.FIND,
+			payload: {
+				where: {
+					contentId: message.contentId,
+				},
+			}
+		})
+		// If no other messages, delete the content as well
+		if (otherMessages.length === 0) {
+			await new Bus(this, this.state.message_content_repo).dispatch({
+				type: typeorm.Actions.DELETE,
+				payload: message.contentId,
+			})
+		}	
+
 
 		res.json({ success: true })
 	}

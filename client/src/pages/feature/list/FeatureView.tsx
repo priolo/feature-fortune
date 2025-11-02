@@ -53,10 +53,10 @@ const FeatureView: React.FC<Props> = ({
 					</Link>
 					<Box sx={{display: "flex", alignItems: "baseline", gap: 1 }}>
 						{ !haveValues && '--' }
-						{values.map(([currency, amount], index) => <>
-							<CurrencyLabel key={currency} amount={amount} currency={currency} />
+						{values.map(([currency, amount], index) => <React.Fragment key={currency}>
+							<CurrencyLabel amount={amount} currency={currency} />
 							{index < values.length - 1 && <span>+</span>}
-						</>)}
+						</React.Fragment>)}
 					</Box>
 				</Box>
 

@@ -13,7 +13,7 @@ export abstract class AccountAsset {
 	account?: AccountRepo
 
 	/** l'ID dell'ACCOUNT proprietario */
-	@Column({ type: 'varchar', default: null })
+	@Column({ type: 'uuid', default: null })
 	accountId?: string
 
 }

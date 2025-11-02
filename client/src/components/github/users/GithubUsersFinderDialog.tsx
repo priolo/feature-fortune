@@ -84,7 +84,7 @@ const GithubUsersFinderDialog: FunctionComponent<Partial<Props>> = ({
 
 			<Box sx={{ px: 3, pb: 2 }}>
 				<TextField
-					value={filterText || ''}
+					value={filterText ?? ''}
 					onChange={handleFilterChange}
 					placeholder="Type to filter items..."
 				/>

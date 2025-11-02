@@ -6,6 +6,7 @@ import { CommentRepo } from "./repository/Comment.js";
 import { getDBConnectionConfig } from './repository/dbConfig.js';
 import { FeatureRepo } from "./repository/Feature.js";
 import { FundingRepo } from "./repository/Funding.js";
+import { MessageContentRepo } from "./repository/MessageContent.js";
 import { MessageRepo } from "./repository/Message.js";
 import GoogleRoute from "./routers/GoogleRoute.js";
 import AuthEmailRoute from "./routers/AuthEmailRoute.js";
@@ -146,6 +147,11 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 					name: "comments",
 					class: "typeorm/repo",
 					model: CommentRepo,
+				},
+				{
+					name: "messages-content",
+					class: "typeorm/repo",
+					model: MessageContentRepo,
 				},
 				{
 					name: "messages",

@@ -6,6 +6,7 @@ import { Face, Keyboard } from '@mui/icons-material';
 import { Box, Button, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Card, { sxActionCard } from '../Card';
+import AccountIdView from './AccountIdView';
 
 
 
@@ -24,26 +25,10 @@ const AccountSelectorCard: React.FC<Props> = ({
 
 
     // HOOKS
-    
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [account, setAccount] = useState<Account>(null);
-
-    useEffect(() => {
-        if (!accountId) {
-            setAccount(null)
-            return
-        }
-        if (account?.id === accountId) return
-        const load = async () => {
-            const account = await accountApi.get(accountId)
-            setAccount(account)
-        }
-        load();
-    }, [accountId])
-
+    
 
     // HANDLERS
-
     const handleSelectClick = () => {
         setDialogOpen(true)
     }
@@ -59,8 +44,8 @@ const AccountSelectorCard: React.FC<Props> = ({
 
     // RENDER
 
-    const isSelected = !!account
-    const message = !account
+    const isSelected = !!accountId
+    const message = !accountId
         ? "Select the account that will be used to open issues and pull requests on GitHub."
         : null
 
@@ -75,7 +60,7 @@ const AccountSelectorCard: React.FC<Props> = ({
                 {message}
             </Typography>
 
-            <AccountViewer account={account} />
+            <AccountIdView accountId={accountId} />
 
             <Box sx={sxActionCard}>
                 {isSelected && (

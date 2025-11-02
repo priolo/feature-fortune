@@ -1,6 +1,7 @@
 import messageApi from "@/api/message"
-import { Message } from "@/types/Message"
+import { Message, MESSAGE_ROLE, MessageContent } from "@/types/Message"
 import { createStore, StoreCore } from "@priolo/jon"
+import authSo from "../auth/repo"
 
 
 
@@ -9,6 +10,7 @@ const setup = {
 	state: {
 		all: <Message[]>null,
 		selected: <Message>null,
+		receiverId: <string>null,
 	},
 
 	getters: {
@@ -16,22 +18,47 @@ const setup = {
 
 	actions: {
 
-		async fetch(_:void, store?: MessageListStore) {
-			const messages = (await messageApi.index())?.messages
+		async fetch(_: void, store?: MessageListStore) {
+			const messages = (await messageApi.index(MESSAGE_ROLE.RECEIVER))?.messages
 			store.setAll(messages)
 		},
 
-		async saveSelected(_: void, store?: MessageListStore) {
-			const { message } = await messageApi.save(store.state.selected)
+		async createAndSelect(_: void, store?: MessageListStore) {
+			const content: MessageContent = {
+				text: "",
+			}
+			const message: Message = {
+				content: content,
+				accountId: null,
+				role: MESSAGE_ROLE.SENDER,
+				isRead: true,
+				isArchived: false,
+			}
 			store.setSelected(message)
-			await store.fetch()
-		}
+			store.setReceiverId(null)
+		},
+
+		async sendSelected(_: void, store?: MessageListStore) {
+			const { content, msgReceiver, msgSender } = await messageApi.save(
+				store.state.selected,
+			)
+			store.setSelected(null)
+			//msgSender.content = content
+			//store.setAll([...store.state.all, message])
+		},
+
+		async remove(messageId: string, store?: MessageListStore) {
+			const { content, msgReceiver, msgSender } = await messageApi.remove(messageId)
+			store.setSelected(null)
+			store.setAll(store.state.all.filter(m => m.id !== messageId))
+		},
 
 	},
 
 	mutators: {
 		setAll: (all: Message[]) => ({ all }),
-		setSelected: (selected: Message) => ({ selected })
+		setSelected: (selected: Message) => ({ selected }),
+		setReceiverId: (receiverId: string) => ({ receiverId })
 	},
 }
 

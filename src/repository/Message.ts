@@ -1,33 +1,42 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { AccountRepo } from './Account.js';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { AccountAsset } from './AccountAsset.js';
+import { MessageContentRepo } from './MessageContent.js';
 
 
+
+export enum MESSAGE_ROLE {
+	SENDER = 1,
+	RECEIVER = 2,
+}
 
 @Entity('messages')
 export class MessageRepo extends AccountAsset {
 
-	@PrimaryGeneratedColumn("uuid")
+	@PrimaryGeneratedColumn('uuid')
 	id?: string;
 
-	@Column({ type: 'text' })
-	text: string;
+	/** MESSAGE a cui fa riferimento lo stato */
+	@Column({ type: 'uuid' })
+	contentId: string;
+	@ManyToOne(() => MessageContentRepo, message => message.statuses, { nullable: false, onDelete: 'CASCADE' })
+	@JoinColumn({ name: 'contentId' })
+	content?: MessageContentRepo;
+
+
+	/** Ruolo dell'ACCOUNT rispetto al MESSAGE **/
+	@Column({ type: 'int' })
+	role: MESSAGE_ROLE;
+
 
 	@Column({ type: 'boolean', default: false })
 	isRead: boolean;
 
-	@Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+	// @Column({ type: 'boolean', default: false })
+	// isArchived: boolean;
+
+	@CreateDateColumn({ type: 'datetime' })
 	createdAt?: Date;
 
-	
-	//#region RELATIONSHIPS
-	
-	/** The receiver Account */
-	@ManyToOne(() => AccountRepo, { nullable: false })
-	@JoinColumn({ name: 'receiverId' })
-	receiver?: AccountRepo
-	@Column({ type: 'varchar' })
-	receiverId: string
-
-	//#endregion
+	@UpdateDateColumn({ type: 'datetime' })
+	updatedAt?: Date;
 }

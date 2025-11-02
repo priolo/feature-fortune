@@ -103,12 +103,14 @@ class PaymentCrono extends ServiceBase {
 				}
 			}
 		})
+
+
+		// check
 		if (!funding) throw new Error("Funding not found");
-		if (funding.status !== FUNDING_STATUS.PENDING) throw new Error("Funding not pending");
+		// *** DA RIPRISTINARE!!! ***
+		//if (funding.status !== FUNDING_STATUS.PENDING) throw new Error("Funding not pending");
 
-
-
-		// load the owner of GITHUB. how get the money
+		// recupero l'id ACCOUNT di chi deve ricevere i soldi (sarebbe il DEV dell FEATURE)
 		const dev: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
 			type: typeorm.Actions.GET_BY_ID,
 			payload: funding.feature.accountDevId

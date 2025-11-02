@@ -52,15 +52,15 @@ const StripeCreditCard: React.FC<Props> = ({
 		}
 
 		// Check if the card is complete and valid
-		const { error: validationError, paymentMethod: testPaymentMethod } = await stripe.createPaymentMethod({
-			type: 'card',
-			card: cardElement,
-		});
+		// const { error: validationError, paymentMethod: testPaymentMethod } = await stripe.createPaymentMethod({
+		// 	type: 'card',
+		// 	card: cardElement,
+		// });
 
-		if (validationError) {
-			alert("Carta non valida: " + validationError.message);
-			return;
-		}
+		// if (validationError) {
+		// 	alert("Carta non valida: " + validationError.message);
+		// 	return;
+		// }
 
 		// Creo il PaymentMethod 
 		const resIntent = await paymentApi.create()

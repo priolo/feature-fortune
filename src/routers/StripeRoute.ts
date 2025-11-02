@@ -27,6 +27,9 @@ class StripeRoute extends httpRouter.Service {
 	}
 	declare state: typeof this.stateDefault
 
+	/**
+	 * ONLY FOR DEBUG
+	 */
 	async pay(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		let { fundingId }: { fundingId: string } = req.body

@@ -1,8 +1,8 @@
-import { Account } from "@/types/Account";
-import { Dialog, DialogTitle, List, ListItem, ListItemButton, ListItemText, TextField, Box, DialogActions, Button, Avatar } from "@mui/material";
-import React, { FunctionComponent, useEffect } from "react";
 import accountApi from "@/api/account";
-import AvatarCmp from "../AvatarCmp";
+import { Account } from "@/types/Account";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, List, ListItem, ListItemButton, ListItemText, TextField } from "@mui/material";
+import React, { FunctionComponent, useEffect } from "react";
+import AccountViewer from "./AccountViewer";
 
 
 
@@ -31,24 +31,20 @@ const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 	const [filterText, setFilterText] = React.useState('')
 	const [items, setItems] = React.useState<Account[]>([])
 	const [loading, setLoading] = React.useState(false)
-	const [error, setError] = React.useState<string | null>(null)
 
 	useEffect(() => {
+		if (!isOpen) return
+
 		const searchAccounts = async () => {
-			if (filterText.length >= 3) {
-				setLoading(true)
-				setError(null)
-				try {
-					const result = await accountApi.index({ text: filterText })
-					setItems(result)
-				} catch (err) {
-					setError('Failed to search accounts')
-					setItems([])
-				} finally {
-					setLoading(false)
-				}
-			} else {
+			if (filterText.length < 3) return
+			setLoading(true)
+			try {
+				const result = await accountApi.index({ text: filterText })
+				setItems(result)
+			} catch (err) {
 				setItems([])
+			} finally {
+				setLoading(false)
 			}
 		}
 
@@ -84,55 +80,38 @@ const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 
 			<DialogTitle>Select Account</DialogTitle>
 
+			{loading && <LinearProgress />}
+
 			<Box sx={{ px: 3, pb: 2 }}>
 				<TextField
-					fullWidth
-					label="Search"
-					variant="outlined"
-					size="small"
-					value={filterText || ''}
+					value={filterText ?? ''}
 					onChange={handleFilterChange}
 					placeholder="Type to filter accounts..."
 				/>
 			</Box>
 
-			<List sx={{ maxHeight: 400, overflow: 'auto' }}>
-				{loading && (
-					<ListItem>
-						<ListItemText primary="Searching..." />
-					</ListItem>
-				)}
-				{error && (
-					<ListItem>
-						<ListItemText primary={error} />
-					</ListItem>
-				)}
-				{!loading && !error && items.length === 0 && filterText.length >= 3 && (
-					<ListItem>
-						<ListItemText primary="No accounts found" />
-					</ListItem>
-				)}
-				{!loading && !error && items.map((account) => (
-					<ListItem key={account.id} disablePadding>
-						<ListItemButton onClick={() => handleItemClick(account)}>
-							<AvatarCmp account={account} />
-							<ListItemText
-								primary={account.name}
-								secondary={
-									<>
-										<div>{account.email}</div>
-										{account.emailVerified && <span>✓ Verified</span>}
-									</>
-								}
-							/>
-						</ListItemButton>
-					</ListItem>
-				))}
-			</List>
+			<DialogContent>
+
+				<List sx={{ maxHeight: 400, overflow: 'auto' }}>
+					{loading && (
+						<ListItem>
+							<ListItemText primary="Searching..." />
+						</ListItem>
+					)}
+					{!loading && items.map((account) => (
+						<ListItem key={account.id} disablePadding>
+							<ListItemButton onClick={() => handleItemClick(account)}>
+								<AccountViewer account={account} />
+							</ListItemButton>
+						</ListItem>
+					))}
+				</List>
+			</DialogContent>
 
 			<DialogActions>
 				<Button onClick={() => handleClose()}>Cancel</Button>
 			</DialogActions>
+
 		</Dialog>
 	)
 }
