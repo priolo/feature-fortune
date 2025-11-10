@@ -3,7 +3,7 @@ import Card, { sxActionCard } from '@/components/Card';
 import GithubRepoViewer from '@/components/github/repos/GithubRepoViewer';
 import GithubReposFinderDialog from '@/components/github/repos/GithubReposFinderDialog';
 import { GitHubRepository } from '@/types/github/GitHub';
-import { AccessAlarm, CheckCircleOutline, GitHub } from '@mui/icons-material';
+import { CheckCircleOutline, GitHub } from '@mui/icons-material';
 import { Box, Button, SxProps, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 
 interface Props {
     githubRepoId?: number
+    readOnly?: boolean
     onChange?: (repo: GitHubRepository) => void
 }
 
@@ -19,6 +20,7 @@ interface Props {
  */
 const GithubRepoSelectorCard: React.FC<Props> = ({
     githubRepoId,
+    readOnly,
     onChange,
 }) => {
 
@@ -63,6 +65,20 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
         <Card
             title="GITHUB REPOSITORY"
             icon={<GitHub />}
+            titleEndRender={!readOnly &&
+                <Box sx={sxActionCard}>
+                    {isSelected && (
+                        <Button
+                            onClick={handleRemoveClick}
+                        >REMOVE</Button>
+                    )}
+                    <Button
+                        onClick={handleFindRepoClick}
+                    >
+                        {isSelected ? 'CHANGE' : 'SELECT'}
+                    </Button>
+                </Box>
+            }
         >
 
             <Typography variant="body2" sx={{ mb: 1 }} color="text.secondary">
@@ -78,19 +94,20 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
 
             <GithubRepoViewer repository={repo} />
 
-            <Box sx={sxActionCard}>
-                {isSelected && (
+            {/* {!readOnly &&
+                <Box sx={sxActionCard}>
+                    {isSelected && (
+                        <Button
+                            onClick={handleRemoveClick}
+                        >REMOVE</Button>
+                    )}
                     <Button
-                        onClick={handleRemoveClick}
-                    >REMOVE</Button>
-                )}
-                <Button
-                    onClick={handleFindRepoClick}
-                >
-                    {isSelected ? 'CHANGE' : 'SELECT'}
-                </Button>
-            </Box>
-
+                        onClick={handleFindRepoClick}
+                    >
+                        {isSelected ? 'CHANGE' : 'SELECT'}
+                    </Button>
+                </Box>
+            } */}
         </Card>
 
         <GithubReposFinderDialog

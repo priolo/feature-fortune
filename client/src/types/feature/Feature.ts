@@ -59,18 +59,23 @@ export interface Feature extends AccountAsset {
 	createdAt?: Date;
 	
 
+
+	/** il REPO del progetto soggetto della FEATURE */
 	githubRepoId?: number	
 
 	/**
 	 * Metadati del repository GitHub (nome, avatar, ecc.)
+	 * mi serve per la lista delle FEATURES per ricvare immediatamente i dati del REPO
 	 */
 	githubRepoMetadata?: GithubRepoMetadata
 
+	/** l'ACCOUNT GitHub che deve implementare la FEATURE */
 	githubDevId?: number
 
+	/** l'ACCOUNT interno che deve implementare la FEATURE */
 	accountDevId?: string
 
-	//#region RELATIONSHIPS
+	
 
 	/**
 	 * the accounts that funded this feature
@@ -82,8 +87,4 @@ export interface Feature extends AccountAsset {
 	 */
 	comments?: Comment[]
 
-	//#endregion
 }
-
-
-

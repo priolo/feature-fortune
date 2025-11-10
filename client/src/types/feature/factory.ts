@@ -1,12 +1,13 @@
-import { Feature } from "./Feature";
+import { Feature, FEATURE_STATUS } from "./Feature";
 
 
 
 export function buildNewFeature(): Feature {
 	return {
-		id: null,
 		title: '',
 		description: '',
+		status: FEATURE_STATUS.PROPOSED,
+
 		fundings: [],
 		comments: [],
 	}

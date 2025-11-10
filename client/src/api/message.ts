@@ -7,9 +7,9 @@ function index(role: MESSAGE_ROLE = MESSAGE_ROLE.RECEIVER, opt?: CallOptions): P
 	return ajax.get(`messages?role=${role}`, opt)
 }
 
-function save(message: Message, opt?: CallOptions): Promise<{ content: MessageContent, msgReceiver: Message, msgSender: Message }> {
-	if (!message || !message.accountId) throw new Error("Message content ID is required")
-	return ajax.post(`messages`, { content: message.content, receiverId: message.accountId }, opt)
+function save(text: string, toAccountId:string, opt?: CallOptions): Promise<{ content: MessageContent, msgReceiver: Message, msgSender: Message }> {
+	if (!text || !toAccountId) throw new Error("Message content ID is required")
+	return ajax.post(`messages`, { text, toAccountId }, opt)
 }
 
 function remove(messageId: string, opt?: CallOptions): Promise<{ content: MessageContent, msgReceiver: Message, msgSender: Message }> {

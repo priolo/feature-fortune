@@ -15,25 +15,37 @@ function get(id: string, opt?: CallOptions): Promise<Feature> {
 }
 
 
-/** CREATE */
-function save(featureData: Feature, opt?: CallOptions): Promise<Feature> {
+/** POST: CREATE */
+function create(feature: Feature, opt?: CallOptions): Promise<Feature> {
+
 	// mi assicuro mandi le cose corrette
-	const feature = <Feature>{
-		id: featureData.id,
-		title: featureData.title,
-		description: featureData.description,
-		githubRepoId: featureData.githubRepoId,
-		githubRepoMetadata: featureData.githubRepoMetadata,
-		githubDevId: featureData.githubDevId,
-		accountDevId: featureData.accountDevId,
-	}
+	delete feature.id
+	delete feature.accountId
+	delete feature.status
+	delete feature.createdAt
+	delete feature.comments
+	delete feature.fundings
+
 	return ajax.post(`features`, { feature }, opt)
+}
+
+/** PATCH: UPDATE */
+function update(feature: Feature, opt?: CallOptions): Promise<Feature> {
+
+	// mi assicuro mandi le cose corrette
+	delete feature.status
+	delete feature.createdAt
+	delete feature.comments
+	delete feature.fundings
+
+	return ajax.patch(`features`, { feature }, opt)
 }
 
 
 const featureApi = {
 	index,
 	get,
-	save,
+	create,
+	update,
 }
 export default featureApi

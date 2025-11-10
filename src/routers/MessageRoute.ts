@@ -11,9 +11,10 @@ class MessageRoute extends httpRouter.Service {
 	get stateDefault() {
 		return {
 			...super.stateDefault,
+			name: "messages",
 			path: "/messages",
 			message_repo: "/typeorm/messages",
-			message_content_repo: "/typeorm/messages-content",
+			message_content_repo: "/typeorm/messages_content",
 			routers: [
 				{ path: "/", verb: "get", method: "index" },
 				{ path: "/", verb: "post", method: "save" },
@@ -31,7 +32,7 @@ class MessageRoute extends httpRouter.Service {
 		const userJwt: AccountRepo = req["jwtPayload"]
 
 		const { role: roleStr } = req.query as { role?: string }
-		const role: MESSAGE_ROLE = roleStr === "sender" ? MESSAGE_ROLE.SENDER : MESSAGE_ROLE.RECEIVER
+		const role: MESSAGE_ROLE = Number.parseInt(roleStr) || MESSAGE_ROLE.RECEIVER
 
 		const messages: MessageRepo[] = await new Bus(this, this.state.message_repo).dispatch({
 			type: typeorm.Actions.FIND,
@@ -58,10 +59,7 @@ class MessageRoute extends httpRouter.Service {
 						text: true,
 						accountId: true,
 						createdAt: true,
-						account: {
-							name: true,
-							avatarUrl: true,
-						},
+						account: { name: true, avatarUrl: true },
 					},
 				},
 			}
@@ -76,45 +74,62 @@ class MessageRoute extends httpRouter.Service {
 	 */
 	async save(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
-		let { content, receiverId }: { content: MessageContentRepo, receiverId: string } = req.body
-		if (!content) return res.status(400).json({ error: "'content' data is required" })
-		if (!content.text || !content.text.trim()) return res.status(400).json({ error: "Message text is required" })
-		if (!receiverId) return res.status(400).json({ error: "'receiverId' data is required" })
+		let { text, toAccountId }: { text: string, toAccountId: string } = req.body
+		if (!text || !text.trim()) return res.status(400).json({ error: "Message text is required" })
+		if (!toAccountId) return res.status(400).json({ error: "'receiverId' data is required" })
+
+		// send message
+		const { content, msgReceiver, msgSender } = await this.sendMessage(userJwt.id, toAccountId, text)
+
+		res.json({ content, msgReceiver, msgSender });
+	}
+
+
+	/**
+	 * Invia un messaggio.
+	 * Se fromAccountId è null allora è un messaggio di sistema
+	 */
+	async sendMessage(fromAccountId: string, toAccountId: string, text: string) {
+		if (!toAccountId || !text) throw new Error("toAccountId, fromAccountId and text are required")
 
 		// Save content
-		content.accountId = userJwt.id
-		const contentNew: MessageContentRepo = await new Bus(this, this.state.message_content_repo).dispatch({
+		const content: MessageContentRepo = await new Bus(this, this.state.message_content_repo).dispatch({
 			type: typeorm.Actions.SAVE,
-			payload: content
+			payload: <MessageContentRepo>{
+				text: text,
+				accountId: fromAccountId,
+			}
 		})
 
 		// crerate message for the receiver
 		const msgReceiver: MessageRepo = await new Bus(this, this.state.message_repo).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: {
-				contentId: contentNew.id,
-				accountId: receiverId,
+				contentId: content.id,
+				accountId: toAccountId,
 				role: MESSAGE_ROLE.RECEIVER,
 				isRead: false,
 				isArchived: false,
 			} as MessageRepo
 		})
 
-		// create message for the sender
-		const msgSender: MessageRepo = await new Bus(this, this.state.message_repo).dispatch({
-			type: typeorm.Actions.SAVE,
-			payload: {
-				contentId: contentNew.id,
-				accountId: userJwt.id,
-				role: MESSAGE_ROLE.SENDER,
-				isRead: true,
-				isArchived: false,
-			} as MessageRepo
-		})
+		// if exist create message for the sender
+		let msgSender: MessageRepo = null
+		if (!!fromAccountId) {
+			msgSender = await new Bus(this, this.state.message_repo).dispatch({
+				type: typeorm.Actions.SAVE,
+				payload: {
+					contentId: content.id,
+					accountId: fromAccountId,
+					role: MESSAGE_ROLE.SENDER,
+					isRead: true,
+					isArchived: false,
+				} as MessageRepo
+			})
+		}
 
-		res.json({ content, msgReceiver, msgSender });
+		return { content, msgReceiver, msgSender }
 	}
-
 
 	/**
 	 * Mark a message as read
@@ -191,7 +206,7 @@ class MessageRoute extends httpRouter.Service {
 				type: typeorm.Actions.DELETE,
 				payload: message.contentId,
 			})
-		}	
+		}
 
 
 		res.json({ success: true })

@@ -9,10 +9,12 @@ import React from 'react';
 
 interface Props {
     user: GitHubUser;
+    noLink?: boolean;
 }
 
 const GithubUserViewer: React.FC<Props> = ({
-    user
+    user,
+    noLink,
 }) => {
 
     // RENDER
@@ -32,7 +34,7 @@ const GithubUserViewer: React.FC<Props> = ({
             <Box sx={sxContent}>
 
                 <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }} >
-                    <Link href={user.html_url}>
+                    <Link href={!noLink ? user.html_url : undefined}>
                         {user.login}
                     </Link>
                     <Typography variant='overline' color="text.secondary">

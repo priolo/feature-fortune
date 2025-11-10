@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 
 interface Props {
     githubOwnerId?: number
+    readOnly?: boolean
     onChange?: (owner: GitHubUser) => void
 }
 
@@ -19,6 +20,7 @@ interface Props {
  */
 const GithubUserSelectorCard: React.FC<Props> = ({
     githubOwnerId,
+    readOnly,
     onChange,
 }) => {
 
@@ -63,6 +65,16 @@ const GithubUserSelectorCard: React.FC<Props> = ({
         <Card
             title="GITHUB USER"
             icon={<GitHub />}
+            titleEndRender={!readOnly && <Box sx={sxActionCard}>
+                {isSelected && (
+                    <Button
+                        onClick={handleRemoveClick}
+                    >REMOVE</Button>
+                )}
+                <Button
+                    onClick={handleSelectUserClick}
+                >{isSelected ? 'CHANGE' : 'SELECT'}</Button>
+            </Box>}
         >
 
             <Typography variant="body2" sx={{ mb: 1 }} color="text.secondary">
@@ -81,7 +93,7 @@ const GithubUserSelectorCard: React.FC<Props> = ({
 
             <GithubUserViewer user={user} />
 
-            <Box sx={sxActionCard}>
+            {/* <Box sx={sxActionCard}>
                 {isSelected && (
                     <Button
                         onClick={handleRemoveClick}
@@ -90,7 +102,7 @@ const GithubUserSelectorCard: React.FC<Props> = ({
                 <Button
                     onClick={handleSelectUserClick}
                 >{isSelected ? 'CHANGE' : 'SELECT'}</Button>
-            </Box>
+            </Box> */}
 
         </Card>
 

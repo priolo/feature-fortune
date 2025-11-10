@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { AccountAsset } from './AccountAsset.js';
 import { MessageContentRepo } from './MessageContent.js';
-
+import type { Relation } from 'typeorm';
 
 
 export enum MESSAGE_ROLE {
@@ -9,6 +9,9 @@ export enum MESSAGE_ROLE {
 	RECEIVER = 2,
 }
 
+/**
+ * Messaggio nella casella di posta di un account.
+ */
 @Entity('messages')
 export class MessageRepo extends AccountAsset {
 
@@ -20,7 +23,7 @@ export class MessageRepo extends AccountAsset {
 	contentId: string;
 	@ManyToOne(() => MessageContentRepo, message => message.statuses, { nullable: false, onDelete: 'CASCADE' })
 	@JoinColumn({ name: 'contentId' })
-	content?: MessageContentRepo;
+	content?: Relation<MessageContentRepo>
 
 
 	/** Ruolo dell'ACCOUNT rispetto al MESSAGE **/

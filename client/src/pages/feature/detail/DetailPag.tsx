@@ -1,21 +1,22 @@
+import accountApi from '@/api/account';
 import AccountSelectorCard from '@/components/account/AccountSelectorCard';
-import Framework from '@/layout/Framework';
 import CommentsCard from '@/components/comment/CommentsCard';
+import Framework from '@/layout/Framework';
 import FeatureDetailCard from '@/pages/feature/detail/FeatureDetailCard';
 import FundingsCard from '@/pages/feature/detail/FundingsCard';
-import authSo from '@/stores/auth/repo';
 import featureDetailSo from '@/stores/feature/detail';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
 import { Account } from '@/types/Account';
 import { buildNewFeature } from '@/types/feature/factory';
-import { Feature } from '@/types/feature/Feature';
+import { Feature, FEATURE_STATUS } from '@/types/feature/Feature';
 import { GitHubRepository, GitHubUser } from '@/types/github/GitHub';
 import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import GithubRepoSelectorCard from '../../../components/github/repos/GithubRepoSelectorCard';
 import GithubUserSelectorCard from '../../../components/github/users/GithubUserSelectorCard';
-import accountApi from '@/api/account';
+import authSo from '@/stores/auth/repo';
+import { HistoryEdu } from '@mui/icons-material';
 
 
 
@@ -31,7 +32,7 @@ const FeatureDetailPag: React.FC<Props> = ({
     // STORES
     useStore(featureDetailSo)
 
-    
+
     // HOOKS
     let { id } = useParams<{ id: string }>()
     useEffect(() => {
@@ -48,6 +49,12 @@ const FeatureDetailPag: React.FC<Props> = ({
         load();
     }, [id])
 
+    useEffect(() => {
+        return () => {
+            featureDetailSo.setFeature(null)
+        }
+    }, [])
+
 
     // HANDLERS
     const handleDetailChange = (feature: Feature) => {
@@ -55,8 +62,9 @@ const FeatureDetailPag: React.FC<Props> = ({
     }
 
     const handleGithubRepoChange = async (repo: GitHubRepository) => {
+
         featureDetailSo.setFeature({
-            ...featureDetailSo.state.feature,   
+            ...featureDetailSo.state.feature,
             githubRepoId: repo?.id,
             githubRepoMetadata: repo ? {
                 name: repo.name,
@@ -66,21 +74,28 @@ const FeatureDetailPag: React.FC<Props> = ({
                 html_url: repo.html_url,
             } : null,
         })
+
+        // auto-link githubDevId
+        if (!!repo.owner && !feature.githubDevId) {
+            handleGithubDevChange(repo.owner)
+        }
     }
 
     const handleGithubDevChange = async (githubDev: GitHubUser) => {
         featureDetailSo.setFeature({
-            ...featureDetailSo.state.feature,   
+            ...featureDetailSo.state.feature,
             githubDevId: githubDev?.id,
         })
-        if ( featureDetailSo.state.feature?.accountDevId ) return; // non sovrascrive se gia' presente
+
+        // auto-link accountDevId
+        if (featureDetailSo.state.feature?.accountDevId) return
         const res = await accountApi.getByGithubUserId(githubDev?.id)
         handleAccountDevChange(res.account)
     };
 
-    const handleAccountDevChange = async (account:Account) => {
+    const handleAccountDevChange = async (account: Account) => {
         featureDetailSo.setFeature({
-            ...featureDetailSo.state.feature,   
+            ...featureDetailSo.state.feature,
             accountDevId: account?.id,
         })
     };
@@ -88,35 +103,54 @@ const FeatureDetailPag: React.FC<Props> = ({
 
     // RENDER
     const feature = featureDetailSo.state.feature
+    if (!feature) return null
 
-    return <Framework sx={{ py: 2}}>
+    const logged = !!authSo.state.user
+    const isNew = !feature.id
+    const authorId = isNew ? authSo.state.user?.id : feature.accountId
+	const isAuthor = logged && (isNew || feature?.accountId == authSo.state.user?.id)
+    // posso editare solo se sono l'AUTHOR e lo stato è PROPOSED
+    const canAuthorEdit = isAuthor && feature.status == FEATURE_STATUS.PROPOSED
 
-        <GithubRepoSelectorCard
-            githubRepoId={feature?.githubRepoId}
+    return <Framework sx={{ py: 2 }}>
+
+        <AccountSelectorCard readOnly
+            icon={<HistoryEdu />}
+            title="AUTHOR"
+            accountId={authorId}
+        />
+
+        <GithubRepoSelectorCard readOnly={!canAuthorEdit}
+            githubRepoId={feature.githubRepoId}
             onChange={handleGithubRepoChange}
         />
 
-        <GithubUserSelectorCard
-            githubOwnerId={feature?.githubDevId}
+        <GithubUserSelectorCard readOnly={!canAuthorEdit}
+            githubOwnerId={feature.githubDevId}
             onChange={handleGithubDevChange}
         />
 
-        <AccountSelectorCard 
-            accountId={feature?.accountDevId}
+        <AccountSelectorCard readOnly={!canAuthorEdit}
+            title="DEVELOPER"
+            message={!feature.accountDevId
+                ? "Select the account that will be used to open issues and pull requests on GitHub."
+                : null
+            }
+            accountId={feature.accountDevId}
             onChange={handleAccountDevChange}
         />
 
-        <FeatureDetailCard
+        <FeatureDetailCard readOnly={!canAuthorEdit}
             feature={feature}
             onChange={handleDetailChange}
         />
 
-        <FundingsCard 
-            featureId={feature?.id} 
+        <FundingsCard
+            featureId={feature.id}
         />
 
-        <CommentsCard 
-            featureId={feature?.id} 
+        <CommentsCard
+            featureId={feature.id}
         />
 
     </Framework>

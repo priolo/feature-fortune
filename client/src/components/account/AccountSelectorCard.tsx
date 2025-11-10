@@ -1,17 +1,20 @@
-import accountApi from '@/api/account';
 import AccountFinderDialog from '@/components/account/AccountFinderDialog';
-import AccountViewer from '@/components/account/AccountViewer';
 import { Account } from '@/types/Account';
-import { Face, Keyboard } from '@mui/icons-material';
+import { Keyboard } from '@mui/icons-material';
 import { Box, Button, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Card, { sxActionCard } from '../Card';
 import AccountIdView from './AccountIdView';
 
 
 
 interface Props {
+    title?: string,
+    icon?: React.ReactNode,
     accountId?: string
+    readOnly?: boolean,
+    message?: React.ReactNode,
+
     onChange?: (account: Account) => void
 }
 
@@ -19,14 +22,19 @@ interface Props {
  * CARD che visualizza e seleziona un ACCOUNT
  */
 const AccountSelectorCard: React.FC<Props> = ({
+    title,
+    icon,
     accountId,
+    readOnly,
+    message,
+
     onChange,
 }) => {
 
 
     // HOOKS
     const [dialogOpen, setDialogOpen] = useState(false);
-    
+
 
     // HANDLERS
     const handleSelectClick = () => {
@@ -43,17 +51,27 @@ const AccountSelectorCard: React.FC<Props> = ({
 
 
     // RENDER
-
     const isSelected = !!accountId
-    const message = !accountId
-        ? "Select the account that will be used to open issues and pull requests on GitHub."
-        : null
 
     return <>
 
         <Card id="account-selector-card"
-            title="DEVELOPER"
-            icon={<Keyboard />}
+            title={title}
+            icon={icon ?? <Keyboard />}
+            titleEndRender={!readOnly &&
+                <Box sx={sxActionCard}>
+                    {isSelected && (
+                        <Button
+                            onClick={handleRemoveClick}
+                        >REMOVE</Button>
+                    )}
+                    <Button
+                        onClick={handleSelectClick}
+                    >
+                        {!!isSelected ? 'CHANGE' : 'SELECT'}
+                    </Button>
+                </Box>
+            }
         >
 
             <Typography variant="body2" color="text.secondary">
@@ -61,19 +79,6 @@ const AccountSelectorCard: React.FC<Props> = ({
             </Typography>
 
             <AccountIdView accountId={accountId} />
-
-            <Box sx={sxActionCard}>
-                {isSelected && (
-                    <Button
-                        onClick={handleRemoveClick}
-                    >REMOVE</Button>
-                )}
-                <Button
-                    onClick={handleSelectClick}
-                >
-                    {!!isSelected ? 'CHANGE' : 'SELECT'}
-                </Button>
-            </Box>
 
         </Card>
 

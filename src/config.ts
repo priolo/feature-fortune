@@ -35,7 +35,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 export const PORT = process.env.PORT || 3000;
 
-function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
+function buildNodeConfig(params?: { noLog?: boolean, port?: number }) {
+	const { noLog, port } = params ?? {}
 
 	return [
 
@@ -43,6 +44,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 			class: "log",
 			exclude: [types.TypeLog.SYSTEM],
 			onParentLog: (log) => {
+				if ( noLog ) return false
 				if (!!log?.payload && ['nc:init', 'nc:destroy', "ns:set-state"].includes(log.payload.type)) return false
 			}
 		},
@@ -61,7 +63,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 
 		<http.conf>{
 			class: "http",
-			port: PORT,
+			port: port ?? PORT,
 			rawPaths: ["/api/stripe/webhook"],
 			children: [
 
@@ -81,6 +83,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 				},
 
 				<httpRouter.conf>{
+					name: "routers",
 					class: "http-router",
 					path: "/api",
 					cors: {
@@ -100,6 +103,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 							]
 						},
 						<httpRouter.jwt.conf>{
+							name: "public",
 							class: "http-router/jwt",
 							repository: "/typeorm/user",
 							jwt: "/jwt",
@@ -149,7 +153,7 @@ function buildNodeConfig(noWs: boolean = false, noLog: boolean = false) {
 					model: CommentRepo,
 				},
 				{
-					name: "messages-content",
+					name: "messages_content",
 					class: "typeorm/repo",
 					model: MessageContentRepo,
 				},

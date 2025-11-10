@@ -13,6 +13,11 @@ interface Props {
 	 */
 	isOpen: boolean,
 
+	/**
+	 * placeholder della text di ricerca
+	 */
+	placeholder?: string,
+
 	/** 
 	 * chiamata quando si clicca sul btt colose o fuori dalla dialog 
 	 * restituisce l'item selezionato o null se si è chiusa senza selezionare nulla
@@ -23,6 +28,7 @@ interface Props {
 
 const GithubReposFinderDialog: FunctionComponent<Partial<Props>> = ({
 	isOpen,
+	placeholder = "Type to filter items...",
 	onClose,
 }) => {
 
@@ -73,7 +79,10 @@ const GithubReposFinderDialog: FunctionComponent<Partial<Props>> = ({
 
 	return (
 
-		<Dialog onClose={handleClose} open={isOpen} maxWidth="sm" fullWidth>
+		<Dialog maxWidth="sm" fullWidth
+			open={isOpen}
+			onClose={handleClose}
+		>
 
 			<DialogTitle>Select GitHub Repository</DialogTitle>
 
@@ -83,7 +92,7 @@ const GithubReposFinderDialog: FunctionComponent<Partial<Props>> = ({
 				<TextField autoFocus
 					value={filterText ?? ''}
 					onChange={handleFilterChange}
-					placeholder="Type to filter items..."
+					placeholder={placeholder}
 				/>
 			</Box>
 
@@ -98,7 +107,7 @@ const GithubReposFinderDialog: FunctionComponent<Partial<Props>> = ({
 					{!loading && items.map((repo) => (
 						<ListItem divider key={repo.id} disablePadding>
 							<ListItemButton onClick={() => handleItemClick(repo)}>
-								<GithubRepoViewer repository={repo} />
+								<GithubRepoViewer noLink repository={repo} />
 							</ListItemButton>
 						</ListItem>
 					))}

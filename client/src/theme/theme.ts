@@ -72,7 +72,14 @@ const commonOptions: ThemeOptions = {
 					backgroundColor: '#00000052',
 				},
 			},
-		}
+		},
+		MuiDialog: {
+			styleOverrides: {
+				paper: {
+					borderRadius: 24,
+				},
+			},
+		},
 	},
 };
 

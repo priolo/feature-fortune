@@ -1,20 +1,22 @@
 import { Account } from '@/types/Account';
 import { InfoOutlined } from '@mui/icons-material';
-import { Avatar, Box, SxProps, Typography } from '@mui/material';
+import { Avatar, SxProps } from '@mui/material';
 import React from 'react';
 
 
 
 interface Props {
-    account?: Account;
+    account?: Account
+    sx?: SxProps
 }
 
 const AvatarCmp: React.FC<Props> = ({
     account,
+    sx,
 }) => {
 
     return (
-        <Avatar
+        <Avatar sx={sx}
             src={account?.avatarUrl}
             alt={account?.name}
         >
@@ -24,7 +26,7 @@ const AvatarCmp: React.FC<Props> = ({
                     : <InfoOutlined color="action" />
             )}
         </Avatar>
-    );
+    )
 };
 
 export default AvatarCmp;

@@ -30,9 +30,15 @@ const setup = {
 			store.setFeature(feature)
 		},
 
-		async saveFeature(_: void, store?: FeatureDetailStore) {
-			const feature = await featureApi.save(store.state.feature as Feature)
-			store.setFeature(feature)
+		async save(_: void, store?: FeatureDetailStore) {
+			const feature = store.state.feature
+			let updatedFeature: Feature
+			if (!!feature.id) {
+				updatedFeature = await featureApi.update(feature)
+			} else {
+				updatedFeature = await featureApi.create(feature)
+			} 
+			store.setFeature(updatedFeature)
 		},
 
 		

@@ -4,17 +4,20 @@ import Paragraph from '@/layout/Paragraph';
 import { Feature } from '@/types/feature/Feature';
 import { FeatureStatusItems } from './StatusChip';
 import { FeaturedPlayList } from '@mui/icons-material';
-import { Chip, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import React from 'react';
 import FeatureStatusChip from './StatusChip';
+import ReadOnlyTextField from '@/components/ReadOnlyTextField';
 
 interface Props {
 	feature: Feature
+	readOnly?: boolean
 	onChange: (feature: Feature) => void;
 }
 
 const FeatureDetailCard: React.FC<Props> = ({
 	feature,
+	readOnly,
 	onChange: onChange,
 }) => {
 
@@ -27,14 +30,14 @@ const FeatureDetailCard: React.FC<Props> = ({
 	const handlePropChange = (prop: Partial<Feature>) => {
 		onChange?.({ ...feature, ...prop })
 	};
-	const handleStatusClick = () => {
-		setIsOpen(true);
-	}
-	const handleStatusDialogClose = (item: any) => {
-		setIsOpen(false);
-		if (!item) return;
-		onChange?.({ ...feature, status: item.value })
-	}
+	// const handleStatusClick = () => {
+	// 	setIsOpen(true);
+	// }
+	// const handleStatusDialogClose = (item: any) => {
+	// 	setIsOpen(false);
+	// 	if (!item) return;
+	// 	onChange?.({ ...feature, status: item.value })
+	// }
 
 	// RENDER
 	const title = feature?.title ?? '';
@@ -48,7 +51,8 @@ const FeatureDetailCard: React.FC<Props> = ({
 		>
 
 			<Paragraph title="TITLE">
-				<TextField fullWidth
+				<ReadOnlyTextField fullWidth
+					readOnly={readOnly}
 					value={title}
 					onChange={(e) => handlePropChange({ title: e.target.value })}
 					placeholder="Enter a short title for the feature"
@@ -56,22 +60,23 @@ const FeatureDetailCard: React.FC<Props> = ({
 			</Paragraph>
 
 			<Paragraph title="DESCRIPTION" sx={{ alignItems: 'start' }} sxLabel={{ mt: ".7rem" }}>
-				<TextField fullWidth multiline rows={6}
+				<ReadOnlyTextField fullWidth multiline rows={6}
+					readOnly={readOnly}
 					value={description}
 					onChange={(e) => handlePropChange({ description: e.target.value })}
 					placeholder="Enter a complete description of the feature..."
 				/>
 			</Paragraph>
 
-			<Paragraph title="STATUS">
+			{/* <Paragraph title="STATUS">
 				<FeatureStatusChip
 					status={feature?.status}
 					onClick={handleStatusClick}
 				/>
-			</Paragraph>
+			</Paragraph> */}
 
 
-			<SelectorDialogBase
+			{/* <SelectorDialogBase
 				title="SELECT STATUS"
 				filterText={filter}
 				isOpen={isOpen}
@@ -82,7 +87,7 @@ const FeatureDetailCard: React.FC<Props> = ({
 				fnTextFromItem={item => item.label}
 				fnIdFromItem={item => item.value}
 				fnSecondaryFromItem={item => item.subtitle}
-			/>
+			/> */}
 
 		</Card>
 	);

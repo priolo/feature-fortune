@@ -20,6 +20,7 @@ class AuthRoute extends httpRouter.Service {
 			routers: [
 				{ path: "/current", verb: "get", method: "current" },
 				{ path: "/logout", verb: "post", method: "logout" },
+				{ path: "/autologin", verb: "post", method: "autoLogin" },
 			]
 		}
 	}
@@ -29,7 +30,7 @@ class AuthRoute extends httpRouter.Service {
 	async current(req: Request, res: Response) {
 
 		if (process.env.NODE_ENV == ENV_TYPE.DEV && process.env.AUTO_AUTH_ENABLE === "true") {
-			return this.currentDemo(req, res);
+			return this.autoLogin(req, res);
 		}
 
 		// ricavo JWT dai cookies
@@ -84,17 +85,26 @@ class AuthRoute extends httpRouter.Service {
 			res.status(401).json({ user: null })
 		}
 	}
-	private async currentDemo(req: Request, res: Response) {
+	async autoLogin(req: Request, res: Response) {
+		// fai autologin solo in DEV o TEST
+		if (!(
+			process.env.NODE_ENV == ENV_TYPE.TEST
+			|| (process.env.NODE_ENV == ENV_TYPE.DEV && process.env.AUTO_AUTH_ENABLE == "true")
+		)) {
+			return res.status(401).json({ user: null });
+		}
+
+		let { userId }: { userId: string } = req.body
+		if ( !userId ) userId = "id-user-1"
 
 		// carico l'account DEMO
 		const user: AccountRepo = await new Bus(this, this.state.repository).dispatch({
 			type: typeorm.Actions.FIND_ONE,
 			payload: <FindManyOptions<AccountRepo>>{
-				//select: ["id", "email", "name", "avatar"],
-				where: { id: "id-user-1" },
+				where: { id: userId },
 			}
 		})
-		
+
 		// Genera il token JWT con l'email nel payload
 		const jwtToken: string = await new Bus(this, "/jwt").dispatch({
 			type: jwt.Actions.ENCODE,
@@ -109,7 +119,7 @@ class AuthRoute extends httpRouter.Service {
 		// memorizzo JWT nei cookies. Imposta il cookie HTTP-only
 		res.cookie('jwt', jwtToken, {
 			httpOnly: true,
-			secure: process.env.NODE_ENV === 'production', // Assicurati di usare secure solo in produzione
+			secure: true,
 			maxAge: 24 * 60 * 60 * 1000, // 1 giorno
 		});
 		// restituisco i dati dell'utente loggato

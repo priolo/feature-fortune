@@ -3,8 +3,12 @@ import { MessageRepo } from './Message.js';
 import { AccountAsset } from './AccountAsset.js';
 
 
-
-@Entity('messages-content')
+/**
+ * Il contenuto di un messaggio
+ * è opresente in piu' caselle di posta (sender e receiver)
+ * non è modificabile
+ */
+@Entity('messages_content')
 export class MessageContentRepo extends AccountAsset {
 
 	@PrimaryGeneratedColumn("uuid")

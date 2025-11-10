@@ -39,8 +39,11 @@ const setup = {
 		},
 
 		async sendSelected(_: void, store?: MessageListStore) {
+			const message = store.state.selected
+			if (!message) throw new Error("No message selected")
 			const { content, msgReceiver, msgSender } = await messageApi.save(
-				store.state.selected,
+				message.content.text,
+				store.state.receiverId
 			)
 			store.setSelected(null)
 			//msgSender.content = content

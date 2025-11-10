@@ -2,26 +2,33 @@ import MessageBanner from '@/components/MessageBanner';
 import { sxClips, sxContent, sxRoot } from '@/theme/AvatarStyle';
 import { GitHubRepository } from '@/types/github/GitHub';
 import { Star } from '@mui/icons-material';
-import { Avatar, Box, Chip, Link, SxProps, Typography } from '@mui/material';
+import { Avatar, Box, Chip, Link, Typography } from '@mui/material';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 
 
 interface Props {
-    repository: GitHubRepository;
+    repository: GitHubRepository
+    noLink?: boolean
 }
 
 const GithubRepoViewer: React.FC<Props> = ({
-    repository
+    repository,
+    noLink = false,
 }) => {
+
+    // HOOKS
+    const { t } = useTranslation();
 
     // RENDER
 
     if (!repository) return <MessageBanner>
-        void
-    </MessageBanner>
+        {t('viewers.githubRepo.empty', 'No repository selected')}
+    </MessageBanner>;
 
-    const haveTopics = repository.topics && repository.topics.length > 0;
+    const description = repository.description?.slice(0, 200) ?? t('viewers.githubRepo.no_description');
+    const topics = repository.topics ?? [];
 
     return (
         <Box sx={sxRoot}>
@@ -33,12 +40,12 @@ const GithubRepoViewer: React.FC<Props> = ({
 
             <Box sx={sxContent}>
 
-                <Link href={repository.html_url}>
+                <Link href={!noLink ? repository.html_url : undefined}>
                     {repository.full_name}
                 </Link>
 
                 <Typography variant="body2" color="text.secondary">
-                    {repository.description?.slice(0, 200) ?? 'No description available'}
+                    {description}
                 </Typography>
 
                 <Box sx={sxClips}>
@@ -47,7 +54,7 @@ const GithubRepoViewer: React.FC<Props> = ({
                         label={repository.stargazers_count}
                     />
 
-                    {repository.topics.slice(0, 10).map((topic, index) => (
+                    {topics.slice(0, 10).map((topic, index) => (
                         <Chip key={index} label={topic} size="small" />
                     ))}
 

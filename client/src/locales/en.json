@@ -17,8 +17,10 @@
 	},
 	"feature": {
 		"title": "Features",
-		"detail": "Feature Detail",
-		"list": "Feature List"
+		"list": "Feature List",
+		"detail": {
+			"title": "Feature Detail"
+		}
 	},
 	"account": {
 		"title": "Account",
@@ -32,5 +34,20 @@
 	"funding": {
 		"title": "Funding",
 		"amount": "Amount"
+	},
+
+	"cards": {
+		"githubRepoSelector": {
+			"title": "GITHUB REPOSITORY",
+			"no_selected": "Questo è il repo su cui si chiede la feature.",
+			"selected": "Seleziona un repository GitHub su cui si vuole la feature."
+		}
+	},
+
+	"viewers": {
+		"githubRepo": {
+			"no_description": "No description available",
+			"empty": "No repository selected"
+		}
 	}
 }
