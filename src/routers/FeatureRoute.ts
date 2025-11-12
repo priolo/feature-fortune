@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { AccountRepo } from "../repository/Account.js";
 import { CommentRepo } from "../repository/Comment.js";
-import { FEATURE_STATUS, FeatureRepo } from "../repository/Feature.js";
+import { FEATURE_ACTIONS, FEATURE_STATUS, FeatureRepo } from "../repository/Feature.js";
 import { FundingRepo } from "../repository/Funding.js";
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
@@ -26,11 +26,7 @@ class FeatureRoute extends httpRouter.Service {
 				{ path: "/", verb: "patch", method: "update" },
 				{ path: "/:id", verb: "delete", method: "delete" },
 
-				{ path: "/:id/engagement", verb: "post", method: "engagement" },
-				{ path: "/:id/leave", verb: "post", method: "leave" },
-				{ path: "/:id/released", verb: "post", method: "released" },
-				{ path: "/:id/cancelled", verb: "post", method: "cancelled" },
-				{ path: "/:id/completed", verb: "post", method: "completed" },
+				{ path: "/:id/action", verb: "post", method: "action" },
 
 			]
 		}
@@ -189,7 +185,9 @@ class FeatureRoute extends httpRouter.Service {
 			payload: feature
 		})
 
-		res.json({ feature: featureNew })
+		res.json({
+			feature: { ...featureOld, ...featureNew }
+		})
 	}
 
 	/**
@@ -224,21 +222,18 @@ class FeatureRoute extends httpRouter.Service {
 	}
 
 
-
-
-
-
 	/**
 	 * Chiamato dal DEV
 	 * per accettare lo sviluppo delle FEATURE
 	 * PROPOSED -> IN_DEVELOPMENT
 	 */
-	async engagement(req: Request, res: Response) {
+	async action(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
 		const featureId = req.params["id"]
 		if (!featureId) return res.status(400).json({ error: "Feature ID is required" })
-
+		const action: FEATURE_ACTIONS = req.body?.action
+		if (!action) return res.status(400).json({ error: "Action is required" })
 
 		// carico la FEATURE
 		const feature: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
@@ -248,248 +243,109 @@ class FeatureRoute extends httpRouter.Service {
 		if (!feature) return res.status(404).json({ error: "Feature not found" })
 
 
-		// contorllo la FEATURE
-		if (feature.accountDevId !== userJwt.id) {
-			return res.status(403).json({ error: "You are not allowed to engage with this feature" })
+		// calcolo la modifica alla FEATURE
+		let partial: Partial<FeatureRepo> = null
+		let authorMessage: string = null
+
+		switch (action) {
+
+			case FEATURE_ACTIONS.DEV_ACCEPT:
+				if (feature.accountDevId !== userJwt.id) {
+					return res.status(403).json({ error: "You are not allowed to engage with this feature" })
+				}
+				if (feature.status != FEATURE_STATUS.PROPOSED) {
+					return res.status(400).json({ error: `You can accept a feature only if its status is ${FEATURE_STATUS.PROPOSED}` })
+				}
+				partial = { status: FEATURE_STATUS.IN_DEVELOPMENT }
+				authorMessage = `Hello,\n\nThe developer has accepted to work on your feature titled "${feature.title}". They are now in development.\n\nBest regards,\nFeature Fortune Team`
+				break;
+
+			case FEATURE_ACTIONS.DEV_DECLINE:
+				if (feature.accountDevId !== userJwt.id) {
+					return res.status(403).json({ error: "You are not allowed to release this feature" })
+				}
+				if (feature.status !== FEATURE_STATUS.IN_DEVELOPMENT) {
+					return res.status(400).json({ error: `You can release a feature only if its status is ${FEATURE_STATUS.IN_DEVELOPMENT}` })
+				}
+				partial = {
+					status: FEATURE_STATUS.PROPOSED,
+					githubDevId: null,
+					accountDevId: null,
+				}
+				authorMessage = `Hello,\n\nThe developer has left the feature titled "${feature.title}". You may consider assigning a different developer.\n\nBest regards,\nFeature Fortune Team`
+				break;
+
+			case FEATURE_ACTIONS.DEV_LEAVE:
+				if (feature.accountDevId !== userJwt.id) {
+					return res.status(403).json({ error: "You are not allowed to engage with this feature" })
+				}
+				if (feature.status != FEATURE_STATUS.IN_DEVELOPMENT) {
+					return res.status(400).json({ error: `You can leave a feature only if its status is ${FEATURE_STATUS.IN_DEVELOPMENT}` })
+				}
+				partial = {
+					status: FEATURE_STATUS.PROPOSED,
+					githubDevId: null,
+					accountDevId: null,
+				}
+				authorMessage = `Hello,\n\nThe developer has left the feature titled "${feature.title}". You may consider assigning a different developer.\n\nBest regards,\nFeature Fortune Team`
+				break;
+
+			case FEATURE_ACTIONS.DEV_RELEASE:
+				if (feature.accountDevId !== userJwt.id) {
+					return res.status(403).json({ error: "You are not allowed to release this feature" })
+				}
+				if (feature.status !== FEATURE_STATUS.IN_DEVELOPMENT) {
+					return res.status(400).json({ error: `You can release a feature only if its status is ${FEATURE_STATUS.IN_DEVELOPMENT}` })
+				}
+				partial = { status: FEATURE_STATUS.RELEASED }
+				authorMessage = `Hello,\n\nThe developer has marked the feature titled "${feature.title}" as released.\n\nBest regards,\nFeature Fortune Team`
+				break;
+
+			case FEATURE_ACTIONS.ATH_CANCEL:
+				if (feature.accountId != userJwt.id) {
+					return res.status(403).json({ error: "You are not allowed to cancel this feature" })
+				}
+				if (![FEATURE_STATUS.PROPOSED, FEATURE_STATUS.IN_DEVELOPMENT, FEATURE_STATUS.RELEASED].includes(feature.status)) {
+					return res.status(400).json({ error: `You can cancel a feature only if its status is ${FEATURE_STATUS.PROPOSED}, ${FEATURE_STATUS.IN_DEVELOPMENT}, or ${FEATURE_STATUS.RELEASED}` })
+				}
+				partial = { status: FEATURE_STATUS.CANCELLED }
+				authorMessage = `Hello,\n\nThe feature titled "${feature.title}" has been cancelled by its creator.\n\nBest regards,\nFeature Fortune Team`
+				break;
+
+			case FEATURE_ACTIONS.ATH_COMPLETE:
+				if (feature.accountId != userJwt.id) {
+					return res.status(403).json({ error: "You are not allowed to cancel this feature" })
+				}
+				if (![FEATURE_STATUS.PROPOSED, FEATURE_STATUS.IN_DEVELOPMENT, FEATURE_STATUS.RELEASED].includes(feature.status)) {
+					return res.status(400).json({ error: `You can cancel a feature only if its status is ${FEATURE_STATUS.PROPOSED}, ${FEATURE_STATUS.IN_DEVELOPMENT}, or ${FEATURE_STATUS.RELEASED}` })
+				}
+				partial = { status: FEATURE_STATUS.CANCELLED }
+				authorMessage = `Hello,\n\nThe feature titled "${feature.title}" has been marked as completed by its creator.\n\nBest regards,\nFeature Fortune Team`
+				break;
+
+			default:
+				return res.status(400).json({ error: "Invalid status transition" })
 		}
+		partial.id = featureId
 
 
 		// aggiorno lo stato della FEATURE
 		const featureUpdated: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
 			type: typeorm.Actions.SAVE,
-			payload: <Partial<FeatureRepo>>{
-				id: featureId,
-				status: FEATURE_STATUS.IN_DEVELOPMENT
-			}
+			payload: partial
 		})
 
 
-		// invia un messaggio al creatore della FEATURE
+		// invia i messaggi
 		const messageService = this.nodeByPath<MessageRoute>(this.state.message_route)
 		await messageService.sendMessage(
 			null,
 			feature.accountId,
-			`Hello,\n\nThe developer has accepted to work on your feature titled "${feature.title}". They are now in development.\n\nBest regards,\nFeature Fortune Team`
+			authorMessage,
 		)
 
 
-		res.json({ data: "ok" })
-	}
-
-	/**
-	 * Chiamato dal DEV 
-	 * per rinunciare alla FEATURE
-	 * elimina se stesso come DEV
-	 * PROPOSED -> PROPOSED dev=null
-	 * IN_DEVELOPMENT -> PROPOSED dev=null
-	 */
-	async leave(req: Request, res: Response) {
-		const userJwt: AccountRepo = req["jwtPayload"]
-		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
-		const featureId = req.params["id"]
-		if (!featureId) return res.status(400).json({ error: "Feature ID is required" })
-
-
-		// carico la FEATURE
-		const feature: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
-			type: typeorm.Actions.GET_BY_ID,
-			payload: featureId
-		})
-		if (!feature) return res.status(404).json({ error: "Feature not found" })
-
-
-		// controllo la FEATURE
-		if (feature.accountDevId !== userJwt.id) {
-			return res.status(403).json({ error: "You are not allowed to engage with this feature" })
-		}
-		if (feature.status != FEATURE_STATUS.PROPOSED && feature.status != FEATURE_STATUS.IN_DEVELOPMENT) {
-			return res.status(400).json({ error: `You can leave a feature only if its status is ${FEATURE_STATUS.PROPOSED} or ${FEATURE_STATUS.IN_DEVELOPMENT}` })
-		}
-
-
-		// aggiorno lo stato della FEATURE
-		const featureUpdated: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
-			type: typeorm.Actions.SAVE,
-			payload: <Partial<FeatureRepo>>{
-				id: featureId,
-				status: FEATURE_STATUS.PROPOSED,
-				githubDevId: null,
-				accountDevId: null,
-			}
-		})
-
-
-		// invia un messaggio al creatore della FEATURE
-		const messageService = this.nodeByPath<MessageRoute>(this.state.message_route)
-		await messageService.sendMessage(
-			null,
-			feature.accountId,
-			`Hello,\n\nThe developer has left the feature titled "${feature.title}". You may consider assigning a different developer.\n\nBest regards,\nFeature Fortune Team`
-		)
-
-
-		res.json({ data: "ok" })
-	}
-
-
-	/**
-	 * Chiamato dal DEV
-	 * Indica che la FEATURE è stata rilasciata
-	 * IN_DEVELOPMENT -> RELEASED
-	 */
-	async released(req: Request, res: Response) {
-		const userJwt: AccountRepo = req["jwtPayload"]
-		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
-		const featureId = req.params["id"] ?? req.body?.featureId
-		if (!featureId) return res.status(400).json({ error: "Feature ID is required" })
-
-
-		// carico la FEATURE
-		const feature: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
-			type: typeorm.Actions.GET_BY_ID,
-			payload: featureId
-		})
-		if (!feature) return res.status(404).json({ error: "Feature not found" })
-
-
-		// solo il DEV assegnato può rilasciare
-		if (feature.accountDevId !== userJwt.id) {
-			return res.status(403).json({ error: "You are not allowed to release this feature" })
-		}
-		if (feature.status !== FEATURE_STATUS.IN_DEVELOPMENT) {
-			return res.status(400).json({ error: `You can release a feature only if its status is ${FEATURE_STATUS.IN_DEVELOPMENT}` })
-		}
-
-
-		// aggiorno lo stato della FEATURE
-		await new Bus(this, this.state.feature_repo).dispatch({
-			type: typeorm.Actions.SAVE,
-			payload: <Partial<FeatureRepo>>{
-				id: featureId,
-				status: FEATURE_STATUS.RELEASED,
-			}
-		})
-
-		// avvisa il creatore
-		const messageService = this.nodeByPath<MessageRoute>(this.state.message_route)
-		if (feature.accountId && feature.accountId !== userJwt.id) {
-			await messageService.sendMessage(
-				null,
-				feature.accountId,
-				`Hello,\n\nThe developer has marked the feature titled "${feature.title}" as released.\n\nBest regards,\nFeature Fortune Team`
-			)
-		}
-
-
-		res.json({ data: "ok" })
-	}
-
-
-	/**
-	 * Chiamata dall'AUTHOR
-	 * Segna la FEATURE come annullata
-	 * PROPOSED | IN_DEVELOPMENT | RELEASED -> CANCELLED
-	 */
-	async cancelled(req: Request, res: Response) {
-		const userJwt: AccountRepo = req["jwtPayload"]
-		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
-		const featureId = req.params["id"] ?? req.body?.featureId
-		if (!featureId) return res.status(400).json({ error: "Feature ID is required" })
-
-
-		// carico la FEATURE
-		const feature: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
-			type: typeorm.Actions.GET_BY_ID,
-			payload: featureId
-		})
-		if (!feature) return res.status(404).json({ error: "Feature not found" })
-
-
-		// CHECK: verifico i permessi
-		if (feature.accountId != userJwt.id) {
-			return res.status(403).json({ error: "You are not allowed to cancel this feature" })
-		}
-		if (![FEATURE_STATUS.PROPOSED, FEATURE_STATUS.IN_DEVELOPMENT, FEATURE_STATUS.RELEASED].includes(feature.status)) {
-			return res.status(400).json({ error: `You can cancel a feature only if its status is ${FEATURE_STATUS.PROPOSED}, ${FEATURE_STATUS.IN_DEVELOPMENT}, or ${FEATURE_STATUS.RELEASED}` })
-		}
-
-
-		// DB: aggiorno lo stato della FEATURE
-		await new Bus(this, this.state.feature_repo).dispatch({
-			type: typeorm.Actions.SAVE,
-			payload: <Partial<FeatureRepo>>{
-				id: featureId,
-				status: FEATURE_STATUS.CANCELLED,
-			}
-		})
-
-
-		// MESSAGE: avvisa il DEV assegnato
-		const messageService = this.nodeByPath<MessageRoute>(this.state.message_route)
-		if (feature.accountDevId && feature.accountDevId !== userJwt.id) {
-			await messageService.sendMessage(
-				null,
-				feature.accountDevId,
-				`Hello,\n\nThe feature titled "${feature.title}" has been cancelled by its creator.\n\nBest regards,\nFeature Fortune Team`
-			)
-		}
-
-
-		res.json({ data: "ok" })
-	}
-
-
-	/**
-	 * Chiamata dall'AUTHOR
-	 * Segna la FEATURE come completata
-	 * RELEASED -> COMPLETED
-	 */
-	async completed(req: Request, res: Response) {
-		const userJwt: AccountRepo = req["jwtPayload"]
-		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
-		const featureId = req.params["id"] ?? req.body?.featureId
-		if (!featureId) return res.status(400).json({ error: "Feature ID is required" })
-
-
-		// carico la FEATURE
-		const feature: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
-			type: typeorm.Actions.GET_BY_ID,
-			payload: featureId
-		})
-		if (!feature) return res.status(404).json({ error: "Feature not found" })
-
-
-		// CHECK: verifico i permessi
-		if (feature.accountId != userJwt.id) {
-			return res.status(403).json({ error: "You are not allowed to complete this feature" })
-		}
-		if (feature.status !== FEATURE_STATUS.RELEASED) {
-			return res.status(400).json({ error: `You can complete a feature only if its status is ${FEATURE_STATUS.RELEASED}` })
-		}
-
-
-		// DB: aggiorno lo stato della FEATURE
-		await new Bus(this, this.state.feature_repo).dispatch({
-			type: typeorm.Actions.SAVE,
-			payload: <Partial<FeatureRepo>>{
-				id: featureId,
-				status: FEATURE_STATUS.COMPLETED,
-			}
-		})
-
-
-		// MESSAGE: avvisa le controparti
-		const messageService = this.nodeByPath<MessageRoute>(this.state.message_route)
-		// TODO: notificare anche ai FUNDERS
-		await messageService.sendMessage(
-			null,
-			feature.accountDevId,
-			`Hello,\n\nThe feature titled "${feature.title}" has been marked as completed by its creator.\n\nBest regards,\nFeature Fortune Team`
-		)
-
-
-
-		res.json({ data: "ok" })
+		res.json({ feature: featureUpdated })
 	}
 
 }

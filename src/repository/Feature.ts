@@ -17,13 +17,12 @@ export interface GithubRepoMetadata {
 	html_url?: string;
 }
 
-
 export enum FEATURE_STATUS {
 	/**
 	 * la feature è stata proposta	
 	 * next: IN_DEVELOPMENT | CANCELLED
 	 */
-	PROPOSED = "proposed",	
+	PROPOSED = "proposed",
 	/**
 	 * la feature è stata accettata da un AUTHOR ed è in fase di sviluppo
 	 * next: COMPLETED | CANCELLED
@@ -46,6 +45,47 @@ export enum FEATURE_STATUS {
 	CANCELLED = "cancelled",
 }
 
+export enum FEATURE_ACTIONS {
+	/**
+	 * Chiamato dal DEV
+	 * per accettare lo sviluppo delle FEATURE
+	 * PROPOSED -> IN_DEVELOPMENT
+	 */
+	DEV_ACCEPT = "dev_accept",
+	/**
+	 * Chiamato dal DEV 
+	 * per rinunciare alla FEATURE
+	 * elimina se stesso come DEV
+	 * PROPOSED -> PROPOSED dev=null
+	 */
+	DEV_DECLINE = "dev_decline",
+	/**
+	 * Chiamato dal DEV 
+	 * per rinunciare alla FEATURE
+	 * elimina se stesso come DEV
+	 * PROPOSED -> PROPOSED dev=null
+	 * IN_DEVELOPMENT -> PROPOSED dev=null
+	 */
+	DEV_LEAVE = "dev_leave",
+	/**
+	 * Chiamato dal DEV
+	 * Indica che la FEATURE è stata rilasciata
+	 * IN_DEVELOPMENT -> RELEASED
+	 */
+	DEV_RELEASE = "dev_release",
+	/**
+	 * Chiamata dall'AUTHOR
+	 * Segna la FEATURE come annullata
+	 * PROPOSED | IN_DEVELOPMENT | RELEASED -> CANCELLED
+	 */
+	ATH_CANCEL = "ath_cancel",
+	/**
+	 * Chiamata dall'AUTHOR
+	 * Segna la FEATURE come completata
+	 * RELEASED -> COMPLETED
+	 */
+	ATH_COMPLETE = "ath_complete",
+}
 
 @Entity('features')
 export class FeatureRepo extends AccountAsset {

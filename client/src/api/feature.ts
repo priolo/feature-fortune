@@ -1,5 +1,5 @@
 import ajax, { CallOptions } from "@/plugins/AjaxService"
-import { Feature } from "@/types/feature/Feature"
+import { Feature, FEATURE_ACTIONS } from "@/types/feature/Feature"
 
 
 /** INDEX */
@@ -16,7 +16,7 @@ function get(id: string, opt?: CallOptions): Promise<Feature> {
 
 
 /** POST: CREATE */
-function create(feature: Feature, opt?: CallOptions): Promise<Feature> {
+function create(feature: Feature, opt?: CallOptions): Promise<{ feature: Feature }> {
 
 	// mi assicuro mandi le cose corrette
 	delete feature.id
@@ -30,7 +30,7 @@ function create(feature: Feature, opt?: CallOptions): Promise<Feature> {
 }
 
 /** PATCH: UPDATE */
-function update(feature: Feature, opt?: CallOptions): Promise<Feature> {
+function update(feature: Feature, opt?: CallOptions): Promise<{ feature: Feature }> {
 
 	// mi assicuro mandi le cose corrette
 	delete feature.status
@@ -41,11 +41,24 @@ function update(feature: Feature, opt?: CallOptions): Promise<Feature> {
 	return ajax.patch(`features`, { feature }, opt)
 }
 
+/** PATCH: UPDATE */
+function remove(featureId: string, opt?: CallOptions): Promise<{ feature: Feature }> {
+	return ajax.delete(`features/${featureId}`, null, opt)
+}
+
+function action(featureId: string, action: FEATURE_ACTIONS, opt?: CallOptions): Promise<{ feature: Partial<Feature> }> {
+	return ajax.post(`features/${featureId}/action`, { action }, opt)
+}
+
+
 
 const featureApi = {
 	index,
 	get,
 	create,
 	update,
+	remove,
+
+	action,
 }
 export default featureApi

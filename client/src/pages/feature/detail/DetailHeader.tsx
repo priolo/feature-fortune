@@ -7,7 +7,7 @@ import BackButton from '../../../layout/BackButton';
 import { useStore } from '@priolo/jon';
 import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 import FeatureStatusChip from './StatusChip';
-import { FEATURE_STATUS } from '@/types/feature/Feature';
+import { FEATURE_ACTIONS, FEATURE_STATUS } from '@/types/feature/Feature';
 
 
 
@@ -30,8 +30,33 @@ const FeatureDetailHeader: React.FC = () => {
 		})
 	}
 
+	const handleAuthorCancelClick = async () => {
+		const res = await dialogSo.dialogOpen({
+			title: "ATTENZIONE",
+			text: `Tutti i FUNDERS verranno annullati e Il DEVELOPER non verrà pagato.
+Questa FEATURE verrà chiusa definitivamente e non sarà modificabile.`,
+			type: DIALOG_TYPE.WARNING,
+			modal: true,
+		})
+		if (!res) return
+		await featureDetailSo.action(FEATURE_ACTIONS.ATH_CANCEL)
+		dialogSo.dialogOpen({
+			title: "Success",
+			text: "Feature cancelled successfully",
+			type: DIALOG_TYPE.SUCCESS,
+			modal: false,
+		})
+	}
+
 	const handleDevAcceptClick = async () => {
-		//await featureDetailSo.devAcceptFeature()
+		const res = await dialogSo.dialogOpen({
+			title: "Please wait",
+			text: "Accepting the feature...",
+			type: DIALOG_TYPE.INFO,
+			modal: true,
+		})
+		console.log("RES", res)
+		await featureDetailSo.action(FEATURE_ACTIONS.DEV_ACCEPT)
 		dialogSo.dialogOpen({
 			title: "Success",
 			text: "Feature accepted successfully",
@@ -41,10 +66,39 @@ const FeatureDetailHeader: React.FC = () => {
 	}
 
 	const handleDevDeclineClick = async () => {
-		//await featureDetailSo.devDeclineFeature()
+		await featureDetailSo.action(FEATURE_ACTIONS.DEV_DECLINE)
 		dialogSo.dialogOpen({
 			title: "Success",
 			text: "Feature declined successfully",
+			type: DIALOG_TYPE.SUCCESS,
+			modal: false,
+		})
+	}
+
+	const handleDevLeaveClick = async () => {
+		await featureDetailSo.action(FEATURE_ACTIONS.DEV_LEAVE)
+		dialogSo.dialogOpen({
+			title: "Success",
+			text: "You have left the feature successfully",
+			type: DIALOG_TYPE.SUCCESS,
+			modal: false,
+		})
+	}
+
+	const handleDevReleaseClick = async () => {
+		const res = await dialogSo.dialogOpen({
+			title: "ATTENZIONE",
+			text: `Dopo il rilascio, l'AUTHOR avra' 24 ore per accettare o riaprire la FEATURE
+Se verrà accettata o passano 24 ore avverrà il pagamento.`,
+			labelCancel: "ANNULLA",
+			type: DIALOG_TYPE.WARNING,
+			modal: true,
+		})
+		if (!res) return
+		await featureDetailSo.action(FEATURE_ACTIONS.DEV_RELEASE)
+		dialogSo.dialogOpen({
+			title: "Success",
+			text: "Feature released successfully",
 			type: DIALOG_TYPE.SUCCESS,
 			modal: false,
 		})
@@ -56,19 +110,16 @@ const FeatureDetailHeader: React.FC = () => {
 
 	// RENDER
 	const feature = featureDetailSo.state.feature
+	const featureLoaded = featureDetailSo.state.featureLoaded
 	if (!feature) return null
 
 	const logged = !!authSo.state.user
 	const isNew = !feature?.id
 	const isAuthor = logged && (isNew || feature?.accountId == authSo.state.user?.id)
 	const isDeveloper = logged && (
-		feature?.accountDevId == authSo.state.user?.id
-		|| (feature?.accountDevId == null && feature?.githubDevId == authSo.state.user?.githubId)
+		featureLoaded?.accountDevId == authSo.state.user?.id
+		|| (featureLoaded?.accountDevId == null && featureLoaded?.githubDevId == authSo.state.user?.githubId)
 	)
-
-	const canAuthorEdit = isAuthor && feature.status == FEATURE_STATUS.PROPOSED
-	const canDevEdit = isDeveloper && feature.status == FEATURE_STATUS.PROPOSED
-	const canEdit = canAuthorEdit || canDevEdit
 
 	return <>
 
@@ -84,27 +135,51 @@ const FeatureDetailHeader: React.FC = () => {
 
 		<Box sx={{ flex: 1 }}></Box>
 
-		{canEdit && <>
+		<Button
+			onClick={handleCancelClick}
+		>BACK</Button>
 
-			<Button
-				onClick={handleCancelClick}
-			>BACK</Button>
+		{isAuthor && feature.status == FEATURE_STATUS.PROPOSED && (
 
-			{canAuthorEdit && (
-				<Button variant="contained" color="primary"
-					onClick={handleAuthorSaveClick}
-				>{isNew ? "CREATE" : "MODIFY"}</Button>
-			)}
+			<Button variant="contained" color="primary"
+				onClick={handleAuthorSaveClick}
+			>{isNew ? "CREATE" : "MODIFY"}</Button>
+		)}
 
-			{canDevEdit && <>
-				<Button variant="contained" color="primary"
-					onClick={handleDevAcceptClick}
-				>ACCEPT</Button>
-				<Button variant="contained" color="primary"
-					onClick={handleDevDeclineClick}
-				>DECLINE</Button>
-			</>}
+		{isAuthor && feature.status == FEATURE_STATUS.IN_DEVELOPMENT && <>
+			<Button variant="contained" color="error"
+				onClick={handleAuthorCancelClick}
+			>CANCEL</Button>
+		</>}
 
+		{isAuthor && feature.status == FEATURE_STATUS.RELEASED && <>
+			<Button variant="contained" color="error"
+				onClick={handleAuthorCancelClick}
+			>REJECT</Button>
+
+			<Button variant="contained" color="error"
+				onClick={handleAuthorCancelClick}
+			>SUCCESS!</Button>
+		</>}
+
+
+
+		{isDeveloper && feature.status == FEATURE_STATUS.PROPOSED && <>
+			<Button variant="contained" color="primary"
+				onClick={handleDevAcceptClick}
+			>ACCEPT</Button>
+			<Button variant="contained" color="primary"
+				onClick={handleDevDeclineClick}
+			>DECLINE</Button>
+		</>}
+
+		{isDeveloper && feature.status == FEATURE_STATUS.IN_DEVELOPMENT && <>
+			<Button variant="contained" color="primary"
+				onClick={handleDevLeaveClick}
+			>LEAVE</Button>
+			<Button variant="contained" color="success"
+				onClick={handleDevReleaseClick}
+			>RELEASE</Button>
 		</>}
 
 	</>

@@ -48,7 +48,10 @@ const setup = {
 		 * @param conf una struttura che indica come deve essere visualizzata la dialog
 		 */
 		dialogOpen: (conf: DialogMsg, store?: DialogStore) => {
-			store.setDialogOpen(conf)
+			store.setDialogOpen({
+				...confDefault,
+				...conf,
+			})
 			store.setDialogIsOpen(true)
 			return new Promise<any>((resolve, reject) => {
 				resolveClose = resolve

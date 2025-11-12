@@ -13,10 +13,12 @@ import React, { useEffect, useState } from 'react';
 
 interface Props {
     featureId?: string
+    readonly?: boolean
 }
 
 const FundingsCard: React.FC<Props> = ({
-    featureId
+    featureId,
+    readonly = false,
 }) => {
 
     // STORES
@@ -54,16 +56,16 @@ const FundingsCard: React.FC<Props> = ({
     const isVoid = fundings.length == 0;
 
     return <>
-    
+
         <Card id="funding-card"
             icon={<Payment />}
             title="FUNDINGS"
-            titleEndRender={
+            titleEndRender={!readonly && (
                 <Button variant="contained" size="small"
                     startIcon={<Add />}
                     onClick={handleCreateClick}
                 >CONTRIBUTE</Button>
-            }
+            )}
         >
 
             {!isVoid ? (

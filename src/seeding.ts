@@ -25,6 +25,7 @@ export async function seeding(root: RootService) {
 				stripeCustomerId: "cus_TLPmuTlb1PdFef",
 				stripePaymentMethodId: "pm_1SOj5kKPMA8alJno8OgJGe8a",
 				stripeAccountId: "acct_1SOd0bKPMA8alJno",
+				stripeAccountStatus: "ready",
 			},
 			{ id: "id-user-2", name: "Mario Rossi", email: "mario.rossi@gmail.com", },
 			{ id: "id-user-3", name: "Luigi Bianchi", email: "luigi.bianchi@gmail.com", },

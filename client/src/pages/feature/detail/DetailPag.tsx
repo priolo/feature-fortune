@@ -65,7 +65,7 @@ const FeatureDetailPag: React.FC<Props> = ({
 
         featureDetailSo.setFeature({
             ...featureDetailSo.state.feature,
-            githubRepoId: repo?.id,
+            githubRepoId: repo?.id ?? null,
             githubRepoMetadata: repo ? {
                 name: repo.name,
                 full_name: repo.full_name,
@@ -84,7 +84,7 @@ const FeatureDetailPag: React.FC<Props> = ({
     const handleGithubDevChange = async (githubDev: GitHubUser) => {
         featureDetailSo.setFeature({
             ...featureDetailSo.state.feature,
-            githubDevId: githubDev?.id,
+            githubDevId: githubDev?.id ?? null,
         })
 
         // auto-link accountDevId
@@ -96,7 +96,7 @@ const FeatureDetailPag: React.FC<Props> = ({
     const handleAccountDevChange = async (account: Account) => {
         featureDetailSo.setFeature({
             ...featureDetailSo.state.feature,
-            accountDevId: account?.id,
+            accountDevId: account?.id ?? null,
         })
     };
 
@@ -108,7 +108,8 @@ const FeatureDetailPag: React.FC<Props> = ({
     const logged = !!authSo.state.user
     const isNew = !feature.id
     const authorId = isNew ? authSo.state.user?.id : feature.accountId
-	const isAuthor = logged && (isNew || feature?.accountId == authSo.state.user?.id)
+    const isAuthor = logged && (isNew || feature?.accountId == authSo.state.user?.id)
+    const isFundable = feature?.status != FEATURE_STATUS.CANCELLED && feature?.status != FEATURE_STATUS.COMPLETED
     // posso editare solo se sono l'AUTHOR e lo stato è PROPOSED
     const canAuthorEdit = isAuthor && feature.status == FEATURE_STATUS.PROPOSED
 
@@ -125,10 +126,12 @@ const FeatureDetailPag: React.FC<Props> = ({
             onChange={handleGithubRepoChange}
         />
 
-        <GithubUserSelectorCard readOnly={!canAuthorEdit}
-            githubOwnerId={feature.githubDevId}
-            onChange={handleGithubDevChange}
-        />
+        {feature.status == FEATURE_STATUS.PROPOSED && (
+            <GithubUserSelectorCard readOnly={!canAuthorEdit}
+                githubOwnerId={feature.githubDevId}
+                onChange={handleGithubDevChange}
+            />
+        )}
 
         <AccountSelectorCard readOnly={!canAuthorEdit}
             title="DEVELOPER"
@@ -145,7 +148,7 @@ const FeatureDetailPag: React.FC<Props> = ({
             onChange={handleDetailChange}
         />
 
-        <FundingsCard
+        <FundingsCard readonly={!isFundable}
             featureId={feature.id}
         />
 

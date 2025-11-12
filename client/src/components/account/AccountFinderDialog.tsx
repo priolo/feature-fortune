@@ -83,7 +83,7 @@ const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 			{loading && <LinearProgress />}
 
 			<Box sx={{ px: 3, pb: 2 }}>
-				<TextField
+				<TextField autoFocus
 					value={filterText ?? ''}
 					onChange={handleFilterChange}
 					placeholder="Type to filter accounts..."
