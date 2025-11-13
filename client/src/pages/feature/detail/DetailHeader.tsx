@@ -16,8 +16,10 @@ const FeatureDetailHeader: React.FC = () => {
 	// STORES
 	useStore(featureDetailSo)
 
+
 	// HOOKS
 	const navigate = useNavigate()
+
 
 	// HANDLERS
 	const handleAuthorSaveClick = async () => {
@@ -47,6 +49,25 @@ Questa FEATURE verrà chiusa definitivamente e non sarà modificabile.`,
 			modal: false,
 		})
 	}
+	const handleAuthorCompleteClick = async () => {
+		const res = await dialogSo.dialogOpen({
+			title: "ATTENZIONE",
+			text: `Dichiari che la FEATURE è completata. 
+Quindi tra 24 ore i pagamenti al DEVELOPER verranno effettuati automaticamente.`,
+			type: DIALOG_TYPE.WARNING,
+			modal: true,
+		})
+		if (!res) return
+		await featureDetailSo.action(FEATURE_ACTIONS.ATH_COMPLETE)
+		dialogSo.dialogOpen({
+			title: "Success",
+			text: "Feature completed successfully",
+			type: DIALOG_TYPE.SUCCESS,
+			modal: false,
+		})
+	}
+
+
 
 	const handleDevAcceptClick = async () => {
 		const res = await dialogSo.dialogOpen({
@@ -66,6 +87,13 @@ Questa FEATURE verrà chiusa definitivamente e non sarà modificabile.`,
 	}
 
 	const handleDevDeclineClick = async () => {
+		const res = await dialogSo.dialogOpen({
+			title: "ATTENZIONE",
+			text: `Stai rifiutando la FEATURE.`,
+			labelCancel: "ANNULLA",
+			type: DIALOG_TYPE.WARNING,
+			modal: true,
+		})
 		await featureDetailSo.action(FEATURE_ACTIONS.DEV_DECLINE)
 		dialogSo.dialogOpen({
 			title: "Success",
@@ -76,6 +104,15 @@ Questa FEATURE verrà chiusa definitivamente e non sarà modificabile.`,
 	}
 
 	const handleDevLeaveClick = async () => {
+		const res = await dialogSo.dialogOpen({
+			title: "ATTENZIONE",
+			text: `Stai abbandonado la FEATURE. 
+Verrai rimosso come DEVELOPER e la FEATURE tornerà in stato PROPOSED.`,
+			labelCancel: "ANNULLA",
+			type: DIALOG_TYPE.WARNING,
+			modal: true,
+		})
+		if (!res) return
 		await featureDetailSo.action(FEATURE_ACTIONS.DEV_LEAVE)
 		dialogSo.dialogOpen({
 			title: "Success",
@@ -88,8 +125,8 @@ Questa FEATURE verrà chiusa definitivamente e non sarà modificabile.`,
 	const handleDevReleaseClick = async () => {
 		const res = await dialogSo.dialogOpen({
 			title: "ATTENZIONE",
-			text: `Dopo il rilascio, l'AUTHOR avra' 24 ore per accettare o riaprire la FEATURE
-Se verrà accettata o passano 24 ore avverrà il pagamento.`,
+			text: `Dopo il rilascio, l'AUTHOR dovrà accettare o rifiutare
+Se verrà accettata dopo 24 ore avverrà il pagamento.`,
 			labelCancel: "ANNULLA",
 			type: DIALOG_TYPE.WARNING,
 			modal: true,
@@ -139,8 +176,9 @@ Se verrà accettata o passano 24 ore avverrà il pagamento.`,
 			onClick={handleCancelClick}
 		>BACK</Button>
 
-		{isAuthor && feature.status == FEATURE_STATUS.PROPOSED && (
 
+
+		{isAuthor && feature.status == FEATURE_STATUS.PROPOSED && (
 			<Button variant="contained" color="primary"
 				onClick={handleAuthorSaveClick}
 			>{isNew ? "CREATE" : "MODIFY"}</Button>
@@ -157,8 +195,8 @@ Se verrà accettata o passano 24 ore avverrà il pagamento.`,
 				onClick={handleAuthorCancelClick}
 			>REJECT</Button>
 
-			<Button variant="contained" color="error"
-				onClick={handleAuthorCancelClick}
+			<Button variant="contained" color="success"
+				onClick={handleAuthorCompleteClick}
 			>SUCCESS!</Button>
 		</>}
 

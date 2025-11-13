@@ -75,21 +75,15 @@ const SelectorDialogBase: FunctionComponent<Partial<Props>> = ({
 
 	// HANDLERS
 	const handleClose = (reason?: 'backdropClick' | 'escapeKeyDown') => {
-		if (onClose) {
-			onClose(null)
-		}
+		onClose?.(null)
 	}
 
 	const handleItemClick = (item: any) => {
-		if (onClose) {
-			onClose(item)
-		}
+		onClose?.(item)
 	}
 
 	const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		if (onFilterTextChange) {
-			onFilterTextChange(event.target.value)
-		}
+		onFilterTextChange?.(event.target.value)
 	}
 
 

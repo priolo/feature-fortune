@@ -5,6 +5,7 @@ import { Comment } from "@/types/Comment"
 import { Feature, FEATURE_ACTIONS, FEATURE_STATUS } from "@/types/feature/Feature"
 import { Funding } from "@/types/Funding"
 import { createStore, StoreCore } from "@priolo/jon"
+import { create } from "node_modules/@mui/material/esm/styles/createTransitions"
 
 
 
@@ -34,12 +35,15 @@ const setup = {
 		},
 
 
-
+		// aggiorno la FEATURE in editazione con i dati parziali
 		updateSelected(featurePartial: Partial<Feature>, store?: FeatureDetailStore) {
 			store.state.featureLoaded = { ...store.state.featureLoaded, ...featurePartial, }
 			store.setFeature({ ...store.state.feature, ...featurePartial, })
 		},
-
+		clearEdit: async (_: void, store?: FeatureDetailStore) => {
+			store.setFeature(null)
+			store.state.featureLoaded = null
+		},
 
 		/**
 		 * L'AUTHOR crea o aggiorna la FEATURE

@@ -22,7 +22,7 @@ const FeatureListHeader: React.FC = () => {
 
 	// HANDLERS
 	const handleNewFeatureClick = () => {
-		featureDetailSo.setFeature(null)
+		featureDetailSo.clearEdit()
 		navigate('/app/feature/new')
 	}
 	const handleFilterChange = (filter: FEATURE_FILTER) => {

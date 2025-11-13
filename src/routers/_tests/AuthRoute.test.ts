@@ -17,6 +17,7 @@ describe("Test on AUTH router", () => {
 		axiosInstance = axios.create({
 			baseURL: `http://localhost:${PORT}`,
 			withCredentials: true,
+			timeout: 0, // no timeout while debugging
 		});
 
 		const cnf = buildNodeConfig(true, true);

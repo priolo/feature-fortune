@@ -264,11 +264,10 @@ class FeatureRoute extends httpRouter.Service {
 				if (feature.accountDevId !== userJwt.id) {
 					return res.status(403).json({ error: "You are not allowed to release this feature" })
 				}
-				if (feature.status !== FEATURE_STATUS.IN_DEVELOPMENT) {
+				if (feature.status !== FEATURE_STATUS.PROPOSED) {
 					return res.status(400).json({ error: `You can release a feature only if its status is ${FEATURE_STATUS.IN_DEVELOPMENT}` })
 				}
 				partial = {
-					status: FEATURE_STATUS.PROPOSED,
 					githubDevId: null,
 					accountDevId: null,
 				}
@@ -316,10 +315,10 @@ class FeatureRoute extends httpRouter.Service {
 				if (feature.accountId != userJwt.id) {
 					return res.status(403).json({ error: "You are not allowed to cancel this feature" })
 				}
-				if (![FEATURE_STATUS.PROPOSED, FEATURE_STATUS.IN_DEVELOPMENT, FEATURE_STATUS.RELEASED].includes(feature.status)) {
-					return res.status(400).json({ error: `You can cancel a feature only if its status is ${FEATURE_STATUS.PROPOSED}, ${FEATURE_STATUS.IN_DEVELOPMENT}, or ${FEATURE_STATUS.RELEASED}` })
+				if (feature.status != FEATURE_STATUS.RELEASED) {
+					return res.status(400).json({ error: `You can complete a feature only if its status is ${FEATURE_STATUS.IN_DEVELOPMENT}` })
 				}
-				partial = { status: FEATURE_STATUS.CANCELLED }
+				partial = { status: FEATURE_STATUS.COMPLETED }
 				authorMessage = `Hello,\n\nThe feature titled "${feature.title}" has been marked as completed by its creator.\n\nBest regards,\nFeature Fortune Team`
 				break;
 
@@ -332,20 +331,20 @@ class FeatureRoute extends httpRouter.Service {
 		// aggiorno lo stato della FEATURE
 		const featureUpdated: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
 			type: typeorm.Actions.SAVE,
-			payload: partial
+			payload: { ...partial }
 		})
 
 
 		// invia i messaggi
-		const messageService = this.nodeByPath<MessageRoute>(this.state.message_route)
-		await messageService.sendMessage(
-			null,
-			feature.accountId,
-			authorMessage,
-		)
+		// const messageService = this.nodeByPath<MessageRoute>(this.state.message_route)
+		// await messageService.sendMessage(
+		// 	null,
+		// 	feature.accountId,
+		// 	authorMessage,
+		// )
 
 
-		res.json({ feature: featureUpdated })
+		res.json({ feature: partial })
 	}
 
 }

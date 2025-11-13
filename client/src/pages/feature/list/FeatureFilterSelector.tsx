@@ -20,7 +20,7 @@ const FeatureFilterSelector: React.FC<Props> = ({
 
 	// HANDLERS
 	const handleClose = (filter: any) => {
-		onChange(filter.id)
+		if (!!filter) onChange(filter.id)
 		setIsOpen(false)
 	}
 

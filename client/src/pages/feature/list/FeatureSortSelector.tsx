@@ -20,7 +20,7 @@ const FeatureSortSelector: React.FC<Props> = ({
 
 	// HANDLERS
 	const handleClose = (sort: any) => {
-		onChange(sort.id)
+		if (!!sort) onChange(sort.id)
 		setIsOpen(false)
 	}
 

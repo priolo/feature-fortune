@@ -18,6 +18,7 @@ describe("MESSAGES ROUTER", () => {
 		axiosInstance = axios.create({
 			baseURL: `http://localhost:${PORT}`,
 			withCredentials: true,
+			timeout: 0, // no timeout while debugging
 		});
 
 		const cnf = buildNodeConfig({ noLog: true, port: PORT });

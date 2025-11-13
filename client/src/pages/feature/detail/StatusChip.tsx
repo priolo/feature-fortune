@@ -38,35 +38,35 @@ export const FeatureStatusItems = [
     {
         label: 'Proposed',
         value: FEATURE_STATUS.PROPOSED,
-        subtitle: 'Feature has been proposed',
+        subtitle: 'Feature has been proposed from AUTHOR',
         color: 'default',
         icon: <DesignServices />
     },
     {
         label: 'In Development',
         value: FEATURE_STATUS.IN_DEVELOPMENT,
-        subtitle: 'Feature accepted by an AUTHOR and in development',
+        subtitle: 'Feature accepted by an DEVELOPER and is in progress',
         color: 'primary',
         icon: <Build />
     },
     {
         label: 'Released',
         value: FEATURE_STATUS.RELEASED,
-        subtitle: 'AUTHOR declares the feature completed',
+        subtitle: 'DEVELOPER declares the feature COMPLETED',
         color: 'secondary',
         icon: <WaterDrop />
     },
     {
         label: 'Completed',
         value: FEATURE_STATUS.COMPLETED,
-        subtitle: 'Feature has been completed',
+        subtitle: 'AUTHOOR confirms the feature is SUCCESSFUL',
         color: 'success',
         icon: <Done />
     },
     {
         label: 'Cancelled',
         value: FEATURE_STATUS.CANCELLED,
-        subtitle: 'Feature has been cancelled',
+        subtitle: 'AUTHOR or DEVELOPER has CANCELLED the feature',
         color: 'error',
         icon: <Close />
     }
