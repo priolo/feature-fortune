@@ -1,4 +1,34 @@
 # Copilot Instructions
+
+## GitHub Copilot: Agent vs Plan
+
+**Copilot Agent** is an interactive chat assistant that:
+- Responds to questions and provides code suggestions in real-time
+- Works conversationally through the chat interface (@workspace, @terminal, etc.)
+- Executes single tasks or answers specific questions immediately
+- Best for: Quick queries, understanding code, getting syntax help, or generating small code snippets
+
+**Copilot Plan** (also called "Edits" or multi-file editing) is a workflow tool that:
+- Analyzes your entire workspace to plan complex, multi-file changes
+- Creates a structured plan showing all files that will be modified
+- Lets you review and approve the plan before applying changes
+- Executes coordinated edits across multiple files simultaneously
+- Best for: Refactoring, feature implementation, architectural changes, or any task spanning multiple files
+
+**Key Differences:**
+- **Agent**: Single interaction, immediate response, chat-based
+- **Plan**: Multi-step workflow, requires approval, edit-based
+- **Agent**: Best for learning and quick help
+- **Plan**: Best for making actual code changes across the project
+
+**Usage Examples:**
+- Use **Agent** to ask "How does this function work?" or "Show me an example of useEffect"
+- Use **Plan** to request "Refactor the auth flow to use JWT tokens" or "Add error handling to all API calls"
+
+---
+
+## Project-Specific Instructions
+
 - **Core Stack** React 19 on Vite 7 + MUI 7; entry `src/main.tsx` loads `App` and i18n; router base `/app`.
 - **Routing** `src/App.tsx` defines `BrowserRouter` anchored at `/app`; nested routes under `Layout`; new routes must register here and update `LOCATION_PAGE`.
 - **Layout** `layout/Layout.tsx` wraps header + `Outlet`; `layout/Framework.tsx` centers cards; replicate when building new screens.
