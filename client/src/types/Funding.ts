@@ -46,7 +46,6 @@ export interface Funding extends AccountAsset {
 
 	createdAt?: Date;
 
-	expiresAt: Date;
 
 	paidAt?: Date;
 

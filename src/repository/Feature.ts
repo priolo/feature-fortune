@@ -19,27 +19,33 @@ export interface GithubRepoMetadata {
 
 export enum FEATURE_STATUS {
 	/**
-	 * la feature è stata proposta	
+	 * AUTHOR: la feature è stata proposta	
 	 * next: IN_DEVELOPMENT | CANCELLED
 	 */
 	PROPOSED = "proposed",
 	/**
-	 * la feature è stata accettata da un AUTHOR ed è in fase di sviluppo
+	 * DEV: la feature è stata accettata da un DEV ed è in fase di sviluppo
 	 * next: COMPLETED | CANCELLED
 	 */
 	IN_DEVELOPMENT = "in_development",
 	/**
-	 * l'AUTHOR dichiara la FEATURE completata
+	 * DEV dichiara la FEATURE completata
 	 * next: COMPLETED | CANCELLED
 	 */
 	RELEASED = "released",
 	/**
-	 * la feature è stata completata
-	 * next: (nessuno)
+	 * AUTHOR: dichiara che la feature è stata completata
+	 * next: PAID
 	 */
 	COMPLETED = "completed",
 	/**
-	 * la feature è stata annullata
+	 * SYSTEM: setta la FEATURE a stata PAGATA
+	 * next: (nessuno)
+	 */
+	PAID = "paid",
+
+	/**
+	 * AUTHOR: la feature è stata annullata
 	 * next: (nessuno)
 	 */
 	CANCELLED = "cancelled",
@@ -111,6 +117,11 @@ export class FeatureRepo extends AccountAsset {
 	@Column({ type: 'varchar', default: FEATURE_STATUS.PROPOSED })
 	status?: FEATURE_STATUS
 
+	/**
+	 * data in cui è stata settata a COMPLETED
+	 */
+	@Column({ type: 'datetime', nullable: true })
+	completedAt: Date;
 
 	@Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
 	createdAt: Date;

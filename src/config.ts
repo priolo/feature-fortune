@@ -20,7 +20,7 @@ import MessageRoute from "./routers/MessageRoute.js";
 import PaymentRoute from "./routers/PaymentRoute.js";
 import StripeHookRoute from "./routers/StripeHookRoute.js";
 import StripeRoute from "./routers/StripeRoute.js";
-import PaymentCrono from "./services/crono/PaymentCrono.js";
+import FeaturePaymentCrono from "./services/crono/FeaturePaymentCrono.js";
 import EmailService from "./services/email/EmailService.js";
 import ReflectionRoute from "./services/reflection/ReflectionRoute.js";
 import StripeService from "./services/stripe/StripeService.js";
@@ -50,7 +50,7 @@ function buildNodeConfig(params?: { noLog?: boolean, port?: number }) {
 		},
 
 		{
-			class: PaymentCrono,
+			class: FeaturePaymentCrono,
 		},
 
 		{

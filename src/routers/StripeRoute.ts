@@ -2,7 +2,7 @@ import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 import Stripe from "stripe";
 import { AccountRepo } from "../repository/Account.js";
-import PaymentCrono from "../services/crono/PaymentCrono.js";
+import PaymentCrono from "../services/crono/FeaturePaymentCrono.js";
 import { Actions } from "../services/stripe/types.js";
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY!);
@@ -34,7 +34,7 @@ class StripeRoute extends httpRouter.Service {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		let { fundingId }: { fundingId: string } = req.body
 		if (!fundingId) return
-		const paymentCronoService = this.nodeByPath("/crono-payments") as PaymentCrono
+		const paymentCronoService = this.nodeByPath("/payments-crono") as PaymentCrono
 		const funding = await paymentCronoService.paymentFunding(fundingId)
 		res.json({ funding })
 	}

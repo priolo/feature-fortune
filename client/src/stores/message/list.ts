@@ -23,13 +23,14 @@ const setup = {
 			store.setAll(messages)
 		},
 
-		async createAndSelect(_: void, store?: MessageListStore) {
+		async createAndSelect(receiverId?: string, store?: MessageListStore) {
 			const content: MessageContent = {
+				accountId: receiverId,
 				text: "",
 			}
 			const message: Message = {
 				content: content,
-				accountId: null,
+				accountId: null, // non usato: è lo stesso dell'utente loggato
 				role: MESSAGE_ROLE.SENDER,
 				isRead: true,
 				isArchived: false,
@@ -43,7 +44,7 @@ const setup = {
 			if (!message) throw new Error("No message selected")
 			const { content, msgReceiver, msgSender } = await messageApi.save(
 				message.content.text,
-				message.accountId,
+				message.content.accountId,
 			)
 			store.setSelected(null)
 			//msgSender.content = content

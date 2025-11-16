@@ -19,7 +19,7 @@ const AccountViewer: React.FC<Props> = ({
     // RENDER
 
     if (!account) return <MessageBanner>
-        void
+        No Account Selected
     </MessageBanner>
 
     const stripeAccProps: any = !!account.stripeAccountId

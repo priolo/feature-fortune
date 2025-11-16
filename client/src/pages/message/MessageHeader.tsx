@@ -28,6 +28,9 @@ const MessageHeader: React.FC = () => {
 		}
 		setSearchParams({ ...params, receiver: receiverId })
 	}
+	const handleUpdateClick = () => {
+		messageListSo.fetch()
+	}
 
 	// RENDER
 	const params = Object.fromEntries(searchParams.entries())
@@ -45,6 +48,11 @@ const MessageHeader: React.FC = () => {
 			receiverId={receiverId}
 			onChange={handleReceiverChange}
 		/>
+
+		<Button variant='contained'
+			startIcon={<Add />}
+			onClick={handleUpdateClick}
+		>UPDATE</Button>
 
 		<Button variant='contained'
 			startIcon={<Add />}

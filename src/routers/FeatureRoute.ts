@@ -218,7 +218,7 @@ class FeatureRoute extends httpRouter.Service {
 			payload: id
 		})
 
-		res.json({ data: "ok" })
+		res.json({ success: true })
 	}
 
 
@@ -318,7 +318,10 @@ class FeatureRoute extends httpRouter.Service {
 				if (feature.status != FEATURE_STATUS.RELEASED) {
 					return res.status(400).json({ error: `You can complete a feature only if its status is ${FEATURE_STATUS.IN_DEVELOPMENT}` })
 				}
-				partial = { status: FEATURE_STATUS.COMPLETED }
+				partial = <Partial<FeatureRepo>>{ 
+					status: FEATURE_STATUS.COMPLETED,
+					completedAt: new Date(),
+				}
 				authorMessage = `Hello,\n\nThe feature titled "${feature.title}" has been marked as completed by its creator.\n\nBest regards,\nFeature Fortune Team`
 				break;
 
@@ -329,7 +332,7 @@ class FeatureRoute extends httpRouter.Service {
 
 
 		// aggiorno lo stato della FEATURE
-		const featureUpdated: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
+		await new Bus(this, this.state.feature_repo).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: { ...partial }
 		})

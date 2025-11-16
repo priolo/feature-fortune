@@ -3,18 +3,18 @@ import { Message } from "@/types/Message"
 
 
 
-export function removeDuplicate<T>(
-	items: T[],
-	fnGetId: (item: T) => string = (item: any) => item.id,
-): T[] {
-	const acc = new Map<string, T>();
-	for (const item of items) {
-		const id = fnGetId(item)
-		if (id == null || acc.has(id)) continue
-		acc.set(id, item)
-	}
-	return Array.from(acc.values())
-}
+// export function removeDuplicate<T>(
+// 	items: T[],
+// 	fnGetId: (item: T) => string = (item: any) => item.id,
+// ): T[] {
+// 	const acc = new Map<string, T>();
+// 	for (const item of items) {
+// 		const id = fnGetId(item)
+// 		if (id == null || acc.has(id)) continue
+// 		acc.set(id, item)
+// 	}
+// 	return Array.from(acc.values())
+// }
 
 export function getAllSenders(messages: Message[]): Account[] {
 	const acc = new Map<string, Account>();

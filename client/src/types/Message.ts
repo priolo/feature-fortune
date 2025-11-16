@@ -24,7 +24,7 @@ export interface Message {
 	content?: MessageContent;
 
 
-	/** ACCOUNT a cui è riferito lo stato del MESSAGE **/
+	/** ACCOUNT che ha il ROLE sul MESSAGE **/
 	accountId?: string;
 	account?: Account;
 	/** Ruolo dell'ACCOUNT rispetto al MESSAGE **/

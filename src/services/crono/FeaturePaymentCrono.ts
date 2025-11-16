@@ -1,88 +1,92 @@
+import { Bus, typeorm } from "@priolo/julian";
+import { FEATURE_STATUS, FeatureRepo } from "src/repository/Feature.js";
+import { FindManyOptions, LessThan } from "typeorm";
 import { AccountRepo } from "../../repository/Account.js";
 import { FUNDING_STATUS, FundingRepo } from "../../repository/Funding.js";
-import { Octokit } from "@octokit/rest";
-import { Bus, ServiceBase, typeorm } from "@priolo/julian";
-import { FindManyOptions, LessThan } from "typeorm";
 import { Actions, PaymentIntentData } from "../stripe/types.js";
+import CronoService from "./CronoService.js";
 
 
 
-const octokit = new Octokit({
-	auth: process.env.GITHUB_REST_TOKEN,
-})
-type GithubRepo = {
-	id: number;
-	name: string;
-	owner: { id: number; login: string; };
-}
-
-export type PaymentCronoConf = Partial<PaymentCrono['stateDefault']>
-
-class PaymentCrono extends ServiceBase {
+class FeaturePaymentCrono extends CronoService {
 
 	get stateDefault() {
 		return {
 			...super.stateDefault,
-			name: "crono-payments",
+			name: "payments-crono",
+			/** ogni quanto tempo controllo le FEATURES */
 			delay: 1000 * 60 * 10, // ogni 10 minuti
+			/** il tempo che deve passare dopo il COMPLETE per far partire i pagamenti */
+			delayComplete: 1000 * 60 * 60 * 24,
 			funding_repo: "/typeorm/fundings",
 			account_repo: "/typeorm/accounts",
+			feature_repo: "/typeorm/features",
 			stripe_service: "/stripe",
 		}
 	}
-	declare state: typeof this.stateDefault;
+	declare state: typeof this.stateDefault
 
-
-
-	protected onStateChanged(oldState: PaymentCronoConf, newState: PaymentCronoConf) {
-		if (oldState.delay !== newState.delay) this.startTimeout()
-	}
-	protected async onInitAfter(): Promise<void> {
-		await super.onInitAfter()
-		this.startTimeout()
-	}
-	protected async onDestroy(): Promise<void> {
-		this.stopTimeout()
-		await super.onDestroy()
+	protected async onCronoTick(): Promise<void> {
+		await this.payAllCompleted()
 	}
 
+	/**
+	 * Cerco tutte le FEATURE COMPLETED da 24 ore quindi pago tutti i FUNDING collegati
+	 */
+	private async payAllCompleted() {
 
-
-
-
-
-	private timeoutId: any
-
-	private startTimeout() {
-		this.stopTimeout()
-		this.timeoutId = setTimeout(async () => {
-			try {
-				await this.paymentAllExpired()
-			} catch (error) {
-				console.error("Error in payAllExpired:", error)
-			} finally {
-				this.startTimeout()
-			}
-		}, this.state.delay)
-	}
-
-	private stopTimeout() {
-		if (this.timeoutId) clearTimeout(this.timeoutId)
-		this.timeoutId = null
-	}
-
-	private async paymentAllExpired() {
-		const now = Date.now()
-		const expiredFundings: FundingRepo[] = await new Bus(this, this.state.funding_repo).dispatch({
+		// prelevo tutte le FEATURE COMPLETED da più di 24 ore
+		const featuresCompleted = await new Bus(this, this.state.feature_repo).dispatch({
 			type: typeorm.Actions.FIND,
 			payload: {
 				where: {
-					status: FUNDING_STATUS.PENDING,
-					expiresAt: LessThan(new Date()),
+					status: FEATURE_STATUS.COMPLETED,
+					completedAt: LessThan(new Date(Date.now() - this.state.delayComplete)),
+				},
+				relations: {
+					fundings: true,
+				}
+			} as FindManyOptions<FeatureRepo>
+		})
+
+		// setto tutti i FUNDING allo status = PAYABLE
+		for (const feature of featuresCompleted) {
+			// agiorno tutti i suoi FUNDING a PAYABLE
+			await new Bus(this, this.state.funding_repo).dispatch({
+				type: typeorm.Actions.UPDATE,
+				payload: {
+					criteria: { 
+						featureId: feature.id,
+						status: FUNDING_STATUS.PENDING 
+					},
+					partial: { 
+						status: FUNDING_STATUS.PAYABLE 
+					},
+				},
+			})
+			// aggiorno la FEATURE a PAID
+			await new Bus(this, this.state.feature_repo).dispatch({
+				type: typeorm.Actions.SAVE,
+				payload: {
+					id: feature.id,
+					status: FEATURE_STATUS.PAID,
+				}
+			})
+		}
+
+		
+
+
+		// cerco tutti i FUNDING di tipo PAYABLE e li pago!!!
+		const payableFundings: FundingRepo[] = await new Bus(this, this.state.funding_repo).dispatch({
+			type: typeorm.Actions.FIND,
+			payload: {
+				where: {
+					status: FUNDING_STATUS.PAYABLE,
 				}
 			} as FindManyOptions<FundingRepo>
 		})
-		for (const funding of expiredFundings) {
+		for (const funding of payableFundings) {
 			await this.paymentFunding(funding.id)
 		}
 	}
@@ -127,7 +131,7 @@ class PaymentCrono extends ServiceBase {
 		const customer = funding.account.stripeCustomerId
 		const paymentMethod = funding.account.stripePaymentMethodId
 		console.log(">>> paymentFunding", { amount, destination, customer, paymentMethod })
-		
+
 		// Execute the payment using StripeService
 		const paymentIntent = await new Bus(this, this.state.stripe_service).dispatch({
 			type: Actions.PAYMENT_EXECUTE,
@@ -159,7 +163,4 @@ class PaymentCrono extends ServiceBase {
 
 }
 
-
-export default PaymentCrono
-
-
+export default FeaturePaymentCrono

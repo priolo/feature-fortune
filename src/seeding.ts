@@ -59,7 +59,6 @@ export async function seeding(root: RootService) {
 			{ type: typeorm.RepoStructActions.TRUNCATE },
 			{
 				amount: 50.00,
-				expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 1)),
 				status: "pending",
 				message: "Spero che questa funzionalità venga implementata presto!",
 				featureId: features[0].id!,
@@ -67,7 +66,6 @@ export async function seeding(root: RootService) {
 			},
 			{
 				amount: 75.00,
-				expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 2)),
 				status: "pending",
 				message: "Questa feature risolverebbe molti dei miei problemi quotidiani!",
 				featureId: features[0].id!,
@@ -75,7 +73,6 @@ export async function seeding(root: RootService) {
 			},
 			{
 				amount: 25.00,
-				expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 1)),
 				status: "pending",
 				message: "Contribuisco volentieri per vedere questa funzionalità realizzata.",
 				featureId: features[0].id!,
@@ -83,7 +80,6 @@ export async function seeding(root: RootService) {
 			},
 			{
 				amount: 100.00,
-				expiresAt: new Date(new Date().setMonth(new Date().getMonth() + 3)),
 				status: "pending",
 				message: "Investimento importante per una feature che cambierà tutto!",
 				featureId: features[0].id!,

@@ -34,7 +34,6 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 			amount: 500,
 			status: FUNDING_STATUS.PENDING,
 			message: '',
-			expiresAt: dayjs().add(10, 'day').toDate(),
 			featureId: null,
 		}
 		setFunding(defaultFunding)

@@ -1,6 +1,6 @@
 import SelectorDialogBase from '@/components/SelectorDialogBase';
 import messageListSo from '@/stores/message/list';
-import { removeDuplicate } from '@/stores/message/utils';
+import { getAllSenders } from '@/stores/message/utils';
 import { Account } from '@/types/Account';
 import { Chip } from '@mui/material';
 import { useStore } from '@priolo/jon';
@@ -30,18 +30,8 @@ const MessageReceiverSelector: React.FC<Props> = ({
 
 	const receivers = React.useMemo<Account[]>(() => {
 		if (!messageListSo.state.all) return []
-
-		const acc = new Map<string, Account>();
-		for (const message of messageListSo.state.all) {
-			const content = message.content;
-			const accountId = content?.accountId ?? content?.account?.id;
-			if (!accountId || acc.has(accountId)) continue;
-			acc.set(accountId, content?.account)
-		}
-		const sorted = Array.from(acc.values())
-			.sort((acc1, acc2) => acc1.name.localeCompare(acc2.name))
-
-		return [AccountSystem, ...sorted];
+		const accounts = getAllSenders(messageListSo.state.all);
+		return [AccountSystem, ...accounts];
 	}, [messageListSo.state.all]);
 
 	const selected = receivers.find((account) => account.id === receiverId);

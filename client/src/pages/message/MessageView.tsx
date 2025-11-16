@@ -6,6 +6,8 @@ import React, { useState } from 'react';
 import AccountFinderDialog from '../../components/account/AccountFinderDialog';
 import AccountIdView from '../../components/account/AccountIdView';
 import Card from '../../components/Card';
+import messageListSo from '@/stores/message/list';
+import { getAllSenders } from '@/stores/message/utils';
 
 
 
@@ -22,7 +24,11 @@ const MessageView: React.FC<Props> = ({
 }) => {
 
 	// HOOKS
-	const [dialogOpen, setDialogOpen] = useState(false);
+	const [dialogOpen, setDialogOpen] = useState(false)
+	const accounts = React.useMemo<Account[]>(() => {
+		if (!messageListSo.state.all) return []
+		return getAllSenders(messageListSo.state.all);
+	}, [messageListSo.state.all]);
 
 
 	// HANDLERS
@@ -34,7 +40,10 @@ const MessageView: React.FC<Props> = ({
 	const handleDialogClose = async (account: Account) => {
 		setDialogOpen(false)
 		if (!account) return
-		onChange({ ...message, accountId: account?.id, });
+		onChange({ 
+			...message, 
+			content: {...message.content, accountId: account.id} 
+		})
 	}
 	const handleCancelClick = () => {
 		onChange(null)
@@ -43,7 +52,7 @@ const MessageView: React.FC<Props> = ({
 
 	// RENDER
 	if (!message) return null;
-	const isDisabled = !message.accountId || !message.content?.text?.trim().length;
+	const isDisabled = !message.content.accountId || !message.content?.text?.trim().length;
 
 	return <>
 		<Card
@@ -66,7 +75,7 @@ const MessageView: React.FC<Props> = ({
 				onClick={() => setDialogOpen(true)}
 			>
 				<AccountIdView
-					accountId={message.accountId}
+					accountId={message.content?.accountId}
 				/>
 			</ListItemButton>
 			{/* </Paragraph> */}
@@ -82,6 +91,7 @@ const MessageView: React.FC<Props> = ({
 
 		<AccountFinderDialog
 			isOpen={dialogOpen}
+			suggestedAccounts={accounts}
 			onClose={handleDialogClose}
 		/>
 	</>

@@ -15,15 +15,21 @@ const AvatarCmp: React.FC<Props> = ({
     sx,
 }) => {
 
+    if (!account) {
+        return (
+            <Avatar sx={[{ bgcolor: "primary.main" }, sx] as SxProps}>
+                <InfoOutlined />
+            </Avatar>
+        )
+    }
+
     return (
         <Avatar sx={sx}
-            src={account?.avatarUrl}
-            alt={account?.name}
+            src={account.avatarUrl}
+            alt={account.name}
         >
-            {!account?.avatarUrl && (
-                !!account
-                    ? account.name?.charAt(0).toUpperCase()
-                    : <InfoOutlined color="action" />
+            {!account.avatarUrl && (
+                account.name?.charAt(0).toUpperCase()
             )}
         </Avatar>
     )

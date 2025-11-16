@@ -3,6 +3,7 @@ import { Account } from "@/types/Account";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, LinearProgress, List, ListItem, ListItemButton, ListItemText, TextField } from "@mui/material";
 import React, { FunctionComponent, useEffect } from "react";
 import AccountViewer from "./AccountViewer";
+import MessageBanner from "../MessageBanner";
 
 
 
@@ -13,6 +14,9 @@ interface Props {
 	 */
 	isOpen: boolean,
 
+	/**
+	 * account suggeriti da mostrare nella lista iniziale (prima della ricerca)
+	 */
 	suggestedAccounts?: Account[],
 
 	/** 
@@ -32,8 +36,16 @@ const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 
 	// HOOKs
 	const [filterText, setFilterText] = React.useState('')
-	const [items, setItems] = React.useState<Account[]>([])
+	let [items, setItems] = React.useState<Account[]>([])
 	const [loading, setLoading] = React.useState(false)
+
+
+	useEffect(() => {
+		if (!isOpen) return
+		setItems([])
+		setFilterText('')
+		setLoading(false)
+	}, [isOpen])
 
 	useEffect(() => {
 		if (!isOpen) return
@@ -60,7 +72,6 @@ const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 
 
 
-
 	// HANDLERS
 	const handleClose = (reason?: 'backdropClick' | 'escapeKeyDown') => {
 		onClose(null)
@@ -74,12 +85,11 @@ const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 		setFilterText(event.target.value)
 	}
 
-	const canShowSuggestions = !loading && items.length === 0 && (suggestedAccounts?.length ?? 0) > 0
-	const accountsToRender = canShowSuggestions ? (suggestedAccounts ?? []) : items
-	const showEmptyState = !loading && accountsToRender.length === 0 && filterText.length >= 3
-
 
 	// RENDER 
+	if (!loading && items.length == 0 && filterText.length < 3) {
+		items = suggestedAccounts ?? []
+	}
 
 	return (
 
@@ -105,23 +115,18 @@ const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 							<ListItemText primary="Searching..." />
 						</ListItem>
 					)}
-					{canShowSuggestions && (
-						<ListItem>
-							<ListItemText primary="Suggested accounts" secondary="No matches found, try one of these." />
-						</ListItem>
-					)}
-					{showEmptyState && (
-						<ListItem>
-							<ListItemText primary="No accounts found" />
-						</ListItem>
-					)}
-					{!loading && accountsToRender.map((account) => (
+					{!loading && items.map((account) => (
 						<ListItem key={account.id} disablePadding>
 							<ListItemButton onClick={() => handleItemClick(account)}>
 								<AccountViewer account={account} />
 							</ListItemButton>
 						</ListItem>
 					))}
+					{!loading && items.length === 0 && (
+						<MessageBanner>
+							No accounts found.
+						</MessageBanner>
+					)}
 				</List>
 			</DialogContent>
 

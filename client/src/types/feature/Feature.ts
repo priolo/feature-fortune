@@ -19,27 +19,33 @@ export interface GithubRepoMetadata {
 
 export enum FEATURE_STATUS {
 	/**
-	 * la feature è stata proposta	
+	 * AUTHOR: la feature è stata proposta	
 	 * next: IN_DEVELOPMENT | CANCELLED
 	 */
-	PROPOSED = "proposed",	
+	PROPOSED = "proposed",
 	/**
-	 * la feature è stata accettata da un AUTHOR ed è in fase di sviluppo
+	 * DEV: la feature è stata accettata da un DEV ed è in fase di sviluppo
 	 * next: COMPLETED | CANCELLED
 	 */
 	IN_DEVELOPMENT = "in_development",
 	/**
-	 * l'AUTHOR dichiara la FEATURE completata
+	 * DEV dichiara la FEATURE completata
 	 * next: COMPLETED | CANCELLED
 	 */
 	RELEASED = "released",
 	/**
-	 * la feature è stata completata
-	 * next: (nessuno)
+	 * AUTHOR: dichiara che la feature è stata completata
+	 * next: PAID
 	 */
 	COMPLETED = "completed",
 	/**
-	 * la feature è stata annullata
+	 * SYSTEM: setta la FEATURE a stata PAGATA
+	 * next: (nessuno)
+	 */
+	PAID = "paid",
+
+	/**
+	 * AUTHOR: la feature è stata annullata
 	 * next: (nessuno)
 	 */
 	CANCELLED = "cancelled",

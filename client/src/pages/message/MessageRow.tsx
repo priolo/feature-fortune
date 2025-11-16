@@ -1,5 +1,5 @@
 import { Message } from '@/types/Message';
-import { Box, Paper, Typography } from '@mui/material';
+import { Box, Paper, SxProps, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import AvatarCmp from '../../components/AvatarCmp';
 import messageListSo from '@/stores/message/list';
@@ -20,7 +20,13 @@ const MessageRow: React.FC<MessageRowProps> = ({
 	// STATE
 	const [isExpanded, setIsExpanded] = useState(false);
 
+
 	// HANDLERS
+	const handleSendClick = async (action: ActionMenuProps) => {
+		messageListSo.createAndSelect(message.content?.accountId)
+	}
+	const handleAsUnreadClick = async (action: ActionMenuProps) => {
+	}
 	const handleDeleteClick = async (action: ActionMenuProps) => {
 		await messageListSo.remove(message.id)
 		dialogSo.dialogOpen({
@@ -28,7 +34,6 @@ const MessageRow: React.FC<MessageRowProps> = ({
 			modal: false,
 			type: DIALOG_TYPE.SUCCESS,
 		})
-
 	}
 	const handleToggleExpanded = () => {
 		setIsExpanded((prev) => !prev)
@@ -39,37 +44,19 @@ const MessageRow: React.FC<MessageRowProps> = ({
 		messageApi.markAsRead(message.id)
 	}
 
+
 	// RENDER
 	const isRead = message.isRead;
-
-	// STYLES
-	// Give unread messages a quick visual bump and add hover affordances on the body text
-	const containerStyles = {
-		p: 2,
-		borderRadius: 3,
-		borderColor: isRead ? null : 'secondary.main',
-		// transition: 'background-color 0.2s ease',
-		// '&:hover': {
-		// 	bgcolor: isRead ? 'background.paper' : 'action.hover',
-		// 	boxShadow: 3,
-		// },
-	};
-	const baseTextStyles = {
-		cursor: 'pointer',
-		// transition: 'color 0.2s ease',
-		// '&:hover': {
-		// 	color: 'secondary.main',
-		// },
-	};
+	const isSystem = !message.content?.accountId;
 	const accountName = message.content?.account?.name ?? "SYSTEM"
 	const createAt = new Date(message.content?.createdAt || "").toLocaleString()
 	const displayText = message.content?.text ?? ""
 	const textStyles = isExpanded
-		? { ...baseTextStyles, whiteSpace: 'pre-line' }
-		: { ...baseTextStyles, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
+		? { cursor: 'pointer', whiteSpace: 'pre-line' }
+		: { cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }
 
 	return (
-		<Paper variant="outlined" sx={containerStyles}>
+		<Paper variant="outlined" sx={sxContainer(isRead)}>
 
 			<Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
 
@@ -89,7 +76,21 @@ const MessageRow: React.FC<MessageRowProps> = ({
 				<ActionsMenu
 					actions={[
 						{
-							label: "Delete",
+							hidden: isSystem,
+							label: "SEND",
+							onClick: handleSendClick,
+						},
+						{
+							hidden: !isRead,
+							label: "AS UNREAD",
+							onClick: handleAsUnreadClick,
+						},
+						{
+							hidden: isSystem && !isRead,
+							label: "---",
+						},
+						{
+							label: "DELETE",
 							onClick: handleDeleteClick,
 						},
 					]}
@@ -111,3 +112,14 @@ const MessageRow: React.FC<MessageRowProps> = ({
 };
 
 export default MessageRow
+
+const sxContainer = (isRead?: boolean): SxProps => ({
+	p: 2,
+	borderRadius: 3,
+	borderColor: isRead ? null : 'secondary.main',
+	// transition: 'background-color 0.2s ease',
+	// '&:hover': {
+	// 	bgcolor: isRead ? 'background.paper' : 'action.hover',
+	// 	boxShadow: 3,
+	// },
+})
