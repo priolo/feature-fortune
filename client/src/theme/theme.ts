@@ -24,6 +24,7 @@ const commonOptions: ThemeOptions = {
 		MuiButton: {
 			styleOverrides: {
 				root: {
+					borderRadius: 150,
 				},
 			},
 		},
@@ -117,15 +118,15 @@ export const darkTheme = createTheme({
 	palette: {
 		mode: 'dark',
 		primary: {
-			main: '#90caf9',
-			light: '#e3f2fd',
-			dark: '#42a5f5',
-			contrastText: 'rgba(0, 0, 0, 0.87)',
-		},
-		secondary: {
 			main: '#ce93d8',
 			light: '#f3e5f5',
 			dark: '#ab47bc',
+			contrastText: 'rgba(0, 0, 0, 0.87)',
+		},
+		secondary: {
+			main: '#90caf9',
+			light: '#e3f2fd',
+			dark: '#42a5f5',
 			contrastText: 'rgba(0, 0, 0, 0.87)',
 		},
 		background: {

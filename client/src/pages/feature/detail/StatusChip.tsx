@@ -46,14 +46,14 @@ export const FeatureStatusItems = [
         label: 'In Development',
         value: FEATURE_STATUS.IN_DEVELOPMENT,
         subtitle: 'Feature accepted by an DEVELOPER and is in progress',
-        color: 'primary',
+        color: 'secondary',
         icon: <Build />
     },
     {
         label: 'Released',
         value: FEATURE_STATUS.RELEASED,
         subtitle: 'DEVELOPER declares the feature COMPLETED',
-        color: 'secondary',
+        color: 'primary',
         icon: <WaterDrop />
     },
     {

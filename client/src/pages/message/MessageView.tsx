@@ -1,4 +1,3 @@
-import Paragraph from '@/layout/Paragraph';
 import { Account } from '@/types/Account';
 import { Message } from '@/types/Message';
 import { Message as MessageIcon, Send } from '@mui/icons-material';
@@ -19,7 +18,7 @@ interface Props {
 const MessageView: React.FC<Props> = ({
 	message,
 	onChange,
-	onSendMessage
+	onSendMessage,
 }) => {
 
 	// HOOKS
@@ -28,7 +27,7 @@ const MessageView: React.FC<Props> = ({
 
 	// HANDLERS
 	const handleTextChange = (text: string) => {
-		if ( message.content == null ) message.content = { text: '' };
+		if (message.content == null) message.content = { text: '' };
 		message.content.text = text;
 		onChange({ ...message });
 	};
@@ -37,33 +36,42 @@ const MessageView: React.FC<Props> = ({
 		if (!account) return
 		onChange({ ...message, accountId: account?.id, });
 	}
+	const handleCancelClick = () => {
+		onChange(null)
+	}
 
 
 	// RENDER
 	if (!message) return null;
+	const isDisabled = !message.accountId || !message.content?.text?.trim().length;
 
 	return <>
 		<Card
 			icon={<MessageIcon />}
 			title="MESSAGE"
-			titleEndRender={
+			titleEndRender={<>
+				<Button size="small"
+					//startIcon={<Send />}
+					onClick={handleCancelClick}
+				>CANCEL</Button>
 				<Button variant="contained" size="small"
 					startIcon={<Send />}
+					disabled={isDisabled}
 					onClick={onSendMessage}
 				>SEND</Button>
-			}
+			</>}
 		>
-			<Paragraph title="TO">
-				<ListItemButton
-					onClick={() => setDialogOpen(true)}
-				>
-					<AccountIdView
-						accountId={message.accountId}
-					/>
-				</ListItemButton>
-			</Paragraph>
+			{/* <Paragraph title="TO"> */}
+			<ListItemButton
+				onClick={() => setDialogOpen(true)}
+			>
+				<AccountIdView
+					accountId={message.accountId}
+				/>
+			</ListItemButton>
+			{/* </Paragraph> */}
 
-			<TextField multiline
+			<TextField multiline autoFocus
 				rows={4}
 				placeholder="Type your message..."
 				value={message.content?.text ?? ''}

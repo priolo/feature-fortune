@@ -24,8 +24,8 @@ const AccountViewer: React.FC<Props> = ({
 
     const stripeAccProps: any = !!account.stripeAccountId
         ? (account.stripeAccountStatus === 'ready'
-            ? { color: 'success', icon: <Done />, label: 'Stripe Ready' }
-            : { color: 'warning', icon: <WarningAmber />, label: 'Stripe incomplete' }
+            ? { color: 'success', icon: <Done />, label: 'STRIPE READY' }
+            : { color: 'warning', icon: <WarningAmber />, label: 'STRIPE INCOMPLETE' }
         ) : { color: 'error', icon: <PriorityHigh sx={{ width: 14, height: 14 }} />, label: 'NO STRIPE' }
 
     return (
@@ -42,22 +42,22 @@ const AccountViewer: React.FC<Props> = ({
                 <Box sx={sxClips}>
                     {account.emailVerified && (
                         <Chip icon={<Done />} color="success"
-                            label="Verified"
+                            label="VERIFIED"
                         />
                     )}
                     {account.googleEmail && (
                         <Chip color="primary"
-                            label="Google"
+                            label="GOOGLE"
                         />
                     )}
                     {account.githubId && (
                         <Chip color="primary"
-                            label="GitHub"
+                            label="GITHUB"
                         />
                     )}
                     {account.stripeHaveCard && (
                         <Chip
-                            label="Card"
+                            label="CARD"
                         />
                     )}
 
@@ -65,6 +65,7 @@ const AccountViewer: React.FC<Props> = ({
 
                 </Box>
             </Box>
+            
         </Box>
     )
 };

@@ -1,5 +1,5 @@
 import { Funding, FUNDING_STATUS } from "@/types/Funding";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography } from "@mui/material";
 import { FunctionComponent, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import CurrencyField from "../CurrencyField";
@@ -61,9 +61,13 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 
 	return (
 
-		<Dialog onClose={handleClose} open={isOpen} maxWidth="sm" fullWidth>
+		<Dialog onClose={handleClose} open={isOpen}
+			// slotProps={{
+			// 	paper: { sx: { width: 650, maxWidth: 'none' } },
+			// }}
+		>
 
-			<DialogTitle>Contribute</DialogTitle>
+			<DialogTitle>CONTRIBUTE</DialogTitle>
 
 			<DialogContent>
 				<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
@@ -76,17 +80,24 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 						/>
 					</Paragraph>
 
-					<Paragraph title="EXPIRATION">
+					{/* <Paragraph title="EXPIRATION">
 						<TextField type="date" fullWidth
 							value={funding.expiresAt ? dayjs(funding.expiresAt).format('YYYY-MM-DD') : ""}
 							onChange={(e) => handlePropChange({ expiresAt: dayjs(e.target.value).toDate() })}
 						/>
-					</Paragraph>
+					</Paragraph> */}
+
+					<Typography variant="body2" color="text.secondary" whiteSpace={"pre-line"}>
+						{`Puoi annullare il finanziamento in qualunque momento durante lo sviluppo della FEATURE.
+						Quando FEATURE è dichiarata COMPLETED da (nome_autore)
+						riceverai una notifica e avrai 24 ore di tempo per annullare il finanziamento (se non ti convince)
+						altrimenti avverrà il pagamento in automatico.`}
+					</Typography>
 
 					<TextField multiline fullWidth rows={4}
 						value={funding.message ?? ""}
 						onChange={(e) => handlePropChange({ message: e.target.value })}
-						placeholder="Message..."
+						placeholder="Se vuoi inserisci un messaggio (opzionale)"
 					/>
 
 				</Box>

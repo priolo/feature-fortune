@@ -59,7 +59,7 @@ class MessageRoute extends httpRouter.Service {
 						text: true,
 						accountId: true,
 						createdAt: true,
-						account: { name: true, avatarUrl: true },
+						account: { id: true, name: true, avatarUrl: true },
 					},
 				},
 			}
@@ -145,7 +145,6 @@ class MessageRoute extends httpRouter.Service {
 			type: typeorm.Actions.GET_BY_ID,
 			payload: id
 		})
-
 		if (!message) return res.status(404).json({ error: "Message not found" })
 
 		// Only the receiver can mark the message as read
@@ -162,7 +161,7 @@ class MessageRoute extends httpRouter.Service {
 			}
 		})
 
-		res.status(200)
+		res.json({ data: "ok" })
 	}
 
 

@@ -10,7 +10,10 @@ interface Props {
 	onClick?: (comment: Comment) => void;
 }
 
-const CommentsList: React.FC<Props> = ({ comments, onClick }) => {
+const CommentsList: React.FC<Props> = ({ 
+	comments, 
+	onClick, 
+}) => {
 	return (
 		<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
 			{comments.map((comment, index) => <React.Fragment key={comment.id}>

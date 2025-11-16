@@ -43,15 +43,19 @@ const setup = {
 			if (!message) throw new Error("No message selected")
 			const { content, msgReceiver, msgSender } = await messageApi.save(
 				message.content.text,
-				store.state.receiverId
+				message.accountId,
 			)
 			store.setSelected(null)
 			//msgSender.content = content
 			//store.setAll([...store.state.all, message])
 		},
 
+		/**
+		 * rimuove un MESSAGGIO tramite il suo id e aggiorna la lista
+		 */
 		async remove(messageId: string, store?: MessageListStore) {
-			const { content, msgReceiver, msgSender } = await messageApi.remove(messageId)
+			const res = (await messageApi.remove(messageId))?.success
+			if (!res) throw new Error("Error deleting message")
 			store.setSelected(null)
 			store.setAll(store.state.all.filter(m => m.id !== messageId))
 		},

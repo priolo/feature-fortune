@@ -26,17 +26,18 @@ const FeatureFilterSelector: React.FC<Props> = ({
 
 	// RENDER
 	const selected = featureFiltes.find(f => f.id === filterId) ?? featureFiltes[0]
+	const isDefault = selected.id == featureFiltes[0].id
 
 	return <>
 
 		<Chip
 			label={selected.label}
 			onClick={() => setIsOpen(true)}
-			onDelete={() => onChange(null)}
+			onDelete={!isDefault ? () => onChange(null) : undefined}
 		/>
 
 		<SelectorDialogBase
-			title="Filter Features"
+			title="FILTER FEATURES"
 
 			idSelect={selected?.id}
 			items={featureFiltes}
@@ -53,7 +54,7 @@ export default FeatureFilterSelector;
 
 const featureFiltes = [
 	{ id: FEATURE_FILTER.ALL, label: "ALL" },
-	{ id: FEATURE_FILTER.MY, label: "I MADE THEM" },
-	{ id: FEATURE_FILTER.FINANCED, label: "I FINANCED THEM" },
-	{ id: FEATURE_FILTER.DEVELOPED, label: "I AM THE DEVELOPER" },
+	{ id: FEATURE_FILTER.FINANCED, label: "I CONTRIBUTE" },
+	{ id: FEATURE_FILTER.MY, label: "I CREATED" },
+	{ id: FEATURE_FILTER.DEVELOPED, label: "I DEVELOP" },
 ]

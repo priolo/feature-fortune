@@ -9,8 +9,9 @@ import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import FeatureView from './FeatureView';
 import { FEATURE_FILTER, FEATURE_SORT } from "@/stores/feature/types";
-import { filterByAccount, filterByText, sort } from '@/stores/feature/utils';
+import { filterByAccount, filterByStatus, filterByText, sort } from '@/stores/feature/utils';
 import authSo from '@/stores/auth/repo';
+import { FEATURE_STATUS } from '@/types/feature/Feature';
 
 
 
@@ -33,6 +34,7 @@ const FeatureListPag: React.FC = () => {
 		const params = Object.fromEntries(searchParams.entries())
 		let features = featureListSo.state.all ?? []
 		features = filterByAccount(features, params.filter as FEATURE_FILTER, authSo.state.user?.id)
+		features = filterByStatus(features, params.status as FEATURE_STATUS)
 		features = filterByText(features, params.search as string)
 		features = sort(features, params.sort as FEATURE_SORT)
 		return features

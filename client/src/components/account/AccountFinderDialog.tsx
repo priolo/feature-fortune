@@ -13,6 +13,8 @@ interface Props {
 	 */
 	isOpen: boolean,
 
+	suggestedAccounts?: Account[],
+
 	/** 
 	 * chiamata quando si clicca sul btt colose o fuori dalla dialog 
 	 * restituisce l'item selezionato o null se si è chiusa senza selezionare nulla
@@ -23,6 +25,7 @@ interface Props {
 
 const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 	isOpen,
+	suggestedAccounts,
 	onClose,
 }) => {
 
@@ -71,6 +74,10 @@ const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 		setFilterText(event.target.value)
 	}
 
+	const canShowSuggestions = !loading && items.length === 0 && (suggestedAccounts?.length ?? 0) > 0
+	const accountsToRender = canShowSuggestions ? (suggestedAccounts ?? []) : items
+	const showEmptyState = !loading && accountsToRender.length === 0 && filterText.length >= 3
+
 
 	// RENDER 
 
@@ -98,7 +105,17 @@ const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 							<ListItemText primary="Searching..." />
 						</ListItem>
 					)}
-					{!loading && items.map((account) => (
+					{canShowSuggestions && (
+						<ListItem>
+							<ListItemText primary="Suggested accounts" secondary="No matches found, try one of these." />
+						</ListItem>
+					)}
+					{showEmptyState && (
+						<ListItem>
+							<ListItemText primary="No accounts found" />
+						</ListItem>
+					)}
+					{!loading && accountsToRender.map((account) => (
 						<ListItem key={account.id} disablePadding>
 							<ListItemButton onClick={() => handleItemClick(account)}>
 								<AccountViewer account={account} />

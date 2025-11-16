@@ -1,9 +1,12 @@
-import { Comment } from '@/types/Comment';
-import { Box, Paper, SxProps, Typography } from '@mui/material';
-import dayjs from 'dayjs';
-import React from 'react';
-import AvatarCmp from '../AvatarCmp';
+import featureDetailSo from '@/stores/feature/detail';
+import fundingListSo from '@/stores/funding/list';
 import { sxContent } from '@/theme/AvatarStyle';
+import { Comment } from '@/types/Comment';
+import { AttachMoney, Build, Person } from '@mui/icons-material';
+import { Box, Chip, SxProps, Typography } from '@mui/material';
+import dayjs from 'dayjs';
+import React, { useMemo } from 'react';
+import AvatarCmp from '../AvatarCmp';
 
 
 
@@ -17,8 +20,26 @@ const CommentRow: React.FC<Props> = ({
 	onClick
 }) => {
 
+
+
 	// RENDER
 	const dateStr = dayjs(comment.createdAt).format('MMM D, YYYY h:mm A');
+	const chips = useMemo(() => {
+		const items = [];
+		// DEVELOPER
+		if (featureDetailSo.state.feature?.accountDevId === comment.accountId) {
+			items.push({ label: 'DEVELOPER', color: 'primary', icon: <Build fontSize="small" /> });
+		}
+		// AUTHOR
+		if (featureDetailSo.state.feature?.accountId === comment.accountId) {
+			items.push({ label: 'AUTHOR', color: 'secondary', icon: <Person fontSize="small" /> });
+		}
+		// FOUNDER
+		if (fundingListSo.state.all?.some(f => f.accountId === comment.accountId)) {
+			items.push({ label: 'FOUDER', color: 'success', icon: <AttachMoney fontSize="small" /> });
+		}
+		return items;
+	}, [comment, featureDetailSo.state.feature, fundingListSo.state.all])
 
 	return (<Box sx={sxRow}>
 		<Box
@@ -40,15 +61,21 @@ const CommentRow: React.FC<Props> = ({
 
 				</Box>
 
-				<Typography variant='body2' color="textSecondary" sx={{ overflowWrap: 'break-word' }}>
-					{"comment.title"}
-				</Typography>
+				<Box sx={{ display: "flex", gap: 1, alignItems: 'center' }}>
+					{chips.map((item, index) => (
+						<Chip key={index} size="small"
+							label={item.label}
+							color={item.color}
+							icon={item.icon}
+						/>
+					))}
+				</Box>
 
 			</Box>
 
 		</Box>
 
-		<Typography>
+		<Typography whiteSpace="pre-wrap">
 			{comment.text}
 		</Typography>
 
@@ -57,9 +84,9 @@ const CommentRow: React.FC<Props> = ({
 
 export default CommentRow;
 
-const sxRow:SxProps = {
-	display: 'flex', 
-	flexDirection: 'column', 
+const sxRow: SxProps = {
+	display: 'flex',
+	flexDirection: 'column',
 	gap: 1,
 	// cursor: onClick ? 'pointer' : 'default',
 	// '&:hover': onClick ? {

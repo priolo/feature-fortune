@@ -1,5 +1,6 @@
 import authSo from '@/stores/auth/repo';
 import { FEATURE_FILTER, FEATURE_SORT } from "@/stores/feature/types";
+import { FEATURE_STATUS } from '@/types/feature/Feature';
 import { Add, Close, Search } from '@mui/icons-material';
 import { Box, Button, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
@@ -7,6 +8,7 @@ import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import FeatureFilterSelector from "./FeatureFilterSelector";
 import FeatureSortSelector from "./FeatureSortSelector";
+import FeatureStatusSelector from "./FeatureStatusSelector";
 import featureDetailSo from '@/stores/feature/detail';
 
 
@@ -41,6 +43,14 @@ const FeatureListHeader: React.FC = () => {
 		}
 		setSearchParams({ ...params, sort })
 	}
+	const handleStatusChange = (status: FEATURE_STATUS | null) => {
+		if (status == null) {
+			delete params.status
+			setSearchParams(params)
+			return
+		}
+		setSearchParams({ ...params, status })
+	}
 	const handleSearchChange = (search: string) => {
 		if (search == null || search.trim() == '') {
 			delete params.search
@@ -55,17 +65,18 @@ const FeatureListHeader: React.FC = () => {
 	const params = Object.fromEntries(searchParams.entries())
 	const filterId = params.filter as FEATURE_FILTER
 	const sortId = params.sort as FEATURE_SORT
+	const statusId = params.status as FEATURE_STATUS
 	const search = params.search as string ?? ''
 
 	return <>
 		<Typography variant="h5">
 			FEATURES
 		</Typography>
-		<Box sx={{ flex: 1 }}></Box>
+		
 
 		{logged && <>
 
-			<TextField
+			<TextField sx={{ flex: 1}}
 				value={search}
 				slotProps={{
 					input: {
@@ -93,10 +104,15 @@ const FeatureListHeader: React.FC = () => {
 				onChange={handleFilterChange}
 			/>
 
-			<Button variant="contained" size="small"
+			<FeatureStatusSelector
+				statusId={statusId}
+				onChange={handleStatusChange}
+			/>
+
+			<Button variant="contained"
 				startIcon={<Add />}
 				onClick={handleNewFeatureClick}
-			>New Feature</Button>
+			>NEW</Button>
 
 		</>}
 	</>

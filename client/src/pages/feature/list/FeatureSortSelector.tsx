@@ -32,7 +32,7 @@ const FeatureSortSelector: React.FC<Props> = ({
 		<Chip
 			label={selected.label}
 			onClick={() => setIsOpen(true)}
-			onDelete={() => onChange(null)}
+			onDelete={selected.id != FEATURE_SORT.RECENT ? () => onChange(null) : undefined}
 		/>
 
 		<SelectorDialogBase
@@ -52,8 +52,7 @@ const FeatureSortSelector: React.FC<Props> = ({
 export default FeatureSortSelector;
 
 const featureSort = [
-	{ id: FEATURE_SORT.ALL, label: "ALL" },
-	{ id: FEATURE_SORT.RECENT, label: "MOST RECENT" },
+	{ id: FEATURE_SORT.RECENT, label: "RECENT" },
 	{ id: FEATURE_SORT.OLDEST, label: "OLDER" },
 	{ id: FEATURE_SORT.RICHEST, label: "RICHEST" },
 	{ id: FEATURE_SORT.POOREST, label: "POOREST" },

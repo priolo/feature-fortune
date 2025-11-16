@@ -5,7 +5,7 @@ export const sxRoot: SxProps = {
 	flex: 1, 
 	display: 'flex', 
 	gap: 1.5, 
-	alignItems: 'start'
+	alignItems: 'center'
 }
 
 export const sxContent: SxProps = {

@@ -1,5 +1,5 @@
 import { FEATURE_FILTER, FEATURE_SORT } from "./types"
-import { Feature } from "@/types/feature/Feature"
+import { Feature, FEATURE_STATUS } from "@/types/feature/Feature"
 
 
 
@@ -33,6 +33,12 @@ export function filterByText(features: Feature[], text: string): Feature[] {
 	)
 }
 
+export function filterByStatus(features: Feature[], status?: FEATURE_STATUS | null): Feature[] {
+	if (!features) return []
+	if (!status) return features
+	return features.filter(feature => feature.status === status)
+}
+
 export function sortByCreatedAt(features: Feature[], descending: boolean = true): Feature[] {
 	if (!features) return []
 	return features.sort((a, b) => {
@@ -44,7 +50,7 @@ export function sortByCreatedAt(features: Feature[], descending: boolean = true)
 
 export function sort(features: Feature[], sort: FEATURE_SORT): Feature[] {
 	if (!features) return []
-	if (!sort || sort == FEATURE_SORT.ALL) return features
+	if (!sort) return features
 
 	return features.sort((a, b) => {
 		let valueA = 0
