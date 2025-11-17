@@ -1,6 +1,7 @@
 import { RootService } from "@priolo/julian";
 import axios, { AxiosInstance } from "axios";
-import buildNodeConfig, { PORT } from "../../config";
+import buildNodeConfig from "../../config";
+import { getPort } from "./utils";
 
 // Mock Google OAuth client
 jest.mock('google-auth-library', () => ({
@@ -12,6 +13,7 @@ jest.mock('google-auth-library', () => ({
 describe("Test on AUTH router", () => {
 	let axiosInstance: AxiosInstance;
 	let root: RootService;
+	const PORT = getPort()
 
 	beforeAll(async () => {
 		axiosInstance = axios.create({
@@ -20,7 +22,7 @@ describe("Test on AUTH router", () => {
 			timeout: 0, // no timeout while debugging
 		});
 
-		const cnf = buildNodeConfig(true, true);
+		const cnf = buildNodeConfig({ noLog: true, port: PORT });
 		root = await RootService.Start(cnf);
 	});
 

@@ -17,6 +17,7 @@ class StripeRoute extends httpRouter.Service {
 			path: "/stripe",
 			repository: "/typeorm/fundings",
 			account_repo: "/typeorm/accounts",
+			payment_service: "/payments-crono",
 			stripe_service: "/stripe",
 			routers: [
 				{ path: "/register_link", verb: "post", method: "registerLink" },
@@ -34,7 +35,7 @@ class StripeRoute extends httpRouter.Service {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		let { fundingId }: { fundingId: string } = req.body
 		if (!fundingId) return
-		const paymentCronoService = this.nodeByPath("/payments-crono") as PaymentCrono
+		const paymentCronoService = this.nodeByPath(this.state.payment_crono_service) as PaymentCrono
 		const funding = await paymentCronoService.paymentFunding(fundingId)
 		res.json({ funding })
 	}

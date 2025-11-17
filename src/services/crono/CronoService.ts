@@ -10,7 +10,7 @@ abstract class CronoService extends ServiceBase {
 	get stateDefault() {
 		return {
 			...super.stateDefault,
-			delay: 1000 * 60 * 5,
+			delay: 1000 * 60 * 5, // each 5 minutes
 			autoStart: true,
 		}
 	}

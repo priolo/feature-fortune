@@ -1,21 +1,24 @@
-import { RootService } from "@priolo/julian";
-import axios, { AxiosInstance } from "axios";
-import buildNodeConfig/*, { PORT }*/ from "../../config.js";
-import { MESSAGE_ROLE } from "../../repository/Message.js";
+//import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globals";
+import { Bus, RootService, typeorm } from "@priolo/julian";
+import buildNodeConfig /*, { PORT }*/ from "../../config.js";
+import { FEATURE_STATUS, FeatureRepo } from "../../repository/Feature.js";
+import { FUNDING_STATUS, FundingRepo } from "../../repository/Funding.js";
 import { seeding } from "../../seeding.js";
-import { getPort, loginAs } from "./utils.js";
+import FeaturePaymentCrono from "../crono/FeaturePaymentCrono.js";
 
 
 
-const PORT = getPort()
 
-describe("MESSAGES ROUTER", () => {
+const FEATURE_ID = "id-feature-1"
+const AUTHOR_ID = "id-user-1"
+const DEV_ID = "id-user-2"
 
-	let axiosInstance: AxiosInstance;
+describe("FEATURE CRONO", () => {
+
 	let root: RootService;
 
 	beforeAll(async () => {
-		const cnf = buildNodeConfig({ noLog: true, port: PORT });
+		const cnf = buildNodeConfig({ noLog: true, noHttp: true });
 		root = await RootService.Start(cnf);
 		await seeding(root);
 	});
@@ -24,66 +27,77 @@ describe("MESSAGES ROUTER", () => {
 		await RootService.Stop(root);
 	});
 
+	beforeEach(async () => {
+		await seeding(root);
+	});
 
-	test("fetch inbox messages", async () => {
-		const { headers } = await loginAs(axiosInstance, "id-user-1");
 
-		// Fetch inbox MESSAGES
-		const res = await axiosInstance.get("/api/messages", { headers });
+	test("Create a FEATURE/FUNDING and check if CRONO call the payment", async () => {
 
-		// Verify fetch response
-		expect(res.status).toBe(200);
-		expect(Array.isArray(res.data.messages)).toBe(true);
-		expect(res.data.messages.length).toBe(3);
+		// Create the FEATURE
+		const featureNew: FeatureRepo = await new Bus(root, "/typeorm/features").dispatch({
+			type: typeorm.Actions.SAVE,
+			payload: <FeatureRepo>{
+				title: "Feature to be paid by CRONO",
+				description: "This feature is created to test the CRONO payment flow",
+				accountDevId: DEV_ID,
+				accountId: AUTHOR_ID,
+				status: FEATURE_STATUS.COMPLETED,
+				completedAt: new Date(),
+			}
+		})
+		// Create the FUNDINGS
+		const funding1 = await new Bus(root, "/typeorm/fundings").dispatch<FeatureRepo>({
+			type: typeorm.Actions.SAVE,
+			payload: <FundingRepo>{
+				featureId: featureNew.id!,
+				accountId: DEV_ID,
+				currency: "EUR",
+				amount: 5000, // 50.00 EUR
+				status: FUNDING_STATUS.CANCELLED,
+			}
+		})
+		const funding2 = await new Bus(root, "/typeorm/fundings").dispatch<FeatureRepo>({
+			type: typeorm.Actions.SAVE,
+			payload: <FundingRepo>{
+				featureId: featureNew.id!,
+				accountId: DEV_ID,
+				currency: "EUR",
+				amount: 1000, // 50.00 EUR
+				status: FUNDING_STATUS.PENDING,
+			}
+		})
 
-		for (const msg of res.data.messages) {
-			expect(msg.role).toBe(MESSAGE_ROLE.RECEIVER);
-			expect(msg.accountId).toBe("id-user-1");
-			expect(msg.content).toBeTruthy();
-		}
+		// get FEATURE CRONO SERVICE
+		const paymentCronoService = root.nodeByPath<FeaturePaymentCrono>("/payments-crono")!
+		paymentCronoService.setState({ 
+			delay: 1000, 			// contollo
+			delayComplete: 1500, 	// tempo dopo COMPLATE per cui bisogna PAID
+		})
 
-		const texts = res.data.messages.map((msg: any) => msg.content.text);
-		expect(texts).toEqual(
-			expect.arrayContaining([
-				"Ciao Giuseppe, grazie per il messaggio! Possiamo discuterne questa settimana?",
-				"Buongiorno Giuseppe, ho una domanda sul flusso di approvazione della feature Y.",
-				"SYSTEM MESSAGE",
-			])
-		);
-		
+		await new Promise((resolve) => setTimeout(resolve, 400000000));
+
+		// check id FEATURE is change in PAID
+		const featureUpdated = await new Bus(root, "/typeorm/features").dispatch<FeatureRepo>({
+			type: typeorm.Actions.GET_BY_ID,
+			payload: featureNew.id!,
+		})
+		expect(featureUpdated.status).toBe(FEATURE_STATUS.PAID);
+
+		// check if FUNDING1 is still CANCELLED
+		const funding1Updated = await new Bus(root, "/typeorm/fundings").dispatch<FundingRepo>({
+			type: typeorm.Actions.GET_BY_ID,
+			payload: funding1.id!,
+		})
+		expect(funding1Updated.status).toBe(FUNDING_STATUS.CANCELLED);
+		// check if FUNDING2 is PAYABLE
+		const funding2Updated = await new Bus(root, "/typeorm/fundings").dispatch<FundingRepo>({
+			type: typeorm.Actions.GET_BY_ID,
+			payload: funding2.id!,
+		})
+		expect(funding2Updated.status).toBe(FUNDING_STATUS.PAYABLE);
+
 	}, 100000);
 
-	test("fetch sent messages", async () => {
-		const { headers } = await loginAs(axiosInstance, "id-user-1");
-
-		const res = await axiosInstance.get("/api/messages?role=sender", { headers });
-
-		expect(res.status).toBe(200);
-		expect(Array.isArray(res.data.messages)).toBe(true);
-		expect(res.data.messages.length).toBe(1);
-
-		const message = res.data.messages[0];
-		expect(message.role).toBe(MESSAGE_ROLE.SENDER);
-		expect(message.accountId).toBe("id-user-1");
-		expect(message.isRead).toBe(true);
-		expect(message.content.text).toBe("Ciao Mario, ho pensato ad alcune idee per migliorare la funzionalità X. Che ne pensi?");
-	}, 100000);
-
-	test("write and send a message", async () => {
-		const { headers } = await loginAs(axiosInstance, "id-user-1");
-
-		const res = await axiosInstance.post("/api/messages",
-			{
-				text: "Hello, this is a test message!",
-				toAccountId: "id-user-2",
-			},
-			{ headers }
-		);
-
-		// il messaggio è stato mandato correttamente
-		expect(res.status).toBe(200);
-		expect(res.data.content.text).toBe("Hello, this is a test message!");
-
-	}, 100000);
 
 });

@@ -35,8 +35,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 export const PORT = process.env.PORT || 3000;
 
-function buildNodeConfig(params?: { noLog?: boolean, port?: number }) {
-	const { noLog, port } = params ?? {}
+type ConfigParams = {
+	noLog?: boolean,
+	noHttp?: boolean,
+	port?: number,
+}
+
+function buildNodeConfig(params?: ConfigParams) {
+	const { noLog, noHttp, port } = params ?? {}
 
 	return [
 
@@ -61,8 +67,9 @@ function buildNodeConfig(params?: { noLog?: boolean, port?: number }) {
 			class: EmailService,
 		},
 
-		<http.conf>{
+		!noHttp && <http.conf>{
 			class: "http",
+			disabled: !!noHttp,
 			port: port ?? PORT,
 			rawPaths: ["/api/stripe/webhook"],
 			children: [
@@ -119,8 +126,6 @@ function buildNodeConfig(params?: { noLog?: boolean, port?: number }) {
 						},
 					],
 				},
-
-
 
 			]
 		},

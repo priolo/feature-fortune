@@ -131,7 +131,7 @@ class FeatureRoute extends httpRouter.Service {
 		}
 
 		// salvo
-		const featureNew: AccountRepo = await new Bus(this, this.state.feature_repo).dispatch({
+		const featureNew: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: feature
 		})

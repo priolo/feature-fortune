@@ -1,5 +1,5 @@
 import { Bus, typeorm } from "@priolo/julian";
-import { FEATURE_STATUS, FeatureRepo } from "src/repository/Feature.js";
+import { FEATURE_STATUS, FeatureRepo } from "../../repository/Feature.js";
 import { FindManyOptions, LessThan } from "typeorm";
 import { AccountRepo } from "../../repository/Account.js";
 import { FUNDING_STATUS, FundingRepo } from "../../repository/Funding.js";
@@ -16,7 +16,7 @@ class FeaturePaymentCrono extends CronoService {
 			name: "payments-crono",
 			/** ogni quanto tempo controllo le FEATURES */
 			delay: 1000 * 60 * 10, // ogni 10 minuti
-			/** il tempo che deve passare dopo il COMPLETE per far partire i pagamenti */
+			/** il tempo (ms) che deve passare dopo il COMPLETE per far partire i pagamenti */
 			delayComplete: 1000 * 60 * 60 * 24,
 			funding_repo: "/typeorm/fundings",
 			account_repo: "/typeorm/accounts",
