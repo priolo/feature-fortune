@@ -23,3 +23,4 @@ node_modules
 
 # Explicitly allow dist directory to be committed
 !dist/
+!dist/**/*.map
