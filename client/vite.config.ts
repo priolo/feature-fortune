@@ -10,6 +10,7 @@ export default defineConfig (( ) => {
     console.log(isDesktop)
 
     return {
+        base: '/app/',
         plugins: [react()],
         build: {
             outDir: isDesktop ? './dist-app' : 'dist',
