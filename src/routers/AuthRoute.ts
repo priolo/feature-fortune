@@ -1,9 +1,8 @@
 import { Bus, httpRouter, jwt, typeorm } from "@priolo/julian";
 import crypto from "crypto";
 import { Request, Response } from "express";
-import { Actions } from "../services/email/EmailService.js";
 import { FindManyOptions } from "typeorm";
-import { AccountRepo, accountSendable, EMAIL_CODE, JWTPayload } from "../repository/Account.js";
+import { AccountRepo, accountSendable, JWTPayload } from "../repository/Account.js";
 import { ENV_TYPE } from "../types/env.js";
 
 
@@ -162,7 +161,7 @@ class AuthRoute extends httpRouter.Service {
 
 		// inserisco user nel payload jwt
 		const jwtService = this.nodeByPath<httpRouter.jwt.Service>("/http/route/route-jwt")
-		const token = await jwtService.putPayload(user, res)
+		const token = await jwtService.putPayload(user, res as any)
 		res.json({ token })
 	}
 }
