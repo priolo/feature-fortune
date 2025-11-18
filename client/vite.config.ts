@@ -20,11 +20,11 @@ export default defineConfig(({ mode }) => {
             sourcemap: true, // Genera i file .map per il debug
             minify: false, // Disabilita la minificazione per codice leggibile
             rollupOptions: {
-                input: "index.html",
+                //input: "index.html",
                 preserveEntrySignatures: 'strict',
                 output: {
                     preserveModules: true, // Mantiene i file separati
-                    preserveModulesRoot: 'src', // Mantiene la struttura src/
+                    //preserveModulesRoot: 'src', // Mantiene la struttura src/
                     // entryFileNames: 'assets/[name].[hash].js',
                     // chunkFileNames: 'assets/[name].[hash].js',
                     // assetFileNames: 'assets/[name].[hash].[ext]',
