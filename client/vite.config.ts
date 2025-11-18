@@ -5,37 +5,23 @@ import path from 'path'
 
 
 // https://vitejs.dev/config/
-export default defineConfig(() => {
+export default defineConfig (( ) => {
+    const isDesktop = process.env.VITE_TARGET == "desktop"
+    console.log(isDesktop)
+
     return {
-        base: '/app/',
         plugins: [react()],
+        base: "./",
         build: {
-            outDir: 'dist',
+            outDir: isDesktop ? './dist-app' : 'dist',
             sourcemap: true,
-            minify: false, // Disabilita la minificazione per debug più facile
-            rollupOptions: {
-                preserveEntrySignatures: 'strict',
-                output: {
-                    // Mantieni i nomi dei file originali
-                    preserveModules: true,
-                    preserveModulesRoot: 'src',
-                }
-            }
         },
         resolve: {
             alias: {
-                '@': path.resolve(__dirname, './src')
+                '@': path.resolve(__dirname, './src'),
+                'react': path.resolve(__dirname, './node_modules/react'),
+                'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
             }
-        },
-        server: {
-            proxy: {
-                '/api': {
-                    target: 'http://localhost:3000', // Sostituisci con la porta del tuo server API
-                    changeOrigin: true,
-                    //rewrite: (path) => path.replace(/^\/api/, ''), // Opzionale: riscrivi il percorso se necessario
-                },
-            },
-        },
-        
+        }
     }
 })
