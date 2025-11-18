@@ -12,6 +12,15 @@ export default defineConfig(() => {
         build: {
             outDir: 'dist',
             sourcemap: true,
+            minify: false, // Disabilita la minificazione per debug più facile
+            rollupOptions: {
+                preserveEntrySignatures: 'strict',
+                output: {
+                    // Mantieni i nomi dei file originali
+                    preserveModules: true,
+                    preserveModulesRoot: 'src',
+                }
+            }
         },
         resolve: {
             alias: {
