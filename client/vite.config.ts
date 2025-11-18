@@ -5,25 +5,14 @@ import path from 'path'
 
 
 // https://vitejs.dev/config/
-export default defineConfig (( ) => {
-    const isDesktop = process.env.VITE_TARGET == "desktop"
-    console.log(isDesktop)
+export default defineConfig(() => {
 
     return {
-        base: '/app/',
         plugins: [react()],
+        base: '/app/',
         build: {
-            outDir: isDesktop ? './dist-app' : 'dist',
-            sourcemap: true,
-            minify: false,
-            rollupOptions: {
-                preserveEntrySignatures: 'strict',
-                output: {
-                    // Mantieni i nomi dei file originali
-                    preserveModules: true,
-                    preserveModulesRoot: 'src',
-                }
-            }
+            outDir: 'dist',
+            sourcemap: "inline" as any,
         },
         resolve: {
             alias: {
