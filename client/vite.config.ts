@@ -15,6 +15,15 @@ export default defineConfig (( ) => {
         build: {
             outDir: isDesktop ? './dist-app' : 'dist',
             sourcemap: true,
+            minify: false,
+            rollupOptions: {
+                preserveEntrySignatures: 'strict',
+                output: {
+                    // Mantieni i nomi dei file originali
+                    preserveModules: true,
+                    preserveModulesRoot: 'src',
+                }
+            }
         },
         resolve: {
             alias: {
