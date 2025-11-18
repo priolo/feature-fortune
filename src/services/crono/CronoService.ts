@@ -5,6 +5,12 @@ import { ServiceBase } from "@priolo/julian";
 type State = Partial<CronoService['stateDefault']>
 export type CronoServiceConf = Partial<State>
 
+export enum CRONO_STATUS {
+	STOPPED = "stopped",
+	RUNNING = "running",
+}
+
+
 abstract class CronoService extends ServiceBase {
 
 	get stateDefault() {
@@ -12,12 +18,15 @@ abstract class CronoService extends ServiceBase {
 			...super.stateDefault,
 			delay: 1000 * 60 * 5, // each 5 minutes
 			autoStart: true,
+			status: CRONO_STATUS.STOPPED,
 		}
 	}
 	declare state: typeof this.stateDefault
 
 	/** Timeout handle for scheduling the next tick */
 	private timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+	
 
 	/** funzione da implementare con la logica da eseguire ad ogni tick */
 	protected abstract onCronoTick(): Promise<void> | void;
@@ -51,26 +60,33 @@ abstract class CronoService extends ServiceBase {
 
 
 	/** avvia il CRONO */
-	protected startCrono(): void {
-		this.stopCrono()
+	startCrono(): void {
+		this.clearCrono()
 		this.timeoutId = setTimeout(async () => {
 			try {
 				await this.onCronoTick()
 			} catch (error) {
 				console.error("Error in startCrono:", error)
 			} finally {
+				if ( this.state.status == CRONO_STATUS.STOPPED ) return
 				this.startCrono()
 			}
 		}, this.state.delay)
+		this.state.status = CRONO_STATUS.RUNNING
 	}
 
 	/** ferma il CRONO */
-	protected stopCrono(): void {
+	stopCrono(): void {
+		this.clearCrono()
+		this.state.status = CRONO_STATUS.STOPPED
+	}
+
+	private clearCrono(): void {
 		if (!this.timeoutId) return
 		clearTimeout(this.timeoutId);
 		this.timeoutId = null;
 	}
-	
+
 }
 
 export default CronoService;

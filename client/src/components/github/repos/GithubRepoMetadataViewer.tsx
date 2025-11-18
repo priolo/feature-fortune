@@ -26,7 +26,7 @@ const GithubRepoMetadataViewer: React.FC<Props> = ({
     </MessageBanner>
 
     return (
-        <Box sx={{ ...sxRoot, ...sx }}>
+        <Box sx={{ ...sxRoot, ...sx } as SxProps}>
 
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                 <Avatar

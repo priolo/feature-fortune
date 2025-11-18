@@ -46,6 +46,11 @@ describe("FEATURE CRONO", () => {
 				completedAt: new Date(),
 			}
 		})
+
+		const node = root.nodeByPath<FeaturePaymentCrono>("/typeorm/features")
+
+		console.log( node)
+
 		// Create the FUNDINGS
 		const funding1 = await new Bus(root, "/typeorm/fundings").dispatch<FeatureRepo>({
 			type: typeorm.Actions.SAVE,
@@ -72,10 +77,13 @@ describe("FEATURE CRONO", () => {
 		const paymentCronoService = root.nodeByPath<FeaturePaymentCrono>("/payments-crono")!
 		paymentCronoService.setState({ 
 			delay: 1000, 			// contollo
-			delayComplete: 1500, 	// tempo dopo COMPLATE per cui bisogna PAID
+			delayComplete: 1200, 	// tempo dopo COMPLATE per cui bisogna PAID
 		})
 
-		await new Promise((resolve) => setTimeout(resolve, 400000000));
+
+		await new Promise((resolve) => setTimeout(resolve, 3000));
+
+		
 
 		// check id FEATURE is change in PAID
 		const featureUpdated = await new Bus(root, "/typeorm/features").dispatch<FeatureRepo>({
@@ -95,9 +103,8 @@ describe("FEATURE CRONO", () => {
 			type: typeorm.Actions.GET_BY_ID,
 			payload: funding2.id!,
 		})
-		expect(funding2Updated.status).toBe(FUNDING_STATUS.PAYABLE);
+		expect(funding2Updated.status).toBe(FUNDING_STATUS.PAIED);
 
-	}, 100000);
-
+	}, 10000);
 
 });

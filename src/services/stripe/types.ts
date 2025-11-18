@@ -1,6 +1,9 @@
 
 export enum Actions {
-	/** execute a memorized payment  */
+	/** 
+	 * execute a memorized payment  
+	 * payload: PaymentIntentData
+	 **/
 	PAYMENT_EXECUTE = "stripe:payment:execute",
 
 	/** get o create new if not exist */

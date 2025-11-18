@@ -6,7 +6,7 @@ import { Actions, PaymentIntentData } from "./types.js";
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
-class StripeService extends ServiceBase {
+class StripeServiceMock extends ServiceBase {
 
 	get stateDefault() {
 		return {
@@ -106,23 +106,27 @@ class StripeService extends ServiceBase {
 	 * Execute a memorized payment
 	 */
 	async executePayment(data: PaymentIntentData): Promise<Stripe.PaymentIntent> {
-		return await stripe.paymentIntents.create(
-			{
-				amount: data.amount,
-				currency: data.currency,
-				customer: data.customer,
-				payment_method: data.paymentMethod,
-				off_session: true,
-				confirm: true,
-				// transfer_data: {
-				// 	destination: data.destination,
-				// },
-			},
-			{
-				// definisce che la transazione viene eseguita per conto di un ACCOUNT CONNECTED
-				stripeAccount: data.destination,
-			}
-		)
+		return { 
+			id: "pi_test" 
+		} as any
+		
+		// return await stripe.paymentIntents.create(
+		// 	{
+		// 		amount: data.amount,
+		// 		currency: data.currency,
+		// 		customer: data.customer,
+		// 		payment_method: data.paymentMethod,
+		// 		off_session: true,
+		// 		confirm: true,
+		// 		// transfer_data: {
+		// 		// 	destination: data.destination,
+		// 		// },
+		// 	},
+		// 	{
+		// 		// definisce che la transazione viene eseguita per conto di un ACCOUNT CONNECTED
+		// 		stripeAccount: data.destination,
+		// 	}
+		// )
 	}
 
 
@@ -193,6 +197,6 @@ class StripeService extends ServiceBase {
 }
 
 
-export default StripeService
+export default StripeServiceMock
 
 

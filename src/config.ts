@@ -24,9 +24,10 @@ import FeaturePaymentCrono from "./services/crono/FeaturePaymentCrono.js";
 import EmailService from "./services/email/EmailService.js";
 import ReflectionRoute from "./services/reflection/ReflectionRoute.js";
 import StripeService from "./services/stripe/StripeService.js";
-import { envInit } from "./types/env.js";
+import { ENV_TYPE, envInit } from "./types/env.js";
 import GithubRoute from "./routers/GithubRoute.js";
 import AccountRoute from "./routers/AccountRoute.js";
+import StripeServiceMock from "./services/stripe/StripeServiceMock.js";
 
 
 
@@ -60,7 +61,9 @@ function buildNodeConfig(params?: ConfigParams) {
 		},
 
 		{
-			class: StripeService,
+			class: process.env.NODE_ENV != ENV_TYPE.TEST 
+				? StripeService 
+				: StripeServiceMock,
 		},
 
 		{

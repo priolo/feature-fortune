@@ -33,7 +33,7 @@ class FeaturePaymentCrono extends CronoService {
 	/**
 	 * Cerco tutte le FEATURE COMPLETED da 24 ore quindi pago tutti i FUNDING collegati
 	 */
-	private async payAllCompleted() {
+	async payAllCompleted() {
 
 		// prelevo tutte le FEATURE COMPLETED da più di 24 ore
 		const featuresCompleted = await new Bus(this, this.state.feature_repo).dispatch({
@@ -51,7 +51,8 @@ class FeaturePaymentCrono extends CronoService {
 
 		// setto tutti i FUNDING allo status = PAYABLE
 		for (const feature of featuresCompleted) {
-			// agiorno tutti i suoi FUNDING a PAYABLE
+
+			// aggiorno tutti i suoi FUNDING a PAYABLE
 			await new Bus(this, this.state.funding_repo).dispatch({
 				type: typeorm.Actions.UPDATE,
 				payload: {
@@ -64,14 +65,16 @@ class FeaturePaymentCrono extends CronoService {
 					},
 				},
 			})
+
 			// aggiorno la FEATURE a PAID
-			await new Bus(this, this.state.feature_repo).dispatch({
+			const ret = await new Bus(this, this.state.feature_repo).dispatch({
 				type: typeorm.Actions.SAVE,
 				payload: {
 					id: feature.id,
 					status: FEATURE_STATUS.PAID,
 				}
 			})
+			console.log(ret)
 		}
 
 		
@@ -111,8 +114,8 @@ class FeaturePaymentCrono extends CronoService {
 
 		// check
 		if (!funding) throw new Error("Funding not found");
-		// *** DA RIPRISTINARE!!! ***
-		//if (funding.status !== FUNDING_STATUS.PENDING) throw new Error("Funding not pending");
+		if (funding.status !== FUNDING_STATUS.PAYABLE) throw new Error("Funding not payable");
+
 
 		// recupero l'id ACCOUNT di chi deve ricevere i soldi (sarebbe il DEV dell FEATURE)
 		const dev: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
