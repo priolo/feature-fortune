@@ -1,0 +1,27 @@
+import ajax from '../plugins/AjaxService-B27u9Z3Z.js';
+
+function create(opt) {
+  return ajax.post(`payments`, null, opt);
+}
+function saveCard(paymentMethodId, opt) {
+  return ajax.post(
+    `payments/card`,
+    { paymentMethodId },
+    opt
+  );
+}
+function remove(opt) {
+  return ajax.delete(`payments`, null, opt);
+}
+function get(opt) {
+  return ajax.get(`payments`, opt);
+}
+const paymentApi = {
+  create,
+  saveCard,
+  remove,
+  get
+};
+
+export { paymentApi as default };
+//# sourceMappingURL=payment-DJicM-q8.js.map

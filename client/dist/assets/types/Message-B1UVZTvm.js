@@ -1,0 +1,8 @@
+var MESSAGE_ROLE = /* @__PURE__ */ ((MESSAGE_ROLE2) => {
+  MESSAGE_ROLE2[MESSAGE_ROLE2["SENDER"] = 1] = "SENDER";
+  MESSAGE_ROLE2[MESSAGE_ROLE2["RECEIVER"] = 2] = "RECEIVER";
+  return MESSAGE_ROLE2;
+})(MESSAGE_ROLE || {});
+
+export { MESSAGE_ROLE };
+//# sourceMappingURL=Message-B1UVZTvm.js.map
