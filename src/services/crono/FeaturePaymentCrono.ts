@@ -114,7 +114,7 @@ class FeaturePaymentCrono extends CronoService {
 
 		// check
 		if (!funding) throw new Error("Funding not found");
-		if (funding.status !== FUNDING_STATUS.PAYABLE) throw new Error("Funding not payable");
+		//if (funding.status !== FUNDING_STATUS.PAYABLE) throw new Error("Funding not payable");
 
 
 		// recupero l'id ACCOUNT di chi deve ricevere i soldi (sarebbe il DEV dell FEATURE)

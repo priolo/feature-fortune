@@ -133,8 +133,8 @@ class StripeService extends ServiceBase {
 		const { email, accountId } = data
 		try {
 			const account = await stripe.accounts.create({
-				//type: "standard",
-				type: "express",
+				type: "standard",
+				//type: "express",
 
 				email: email,
 
