@@ -155,7 +155,8 @@ Se verrà accettata dopo 24 ore avverrà il pagamento.`,
 	const isAuthor = logged && (isNew || feature?.accountId == authSo.state.user?.id)
 	const isDeveloper = logged && (
 		featureLoaded?.accountDevId == authSo.state.user?.id
-		|| (featureLoaded?.accountDevId == null && featureLoaded?.githubDevId == authSo.state.user?.githubId)
+		// se non c'e l'accountDevId, controllo githubId
+		|| (featureLoaded?.accountDevId == null && !!authSo.state.user?.githubId && featureLoaded?.githubDevId == authSo.state.user?.githubId)
 	)
 
 	return <>

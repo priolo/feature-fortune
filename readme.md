@@ -50,7 +50,7 @@ https://feature-fortune.onrender.com/app/
 - "local"  
 http://localhost:3000/api/auth/github/callback  
 - "render"  
-https://feature-fortune.onrender.com/api/auth/github/callback  
+https://feature-fortune.onrender.com/api/auth/github/callback
 
 
 
@@ -87,13 +87,13 @@ https://feature-fortune.onrender.com/api/auth/google/callback
 prendere le key test da:
 [https://dashboard.stripe.com/acct_1SHgW43sTEVFLjPv/test/apikeys]
 #### BE .env
-`STRIPE_API_KEY=sk_test_... < Chiavi standard / Chiave privata >`
+`STRIPE_API_KEY=sk_test_... < Panoramica / Chiave privata >`
 
 
 #### WEBHOOK [BE:STRIPE_WEBHOOK_SECRET]
 vai in:   
 [https://dashboard.stripe.com/acct_1SHgW43sTEVFLjPv/test/workbench/webhooks]  
-"Sviluppatori / Endpoint dei webhook / Aggiungi"  
+"Sviluppatori (drawer in basso) / Endpoint dei webhook / Aggiungi"  
 Aggiungere endpoint:  
 `https://feature-fortune.onrender.com/api/stripe/webhook`  
 copiare "Chiave privata della firma digitale"  
@@ -102,4 +102,4 @@ copiare "Chiave privata della firma digitale"
 `STRIPE_WEBHOOK_SECRET=whsec_... < Endpoint / Chiave privata della firma digitale >`  
 
 ### FE .env
-`VITE_STRIPE_PUBLISHABLE_KEY=pk_test_... < Chiavi standard / Chiave pubblicabile >`
+`VITE_STRIPE_PUBLISHABLE_KEY=pk_test_... < Panoramica / Chiave pubblicabile >`
