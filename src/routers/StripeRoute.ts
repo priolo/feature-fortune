@@ -47,7 +47,7 @@ class StripeRoute extends httpRouter.Service {
 	}
 
 	/**
-	 * link per registrazione STRIPE-EXPRESS dell AUTHOR 
+	 * link per registrazione STRIPE-STANDARD dell AUTHOR 
 	 */
 	async registerLink(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
@@ -133,21 +133,10 @@ class StripeRoute extends httpRouter.Service {
 			const deletedAccount = await stripe.accounts.del(user.stripeAccountId);
 
 			if (deletedAccount.deleted) {
-
-				await new Bus(this, this.state.account_repo).dispatch({
-					type: typeorm.Actions.SAVE,
-					payload: <AccountRepo>{
-						id: user.id,
-						stripeAccountId: null,
-						stripeAccountStatus: null,
-					},
-				});
-
 				res.status(200).json({
 					message: "Stripe account successfully deleted and unlinked",
 					deletedAccountId: user.stripeAccountId
 				});
-
 			} else {
 				throw new Error("Account deletion failed - Stripe returned deleted: false");
 			}
@@ -158,12 +147,21 @@ class StripeRoute extends httpRouter.Service {
 				stripeError: error.message || "Unknown error",
 				accountId: user.stripeAccountId
 			});
+
+		} finally {
+
+			await new Bus(this, this.state.account_repo).dispatch({
+				type: typeorm.Actions.SAVE,
+				payload: <AccountRepo>{
+					id: user.id,
+					stripeAccountId: null,
+					stripeAccountStatus: null,
+				},
+			});
+
 		}
 	}
 
 }
 
-
 export default StripeRoute
-
-

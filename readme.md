@@ -93,10 +93,17 @@ prendere le key test da:
 #### WEBHOOK [BE:STRIPE_WEBHOOK_SECRET]
 vai in:   
 [https://dashboard.stripe.com/acct_1SHgW43sTEVFLjPv/test/workbench/webhooks]  
-"Sviluppatori (drawer in basso) / Endpoint dei webhook / Aggiungi"  
-Aggiungere endpoint:  
+Panoramica / Strumenti per test / Chiave privata
+#### BE .env
+`STRIPE_API_KEY=sk_test_... < Panoramica / Chiave privata >`  
+
+
+
+Sviluppatori (drawer in basso) / Webhook
+se devi agguingere un webhook: "Destinazioni eventi"
 `https://feature-fortune.onrender.com/api/stripe/webhook`  
 copiare "Chiave privata della firma digitale"  
+mettere in .env STRIPE_WEBHOOK_SECRET
 
 #### BE .env
 `STRIPE_WEBHOOK_SECRET=whsec_... < Endpoint / Chiave privata della firma digitale >`  

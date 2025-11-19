@@ -141,10 +141,10 @@ class StripeService extends ServiceBase {
 
 				// Precompili i dati del profilo business
 				business_profile: {
-					name: 'Nome Del Finanziato',
+					name: 'DONAZIONE',
 					url: url, // è il github del profilo
 					mcc: '5734', // Codice categoria merceologica (es. software, servizi, etc.) - Stripe non lo chiederà
-					product_description: 'Servizi di consulenza finanziaria' // Precompilato
+					product_description: 'Piattaforma di donazioni per progetti open source',
 
 				},
 
@@ -160,7 +160,7 @@ class StripeService extends ServiceBase {
 					card_payments: { requested: true },
 					transfers: { requested: true },
 				},
-				
+
 				metadata: {
 					accountId: accountId
 				}
