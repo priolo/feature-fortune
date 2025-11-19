@@ -30,8 +30,8 @@ class StripeService extends ServiceBase {
 
 			[Actions.PAYMENT_EXECUTE]: (data: PaymentIntentData) => this.executePayment(data),
 
-			[Actions.EXPRESS_ACCOUNT_CREATE]: (data: { email: string, accountId: string }) => this.expressAccountCreate(data),
-			[Actions.EXPRESS_ACCOUNT_URL]: (stripeAccountId: string) => this.expressAccountUrl(stripeAccountId),
+			[Actions.ACCOUNT_CREATE]: (data: { email: string, accountId: string }) => this.accountCreate(data),
+			[Actions.ACCOUNT_URL]: (stripeAccountId: string) => this.accountUrl(stripeAccountId),
 		}
 	}
 
@@ -129,38 +129,38 @@ class StripeService extends ServiceBase {
 	/**
 	 * Create a express account for AUTHOR
 	 */
-	async expressAccountCreate(data: { email: string, accountId: string }): Promise<Stripe.Account> {
-		const { email, accountId } = data
+	async accountCreate(data: CreateAccountParams): Promise<Stripe.Account> {
+		const { name, email, accountId, url } = data
 		try {
 			const account = await stripe.accounts.create({
 				type: "standard",
-				//type: "express",
 
 				email: email,
+				business_type: "individual",
+				country: 'IT',
 
-				//country: "IT",
-				//business_type: "individual",
+				// Precompili i dati del profilo business
+				business_profile: {
+					name: 'Nome Del Finanziato',
+					url: url, // è il github del profilo
+					mcc: '5734', // Codice categoria merceologica (es. software, servizi, etc.) - Stripe non lo chiederà
+					product_description: 'Servizi di consulenza finanziaria' // Precompilato
 
-				// controller: {
-				// 	// Account è responsabile dei pagamenti delle commissioni
-				// 	fees: {
-				// 		payer: 'account'
-				// 	},
-				// 	// Stripe è responsabile per le perdite/negativi
-				// 	losses: {
-				// 		payments: 'stripe'
-				// 	},
-				// 	// Stripe gestisce la raccolta dei requisiti
-				// 	requirement_collection: 'stripe',
-				// 	// Dashboard Express per l'utente
-				// 	// stripe_dashboard: {
-				// 	// 	type: 'express'
-				// 	// }
-				// },
+				},
+
+				// Se hai già dati anagrafici, passali qui (Stripe li verificherà ma l'utente non deve riscriverli)
+				individual: {
+					first_name: name,
+					//last_name: 'Rossi',
+					email: email,
+					//phone: '+393331234567'
+				},
+				
 				capabilities: {
 					card_payments: { requested: true },
 					transfers: { requested: true },
 				},
+				
 				metadata: {
 					accountId: accountId
 				}
@@ -175,7 +175,7 @@ class StripeService extends ServiceBase {
 	/**
 	 * Create a express account link for AUTHOR
 	 */
-	async expressAccountUrl(stripeAccountId: string): Promise<string> {
+	async accountUrl(stripeAccountId: string): Promise<string> {
 		try {
 			const accountLink = await stripe.accountLinks.create({
 				account: stripeAccountId,
@@ -196,3 +196,9 @@ class StripeService extends ServiceBase {
 export default StripeService
 
 
+export type CreateAccountParams = {
+	name?: string,
+	email?: string,
+	accountId?: string,
+	url?: string,
+}

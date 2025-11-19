@@ -78,10 +78,12 @@ class StripeRoute extends httpRouter.Service {
 		// se l'account non ha ancora uno stripe account lo creo
 		if (!user.stripeAccountId) {
 			const stripeAccount = await new Bus(this, this.state.stripe_service).dispatch({
-				type: Actions.EXPRESS_ACCOUNT_CREATE,
+				type: Actions.ACCOUNT_CREATE,
 				payload: {
+					name: user.name,
 					email: email,
-					accountId: userJwt.id
+					accountId: userJwt.id,
+					url: user.githubId ? `${process.env.FRONTEND_URL}/profile/${user.githubId}` : undefined,
 				}
 			})
 			if (!stripeAccount.id) return res.status(500).json({ error: "Stripe account not created" });
@@ -99,7 +101,7 @@ class StripeRoute extends httpRouter.Service {
 
 		// creo il link per la registrazione
 		const url = await new Bus(this, this.state.stripe_service).dispatch({
-			type: Actions.EXPRESS_ACCOUNT_URL,
+			type: Actions.ACCOUNT_URL,
 			payload: user.stripeAccountId!
 		})
 

@@ -19,13 +19,13 @@ export enum Actions {
 	/** remove all payment method for a CUTOMER */
 	PAYMENT_METHOD_REMOVE_ALL = "stripe:payment:remove-all",
 	/**
-	 * Create a express account URL
+	 * Create a STANDARD account URL
 	 * for register in STRIPE web-app for AUTHOR
 	 * this for receive moneys
 	 * Registration completion is notified in the WEBHOOK
 	 */
-	EXPRESS_ACCOUNT_CREATE = "stripe:express:create",
-	EXPRESS_ACCOUNT_URL = "stripe:express:url",
+	ACCOUNT_CREATE = "stripe:account:create",
+	ACCOUNT_URL = "stripe:account:url",
 }
 
 /**
