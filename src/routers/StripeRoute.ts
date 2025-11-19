@@ -37,8 +37,13 @@ class StripeRoute extends httpRouter.Service {
 		let { fundingId }: { fundingId: string } = req.body
 		if (!fundingId) return
 		const paymentCronoService = this.nodeByPath(this.state.payment_service) as PaymentCrono
-		const funding = await paymentCronoService.paymentFunding(fundingId)
-		res.json({ funding })
+
+		try {
+			const funding = await paymentCronoService.paymentFunding(fundingId)
+			res.json({ funding })
+		} catch (error) {
+			res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+		}
 	}
 
 	/**

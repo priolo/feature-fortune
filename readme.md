@@ -54,7 +54,7 @@ https://feature-fortune.onrender.com/api/auth/github/callback
 
 
 
-### GOOGLE CLOUD
+## GOOGLE CLOUD
 
 [https://console.cloud.google.com/auth/clients/545902107281-qgd4s1enct9mcq4qh3vpccn45uocdk9s.apps.googleusercontent.com?project=feature-fortune]  
 
@@ -81,7 +81,7 @@ https://feature-fortune.onrender.com/api/auth/google/callback
 
 
 
-### STRIPE
+## STRIPE
 
 #### API KEYS [BE:STRIPE_API_KEY]
 prendere le key test da:
