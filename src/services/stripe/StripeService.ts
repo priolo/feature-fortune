@@ -106,20 +106,61 @@ class StripeService extends ServiceBase {
 	 * Execute a memorized payment
 	 */
 	async executePayment(data: PaymentIntentData): Promise<Stripe.PaymentIntent> {
+
+		// Creiamo una copia del metodo di pagamento sull'account del venditore
+		const clonedPaymentMethod = await stripe.paymentMethods.create(
+			{
+				customer: data.customer,       // ID Customer sulla TUA Platform
+				payment_method: data.paymentMethod, // ID PaymentMethod sulla TUA Platform
+			},
+			{
+				stripeAccount: data.destination, // ID Account Venditore
+			}
+		);
+		return await stripe.paymentIntents.create(
+			{
+				amount: data.amount,
+				currency: data.currency,
+
+				// Usiamo il metodo appena clonato
+				payment_method: clonedPaymentMethod.id,
+
+				// IMPORTANTE: NON specificare il parametro 'customer'.
+				// Non collegando questo pagamento a un Customer ID dell'account venditore,
+				// il metodo di pagamento non viene salvato nel "portafoglio" del venditore.
+				// Risulterà come un pagamento "Guest" (Ospite).
+
+				off_session: true,
+				confirm: true,
+
+				// Qui definisci SOLO il tuo guadagno netto.
+				// Esempio: Se amount è 100€ e tu vuoi 10€, metti 1000.
+				// Stripe toglierà a data.destination:
+				// 1. I 10€ che vanno a te
+				// 2. Le commissioni Stripe (es. 1.4% + 0.25€)
+				//application_fee_amount: 500, // La tua commissione
+			},
+			{
+				stripeAccount: data.destination, // Eseguito sul conto del venditore
+			}
+		);
 		return await stripe.paymentIntents.create(
 
-			// {
-			// 	amount: data.amount,
-			// 	currency: data.currency,
-			// 	customer: data.customer,
-			// 	payment_method: data.paymentMethod,
-			// 	off_session: true,
-			// 	confirm: true,
-			// },
-			// {
-			// 	// definisce che la transazione viene eseguita per conto di un ACCOUNT CONNECTED
-			// 	stripeAccount: data.destination,
-			// }
+			{
+				amount: data.amount,
+				currency: data.currency,
+				customer: data.customer,
+				payment_method: data.paymentMethod,
+				off_session: true,
+				confirm: true,
+			},
+			{
+				// definisce che la transazione viene eseguita per conto di un ACCOUNT CONNECTED
+				stripeAccount: data.destination,
+			}
+
+		)
+		return await stripe.paymentIntents.create(
 
 			{
 				amount: data.amount,
@@ -135,7 +176,7 @@ class StripeService extends ServiceBase {
 				// anche se tecnicamente il pagamento passa dalla piattaforma.
 				on_behalf_of: data.destination,
 			},
-			
+
 		)
 	}
 
