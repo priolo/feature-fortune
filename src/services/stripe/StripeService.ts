@@ -107,6 +107,20 @@ class StripeService extends ServiceBase {
 	 */
 	async executePayment(data: PaymentIntentData): Promise<Stripe.PaymentIntent> {
 		return await stripe.paymentIntents.create(
+
+			// {
+			// 	amount: data.amount,
+			// 	currency: data.currency,
+			// 	customer: data.customer,
+			// 	payment_method: data.paymentMethod,
+			// 	off_session: true,
+			// 	confirm: true,
+			// },
+			// {
+			// 	// definisce che la transazione viene eseguita per conto di un ACCOUNT CONNECTED
+			// 	stripeAccount: data.destination,
+			// }
+
 			{
 				amount: data.amount,
 				currency: data.currency,
@@ -114,14 +128,14 @@ class StripeService extends ServiceBase {
 				payment_method: data.paymentMethod,
 				off_session: true,
 				confirm: true,
-				// transfer_data: {
-				// 	destination: data.destination,
-				// },
+				transfer_data: {
+					destination: data.destination,
+				},
+				// Questo sposta la responsabilità legale e dei chargeback sul venditore,
+				// anche se tecnicamente il pagamento passa dalla piattaforma.
+				on_behalf_of: data.destination,
 			},
-			{
-				// definisce che la transazione viene eseguita per conto di un ACCOUNT CONNECTED
-				stripeAccount: data.destination,
-			}
+			
 		)
 	}
 
@@ -155,7 +169,7 @@ class StripeService extends ServiceBase {
 					email: email,
 					//phone: '+393331234567'
 				},
-				
+
 				capabilities: {
 					card_payments: { requested: true },
 					transfers: { requested: true },
