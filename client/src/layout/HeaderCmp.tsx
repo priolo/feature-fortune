@@ -1,9 +1,10 @@
 import FeatureListHeader from '@/pages/feature/list/ListHeader';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
-import { Box, SxProps, IconButton, Tooltip, Button } from '@mui/material';
+import messageListSo from '@/stores/message/list';
+import { Box, SxProps, IconButton, Tooltip, Button, Badge } from '@mui/material';
 import { Mail as MailIcon } from '@mui/icons-material';
 import { useStore } from '@priolo/jon';
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserCmp from './UserCmp';
 import FeatureDetailHeader from '@/pages/feature/detail/DetailHeader';
@@ -21,9 +22,18 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 
 	// STORES
 	useStore(locationSo)
+	useStore(messageListSo)
 
 	// HOOKS
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		messageListSo.fetchUnreadCount();
+		const interval = setInterval(() => {
+			messageListSo.fetchUnreadCount();
+		}, 60000);
+		return () => clearInterval(interval);
+	}, []);
 
 	const header = useMemo(() => {
 		return {
@@ -59,14 +69,17 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 
 			<Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 1 }}>
 
-				<Tooltip title="Messages">
-					<IconButton onClick={handleMessagesClick} color="inherit" size="medium">
+
+				<IconButton color="inherit" size="medium"
+					onClick={handleMessagesClick}
+				>
+					<Badge badgeContent={messageListSo.state.unreadCount} color="error">
 						<MailIcon />
-					</IconButton>
-				</Tooltip>
+					</Badge>
+				</IconButton>
 
 				<UserCmp />
-				
+
 			</Box>
 
 		</Box>

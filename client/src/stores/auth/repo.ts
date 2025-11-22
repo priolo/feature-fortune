@@ -3,6 +3,7 @@ import authEmailApi from "@/api/authEmail";
 import { Account } from "@/types/Account.js";
 import { StoreCore, createStore } from "@priolo/jon";
 import { loadStripe } from "@stripe/stripe-js";
+import i18n from "@/plugins/i18n";
 
 
 
@@ -19,6 +20,8 @@ const setup = {
 	state: {
 		token: <string>null,
 		user: <Account>null,
+
+		userInEdit: <Partial<Account>>null,
 
 		clientSecret: <string>null,
 	},
@@ -42,6 +45,20 @@ const setup = {
 			store.setUser(user)
 		},
 
+		update: async (_: void, store?: AuthStore) => {
+			if ( !store.state.userInEdit?.name ) return
+			const newAccount: Partial<Account> = {
+				name: store.state.userInEdit?.name,
+				language: store.state.userInEdit?.language ?? undefined,
+			}
+			const updateAccount = (await authApi.update(newAccount))?.account
+			store.setUser({
+				...store.state.user,
+				...newAccount,
+			})
+		},
+
+
 
 
 		/**
@@ -50,14 +67,14 @@ const setup = {
 		emailSendCode: async (email: string, store?: AuthStore) => {
 			await authEmailApi.emailSendCode(email)
 		},
-		emailVerifyCode : async (code: string, store?: AuthStore) => {
+		emailVerifyCode: async (code: string, store?: AuthStore) => {
 			const user = (await authEmailApi.emailVerify(code))?.user
 			store.setUser(user)
 		},
 
 
 
-		
+
 		loginWithGithub: async (_: void, store?: AuthStore) => {
 			const res = await authApi.githubLoginUrl()
 			window.location.href = `${res.url}&prompt=select_account`
@@ -115,7 +132,11 @@ const setup = {
 	},
 
 	mutators: {
-		setUser: (user:Account) => ({ user }),
+		setUser: (user: Account) => {
+			if (user?.language) i18n.changeLanguage(user.language)
+			return { user }
+		},
+		setUserInEdit: (userInEdit: Partial<Account>) => ({ userInEdit }),
 		setClientSecret: (clientSecret: string) => ({ clientSecret }),
 	},
 }

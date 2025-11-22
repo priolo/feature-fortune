@@ -11,6 +11,7 @@ import GoogleLoginCard from '../../components/google/GoogleLoginCard';
 import StripeAuthorCard from '../../components/stripe/StripeAuthorCard';
 import StripeCreditCard from '../../components/stripe/StripeCreditCard';
 import SettingsCard from './SettingsCard';
+import AccountInfoSide from './AccountInfoSide';
 
 
 
@@ -31,6 +32,13 @@ const AccountPag: React.FC<AccountPagProps> = ({
         locationSo.setCurrent(LOCATION_PAGE.Account)
     }, [])
 
+    useEffect(() => {
+        authSo.setUserInEdit({ ...authSo.state.user })
+        return () => {
+            authSo.setUserInEdit(null)
+        }
+    }, [authSo.state.user])
+
 
     // HANDLERS
     const scrollToCard = (cardId: string) => {
@@ -49,26 +57,27 @@ const AccountPag: React.FC<AccountPagProps> = ({
     }
 
     return <Framework sx={{ py: 2 }}
-        leftRender={
+        leftRender={<AccountInfoSide />}
+        rightRender={
             <Box sx={{ position: 'sticky', top: 20, pt: 2 }}>
-                <List>
+                <List dense>
+                    <ListItemButton onClick={() => scrollToCard('settings-card')}>
+                        <ListItemText primary="Settings" secondary="General account settings" />
+                    </ListItemButton>
                     <ListItemButton onClick={() => scrollToCard('email-login-card')}>
-                        <ListItemText primary="Email" />
+                        <ListItemText primary="Email" secondary="Manage email login" />
                     </ListItemButton>
                     <ListItemButton onClick={() => scrollToCard('google-login-card')}>
-                        <ListItemText primary="Google" />
+                        <ListItemText primary="Google" secondary="Link Google account" />
                     </ListItemButton>
                     <ListItemButton onClick={() => scrollToCard('github-login-card')}>
-                        <ListItemText primary="GitHub" />
+                        <ListItemText primary="GitHub" secondary="Link GitHub account" />
                     </ListItemButton>
                     <ListItemButton onClick={() => scrollToCard('stripe-credit-card')}>
-                        <ListItemText primary="Credit Card" />
+                        <ListItemText primary="Credit Card" secondary="Manage payment methods" />
                     </ListItemButton>
                     <ListItemButton onClick={() => scrollToCard('stripe-author-card')}>
-                        <ListItemText primary="Stripe Author" />
-                    </ListItemButton>
-                    <ListItemButton onClick={() => scrollToCard('settings-card')}>
-                        <ListItemText primary="Settings" />
+                        <ListItemText primary="Stripe Author" secondary="Manage payout details" />
                     </ListItemButton>
                 </List>
             </Box>
@@ -76,7 +85,7 @@ const AccountPag: React.FC<AccountPagProps> = ({
     >
 
         <SettingsCard />
-        
+
         {/* EMAIL ZONE */}
         <EmailLoginCard />
 

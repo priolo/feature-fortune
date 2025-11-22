@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
 import BackButton from '../../layout/BackButton';
-import { Add } from '@mui/icons-material';
+import { Add, Refresh } from '@mui/icons-material';
 import messageListSo from '@/stores/message/list';
 import { useSearchParams } from 'react-router-dom';
 import MessageReceiverSelector from './MessageReceiverSelector';
@@ -28,7 +28,7 @@ const MessageHeader: React.FC = () => {
 		}
 		setSearchParams({ ...params, receiver: receiverId })
 	}
-	const handleUpdateClick = () => {
+	const handleRefreshClick = () => {
 		messageListSo.fetch()
 	}
 
@@ -36,7 +36,7 @@ const MessageHeader: React.FC = () => {
 	const params = Object.fromEntries(searchParams.entries())
 	const receiverId = params.receiver ?? null
 	return <>
-		<BackButton />
+		{/* <BackButton /> */}
 
 		<Typography variant="h5">
 			MESSAGES
@@ -49,10 +49,10 @@ const MessageHeader: React.FC = () => {
 			onChange={handleReceiverChange}
 		/>
 
-		<Button variant='contained'
-			startIcon={<Add />}
-			onClick={handleUpdateClick}
-		>UPDATE</Button>
+		<Button 
+			startIcon={<Refresh />}
+			onClick={handleRefreshClick}
+		>REFRESH</Button>
 
 		<Button variant='contained'
 			startIcon={<Add />}

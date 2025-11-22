@@ -1,7 +1,6 @@
 import messageApi from "@/api/message"
 import { Message, MESSAGE_ROLE, MessageContent } from "@/types/Message"
 import { createStore, StoreCore } from "@priolo/jon"
-import authSo from "../auth/repo"
 
 
 
@@ -11,6 +10,7 @@ const setup = {
 		all: <Message[]>null,
 		selected: <Message>null,
 		receiverId: <string>null,
+		unreadCount: 0,
 	},
 
 	getters: {
@@ -21,6 +21,12 @@ const setup = {
 		async fetch(_: void, store?: MessageListStore) {
 			const messages = (await messageApi.index(MESSAGE_ROLE.RECEIVER))?.messages
 			store.setAll(messages)
+		},
+
+		async fetchIfVoid(_: void, store?: MessageListStore) {
+			if (store.state.all === null) {
+				await store.fetch()
+			}
 		},
 
 		async createAndSelect(receiverId?: string, store?: MessageListStore) {
@@ -61,12 +67,18 @@ const setup = {
 			store.setAll(store.state.all.filter(m => m.id !== messageId))
 		},
 
+		async fetchUnreadCount(_: void, store?: MessageListStore) {
+			const { count } = await messageApi.getUnreadCount({ noError: true })
+			store.setUnreadCount(count)
+		},
+
 	},
 
 	mutators: {
 		setAll: (all: Message[]) => ({ all }),
 		setSelected: (selected: Message) => ({ selected }),
-		setReceiverId: (receiverId: string) => ({ receiverId })
+		setReceiverId: (receiverId: string) => ({ receiverId }),
+		setUnreadCount: (unreadCount: number) => ({ unreadCount }),
 	},
 }
 

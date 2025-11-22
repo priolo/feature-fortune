@@ -1,5 +1,22 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
 
+declare module '@mui/material/styles' {
+	// interface Theme {
+	// 	custom: {
+	// 		myNewParam: string;
+	// 	};
+	// }
+	// // allow configuration using `createTheme`
+	// interface ThemeOptions {
+	// 	custom?: {
+	// 		myNewParam?: string;
+	// 	};
+	// }
+	interface TypeBackground {
+		input: string;
+	}
+}
+
 // Common theme options
 const commonOptions = (theme: string): ThemeOptions => ({
 	typography: {
@@ -94,6 +111,9 @@ const commonOptions = (theme: string): ThemeOptions => ({
 // Light theme
 export const lightTheme = createTheme({
 	...commonOptions("light"),
+	// custom: {
+	// 	myNewParam: 'value for light theme',
+	// },
 	palette: {
 		mode: 'light',
 		primary: {
@@ -111,6 +131,7 @@ export const lightTheme = createTheme({
 		background: {
 			default: '#f5f5f5',
 			paper: '#ffffff',
+			input: 'rgba(0, 0, 0, 0.1)',
 		},
 		text: {
 			primary: 'rgba(0, 0, 0, 0.87)',
@@ -123,6 +144,9 @@ export const lightTheme = createTheme({
 // Dark theme
 export const darkTheme = createTheme({
 	...commonOptions("dark"),
+	// custom: {
+	// 	myNewParam: 'value for dark theme',
+	// },
 	palette: {
 		mode: 'dark',
 		primary: {
@@ -140,6 +164,7 @@ export const darkTheme = createTheme({
 		background: {
 			default: '#121212',
 			paper: '#1e1e1e',
+			input: 'rgba(0, 0, 0, 0.2)',
 		},
 		text: {
 			primary: '#fff',

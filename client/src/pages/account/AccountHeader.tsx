@@ -14,7 +14,7 @@ const AccountHeader: React.FC = () => {
 	
 	// RENDER
 	return <>
-		<BackButton />
+		{/* <BackButton /> */}
 		<Typography variant="h5">
 			MY ACCOUNT
 		</Typography>

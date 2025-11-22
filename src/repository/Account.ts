@@ -15,7 +15,7 @@ export class AccountRepo {
 
 	@Column({ type: 'varchar', nullable: true })
 	name?: string;
-	@Column({ type: 'varchar', nullable: true })
+	@Column({ type: 'varchar', nullable: true, default: 'en' })
 	language?: string;
 
 	@Column({ type: 'varchar', nullable: true })
@@ -36,7 +36,7 @@ export class AccountRepo {
 	googleEmail?: string;
 
 
-	
+
 	/**
 	 * ACCOUNT GITHUB that are the owner
 	 */
@@ -70,7 +70,7 @@ export class AccountRepo {
 	stripeAccountStatus?: "pending" | "ready";
 
 	//#endregion STRIPE
-	
+
 
 }
 
@@ -81,13 +81,13 @@ export type JWTPayload = {
 }
 
 export function accountSendable(account: AccountRepo) {
-	if ( !account ) return null
-	const { id, email, name, avatarUrl, googleEmail, githubId, stripeAccountStatus, stripeAccountId } = account
+	if (!account) return null
+	const { id, name, language, email, avatarUrl, googleEmail, githubId, stripeAccountId, stripeAccountStatus } = account
 	return {
-		id, email, name, avatarUrl, googleEmail, githubId, stripeAccountId, stripeAccountStatus,
+		id, name, language, email, avatarUrl, googleEmail, githubId, stripeAccountId, stripeAccountStatus,
 
 		stripeHaveCard: !!account.stripePaymentMethodId,
-		
+
 		// se c'e' emailCode allora non e' verificata
 		emailVerified: account.emailCode == EMAIL_CODE.VERIFIED,
 	}

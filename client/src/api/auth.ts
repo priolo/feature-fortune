@@ -17,6 +17,10 @@ function logout(opt?: CallOptions): Promise<{ user: Account }> {
 	return ajax.post(`auth/logout`, null, opt)
 }
 
+/** PATCH: UPDATE */
+function update(account:Partial<Account>, opt?: CallOptions): Promise<{ account: Account }> {
+	return ajax.patch(`accounts`, { account }, opt)
+}
 
 
 
@@ -76,7 +80,7 @@ function googleDetach(opt?: CallOptions): Promise<any> {
 const authApi = {
 	current,
 	logout,
-
+	update,
 
 	githubGetAccount,
 	githubLoginUrl,

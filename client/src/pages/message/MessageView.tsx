@@ -57,7 +57,7 @@ const MessageView: React.FC<Props> = ({
 	return <>
 		<Card
 			icon={<MessageIcon />}
-			title="MESSAGE"
+			title="NEW MESSAGE"
 			titleEndRender={<>
 				<Button size="small"
 					//startIcon={<Send />}

@@ -218,10 +218,11 @@
 				}
 			},
 			"actions": {
-				"save": "SAVE"
+				"update": "UPDATE"
 			},
 			"alerts": {
-				"save_success": "Settings saved successfully!"
+				"save_success": "Settings saved successfully!",
+				"name_required": "NAME is required."
 			}
 		}
 	},

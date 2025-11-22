@@ -6,12 +6,14 @@ interface Props {
 	children?: React.ReactNode
 	sx?: SxProps
 	leftRender?: React.ReactNode
+	rightRender?: React.ReactNode
 }
 
 const Framework: React.FC<Props> = ({
 	children,
 	sx,
 	leftRender,
+	rightRender,
 }) => {
 
 	// RENDER
@@ -27,7 +29,9 @@ const Framework: React.FC<Props> = ({
 				{children}
 			</Box>
 
-			<Box sx={sxSide} />
+			<Box sx={sxSide}>
+				{rightRender}
+			</Box>
 
 		</Box>
 	)

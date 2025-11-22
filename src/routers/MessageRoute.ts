@@ -17,6 +17,7 @@ class MessageRoute extends httpRouter.Service {
 			message_content_repo: "/typeorm/messages_content",
 			routers: [
 				{ path: "/", verb: "get", method: "index" },
+				{ path: "/unread-count", verb: "get", method: "getUnreadCount" },
 				{ path: "/", verb: "post", method: "save" },
 				{ path: "/:id/read", verb: "patch", method: "markAsRead" },
 				{ path: "/:id", verb: "delete", method: "delete" },
@@ -66,6 +67,29 @@ class MessageRoute extends httpRouter.Service {
 		});
 
 		res.json({ messages });
+	}
+
+	/**
+	 * Get the number of unread messages for the logged-in user
+	 */
+	async getUnreadCount(req: Request, res: Response) {
+		const userJwt: AccountRepo = req["jwtPayload"]
+
+		const [_, count] = await new Bus(this, this.state.message_repo).dispatch({
+			type: typeorm.Actions.FIND_AND_COUNT,
+			payload: {
+				where: {
+					role: MESSAGE_ROLE.RECEIVER,
+					accountId: userJwt.id,
+					isRead: false,
+				},
+				select: {
+					id: true
+				}
+			}
+		});
+
+		res.json({ count });
 	}
 
 

@@ -22,6 +22,10 @@ function markAsRead(messageId: string, opt?: CallOptions): Promise<{ content: Me
 	return ajax.patch(`messages/${messageId}/read`, null, opt)
 }
 
+function getUnreadCount(opt?: CallOptions): Promise<{ count: number }> {
+	return ajax.get(`messages/unread-count`, opt)
+}
+
 
 
 const messageApi = {
@@ -29,5 +33,6 @@ const messageApi = {
 	save,
 	remove,
 	markAsRead,
+	getUnreadCount,
 }
 export default messageApi

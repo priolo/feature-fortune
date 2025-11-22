@@ -1,5 +1,4 @@
 import Card, { sxActionCard } from '@/components/Card';
-import MessageCmp from '@/components/MessageCmp';
 import Paragraph from '@/layout/Paragraph';
 import authSo from '@/stores/auth/repo';
 import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
@@ -27,21 +26,31 @@ const SettingsCard: React.FC<Props> = ({
     useStore(authSo)
 
     // HOOKS
-    const { i18n, t } = useTranslation();
+    const { t } = useTranslation();
 
     // HANDLERS
     const handleThemeToggle = () => {
         themeSo.toggleMode();
-    };
+    }
+    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        authSo.setUserInEdit({ ...authSo.state.userInEdit, name: event.target.value });
+    }
     const handleLanguageChange = (event: SelectChangeEvent<string>) => {
-        i18n.changeLanguage(event.target.value);
-    };
-    const handleSave = () => {
-        //authSo.saveUser();
+        authSo.setUserInEdit({ ...authSo.state.userInEdit, language: event.target.value });
+    }
+    const handleUpdate = async () => {
+        if (!authSo.state.userInEdit?.name || authSo.state.userInEdit?.name.trim() === '') {
+            dialogSo.dialogOpen({
+                type: DIALOG_TYPE.ERROR,
+                text: t('cards.SettingsCard.alerts.name_required')
+            })
+            return
+        }
+        await authSo.update()
         dialogSo.dialogOpen({
             type: DIALOG_TYPE.SUCCESS,
             text: t('cards.SettingsCard.alerts.save_success')
-        });
+        })
     }
 
 
@@ -54,13 +63,13 @@ const SettingsCard: React.FC<Props> = ({
 
             <Paragraph title={t('cards.SettingsCard.sections.name')}>
                 <TextField size="small" fullWidth
-                    value={authSo.state.user?.name ?? ''}
-                    onChange={(e) => authSo.setUser({ ...authSo.state.user, name: e.target.value })}
+                    value={authSo.state.userInEdit?.name ?? ''}
+                    onChange={handleNameChange}
                 />
             </Paragraph>
 
-            <Paragraph title={t('cards.SettingsCard.sections.theme')} sxValue={{ gap: 2 }}>
-                
+            <Paragraph title={t('cards.SettingsCard.sections.theme')} sxValue={{ gap: 1 }}>
+
                 <IconButton color="primary" size="large" sx={sxIconButtonTheme}
                     onClick={handleThemeToggle}
                 >
@@ -80,7 +89,7 @@ const SettingsCard: React.FC<Props> = ({
 
             <Paragraph title={t('cards.SettingsCard.sections.language')}>
                 <Select variant="outlined" size="small" fullWidth
-                    value={i18n.language}
+                    value={authSo.state.user.language}
                     onChange={handleLanguageChange}
                 >
                     <MenuItem value="en">English</MenuItem>
@@ -90,13 +99,13 @@ const SettingsCard: React.FC<Props> = ({
 
             <Box sx={sxActionCard}>
                 <Button
-                    onClick={handleSave}
-                >{t('cards.SettingsCard.actions.save')}</Button>
+                    onClick={handleUpdate}
+                >{t('cards.SettingsCard.actions.update')}</Button>
             </Box>
 
         </Card>
-    );
-};
+    )
+}
 
 export default SettingsCard;
 

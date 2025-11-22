@@ -17,32 +17,17 @@ const MessageCmp: React.FC<MessageCmpProps> = ({
 	children,
 	sx
 }) => {
-	let Icon = InfoOutline;
-	let color: "success" | "warning" | "error" | "info" = "info";
 
-	switch (variant) {
-		case 'done':
-			Icon = Done;
-			color = "success";
-			break;
-		case 'warn':
-			Icon = WarningAmber;
-			color = "warning";
-			break;
-		case 'error':
-			Icon = ErrorOutline;
-			color = "error";
-			break;
-		case 'info':
-		default:
-			Icon = InfoOutline;
-			color = "info";
-			break;
-	}
+	const style = {
+		"done": { Icon: Done, color: "success" },
+		"warn": { Icon: WarningAmber, color: "warning" },
+		"error": { Icon: ErrorOutline, color: "error" },
+		"info": { Icon: InfoOutline, color: "info" },
+	}[variant] ?? { Icon: InfoOutline, color: "info" };
 
 	return (
 		<Typography component="div" sx={sx}>
-			<Icon color={color} sx={sxIcon} />
+			<style.Icon color={style.color as any} sx={sxIcon} />
 			{title}
 			<Box component="span" sx={{ color: 'text.secondary' }}>
 				{children}

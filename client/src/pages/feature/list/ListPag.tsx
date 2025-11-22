@@ -1,17 +1,18 @@
 import Card from '@/components/Card';
 import MessageBanner from '@/components/MessageBanner';
 import Framework from '@/layout/Framework';
+import authSo from '@/stores/auth/repo';
 import featureListSo from '@/stores/feature/list';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
-import { List, ListItemButton } from '@mui/material';
+import { FEATURE_FILTER, FEATURE_SORT } from "@/stores/feature/types";
+import { filterByAccount, filterByStatus, filterByText, sort } from '@/stores/feature/utils';
+import { FEATURE_STATUS } from '@/types/feature/Feature';
+import { Box, List, ListItemButton, ListItemText } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import FeatureOverviewSide from './FeatureOverviewSide';
 import FeatureView from './FeatureView';
-import { FEATURE_FILTER, FEATURE_SORT } from "@/stores/feature/types";
-import { filterByAccount, filterByStatus, filterByText, sort } from '@/stores/feature/utils';
-import authSo from '@/stores/auth/repo';
-import { FEATURE_STATUS } from '@/types/feature/Feature';
 
 
 
@@ -45,9 +46,30 @@ const FeatureListPag: React.FC = () => {
 		navigate(`/app/feature/${id}`)
 	}
 
+	const scrollToCard = (cardId: string) => {
+		const element = document.getElementById(cardId)
+		if (element) {
+			element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+		}
+	}
+
 
 	// RENDER
-	return <Framework>
+	return <Framework sx={{ py: 2 }}
+		leftRender={<FeatureOverviewSide />}
+		rightRender={
+			<Box sx={{ position: 'sticky', top: 20, pt: 2 }}>
+				<List dense>
+					<ListItemButton onClick={() => scrollToCard('feature-list-card')}>
+						<ListItemText primary="Features" secondary="List of all features" />
+					</ListItemButton>
+					<ListItemButton onClick={() => navigate('/app/feature/new')}>
+						<ListItemText primary="Create New" secondary="Request a new feature" />
+					</ListItemButton>
+				</List>
+			</Box>
+		}
+	>
 
 		<Card id="feature-list-card" sx={{ mt: 3 }}>
 			<List>

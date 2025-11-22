@@ -18,7 +18,9 @@ class AccountRoute extends httpRouter.Service {
 			routers: [
 				{ path: "/", verb: "get", method: "getAll" },
 				{ path: "/:id", verb: "get", method: "getById" },
+				{ path: "/", verb: "patch", method: "update" },
 				{ path: "/github/:id", verb: "get", method: "getByGithubUserId" },
+
 			]
 		}
 	}
@@ -78,6 +80,26 @@ class AccountRoute extends httpRouter.Service {
 		})
 	}
 
+	async update(req: Request, res: Response) {
+		const userJwt: AccountRepo = req["jwtPayload"]
+		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
+		const { account } = req.body;
+
+		if (account.name == null || account.name.trim().length == 0) return res.status(400).json({ error: "Invalid name" });
+
+		const newAccount: Partial<AccountRepo> = {
+			id: userJwt.id,
+			name: account.name,
+			language: account.language ?? undefined,
+		}
+
+		const savedAccount = await new Bus(this, this.state.account_repo).dispatch({
+			type: typeorm.Actions.SAVE,
+			payload: newAccount
+		});
+
+		res.json({ account: savedAccount });
+	}
 }
 
 export default AccountRoute

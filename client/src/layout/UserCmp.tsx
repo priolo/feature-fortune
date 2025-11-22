@@ -1,8 +1,10 @@
 import authSo from '@/stores/auth/repo';
-import { Box, Button, Menu, MenuItem, SxProps, Typography } from '@mui/material';
+import { Box, Button, Divider, List, ListItem, ListItemButton, ListItemIcon, Menu, MenuItem, SxProps, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AvatarCmp from '@/components/AvatarCmp';
+import { AccountCircle, Logout } from '@mui/icons-material';
 
 
 
@@ -15,7 +17,7 @@ const UserCmp: React.FC<UserCmpProps> = ({
 	// STORES
 	useStore(authSo)
 
-	
+
 	// HOOKS
 	const navigate = useNavigate();
 	useEffect(() => {
@@ -57,6 +59,7 @@ const UserCmp: React.FC<UserCmpProps> = ({
 	if (!authSo.state.user) return (
 		<Button
 			onClick={handleLoginClick}
+			color="inherit"
 		>LOGIN</Button>
 	)
 
@@ -64,24 +67,39 @@ const UserCmp: React.FC<UserCmpProps> = ({
 		<Box sx={sxUser}
 			onClick={handleUserClick}
 		>
-			<Typography variant="h6" className="user-avatar">
-				{authSo.state.user.name}
-			</Typography>
+			<AvatarCmp
+				account={authSo.state.user}
+				sx={{ width: 32, height: 32 }}
+			/>
 
-			<Typography variant="body2" className="user-name">
-				{authSo.state.user.email}
-			</Typography>
 		</Box>
 		<Menu anchorEl={userMenuAnchorEl}
 			open={userMenuOpen}
 			onClose={handleUserMenuClose}
 		>
-			<MenuItem onClick={handleAccount}>
-				ACCOUNT
-			</MenuItem>
-			<MenuItem onClick={handleLogout}>
-				LOGOUT
-			</MenuItem>
+			<Box sx={{ display: 'flex', flexDirection: 'column' }}>
+
+				<Box sx={{ px: 2, py: 1.5, display: "flex", flexDirection: "column" }}>
+					<Typography variant="subtitle1" noWrap>
+						{authSo.state.user.name}
+					</Typography>
+					<Typography variant="body2" color="text.secondary" noWrap>
+						{authSo.state.user.email}
+					</Typography>
+				</Box>
+
+				<Divider />
+
+				<List>
+					<ListItemButton onClick={handleAccount}>
+						ACCOUNT
+					</ListItemButton>
+					<ListItemButton onClick={handleLogout}>
+						LOGOUT
+					</ListItemButton>
+				</List>
+
+			</Box>
 		</Menu>
 	</>
 };
@@ -90,13 +108,15 @@ export default UserCmp;
 
 const sxUser: SxProps = {
 	display: 'flex',
-	flexDirection: 'column',
+	flexDirection: 'row',
 	gap: 1,
 	alignItems: 'center',
 	cursor: 'pointer',
-	padding: 1,
-	borderRadius: 1,
+	padding: '4px 8px',
+	borderRadius: 2,
+	transition: 'background-color 0.2s',
 	'&:hover': {
 		backgroundColor: 'rgba(0, 0, 0, 0.04)'
 	}
+
 }

@@ -142,7 +142,7 @@ class FeatureRoute extends httpRouter.Service {
 	/**
 	 * Chiamata dall'AUTHOR
 	 * Permette di aggiornare alcuni campi della FEATURE
-	 * lo stato non puo' essere cmabiato
+	 * lo stato non puo' essere cambiato
 	 * PROPOSED -> PROPOSED
 	 */
 	async update(req: Request, res: Response) {
