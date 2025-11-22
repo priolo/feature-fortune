@@ -1,4 +1,4 @@
-import { ExpandLess, ExpandMore, InfoOutlined } from '@mui/icons-material';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Box, Collapse, IconButton, Paper, PaperProps, SxProps, Typography } from '@mui/material';
 import React, { useState } from 'react';
 
@@ -73,6 +73,7 @@ const Card: React.FC<CardProps> = ({
 
 export default Card;
 
+
 export const sxActionCard: SxProps = {
 	display: 'flex',
 	justifyContent: 'end',
@@ -91,7 +92,7 @@ const sxPaper: SxProps = {
 const sxTitleBox: SxProps = {
 	position: "sticky",
 	top: 0,
-	backgroundColor: '#292929',
+	bgcolor: "background.paper",
 	zIndex: 1,
 	display: 'flex',
 	alignItems: 'center',

@@ -1,11 +1,13 @@
 import Card, { sxActionCard } from '@/components/Card';
 import Paragraph from '@/layout/Paragraph';
 import authSo from '@/stores/auth/repo';
-import { Done, InfoOutline, WarningAmber } from '@mui/icons-material';
+import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, SxProps, TextField, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import MessageCmp from '../MessageCmp';
 
 
 
@@ -20,11 +22,16 @@ const EmailLoginCard: React.FC<Props> = ({
 
     // STORES
     useStore(authSo)
+    const { t } = useTranslation()
 
     // HOOKS
     const [emailDialogIsOpen, setEmailDialogIsOpen] = useState(false);
     const [email, setEmail] = useState(authSo.state.user?.email || '');
     const [code, setCode] = useState('');
+    useEffect(() => {
+        if (!emailDialogIsOpen) return;
+        setCode("")
+    }, [emailDialogIsOpen])
 
 
     // HANDLERS
@@ -35,23 +42,29 @@ const EmailLoginCard: React.FC<Props> = ({
         setCode(e.target.value);
     };
     const handleSendEmailClick = async () => {
-        if (!email) return alert('Devi inserire una email valida');
+        if (!email) {
+            dialogSo.dialogOpen({ type: DIALOG_TYPE.WARNING, text: t('cards.EmailLoginCard.alerts.send_code.empty') });
+            return;
+        }
         try {
             await authSo.emailSendCode(email);
             setEmailDialogIsOpen(true);
         } catch (err) {
-            alert('Errore nell\'invio del codice');
+            dialogSo.dialogOpen({ type: DIALOG_TYPE.ERROR, text: t('cards.EmailLoginCard.alerts.send_code.error') });
         }
     };
     const handleVerifyAndClose = async () => {
-        if (!code) return alert('Devi inserire un codice valido');
+        if (!code) {
+            dialogSo.dialogOpen({ type: DIALOG_TYPE.WARNING, text: t('cards.EmailLoginCard.alerts.verify_code.empty') });
+            return;
+        }
         try {
             await authSo.emailVerifyCode(code);
-            alert('Email verificata con successo');
+            dialogSo.dialogOpen({ type: DIALOG_TYPE.SUCCESS, text: t('cards.EmailLoginCard.alerts.verify_code.success') });
             setEmailDialogIsOpen(false);
         }
         catch (err) {
-            alert('Errore nella verifica del codice');
+            dialogSo.dialogOpen({ type: DIALOG_TYPE.ERROR, text: t('cards.EmailLoginCard.alerts.verify_code.error') });
         }
     };
     const handleClose = () => {
@@ -62,58 +75,68 @@ const EmailLoginCard: React.FC<Props> = ({
     // RENDER
     const logged = !!authSo.state.user;
     const haveEmail = !!authSo.state.user?.email;
-    const isVerified = !!authSo.state.user?.emailVerified;
+    const isVerified = !!authSo.state.user?.emailVerified
+
+    let status = { status: 'register', variant: 'info' };
+    if (logged) {
+        if (!haveEmail) status = { status: 'none', variant: 'warn' }
+        else if (!isVerified) status = { status: 'unverified', variant: 'warn' };
+        else status = { status: 'done', variant: 'done' }
+    }
 
     return <>
         <Card id="email-login-card"
-            title="Email access"
             icon={<MailOutlineIcon color="primary" />}
+            title={t(`cards.EmailLoginCard.title`)}
         >
-            <Typography variant="body2" color="text.secondary">
-                <Message logged={logged} haveEmail={haveEmail} isVerified={isVerified} />
-            </Typography>
+            <MessageCmp
+                variant={status.variant as any}
+                title={t(`cards.EmailLoginCard.status.${status.status}.title`)} sx={{ mb: 1 }}
+            >
+                <Trans i18nKey={`cards.EmailLoginCard.status.${status.status}.desc`} />
+            </MessageCmp>
 
-            <Paragraph title="EMAIL ADDRESS">
-                <TextField fullWidth size="small"
+            <TextField fullWidth size="small"
                     value={email}
                     onChange={handleEmailChange}
                     placeholder="Type your email"
                 />
-            </Paragraph>
 
             <Box sx={sxActionCard} >
                 <Button
                     onClick={handleSendEmailClick}
-                >{isVerified ? "REINVIA" : "INVIA CODICE"}</Button>
+                >{isVerified ? t('cards.EmailLoginCard.actions.resend') : t('cards.EmailLoginCard.actions.send')}</Button>
             </Box>
         </Card>
 
-        <Dialog maxWidth="sm" fullWidth
+        <Dialog maxWidth="xs" fullWidth
             open={emailDialogIsOpen}
             onClose={handleClose}
         >
-            <DialogTitle>Verifica il codice</DialogTitle>
+            <DialogTitle>
+                {t('cards.EmailLoginCard.dialog.title')}
+            </DialogTitle>
 
             <DialogContent sx={sxDialogContent}>
 
                 <Typography variant="body2" color="text.secondary">
-                    Abbiamo inviato un codice al tuo indirizzo email. Inseriscilo qui sotto per verificare la tua identita.
+                    <Trans i18nKey={`cards.EmailLoginCard.dialog.text`} />
                 </Typography>
 
-                <TextField fullWidth size="small" label="Codice"
+                <TextField fullWidth
                     value={code}
                     onChange={handleCodeChange}
-                    placeholder="Type code sent to your email"
+                    placeholder={t('cards.EmailLoginCard.dialog.placeholder')}
                 />
 
             </DialogContent>
 
             <DialogActions>
-                <Button onClick={handleClose}>
-                    Cancel
+                <Button color="inherit" onClick={handleClose}>
+                    {t('cards.EmailLoginCard.dialog.actions.cancel')}
                 </Button>
                 <Button onClick={handleVerifyAndClose} variant="contained">
-                    Verify
+                    {t('cards.EmailLoginCard.dialog.actions.verify')}
                 </Button>
             </DialogActions>
         </Dialog>
@@ -128,53 +151,3 @@ const sxDialogContent: SxProps = {
     flexDirection: 'column',
     gap: 2,
 };
-
-
-interface MessageProps {
-    logged: boolean;
-    haveEmail: boolean;
-    isVerified: boolean;
-}
-
-const Message: React.FC<MessageProps> = ({
-    logged,
-    haveEmail,
-    isVerified
-}) => {
-
-    if (!logged) {
-        return <span>
-            <InfoOutline color="primary" sx={sxIcon} />
-            Inserisci la tua email. Riceverai un codice di conferma.<br />
-            Ti permetterà di ricevere le notifiche e di accedere al tuo account senza password.
-        </span>;
-    }
-
-    if (!haveEmail) {
-        return <span>
-            <WarningAmber color="warning" sx={sxIcon} />
-            Il tuo account non ha ancora una email associata.
-            Inseriscila qui sotto per ricevere un codice di accesso temporaneo.
-        </span>;
-    }
-
-    if (!isVerified) {
-        return <span>
-            <WarningAmber color="warning" sx={sxIcon} />
-            La tua email non è ancora verificata.
-            Inseriscila qui sotto per ricevere un codice di accesso temporaneo.
-        </span>;
-    }
-
-    return <span>
-        <Done color="success" sx={sxIcon} />
-        La tua email è verificata.
-    </span>;
-};
-
-const sxIcon: SxProps = {
-    fontSize: '1.4em',
-    verticalAlign: 'text-bottom',
-    ml: "2px",
-    mr: "6px",
-}

@@ -4,6 +4,7 @@ import Stripe from "stripe";
 import { AccountRepo } from "../repository/Account.js";
 import PaymentCrono from "../services/crono/FeaturePaymentCrono.js";
 import { Actions } from "../services/stripe/types.js";
+import { getGithubHtmlUrl } from "./GithubRoute.js";
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
@@ -78,7 +79,7 @@ class StripeRoute extends httpRouter.Service {
 			return res.status(400).json({ error: "Another user with the same email already have a stripe account" });
 		}
 
-
+		const githubUrl = await getGithubHtmlUrl(user.githubId!)
 
 		// se l'account non ha ancora uno stripe account lo creo
 		if (!user.stripeAccountId) {
@@ -88,7 +89,7 @@ class StripeRoute extends httpRouter.Service {
 					name: user.name,
 					email: email,
 					accountId: userJwt.id,
-					url: user.githubId ? `${process.env.FRONTEND_URL}/profile/${user.githubId}` : undefined,
+					url: githubUrl,
 				}
 			})
 			if (!stripeAccount.id) return res.status(500).json({ error: "Stripe account not created" });

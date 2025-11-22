@@ -1,14 +1,14 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
 
 // Common theme options
-const commonOptions: ThemeOptions = {
+const commonOptions = (theme: string): ThemeOptions => ({
 	typography: {
 		h1: { lineHeight: 'unset' },
 		h2: { lineHeight: 'unset' },
 		h3: { lineHeight: 'unset' },
 		h4: { lineHeight: 'unset' },
 		h5: { lineHeight: 'unset' },
-		h6: { lineHeight: 'unset', fontWeight:500,  fontSize: '1.2rem' },
+		h6: { lineHeight: 'unset', fontWeight: 500, fontSize: '1.2rem' },
 		subtitle1: { lineHeight: 'unset' },
 		subtitle2: { lineHeight: 'unset' },
 		body1: { lineHeight: 'unset', fontSize: '1rem' },
@@ -32,6 +32,13 @@ const commonOptions: ThemeOptions = {
 			styleOverrides: {
 				root: {
 					//boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+				},
+			},
+		},
+		MuiPaper: {
+			styleOverrides: {
+				root: {
+					backgroundImage: 'none',
 				},
 			},
 		},
@@ -70,7 +77,7 @@ const commonOptions: ThemeOptions = {
 				notchedOutline: {
 					border: "none",
 					borderRadius: 15,
-					backgroundColor: '#00000052',
+					backgroundColor: theme == "dark" ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.1)',
 				},
 			},
 		},
@@ -82,11 +89,11 @@ const commonOptions: ThemeOptions = {
 			},
 		},
 	},
-};
+})
 
 // Light theme
 export const lightTheme = createTheme({
-	...commonOptions,
+	...commonOptions("light"),
 	palette: {
 		mode: 'light',
 		primary: {
@@ -112,9 +119,10 @@ export const lightTheme = createTheme({
 	},
 });
 
+
 // Dark theme
 export const darkTheme = createTheme({
-	...commonOptions,
+	...commonOptions("dark"),
 	palette: {
 		mode: 'dark',
 		primary: {

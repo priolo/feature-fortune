@@ -72,11 +72,26 @@ const FeatureListHeader: React.FC = () => {
 		<Typography variant="h5">
 			FEATURES
 		</Typography>
-		
+
 
 		{logged && <>
 
-			<TextField sx={{ flex: 1}}
+			<FeatureSortSelector
+				sortId={sortId}
+				onChange={handleSortChange}
+			/>
+
+			<FeatureFilterSelector
+				filterId={filterId}
+				onChange={handleFilterChange}
+			/>
+
+			<FeatureStatusSelector
+				statusId={statusId}
+				onChange={handleStatusChange}
+			/>
+
+			<TextField sx={{ flex: 1 }}
 				value={search}
 				slotProps={{
 					input: {
@@ -94,20 +109,6 @@ const FeatureListHeader: React.FC = () => {
 				placeholder="Search Features..."
 			/>
 
-			<FeatureSortSelector
-				sortId={sortId}
-				onChange={handleSortChange}
-			/>
-
-			<FeatureFilterSelector
-				filterId={filterId}
-				onChange={handleFilterChange}
-			/>
-
-			<FeatureStatusSelector
-				statusId={statusId}
-				onChange={handleStatusChange}
-			/>
 
 			<Button variant="contained"
 				startIcon={<Add />}

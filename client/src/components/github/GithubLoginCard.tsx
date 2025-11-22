@@ -2,11 +2,14 @@ import gitHubApi from '@/api/githubService';
 import Card, { sxActionCard } from '@/components/Card';
 import GithubUserViewer from '@/components/github/users/GithubUserViewer';
 import authSo from '@/stores/auth/repo';
+import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 import { GitHubUser } from '@/types/github/GitHub';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import { Box, Button, SxProps, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import MessageCmp from '../MessageCmp';
 
 
 
@@ -21,6 +24,7 @@ const GithubLoginCard: React.FC<Props> = ({
 
     // STORES
     useStore(authSo)
+    const { t } = useTranslation();
     const userId = authSo.state.user?.githubId
 
     // HOOKS
@@ -38,47 +42,60 @@ const GithubLoginCard: React.FC<Props> = ({
     }, [userId])
 
     // HANDLERS
-    const handleLogin = () => {
-        authSo.loginWithGithub()
+    const handleLogin = async () => {
+        await authSo.loginWithGithub()
     };
     const handleAttach = async () => {
-        authSo.attachGithub()
+        await authSo.attachGithub()
     }
     const handleDetach = async () => {
+        const r = await dialogSo.dialogOpen({
+            type: DIALOG_TYPE.WARNING,
+            text: t('cards.GithubLoginCard.alerts.detach.check'),
+            modal: true,
+        })
+        if (!r) return
+
         authSo.detachGithub()
+
+        dialogSo.dialogOpen({
+			text: t(`cards.GithubLoginCard.alerts.detach.succes`),
+			type: DIALOG_TYPE.SUCCESS,
+		})
     }
 
 
     // RENDER
     const logged = !!authSo.state.user;
     const haveGithub = !!authSo.state.user?.githubId
+    const status = haveGithub ? 'done' : 'warn'
 
     return (
         <Card id="github-login-card"
-            title="GitHub access"
+            title={t(`cards.GithubLoginCard.title`)}
             icon={<GitHubIcon color="primary" />}
         >
+            <MessageCmp variant={status} title={t(`cards.GithubLoginCard.status.${status}.title`)} sx={{ mb: 1 }}>
+                <Trans i18nKey={`cards.GithubLoginCard.status.${status}.desc`} />
+            </MessageCmp>
+
             {!!haveGithub && (
                 <GithubUserViewer user={user} />
             )}
-
-            <Typography variant="body2" color="text.secondary">
-                Autenticati con GitHub per collegare rapidamente i tuoi repository e le tue richieste.
-            </Typography>
 
             <Box sx={sxActionCard}>
                 {!!logged && !haveGithub ? (
                     <Button
                         onClick={handleAttach}
-                    >ATTACH</Button>
+                    >{t('cards.GithubLoginCard.actions.attach')}</Button>
                 ) : !!logged && haveGithub ? (
                     <Button
                         onClick={handleDetach}
-                    >DETACH</Button>
+                    >{t('cards.GithubLoginCard.actions.detach')}</Button>
                 ) : (
                     <Button
                         onClick={handleLogin}
-                    >ACCEDI</Button>
+                    >{t('cards.GithubLoginCard.actions.login')}</Button>
                 )}
             </Box>
 

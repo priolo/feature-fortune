@@ -1,12 +1,14 @@
 
-import authSo from '@/stores/auth/repo';
 import Card, { sxActionCard } from '@/components/Card';
+import authSo from '@/stores/auth/repo';
 import GoogleIcon from '@mui/icons-material/Google';
-import { Box, Button, SxProps, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
+import { useStore } from '@priolo/jon';
 import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import React from 'react';
-import { useStore } from '@priolo/jon';
-import { Done } from '@mui/icons-material';
+import { Trans, useTranslation } from 'react-i18next';
+import MessageCmp from '../MessageCmp';
+import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 
 
 
@@ -21,45 +23,73 @@ const GoogleLoginCard: React.FC<Props> = ({
 
     // STORES
     useStore(authSo)
+    const { t } = useTranslation()
 
     // HOOKS
 
     // HANDLERS
     // hook chiamato da google per il successo
     const handleLoginSuccess = (response: CredentialResponse) => {
-        console.log('Login Success:', response);
         authSo.loginWithGoogle(response.credential)
+        dialogSo.dialogOpen({
+			text: t(`cards.GoogleLoginCard.alerts.login.success`),
+			type: DIALOG_TYPE.SUCCESS,
+		})
+
     }
     // hook chiamato da google per il fallimento
     const handleLoginFailure = () => {
-        console.log('Login Failure:');
+        dialogSo.dialogOpen({
+			text: t(`cards.GoogleLoginCard.alerts.login.error`),
+			type: DIALOG_TYPE.SUCCESS,
+		})
     }
-    const handleGoogleDetach = async () => {
-        authSo.detachGoogle()
+    const handleDetach = async () => {
+        const r = await dialogSo.dialogOpen({
+            type: DIALOG_TYPE.WARNING,
+            text: t('cards.GoogleLoginCard.alerts.detach.check'),
+            modal: true,
+        })
+        if (!r) return
+
+        await authSo.detachGoogle()
+
+        dialogSo.dialogOpen({
+			text: t(`cards.GoogleLoginCard.alerts.detach.success`),
+			type: DIALOG_TYPE.SUCCESS,
+		})
     }
 
     // RENDER
     const logged = !!authSo.state.user;
     const haveGoogle = !!authSo.state.user?.googleEmail
+    const status = haveGoogle ? 'done' : 'warn'
 
     return (
         <Card id="google-login-card"
-            title="Google access"
+            title={t(`cards.GoogleLoginCard.title`)}
             icon={<GoogleIcon color="primary" />}
         >
-            <Typography variant="body2" color="text.secondary">
-                <Message logged={logged} haveGoogle={haveGoogle} />
-            </Typography>
+
+            <MessageCmp variant={status} title={t(`cards.GoogleLoginCard.status.${status}.title`)} sx={{ mb: 1 }}>
+                <Trans i18nKey={`cards.GoogleLoginCard.status.${status}.desc`} />
+            </MessageCmp>
+
             <Box sx={sxActionCard}>
                 {!!logged && haveGoogle ? (
-                    <Button 
-                        onClick={handleGoogleDetach}
-                    >Detach</Button>
+                    <Button
+                        onClick={handleDetach}
+                    >{t('cards.GoogleLoginCard.actions.detach')}</Button>
                 ) : (
                     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_OAUTH_CLIENT_ID}>
                         <GoogleLogin
                             onSuccess={handleLoginSuccess}
                             onError={handleLoginFailure}
+                            theme="filled_black"
+                            shape="circle"
+                            text="signin"
+                            size="medium"
+                            type='standard'
                         />
                     </GoogleOAuthProvider>
                 )}
@@ -69,25 +99,3 @@ const GoogleLoginCard: React.FC<Props> = ({
 };
 
 export default GoogleLoginCard;
-
-
-interface MessageProps {
-    logged?: boolean;
-    haveGoogle: boolean;
-}
-
-const Message: React.FC<MessageProps> = ({ 
-    logged, 
-    haveGoogle,
-}) => {
-    if (haveGoogle) {
-        return <span>
-            <Done color="success" sx={{ fontSize: '1.4em', verticalAlign: 'text-bottom', mx: "2px" }} />
-            La tua email è verificata.
-        </span>;
-    }
-
-    return <span>
-        Collega il tuo account Google per un accesso più rapido e sicuro.
-    </span>;
-};

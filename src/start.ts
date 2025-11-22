@@ -23,5 +23,12 @@ envInit();
 		console.log(`********************************************\n`)
 	}
 
+	if (process.env.NODE_ENV == ENV_TYPE.PROD) {
+		console.log("*** SEEDING PRO DEBUG ***")
+		const { seeding: seedingProDebug } = await import("./seeding_pro_debug.js");
+		await seedingProDebug(root)
+		console.log(`********************************************\n`)
+	}
+
 })()
 

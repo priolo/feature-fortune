@@ -1,31 +1,24 @@
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { useStore } from '@priolo/jon';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Layout from './layout/Layout';
+import MsgBox from './layout/MsgBox';
 import AccountPag from './pages/account/AccountPag';
-import FeatureListPag from './pages/feature/list/ListPag';
 import FeatureDetailPag from './pages/feature/detail/DetailPag';
+import FeatureListPag from './pages/feature/list/ListPag';
 import LoginPag from './pages/login/LoginPag';
 import MessagePag from './pages/message/MessagePag';
-import MsgBox from './layout/MsgBox';
-import { useStore } from '@priolo/jon';
 import themeSo from './stores/layout/theme';
-import { useMemo } from 'react';
-import { darkTheme, lightTheme } from './theme/theme';
-import { CssBaseline, ThemeProvider } from '@mui/material';
 
 
 
 function App() {
 
 	// STORES
-	const themeSa = useStore(themeSo);
+	useStore(themeSo);
 
 	// HOOKS
-	const theme = useMemo(() => {
-		return themeSa.mode === 'light' ? lightTheme : darkTheme;
-	}, [themeSa.mode]);
-
-
-	return <ThemeProvider theme={theme}>
+	return <ThemeProvider theme={themeSo.state.current}>
 		<CssBaseline />
 
 		<Router>

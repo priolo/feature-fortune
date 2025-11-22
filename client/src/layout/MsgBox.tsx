@@ -65,12 +65,12 @@ const MsgBox: FunctionComponent = () => {
 		<DialogActions>
 
 			{dialogSa.labelCancel && (
-				<Button
+				<Button color='inherit'
 					onClick={() => dialogSo.dialogClose(false)}
 				>{dialogSa.labelCancel}</Button>
 			)}
 
-			<Button sx={{ color: colorBg }}
+			<Button color='primary' variant='contained'
 				onClick={() => dialogSo.dialogClose(true)}
 			>{dialogSa.labelOk}</Button>
 

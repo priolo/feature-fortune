@@ -139,6 +139,10 @@ class StripeService extends ServiceBase {
 				// 1. I 10€ che vanno a te
 				// 2. Le commissioni Stripe (es. 1.4% + 0.25€)
 				//application_fee_amount: 500, // La tua commissione
+
+				// Metti il nome del progetto specifico per questa donazione.
+				// Deve sempre contenere caratteri latini e max 22 char.
+				statement_descriptor: formatDescriptor('NOME PROGETTO'),
 			},
 			{
 				stripeAccount: data.destination, // Eseguito sul conto del venditore
@@ -196,7 +200,7 @@ class StripeService extends ServiceBase {
 
 				// Precompili i dati del profilo business
 				business_profile: {
-					name: 'DONAZIONE',
+					name: `${process.env.STRIPE_PLATFORM_NAME}* `,
 					url: url, // è il github del profilo
 					mcc: '5734', // Codice categoria merceologica (es. software, servizi, etc.) - Stripe non lo chiederà
 					product_description: 'Piattaforma di donazioni per progetti open source',
@@ -208,7 +212,8 @@ class StripeService extends ServiceBase {
 					first_name: name,
 					//last_name: 'Rossi',
 					email: email,
-					//phone: '+393331234567'
+					//phone: '+393331234567',
+					id_number: "",
 				},
 
 				capabilities: {
@@ -256,4 +261,20 @@ export type CreateAccountParams = {
 	email?: string,
 	accountId?: string,
 	url?: string,
+}
+
+
+// Funzione per formattare correttamente la voce
+function formatDescriptor(projectName:string) {
+    // Prefisso es: "PUCE "
+    const prefix = `${process.env.STRIPE_PLATFORM_NAME}* `; 
+    
+    // Calcola quanto spazio rimane (22 è il limite imposto da Stripe)
+    const remainingChars = 22 - prefix.length;
+    
+    // Pulisci il nome del progetto (via caratteri strani) e taglialo
+    const cleanProjectName = projectName.replace(/[^a-zA-Z0-9 ]/g, "").toUpperCase();
+    const truncatedProjectName = cleanProjectName.substring(0, remainingChars);
+    
+    return `${prefix}${truncatedProjectName}`;
 }

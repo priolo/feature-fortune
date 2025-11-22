@@ -2,12 +2,16 @@ import paymentApi from "@/api/payment";
 import Card from "@/components/Card";
 import authSo from "@/stores/auth/repo";
 import { Money } from "@mui/icons-material";
-import { Box, Button, SxProps, Typography } from "@mui/material";
+import { Box, Button, SxProps, Typography, useTheme } from "@mui/material";
 import { useStore } from "@priolo/jon";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { PaymentMethod } from "@stripe/stripe-js";
 import { useEffect, useState } from "react";
 import CreditCardViewer from "./CreditCardViewer";
+import { Trans, useTranslation } from "react-i18next";
+import MessageCmp from "../MessageCmp";
+import themeSo from "@/stores/layout/theme";
+import dialogSo, { DIALOG_TYPE } from "@/stores/layout/dialogStore";
 
 
 
@@ -24,6 +28,7 @@ const StripeCreditCard: React.FC<Props> = ({
 
 	// STORES
 	useStore(authSo)
+	const { t } = useTranslation();
 
 
 	// HOOKS
@@ -41,26 +46,12 @@ const StripeCreditCard: React.FC<Props> = ({
 
 
 	// HANDLERS
-	const handleSavePayMethodClick = async () => {
+	const handleSaveCC = async () => {
 		if (!stripe || !elements) return;
 
 		// Validate the card element before proceeding
 		const cardElement = elements.getElement(CardElement);
-		if (!cardElement) {
-			alert("Errore: elemento carta non trovato.");
-			return;
-		}
-
-		// Check if the card is complete and valid
-		// const { error: validationError, paymentMethod: testPaymentMethod } = await stripe.createPaymentMethod({
-		// 	type: 'card',
-		// 	card: cardElement,
-		// });
-
-		// if (validationError) {
-		// 	alert("Carta non valida: " + validationError.message);
-		// 	return;
-		// }
+		if (!cardElement) return alert("Errore: elemento carta non trovato.");
 
 		// Creo il PaymentMethod 
 		const resIntent = await paymentApi.create()
@@ -76,7 +67,10 @@ const StripeCreditCard: React.FC<Props> = ({
 			}
 		)
 		if (resCard.error) {
-			alert("Errore nella conferma della carta: " + resCard.error.message)
+			await dialogSo.dialogOpen({
+				text: t('cards.StripeCreditCard.alerts.save_cc.error', { message: resCard.error.message }),
+				type: DIALOG_TYPE.ERROR,
+			})
 			return
 		}
 
@@ -85,7 +79,10 @@ const StripeCreditCard: React.FC<Props> = ({
 		const res = await paymentApi.saveCard(stripePaymentMethodId);
 
 		if (res.success) {
-			alert("Metodo di pagamento salvato! Sarai addebitato quando l'autore sarà pronto.");
+			await dialogSo.dialogOpen({
+				text: t('cards.StripeCreditCard.alerts.save_cc.success'),
+				type: DIALOG_TYPE.SUCCESS,
+			})
 			authSo.setUser({
 				...authSo.state.user,
 				stripeHaveCard: true,
@@ -95,55 +92,62 @@ const StripeCreditCard: React.FC<Props> = ({
 		}
 	}
 
-	const handleCCReset = async () => {
+	const handleResetCC = async () => {
+		const r = await dialogSo.dialogOpen({
+			type: DIALOG_TYPE.WARNING,
+			text: t('cards.StripeCreditCard.alerts.remove_cc.alert'),
+			modal: true,
+		})
+		if (!r) return
+
 		const res = await paymentApi.remove()
 		if (res.success) {
-			alert("Metodo di pagamento rimosso.");
 			authSo.setUser({
 				...authSo.state.user,
 				stripeHaveCard: false,
 			})
 			setPaymentMethod(null)
-		} else {
-			alert("Errore nella rimozione del metodo di pagamento.")
 		}
+
+		dialogSo.dialogOpen({
+			text: t(`cards.StripeCreditCard.alerts.remove_cc.${res.success ? 'success' : 'error'}`),
+			type: DIALOG_TYPE.SUCCESS,
+		})
 	}
 
 
 	// RENDER
+	const status = !havePaymentMethod ? 'warn' : 'done';
+
 	return (
 		<Card id="stripe-credit-card"
-			title="Credit Card"
+			title={t(`cards.StripeCreditCard.title`)}
 			icon={<Money color="primary" />}
 		>
 
-			<Typography variant="body2" color="text.secondary">
-				{!havePaymentMethod
-					? "Non hai ancora una carta di credito salvata."
-					: "Hai una carta di credito salvata."
-				}
-			</Typography>
+			<MessageCmp variant={status} title={t(`cards.StripeCreditCard.status.${status}.title`)} sx={{ mb: 1}}>
+				<Trans i18nKey={`cards.StripeCreditCard.status.${status}.desc`} />
+			</MessageCmp>
 
 
 			{!!havePaymentMethod ? (
 				<CreditCardViewer card={paymentMethod?.card} />
 			) : (
-				<CardElement className="stripe-card-element" />
+				<Box sx={sxCardElement}>
+					<CardElement options={cardElementOptions} />
+				</Box>
 			)}
+
 
 			<Box sx={sxActions}>
 				{havePaymentMethod ? <>
-
 					<Button
-						onClick={handleCCReset}
-					>DETACH</Button>
-
+						onClick={handleResetCC}
+					>{t('cards.StripeCreditCard.actions.detach')}</Button>
 				</> : <>
-
 					<Button
-						onClick={handleSavePayMethodClick}
-					>SET CARD</Button>
-
+						onClick={handleSaveCC}
+					>{t('cards.StripeCreditCard.actions.set_card')}</Button>
 				</>}
 			</Box>
 
@@ -153,10 +157,32 @@ const StripeCreditCard: React.FC<Props> = ({
 
 export default StripeCreditCard;
 
+
+const theme = themeSo.state.current
+
 const sxActions: SxProps = {
 	display: 'flex',
 	justifyContent: 'end',
 	paddingTop: 1,
+};
+
+
+const cardElementOptions = {
+	style: {
+		base: {
+			color: theme.palette.text.primary,
+			fontFamily: theme.typography.fontFamily,
+			fontSize: '16px',
+			'::placeholder': {
+				color: theme.palette.text.secondary,
+			},
+		},
+	},
+};
+const sxCardElement: SxProps = {
+	borderRadius: 2,
+	p: 2,
+	bgcolor: "background.paper",
 };
 
 

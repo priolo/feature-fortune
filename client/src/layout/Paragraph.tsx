@@ -1,4 +1,4 @@
-import { Box, SxProps, Typography } from '@mui/material';
+import { Box, SxProps } from '@mui/material';
 import React, { FunctionComponent } from "react";
 
 
@@ -10,6 +10,7 @@ interface Props {
 	subtitle?: React.ReactNode
 	sx?: SxProps
 	sxLabel?: SxProps
+	sxValue?: SxProps
 	children?: React.ReactNode
 }
 
@@ -18,6 +19,7 @@ const Paragraph: FunctionComponent<Props> = ({
 	subtitle,
 	sx,
 	sxLabel,
+	sxValue,
 	children,
 }) => {
 
@@ -28,7 +30,7 @@ const Paragraph: FunctionComponent<Props> = ({
 			{subtitle && (<Box sx={sxSubtitle}>{subtitle}</Box>)}
 		</Box>
 
-		<Box sx={sxRootChildren}>
+		<Box sx={[sxRootChildren, sxValue] as SxProps}>
 			{children}
 		</Box>
 

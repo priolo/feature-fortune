@@ -5,7 +5,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   font-family: "Inter Variable", "Roboto", "Helvetica", "Arial", sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -45,5 +46,10 @@ code {
 
 .stripe-card-element {
   width: 100%;
-  height: 100%;;
+  height: 100%;
+  /* background-color: rgb(204, 204, 204);
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ced4da;
+  box-sizing: border-box; */
 }

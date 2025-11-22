@@ -1,4 +1,5 @@
 import { StoreCore, createStore } from "@priolo/jon"
+import i18n from "../../plugins/i18n"
 
 /**
  * Gestione della dialog
@@ -48,8 +49,16 @@ const setup = {
 		 * @param conf una struttura che indica come deve essere visualizzata la dialog
 		 */
 		dialogOpen: (conf: DialogMsg, store?: DialogStore) => {
+			const defaults: DialogMsg = {
+				title: i18n.t(`common.msgbox.${conf.type ?? DIALOG_TYPE.INFO}`),
+				text: "",
+				labelOk: i18n.t("common.ok"),
+				labelCancel: i18n.t("common.cancel"),
+				modal: false,
+				type: DIALOG_TYPE.INFO,
+			}
 			store.setDialogOpen({
-				...confDefault,
+				...defaults,
 				...conf,
 			})
 			store.setDialogIsOpen(true)
@@ -84,12 +93,3 @@ export interface DialogStore extends StoreCore<DialogState>, DialogGetters, Dial
 }
 const dialogSo = createStore(setup) as DialogStore
 export default dialogSo
-
-const confDefault: DialogMsg = {
-	title: "Info",
-	text: "",
-	labelOk: "OK",
-	labelCancel: null,
-	modal: true,
-	type: DIALOG_TYPE.INFO,
-}

@@ -1,3 +1,4 @@
+import layoutSo from "@/stores/layout"
 import logSo from "@/stores/log"
 import { MESSAGE_TYPE } from "@/stores/log/utils"
 
@@ -17,6 +18,7 @@ const optionsDefault = {
 	isLogin: false,
 	loading: true,
 	noError: false,
+	noBusy: false,
 	store: null,
 	/** utilizza questo signal per fare l'abort */
 	signal: <AbortSignal>null,
@@ -53,6 +55,8 @@ export class AjaxService {
 	async send(url: string, method: METHOD, data?: any, options: Partial<CallOptions> = {}) {
 		options = { ...optionsDefault, ...options }
 
+		if (!options.noBusy) layoutSo.setBusy(true)
+
 		// PREPARE DATA
 		//data = camelToSnake(data)
 		const headers = {
@@ -85,6 +89,8 @@ export class AjaxService {
 			}
 			throw e
 		} finally {
+			// setto l'interfaccia
+			if (!options.noBusy) layoutSo.setBusy(false)
 		}
 
 		// GET DATA

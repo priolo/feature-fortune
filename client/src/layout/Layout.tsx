@@ -1,11 +1,17 @@
-import { Box, SxProps } from '@mui/material';
+import { Box, LinearProgress, SxProps } from '@mui/material';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import HeaderCmp from './HeaderCmp';
+import layoutSo from '@/stores/layout';
+import { useStore } from '@priolo/jon';
 
 
 
 const Layout: React.FC = () => {
+
+	// STORE
+	useStore(layoutSo);
+
 
 	// RENDER
 
@@ -20,6 +26,8 @@ const Layout: React.FC = () => {
 
 				{/* Header */}
 				<HeaderCmp />
+
+				{layoutSo.state.busy ? <LinearProgress /> : <Box sx={{ mt: "4px" }} />}
 
 				{/* Main Content Area */}
 				<Box component="main" sx={sxMain}>

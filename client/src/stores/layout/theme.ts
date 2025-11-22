@@ -1,3 +1,5 @@
+import { darkTheme, lightTheme } from "@/theme/theme";
+import { Theme } from "@mui/material";
 import { createStore, StoreCore } from "@priolo/jon";
 
 
@@ -9,7 +11,7 @@ const setup = {
 
 	state: {
 		/** Current theme mode: 'light' or 'dark' */
-		mode: (localStorage.getItem('themeMode') as 'light' | 'dark') || 'light',
+		current: <Theme>null,
 	},
 
 	getters: {},
@@ -19,17 +21,17 @@ const setup = {
 		 * Toggle between light and dark mode
 		 */
 		toggleMode: (_: void, store?: ThemeStore) => {
-			const newMode = store.state.mode === 'light' ? 'dark' : 'light';
-			store.setMode(newMode);
+			const newTheme = store.state.current == lightTheme ? darkTheme : lightTheme
+			store.setCurrent(newTheme)
 		},
 	},
 
 	mutators: {
 		/** Set a specific theme mode */
-		setMode: (mode: 'light' | 'dark') => {
-			localStorage.setItem('themeMode', mode);
-			return { mode }
-		},
+		setCurrent: (theme: Theme) => {
+			localStorage.setItem('themeMode', theme == lightTheme ? 'light' : 'dark');
+			return { current: theme }
+		}
 	},
 };
 
@@ -42,5 +44,7 @@ export interface ThemeStore extends StoreCore<ThemeState>, ThemeGetters, ThemeAc
 }
 
 const themeSo = createStore<ThemeState>(setup);
+
+themeSo.state.current = localStorage.getItem('themeMode') == 'dark' ? darkTheme : lightTheme;
 
 export default themeSo as ThemeStore;
