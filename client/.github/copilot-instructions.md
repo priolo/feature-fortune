@@ -29,3 +29,15 @@
 - **Cleanup** Clear long-lived stores on unmount (see `FeatureDetailPag` cleanup) to keep state isolated between navigations.
 - **Contributing Flow** After edits run `npm run build` to catch TS issues; project disables strict mode so compile-time checks happen only on build.
 - **Reference Files** Start with `src/App.tsx`, `layout/HeaderCmp.tsx`, `stores/feature/list.ts`, and `plugins/AjaxService.ts` to understand interactions.
+
+
+# GENERAL CONVENTION FOR DEFINING A REACT COMPONENT:
+
+- it's always a function
+- the STORES session with the comment: // STORES
+after which all store definitions are inserted (with store, you can implement business logic outside the React component)
+- the session HOOKS with the comment: // HOOKS
+- the session HANDLER with the comment: // HANDLERS
+- the RENDER session after the comment // RENDER
+This session contains the definitions of the constants used in rendering and returned with React rendering.
+- the SxProps style, if not small, is defined externally and after the function.

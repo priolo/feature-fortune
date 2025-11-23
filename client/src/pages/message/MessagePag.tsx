@@ -2,6 +2,8 @@ import Card from '@/components/Card';
 import Framework from '@/layout/Framework';
 import MessagesList from '@/pages/message/MessagesList';
 import MessageView from '@/pages/message/MessageView';
+import RightRender from './RightRender';
+import MessageOverviewSide from './MessageOverviewSide';
 import authSo from '@/stores/auth/repo';
 import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
@@ -43,7 +45,14 @@ const MessagePag: React.FC = () => {
 	const selected = messageListSo.state.selected
 	const currentUserId = authSo.state.user?.id
 
-	return <Framework>
+	return <Framework
+		leftRender={<MessageOverviewSide />}
+		rightRender={
+			<Box sx={{ position: 'sticky', top: 20, pt: 2 }}>
+				<RightRender />
+			</Box>
+		}
+	>
 
 		{/* Compose Message */}
 

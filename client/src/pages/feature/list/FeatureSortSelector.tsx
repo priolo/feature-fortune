@@ -51,7 +51,7 @@ const FeatureSortSelector: React.FC<Props> = ({
 
 export default FeatureSortSelector;
 
-const featureSort = [
+export const featureSort = [
 	{ id: FEATURE_SORT.RECENT, label: "RECENT" },
 	{ id: FEATURE_SORT.OLDEST, label: "OLDER" },
 	{ id: FEATURE_SORT.RICHEST, label: "RICHEST" },

@@ -11,7 +11,7 @@ import GoogleLoginCard from '../../components/google/GoogleLoginCard';
 import StripeAuthorCard from '../../components/stripe/StripeAuthorCard';
 import StripeCreditCard from '../../components/stripe/StripeCreditCard';
 import SettingsCard from './SettingsCard';
-import AccountInfoSide from './AccountInfoSide';
+import OverviewCmp from './OverviewCmp';
 
 
 
@@ -57,7 +57,7 @@ const AccountPag: React.FC<AccountPagProps> = ({
     }
 
     return <Framework sx={{ py: 2 }}
-        leftRender={<AccountInfoSide />}
+        leftRender={<OverviewCmp />}
         rightRender={
             <Box sx={{ position: 'sticky', top: 20, pt: 2 }}>
                 <List dense>

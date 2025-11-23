@@ -75,7 +75,10 @@ const setup = {
 	},
 
 	mutators: {
-		setAll: (all: Message[]) => ({ all }),
+		setAll: (all: Message[]) => {
+			const unreadCount = all?.filter(m => !m.isRead).length || 0
+			return { all, unreadCount }
+		},
 		setSelected: (selected: Message) => ({ selected }),
 		setReceiverId: (receiverId: string) => ({ receiverId }),
 		setUnreadCount: (unreadCount: number) => ({ unreadCount }),

@@ -13,7 +13,7 @@ const FeatureOverviewSide: React.FC = () => {
             position: 'sticky', top: 20
         }}>
             <Typography variant="h6" gutterBottom>
-                Features Overview
+                Overview
             </Typography>
             
             <Typography variant="body2" color="text.secondary">

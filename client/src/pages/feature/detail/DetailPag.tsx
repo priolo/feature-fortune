@@ -17,6 +17,8 @@ import GithubRepoSelectorCard from '../../../components/github/repos/GithubRepoS
 import GithubUserSelectorCard from '../../../components/github/users/GithubUserSelectorCard';
 import authSo from '@/stores/auth/repo';
 import { HistoryEdu } from '@mui/icons-material';
+import FeatureDetailOverview from './FeatureDetailOverview';
+import FeatureDetailRightMenu from './FeatureDetailRightMenu';
 
 
 
@@ -57,6 +59,13 @@ const FeatureDetailPag: React.FC<Props> = ({
 
 
     // HANDLERS
+    const scrollToCard = (cardId: string) => {
+        const element = document.getElementById(cardId)
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+    }
+
     const handleDetailChange = (feature: Feature) => {
         featureDetailSo.setFeature(feature)
     }
@@ -113,48 +122,65 @@ const FeatureDetailPag: React.FC<Props> = ({
     // posso editare solo se sono l'AUTHOR e lo stato è PROPOSED
     const canAuthorEdit = isAuthor && feature.status == FEATURE_STATUS.PROPOSED
 
-    return <Framework sx={{ py: 2 }}>
+    return <Framework sx={{ py: 2 }}
+        leftRender={<FeatureDetailOverview />}
+        rightRender={<FeatureDetailRightMenu onScrollTo={scrollToCard} />}
+    >
 
-        <AccountSelectorCard readOnly
-            icon={<HistoryEdu />}
-            title="AUTHOR"
-            accountId={authorId}
-        />
+        <div id="author-card">
+            <AccountSelectorCard readOnly
+                icon={<HistoryEdu />}
+                title="AUTHOR"
+                accountId={authorId}
+            />
+        </div>
 
-        <GithubRepoSelectorCard readOnly={!canAuthorEdit}
-            githubRepoId={feature.githubRepoId}
-            onChange={handleGithubRepoChange}
-        />
+        <div id="repo-card">
+            <GithubRepoSelectorCard readOnly={!canAuthorEdit}
+                githubRepoId={feature.githubRepoId}
+                onChange={handleGithubRepoChange}
+            />
+        </div>
 
         {feature.status == FEATURE_STATUS.PROPOSED && (
-            <GithubUserSelectorCard readOnly={!canAuthorEdit}
-                githubOwnerId={feature.githubDevId}
-                onChange={handleGithubDevChange}
-            />
+            <div id="github-user-card">
+                <GithubUserSelectorCard readOnly={!canAuthorEdit}
+                    githubOwnerId={feature.githubDevId}
+                    onChange={handleGithubDevChange}
+                />
+            </div>
         )}
 
-        <AccountSelectorCard readOnly={!canAuthorEdit}
-            title="DEVELOPER"
-            message={!feature.accountDevId
-                ? "Select the account that will be used to open issues and pull requests on GitHub."
-                : null
-            }
-            accountId={feature.accountDevId}
-            onChange={handleAccountDevChange}
-        />
+        <div id="dev-card">
+            <AccountSelectorCard readOnly={!canAuthorEdit}
+                title="DEVELOPER"
+                message={!feature.accountDevId
+                    ? "Select the account that will be used to open issues and pull requests on GitHub."
+                    : null
+                }
+                accountId={feature.accountDevId}
+                onChange={handleAccountDevChange}
+            />
+        </div>
 
-        <FeatureDetailCard readOnly={!canAuthorEdit}
-            feature={feature}
-            onChange={handleDetailChange}
-        />
+        <div id="detail-card">
+            <FeatureDetailCard readOnly={!canAuthorEdit}
+                feature={feature}
+                onChange={handleDetailChange}
+            />
+        </div>
 
-        <FundingsCard readonly={!isFundable}
-            featureId={feature.id}
-        />
+        <div id="fundings-card">
+            <FundingsCard readonly={!isFundable}
+                featureId={feature.id}
+            />
+        </div>
 
-        <CommentsCard
-            featureId={feature.id}
-        />
+        <div id="comments-card">
+            <CommentsCard
+                featureId={feature.id}
+            />
+        </div>
 
     </Framework>
 }

@@ -3,7 +3,7 @@ import { Box, Typography, Alert } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import authSo from '@/stores/auth/repo';
 
-const AccountInfoSide: React.FC = () => {
+const OverviewCmp: React.FC = () => {
     const authSa = useStore(authSo);
     const user = authSa.user;
 
@@ -15,7 +15,7 @@ const AccountInfoSide: React.FC = () => {
             position: 'sticky', top: 20
         }}>
             <Typography variant="h6" gutterBottom>
-                Account Overview
+                Overview
             </Typography>
             
             <Typography variant="body2" color="text.secondary">
@@ -41,4 +41,4 @@ const AccountInfoSide: React.FC = () => {
     );
 };
 
-export default AccountInfoSide;
+export default OverviewCmp;

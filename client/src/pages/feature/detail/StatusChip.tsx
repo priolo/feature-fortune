@@ -43,7 +43,7 @@ export const FeatureStatusItems = [
         icon: <DesignServices />
     },
     {
-        label: 'In Development',
+        label: 'Development',
         value: FEATURE_STATUS.IN_DEVELOPMENT,
         subtitle: 'Feature accepted by an DEVELOPER and is in progress',
         color: 'secondary',

@@ -76,7 +76,7 @@ const FeatureListHeader: React.FC = () => {
 
 		{logged && <>
 
-			<FeatureSortSelector
+			{/* <FeatureSortSelector
 				sortId={sortId}
 				onChange={handleSortChange}
 			/>
@@ -89,7 +89,7 @@ const FeatureListHeader: React.FC = () => {
 			<FeatureStatusSelector
 				statusId={statusId}
 				onChange={handleStatusChange}
-			/>
+			/> */}
 
 			<TextField sx={{ flex: 1 }}
 				value={search}

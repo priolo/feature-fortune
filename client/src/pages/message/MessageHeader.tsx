@@ -19,15 +19,15 @@ const MessageHeader: React.FC = () => {
 	const handleNewMessageClick = () => {
 		messageListSo.createAndSelect()
 	}
-	const handleReceiverChange = (receiverId: string | null) => {
-		const params = Object.fromEntries(searchParams.entries())
-		if (!receiverId) {
-			delete params.receiver
-			setSearchParams(params)
-			return
-		}
-		setSearchParams({ ...params, receiver: receiverId })
-	}
+	// const handleReceiverChange = (receiverId: string | null) => {
+	// 	const params = Object.fromEntries(searchParams.entries())
+	// 	if (!receiverId) {
+	// 		delete params.receiver
+	// 		setSearchParams(params)
+	// 		return
+	// 	}
+	// 	setSearchParams({ ...params, receiver: receiverId })
+	// }
 	const handleRefreshClick = () => {
 		messageListSo.fetch()
 	}
@@ -44,10 +44,10 @@ const MessageHeader: React.FC = () => {
 
 		<Box sx={{ flex: 1 }}></Box>
 
-		<MessageReceiverSelector
+		{/* <MessageReceiverSelector
 			receiverId={receiverId}
 			onChange={handleReceiverChange}
-		/>
+		/> */}
 
 		<Button 
 			startIcon={<Refresh />}

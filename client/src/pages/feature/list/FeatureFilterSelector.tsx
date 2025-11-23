@@ -52,7 +52,7 @@ const FeatureFilterSelector: React.FC<Props> = ({
 
 export default FeatureFilterSelector;
 
-const featureFiltes = [
+export const featureFiltes = [
 	{ id: FEATURE_FILTER.ALL, label: "ALL" },
 	{ id: FEATURE_FILTER.FINANCED, label: "I CONTRIBUTE" },
 	{ id: FEATURE_FILTER.MY, label: "I CREATED" },

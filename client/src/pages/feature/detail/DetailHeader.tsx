@@ -161,7 +161,7 @@ Se verrà accettata dopo 24 ore avverrà il pagamento.`,
 
 	return <>
 
-		<BackButton />
+		{/* <BackButton /> */}
 
 		<Typography variant="h5">
 			FEATURE

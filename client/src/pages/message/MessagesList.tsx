@@ -21,18 +21,26 @@ const MessagesList: React.FC<Props> = ({
 
 	// HOOKS
 	const [searchParams] = useSearchParams()
-	const receiverId = searchParams.get('receiver')
+	const params = Object.fromEntries(searchParams.entries()) as { receiver?: string, read?: string }
+
 	const messages = useMemo(() => {
 		const all = messageListSo.state.all
-		if ( all == null ) return []
-		const messages: Message[] = !receiverId
+		if (all == null) return []
+		const messages: Message[] = !params.receiver && !params.read
 			? all
 			: all.filter(message => {
 				const accountId = message.content?.accountId
-				return accountId == receiverId || (accountId == null && receiverId == "sys")
+				if (!!params.receiver && (
+					(params.receiver != "sys" && params.receiver != accountId) || (params.receiver == "sys" && accountId != null)
+				)) return false
+				if (!!params.read) {
+					const isRead = params.read === 'true'
+					if (message.isRead !== isRead) return false
+				}
+				return true
 			})
 		return messages.sort((msg1, msg2) => new Date(msg2.createdAt).getTime() - new Date(msg1.createdAt).getTime())
-	}, [messageListSo.state.all, receiverId])
+	}, [messageListSo.state.all, params.receiver, params.read])
 
 	// RENDER
 	if (!messages || messages.length === 0) {
