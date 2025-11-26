@@ -1,6 +1,8 @@
+import { DoneOutlineRounded, ErrorOutline, InfoOutline, Warning } from '@mui/icons-material';
+import { SxProps, Typography } from '@mui/material';
 import React from 'react';
-import { Typography, SxProps, Box } from '@mui/material';
-import { Done, InfoOutline, WarningAmber, ErrorOutline, WarningAmberOutlined, WarningAmberSharp, Warning, DoneOutline, DoneOutlineRounded } from '@mui/icons-material';
+
+
 
 export type MessageVariant = 'info' | 'warn' | 'error' | 'done';
 

@@ -25,7 +25,7 @@
     "@octokit/oauth-app": "^8.0.3",
     "@octokit/rest": "^22.0.1",
     "@priolo/jon-utils": "^0.5.5",
-    "@priolo/julian": "file://C:/Users/ivano.iorio/Documents/julian",
+    "@priolo/julian": "^0.8.4",
     "cross-env": "^10.1.0",
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",
