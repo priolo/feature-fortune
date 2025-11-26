@@ -1,81 +1,83 @@
-import React from 'react';
-import { Box, Typography, Chip } from '@mui/material';
-import { useStore } from '@priolo/jon';
+import AvatarCmp from '@/components/AvatarCmp';
 import featureDetailSo from '@/stores/feature/detail';
-import { FEATURE_STATUS } from '@/types/feature/Feature';
+import { Box, Paper, SxProps, Typography } from '@mui/material';
+import { useStore } from '@priolo/jon';
+import React from 'react';
+import FeatureStatusChip from './StatusChip';
+import AccountIdView from '@/components/account/AccountIdView';
 
-const FeatureDetailOverview: React.FC = () => {
+
+
+interface Props {
+    sx?: SxProps
+}
+
+const FeatureDetailOverview: React.FC<Props> = ({
+    sx
+}) => {
+
+
+    // STORES
     const featureDetailSa = useStore(featureDetailSo);
-    const feature = featureDetailSa.feature;
 
+
+    // RENDER
+    const feature = featureDetailSa.feature;
     if (!feature) return null;
 
     return (
-        <Box sx={{
-            display: 'flex', flexDirection: 'column', gap: 2, p: 2, textAlign: 'right', maxWidth: 300, ml: 'auto',
-            position: 'sticky', top: 20
-        }}>
-            <Typography variant="h6" gutterBottom>
+        <Box sx={[sxRoot, sx] as SxProps}>
+
+            <Typography variant="h6">
                 Overview
             </Typography>
-            
+
             <Typography variant="body2" color="text.secondary">
-                View the current status and details of this feature request.
+                Questa FEATURE è una bozza.
+                <br />Deve essere accettata da un DEVELOPER per iniziare lo sviluppo.
             </Typography>
 
-            <Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-                <Typography variant="caption" color="text.secondary">
-                    STATUS
-                </Typography>
-                <Chip 
-                    label={feature.status?.toUpperCase().replace('_', ' ') || 'UNKNOWN'} 
-                    color={getStatusColor(feature.status)} 
-                />
-            </Box>
+            <FeatureStatusChip sx={{ alignSelf: 'flex-end' }}
+                status={feature?.status}
+            />
 
-             {feature.createdAt && (
-                <Box sx={{ mt: 2 }}>
-                    <Typography variant="caption" color="text.secondary">
+            {feature.accountId && (
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.5 }}>
+                    <Typography variant="overline" color="text.secondary">
+                        AUTHOR
+                    </Typography>
+                    <Paper sx={{ p: 1, borderRadius: 2 }}>
+                        <AccountIdView accountId={feature.accountId} />
+                    </Paper>
+                </Box>
+            )}
+
+
+            {feature.createdAt && (
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.5 }}>
+                    <Typography variant="overline" color="text.secondary">
                         CREATED AT
                     </Typography>
-                    <Typography variant="body1">
+                    <Typography variant="body2">
                         {new Date(feature.createdAt).toLocaleDateString()}
                     </Typography>
                 </Box>
             )}
 
-            <Box sx={{ mt: 2, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-                <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="h6" color="primary">
-                        {feature.fundings?.length || 0}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                        FUNDINGS
-                    </Typography>
-                </Box>
-                <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="h6" color="primary">
-                        {feature.comments?.length || 0}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                        COMMENTS
-                    </Typography>
-                </Box>
-            </Box>
+
         </Box>
     );
 };
 
-const getStatusColor = (status: FEATURE_STATUS) => {
-    switch (status) {
-        case FEATURE_STATUS.PROPOSED: return 'default';
-        case FEATURE_STATUS.IN_DEVELOPMENT: return 'primary';
-        case FEATURE_STATUS.RELEASED: return 'secondary';
-        case FEATURE_STATUS.COMPLETED: return 'success';
-        case FEATURE_STATUS.PAID: return 'success';
-        case FEATURE_STATUS.CANCELLED: return 'error';
-        default: return 'default';
-    }
-}
-
 export default FeatureDetailOverview;
+
+const sxRoot: SxProps = {
+    position: 'sticky',
+    top: 0,
+    alignItems: 'flex-end',
+    textAlign: 'right',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 1,
+    mr: 4, ml: 'auto', pt: 2, maxWidth: 300,
+}

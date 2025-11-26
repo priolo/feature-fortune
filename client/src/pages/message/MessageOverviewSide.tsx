@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, SxProps, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import messageListSo from '@/stores/message/list';
 
@@ -14,10 +14,7 @@ const MessageOverviewSide: React.FC = () => {
 
 	// RENDER
     return (
-        <Box sx={{
-            display: 'flex', flexDirection: 'column', gap: 2, p: 2, textAlign: 'right', maxWidth: 300, ml: 'auto',
-            position: 'sticky', top: 20
-        }}>
+        <Box sx={sxRoot}>
             <Typography variant="h6" gutterBottom>
                 Overview
             </Typography>
@@ -50,3 +47,14 @@ const MessageOverviewSide: React.FC = () => {
 };
 
 export default MessageOverviewSide;
+
+const sxRoot: SxProps = {
+    position: 'sticky',
+    top: 0,
+    alignItems: 'flex-end',
+    textAlign: 'right',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 1,
+    mr: 4, ml: 'auto', pt: 2, maxWidth: 300,
+}

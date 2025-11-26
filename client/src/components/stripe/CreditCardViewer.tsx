@@ -10,8 +10,9 @@ const CreditCardViewer = ({
 	card
 }: CreditCardViewerProps) => {
 
+	// RENDER
 	const theme = themeSo.state.current
-
+	
 	if (!card) return <Box sx={sxRoot(theme)}>NO CARD DATA</Box>;
 
 	return (

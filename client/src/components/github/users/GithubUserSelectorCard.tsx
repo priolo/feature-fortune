@@ -2,10 +2,12 @@ import gitHubApi from '@/api/githubService';
 import Card, { sxActionCard } from '@/components/Card';
 import GithubUserViewer from '@/components/github/users/GithubUserViewer';
 import GithubUsersFinderDialog from '@/components/github/users/GithubUsersFinderDialog';
+import MessageCmp from '@/components/MessageCmp';
 import { GitHubUser } from '@/types/github/GitHub';
-import { GitHub, InfoOutline } from '@mui/icons-material';
-import { Box, Button, SxProps, Typography } from '@mui/material';
+import { GitHub } from '@mui/icons-material';
+import { Box, Button, ListItemButton } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 
 
@@ -23,6 +25,9 @@ const GithubUserSelectorCard: React.FC<Props> = ({
     readOnly,
     onChange,
 }) => {
+
+    // STORES
+    const { t } = useTranslation();
 
     // HOOKS
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -59,50 +64,40 @@ const GithubUserSelectorCard: React.FC<Props> = ({
     // RENDER
 
     const isSelected = !!user;
+    const status = isSelected
+        ? { status: 'selected', variant: 'info' }
+        : { status: 'none', variant: 'info' };
 
     return <>
 
-        <Card
-            title="GITHUB USER"
+        <Card id="github-user-card"
+            title={t('cards.GithubUserSelectorCard.title')}
             icon={<GitHub />}
-            titleEndRender={!readOnly && <Box sx={sxActionCard}>
-                {isSelected && (
-                    <Button
-                        onClick={handleRemoveClick}
-                    >REMOVE</Button>
-                )}
-                <Button
-                    onClick={handleSelectUserClick}
-                >{isSelected ? 'CHANGE' : 'SELECT'}</Button>
-            </Box>}
         >
 
-            <Typography variant="body2" sx={{ mb: 1 }} color="text.secondary">
-                {isSelected
-                    ? <span>
-                        <InfoOutline color="primary" sx={sxIcon} />
-                        Questo è solo un segnaposto dell'utente Github collegato al feature.
-                        Chi dovrà occuparsi di implementare la feature è il <strong>DEVELOPER</strong>.
-                    </span>
-                    : <span>
-                        Facoltativo: seleziona un utente GitHub collegato al feature.
-                    </span>
-                }
+            <MessageCmp
+                variant={status.variant as any}
+                title={t(`cards.GithubUserSelectorCard.status.${status.status}.title`)}
+            >
+                <Trans i18nKey={`cards.GithubUserSelectorCard.status.${status.status}.desc`} />
+            </MessageCmp>
 
-            </Typography>
+            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input" }} 
+                onClick={!readOnly ? handleSelectUserClick : undefined}
+            >
+                <GithubUserViewer user={user} />
+            </ListItemButton>
 
-            <GithubUserViewer user={user} />
-
-            {/* <Box sx={sxActionCard}>
+            {!readOnly && <Box sx={sxActionCard}>
                 {isSelected && (
                     <Button
                         onClick={handleRemoveClick}
-                    >REMOVE</Button>
+                    >{t('cards.GithubUserSelectorCard.actions.remove')}</Button>
                 )}
                 <Button
                     onClick={handleSelectUserClick}
-                >{isSelected ? 'CHANGE' : 'SELECT'}</Button>
-            </Box> */}
+                >{isSelected ? t('cards.GithubUserSelectorCard.actions.change') : t('cards.GithubUserSelectorCard.actions.select')}</Button>
+            </Box>}
 
         </Card>
 
@@ -115,10 +110,3 @@ const GithubUserSelectorCard: React.FC<Props> = ({
 };
 
 export default GithubUserSelectorCard;
-
-const sxIcon: SxProps = {
-    fontSize: '1.4em',
-    verticalAlign: 'text-bottom',
-    ml: "2px",
-    mr: "6px",
-}

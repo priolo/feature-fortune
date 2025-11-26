@@ -27,7 +27,7 @@ const Layout: React.FC = () => {
 				{/* Header */}
 				<HeaderCmp />
 
-				{layoutSo.state.busy ? <LinearProgress /> : <Box sx={{ mt: "4px" }} />}
+				{layoutSo.state.busy ? <LinearProgress color="secondary"/> : <Box sx={{ mt: "4px" }} />}
 
 				{/* Main Content Area */}
 				<Box component="main" sx={sxMain}>

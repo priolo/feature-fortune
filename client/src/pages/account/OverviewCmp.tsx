@@ -1,19 +1,28 @@
 import React from 'react';
-import { Box, Typography, Alert } from '@mui/material';
+import { Box, Typography, Alert, SxProps } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import authSo from '@/stores/auth/repo';
 
-const OverviewCmp: React.FC = () => {
-    const authSa = useStore(authSo);
-    const user = authSa.user;
 
+
+
+interface Props {
+    sx?: SxProps
+}
+const OverviewCmp: React.FC<Props> = ({
+    sx,
+}) => {
+
+    // STORES
+    const authSa = useStore(authSo);
+
+    // RENDER
+    const user = authSa.user;
     if (!user) return null;
 
     return (
-        <Box sx={{
-            display: 'flex', flexDirection: 'column', gap: 2, p: 2, textAlign: 'right', maxWidth: 300, ml: 'auto',
-            position: 'sticky', top: 20
-        }}>
+        <Box sx={[sxRoot, sx] as SxProps}>
+            
             <Typography variant="h6" gutterBottom>
                 Overview
             </Typography>
@@ -42,3 +51,14 @@ const OverviewCmp: React.FC = () => {
 };
 
 export default OverviewCmp;
+
+
+const sxRoot: SxProps = {
+    position: 'sticky',
+    top: 0,
+    alignItems: 'flex-end',
+    textAlign: 'right',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 1,
+}

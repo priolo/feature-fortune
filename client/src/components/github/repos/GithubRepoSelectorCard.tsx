@@ -2,10 +2,12 @@ import gitHubApi from '@/api/githubService';
 import Card, { sxActionCard } from '@/components/Card';
 import GithubRepoViewer from '@/components/github/repos/GithubRepoViewer';
 import GithubReposFinderDialog from '@/components/github/repos/GithubReposFinderDialog';
+import MessageCmp from '@/components/MessageCmp';
 import { GitHubRepository } from '@/types/github/GitHub';
-import { CheckCircleOutline, GitHub } from '@mui/icons-material';
-import { Box, Button, SxProps, Typography } from '@mui/material';
+import { GitHub } from '@mui/icons-material';
+import { Box, Button, ListItemButton } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 
 
 
@@ -24,8 +26,8 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
     onChange,
 }) => {
 
-
     // HOOKS
+    const { t } = useTranslation();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [repo, setRepo] = useState<GitHubRepository>(null);
 
@@ -58,56 +60,47 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
 
 
     // RENDER
-    const isSelected = !!repo;
+    const isSelected = !!githubRepoId;
+    const status = isSelected
+        ? { status: 'selected', variant: 'done' }
+        : { status: 'none', variant: 'warn' };
 
     return <>
 
-        <Card
-            title="GITHUB REPOSITORY"
+        <Card id="github-repo-selector-card"
+            title={t('cards.GithubRepoSelectorCard.title')}
             icon={<GitHub />}
-            titleEndRender={!readOnly &&
-                <Box sx={sxActionCard}>
-                    {isSelected && (
-                        <Button
-                            onClick={handleRemoveClick}
-                        >REMOVE</Button>
-                    )}
-                    <Button
-                        onClick={handleFindRepoClick}
-                    >
-                        {isSelected ? 'CHANGE' : 'SELECT'}
-                    </Button>
-                </Box>
-            }
         >
 
-            <Typography variant="body2" sx={{ mb: 1 }} color="text.secondary">
-                {isSelected
-                    ? <span>
-                        <CheckCircleOutline color="success" sx={sxIcon} />Questo è il repo su cui si chiede la feature.
-                    </span>
-                    : <span>
-                        Seleziona un repository GitHub su cui si vuole la feature.
-                    </span>
-                }
-            </Typography>
+            <MessageCmp
+                variant={status.variant as any}
+                title={t(`cards.GithubRepoSelectorCard.status.${status.status}.title`)}
+            >
+                <Trans i18nKey={`cards.GithubRepoSelectorCard.status.${status.status}.desc`} />
+            </MessageCmp>
 
-            <GithubRepoViewer repository={repo} />
 
-            {/* {!readOnly &&
+            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input" }}
+                onClick={!readOnly ? handleFindRepoClick : undefined}
+            >
+                <GithubRepoViewer repository={repo} />
+            </ListItemButton>
+
+            {!readOnly && (
                 <Box sx={sxActionCard}>
                     {isSelected && (
                         <Button
                             onClick={handleRemoveClick}
-                        >REMOVE</Button>
+                        >{t('cards.GithubRepoSelectorCard.actions.remove')}</Button>
                     )}
                     <Button
                         onClick={handleFindRepoClick}
                     >
-                        {isSelected ? 'CHANGE' : 'SELECT'}
+                        {isSelected ? t('cards.GithubRepoSelectorCard.actions.change') : t('cards.GithubRepoSelectorCard.actions.select')}
                     </Button>
                 </Box>
-            } */}
+            )}
+
         </Card>
 
         <GithubReposFinderDialog
@@ -119,10 +112,3 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
 };
 
 export default GithubRepoSelectorCard;
-
-const sxIcon: SxProps = {
-    fontSize: '1.4em',
-    verticalAlign: 'text-bottom',
-    ml: "2px",
-    mr: "6px",
-}

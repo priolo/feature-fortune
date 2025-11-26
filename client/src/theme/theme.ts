@@ -42,6 +42,7 @@ const commonOptions = (theme: string): ThemeOptions => ({
 			styleOverrides: {
 				root: {
 					borderRadius: 150,
+					fontWeight: 600,
 				},
 			},
 		},
@@ -70,6 +71,12 @@ const commonOptions = (theme: string): ThemeOptions => ({
 		MuiChip: {
 			defaultProps: {
 				size: 'small',
+			},
+			styleOverrides: {
+				root: {
+					height: 20,
+					fontSize: '0.65rem',
+				},
 			},
 		},
 		MuiAvatar: {
@@ -117,16 +124,16 @@ export const lightTheme = createTheme({
 	palette: {
 		mode: 'light',
 		primary: {
-			main: '#1976d2',
-			light: '#42a5f5',
-			dark: '#1565c0',
-			contrastText: '#fff',
+			main: '#d900ffff',
+			light: '#e96fff',
+			dark: '#c814e7',
+			contrastText: 'rgba(255, 255, 255, 0.87)',
 		},
 		secondary: {
-			main: '#9c27b0',
-			light: '#ba68c8',
-			dark: '#7b1fa2',
-			contrastText: '#fff',
+			main: '#91ff00ff',
+			light: '#befc6dff',
+			dark: '#6cbe00ff',
+			contrastText: 'rgba(0, 0, 0, 0.87)',
 		},
 		background: {
 			default: '#f5f5f5',
@@ -150,15 +157,15 @@ export const darkTheme = createTheme({
 	palette: {
 		mode: 'dark',
 		primary: {
-			main: '#ce93d8',
-			light: '#f3e5f5',
-			dark: '#ab47bc',
+			main: '#e149fcff',
+			light: '#e96fff',
+			dark: '#c814e7',
 			contrastText: 'rgba(0, 0, 0, 0.87)',
 		},
 		secondary: {
-			main: '#90caf9',
-			light: '#e3f2fd',
-			dark: '#42a5f5',
+			main: '#91ff00ff',
+			light: '#befc6dff',
+			dark: '#6cbe00ff',
 			contrastText: 'rgba(0, 0, 0, 0.87)',
 		},
 		background: {

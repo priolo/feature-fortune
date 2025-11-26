@@ -9,9 +9,9 @@ import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 const AccountSystem: Account = {
-	id: "sys",
-	name: 'SYSTEM',
-	email: '',
+    id: "sys",
+    name: 'SYSTEM',
+    email: '',
 };
 
 const RightRender: React.FC = () => {
@@ -54,7 +54,7 @@ const RightRender: React.FC = () => {
 
     // RENDER
     return (
-        <Box>
+        <Box sx={{ position: 'sticky', top: 20 }}>
             <HeaderItems>Status</HeaderItems>
             <ItemRow
                 label="ALL"
@@ -73,7 +73,7 @@ const RightRender: React.FC = () => {
             />
 
             <HeaderItems>By Sender</HeaderItems>
-            
+
             <ItemRow
                 label="ALL"
                 selected={receiverId == null}

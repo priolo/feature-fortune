@@ -1,7 +1,7 @@
 import { Account } from '@/types/Account';
 import { Message } from '@/types/Message';
 import { Message as MessageIcon, Send } from '@mui/icons-material';
-import { Button, ListItemButton, TextField } from '@mui/material';
+import { Button, ListItemButton, SxProps, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import AccountFinderDialog from '../../components/account/AccountFinderDialog';
 import AccountIdView from '../../components/account/AccountIdView';
@@ -40,9 +40,9 @@ const MessageView: React.FC<Props> = ({
 	const handleDialogClose = async (account: Account) => {
 		setDialogOpen(false)
 		if (!account) return
-		onChange({ 
-			...message, 
-			content: {...message.content, accountId: account.id} 
+		onChange({
+			...message,
+			content: { ...message.content, accountId: account.id }
 		})
 	}
 	const handleCancelClick = () => {
@@ -55,7 +55,7 @@ const MessageView: React.FC<Props> = ({
 	const isDisabled = !message.content.accountId || !message.content?.text?.trim().length;
 
 	return <>
-		<Card
+		<Card sx={sxRoot}
 			icon={<MessageIcon />}
 			title="NEW MESSAGE"
 			titleEndRender={<>
@@ -98,3 +98,10 @@ const MessageView: React.FC<Props> = ({
 };
 
 export default MessageView;
+
+const sxRoot: SxProps = {
+	position: "sticky",
+	top: 0,
+	zIndex: 20,
+	boxShadow: 5
+}

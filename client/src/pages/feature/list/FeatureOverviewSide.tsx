@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, SxProps, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import featureListSo from '@/stores/feature/list';
 
@@ -8,11 +8,9 @@ const FeatureOverviewSide: React.FC = () => {
     const allFeatures = featureListSa.all || [];
 
     return (
-        <Box sx={{
-            display: 'flex', flexDirection: 'column', gap: 2, p: 2, textAlign: 'right', maxWidth: 300, ml: 'auto',
-            position: 'sticky', top: 20
-        }}>
-            <Typography variant="h6" gutterBottom>
+        <Box sx={sxRoot}>
+
+            <Typography variant="h6">
                 Overview
             </Typography>
             
@@ -33,3 +31,14 @@ const FeatureOverviewSide: React.FC = () => {
 };
 
 export default FeatureOverviewSide;
+
+const sxRoot: SxProps = {
+    position: 'sticky',
+    top: 0,
+    alignItems: 'flex-end',
+    textAlign: 'right',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 1,
+    mr: 4, ml: 'auto', pt: 2, maxWidth: 300,
+}

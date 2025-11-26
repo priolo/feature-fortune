@@ -1,19 +1,22 @@
 import AccountFinderDialog from '@/components/account/AccountFinderDialog';
+import MessageCmp from '@/components/MessageCmp';
 import { Account } from '@/types/Account';
 import { Keyboard } from '@mui/icons-material';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, ListItemButton } from '@mui/material';
 import React, { useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import Card, { sxActionCard } from '../Card';
 import AccountIdView from './AccountIdView';
 
 
 
 interface Props {
-    title?: string,
-    icon?: React.ReactNode,
+    id?: string,
     accountId?: string
     readOnly?: boolean,
-    message?: React.ReactNode,
+
+    icon?: React.ReactNode,
+    variant?: string
 
     onChange?: (account: Account) => void
 }
@@ -22,15 +25,18 @@ interface Props {
  * CARD che visualizza e seleziona un ACCOUNT
  */
 const AccountSelectorCard: React.FC<Props> = ({
-    title,
-    icon,
+    id,
     accountId,
     readOnly,
-    message,
+
+    icon,
+    variant = "DevSelectorCard",
 
     onChange,
 }) => {
 
+    // STORES
+    const { t } = useTranslation();
 
     // HOOKS
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -52,33 +58,44 @@ const AccountSelectorCard: React.FC<Props> = ({
 
     // RENDER
     const isSelected = !!accountId
+    const status = isSelected
+        ? { status: 'selected', variant: 'done' }
+        : { status: 'none', variant: 'warn' };
 
     return <>
 
-        <Card id="account-selector-card"
-            title={title}
+        <Card id={id ?? "account-selector-card"}
+            title={t(`cards.${variant}.title`)}
             icon={icon ?? <Keyboard />}
-            titleEndRender={!readOnly &&
+        >
+
+            <MessageCmp
+                variant={status.variant as any}
+                title={t(`cards.${variant}.status.${status.status}.title`)}
+            >
+                {<Trans i18nKey={`cards.${variant}.status.${status.status}.desc`} />}
+            </MessageCmp>
+
+            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input" }} 
+                onClick={!readOnly ? handleSelectClick : undefined}
+            >
+                <AccountIdView accountId={accountId} />
+            </ListItemButton>
+
+            {!readOnly &&
                 <Box sx={sxActionCard}>
                     {isSelected && (
                         <Button
                             onClick={handleRemoveClick}
-                        >REMOVE</Button>
+                        >{t(`cards.${variant}.actions.remove`)}</Button>
                     )}
                     <Button
                         onClick={handleSelectClick}
                     >
-                        {!!isSelected ? 'CHANGE' : 'SELECT'}
+                        {t(`cards.${variant}.actions.${!!isSelected? "change": "select"}`)}
                     </Button>
                 </Box>
             }
-        >
-
-            <Typography variant="body2" color="text.secondary">
-                {message}
-            </Typography>
-
-            <AccountIdView accountId={accountId} />
 
         </Card>
 
@@ -91,3 +108,4 @@ const AccountSelectorCard: React.FC<Props> = ({
 };
 
 export default AccountSelectorCard;
+

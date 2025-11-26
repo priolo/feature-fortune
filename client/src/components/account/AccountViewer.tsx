@@ -24,9 +24,9 @@ const AccountViewer: React.FC<Props> = ({
 
     const stripeAccProps: any = !!account.stripeAccountId
         ? (account.stripeAccountStatus === 'ready'
-            ? { color: 'success', icon: <Done />, label: 'STRIPE READY' }
-            : { color: 'warning', icon: <WarningAmber />, label: 'STRIPE INCOMPLETE' }
-        ) : { color: 'error', icon: <PriorityHigh sx={{ width: 14, height: 14 }} />, label: 'NO STRIPE' }
+            ? { color: 'secondary', label: 'STRIPE READY' }
+            : { color: 'warning', label: 'STRIPE INCOMPLETE' }
+        ) : { color: 'primary', label: 'NO STRIPE' }
 
     return (
         <Box sx={sxRoot}>
@@ -35,7 +35,7 @@ const AccountViewer: React.FC<Props> = ({
 
             <Box sx={sxContent} >
 
-                <Typography>
+                <Typography align='left'>
                     {account.name}
                 </Typography>
 
@@ -65,7 +65,7 @@ const AccountViewer: React.FC<Props> = ({
 
                 </Box>
             </Box>
-            
+
         </Box>
     )
 };

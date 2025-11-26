@@ -54,7 +54,7 @@ const RightRender: React.FC = () => {
     // RENDER
 
     return (
-        <Box>
+        <Box sx={{ position: 'sticky', top: 20 }}>
             <HeaderItems>Sort By</HeaderItems>
             {featureSort.map(item => (
                 <ItemRow

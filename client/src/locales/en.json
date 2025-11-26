@@ -41,10 +41,23 @@
 		"amount": "Amount"
 	},
 	"cards": {
-		"githubRepoSelector": {
+		"GithubRepoSelectorCard": {
 			"title": "GITHUB REPOSITORY",
-			"no_selected": "This is the repo on which the feature is requested.",
-			"selected": "Select a GitHub repository on which the feature is requested."
+			"status": {
+				"selected": {
+					"title": "Repository Selected",
+					"desc": "<br/>This is the repo on which the feature is requested."
+				},
+				"none": {
+					"title": "No Repository Selected",
+					"desc": "<br/>Select a GitHub repository on which the feature is requested."
+				}
+			},
+			"actions": {
+				"remove": "REMOVE",
+				"change": "CHANGE",
+				"select": "SELECT"
+			}
 		},
 		"StripeAuthorCard": {
 			"title": "STRIPE CONNECTED ACCESS",
@@ -223,6 +236,60 @@
 			"alerts": {
 				"save_success": "Settings saved successfully!",
 				"name_required": "NAME is required."
+			}
+		},
+		"GithubUserSelectorCard": {
+			"title": "GITHUB USER",
+			"status": {
+				"selected": {
+					"title": "User Selected",
+					"desc": "<br/>This is just a placeholder for the Github user connected to the feature.<br/>The one who will have to take care of implementing the feature is the <strong>DEVELOPER</strong>."
+				},
+				"none": {
+					"title": "No User Selected",
+					"desc": "<br/>Optional: select a GitHub user connected to the feature."
+				}
+			},
+			"actions": {
+				"remove": "REMOVE",
+				"change": "CHANGE",
+				"select": "SELECT"
+			}
+		},
+		"AccountSelectorCard": {
+			"title": "ACCOUNT",
+			"status": {
+				"selected": {
+					"title": "Account Selected",
+					"desc": "<br/>The account has been selected."
+				},
+				"none": {
+					"title": "No Account Selected",
+					"desc": "<br/>Please select an account."
+				}
+			},
+			"actions": {
+				"remove": "REMOVE",
+				"change": "CHANGE",
+				"select": "SELECT"
+			}
+		},
+		"DevSelectorCard": {
+			"title": "DEVELOPER",
+			"status": {
+				"selected": {
+					"title": "Account Selected",
+					"desc": "<br/>The account has been selected."
+				},
+				"none": {
+					"title": "No Account Selected",
+					"desc": "<br/>Select the account that will be used to open issues and pull requests on GitHub."
+				}
+			},
+			"actions": {
+				"remove": "REMOVE",
+				"change": "CHANGE",
+				"select": "SELECT"
 			}
 		}
 	},

@@ -1,11 +1,8 @@
 import commentApi from "@/api/comment"
 import featureApi from "@/api/feature"
-import fundingApi from "@/api/funding"
 import { Comment } from "@/types/Comment"
-import { Feature, FEATURE_ACTIONS, FEATURE_STATUS } from "@/types/feature/Feature"
-import { Funding } from "@/types/Funding"
+import { Feature, FEATURE_ACTIONS } from "@/types/feature/Feature"
 import { createStore, StoreCore } from "@priolo/jon"
-import { create } from "node_modules/@mui/material/esm/styles/createTransitions"
 
 
 

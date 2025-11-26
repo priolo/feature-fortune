@@ -1,7 +1,6 @@
 import Framework from '@/layout/Framework';
 import authSo, { stripePromise } from '@/stores/auth/repo';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
-import { Box, List, ListItemButton, ListItemText } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import { Elements } from '@stripe/react-stripe-js';
 import React, { useEffect } from 'react';
@@ -12,6 +11,7 @@ import StripeAuthorCard from '../../components/stripe/StripeAuthorCard';
 import StripeCreditCard from '../../components/stripe/StripeCreditCard';
 import SettingsCard from './SettingsCard';
 import OverviewCmp from './OverviewCmp';
+import AccountRightMenu from './AccountRightMenu';
 
 
 
@@ -41,12 +41,6 @@ const AccountPag: React.FC<AccountPagProps> = ({
 
 
     // HANDLERS
-    const scrollToCard = (cardId: string) => {
-        const element = document.getElementById(cardId)
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' })
-        }
-    }
 
 
     // RENDER
@@ -57,31 +51,8 @@ const AccountPag: React.FC<AccountPagProps> = ({
     }
 
     return <Framework sx={{ py: 2 }}
-        leftRender={<OverviewCmp />}
-        rightRender={
-            <Box sx={{ position: 'sticky', top: 20, pt: 2 }}>
-                <List dense>
-                    <ListItemButton onClick={() => scrollToCard('settings-card')}>
-                        <ListItemText primary="Settings" secondary="General account settings" />
-                    </ListItemButton>
-                    <ListItemButton onClick={() => scrollToCard('email-login-card')}>
-                        <ListItemText primary="Email" secondary="Manage email login" />
-                    </ListItemButton>
-                    <ListItemButton onClick={() => scrollToCard('google-login-card')}>
-                        <ListItemText primary="Google" secondary="Link Google account" />
-                    </ListItemButton>
-                    <ListItemButton onClick={() => scrollToCard('github-login-card')}>
-                        <ListItemText primary="GitHub" secondary="Link GitHub account" />
-                    </ListItemButton>
-                    <ListItemButton onClick={() => scrollToCard('stripe-credit-card')}>
-                        <ListItemText primary="Credit Card" secondary="Manage payment methods" />
-                    </ListItemButton>
-                    <ListItemButton onClick={() => scrollToCard('stripe-author-card')}>
-                        <ListItemText primary="Stripe Author" secondary="Manage payout details" />
-                    </ListItemButton>
-                </List>
-            </Box>
-        }
+        leftRender={<OverviewCmp sx={{mr: 4, ml: 'auto', pt: 2,maxWidth: 300}} />}
+        rightRender={<AccountRightMenu />}
     >
 
         <SettingsCard />

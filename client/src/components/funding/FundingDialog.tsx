@@ -60,10 +60,9 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 
 	return (
 
-		<Dialog onClose={handleClose} open={isOpen}
-			// slotProps={{
-			// 	paper: { sx: { width: 650, maxWidth: 'none' } },
-			// }}
+		<Dialog 
+			open={isOpen}
+			onClose={handleClose}
 		>
 
 			<DialogTitle>CONTRIBUTE</DialogTitle>

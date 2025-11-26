@@ -32,7 +32,7 @@ const FeatureDetailHeader: React.FC = () => {
 		})
 	}
 
-	const handleAuthorCancelClick = async () => {
+	const handleAuthorDeleteClick = async () => {
 		const res = await dialogSo.dialogOpen({
 			title: "ATTENZIONE",
 			text: `Tutti i FUNDERS verranno annullati e Il DEVELOPER non verrà pagato.
@@ -167,38 +167,36 @@ Se verrà accettata dopo 24 ore avverrà il pagamento.`,
 			FEATURE
 		</Typography>
 
-		<FeatureStatusChip
+		{/* <FeatureStatusChip
 			status={feature?.status}
-		/>
+		/> */}
 
 		<Box sx={{ flex: 1 }}></Box>
 
-		<Button
+		{/* <Button
 			onClick={handleCancelClick}
-		>BACK</Button>
-
-
+		>BACK</Button> */}
 
 		{isAuthor && feature.status == FEATURE_STATUS.PROPOSED && (
-			<Button variant="contained" color="primary"
+			<Button variant="contained"
 				onClick={handleAuthorSaveClick}
 			>{isNew ? "CREATE" : "MODIFY"}</Button>
 		)}
 
 		{isAuthor && feature.status == FEATURE_STATUS.IN_DEVELOPMENT && <>
-			<Button variant="contained" color="error"
-				onClick={handleAuthorCancelClick}
-			>CANCEL</Button>
+			<Button
+				onClick={handleAuthorDeleteClick}
+			>DELETE</Button>
 		</>}
 
 		{isAuthor && feature.status == FEATURE_STATUS.RELEASED && <>
-			<Button variant="contained" color="error"
-				onClick={handleAuthorCancelClick}
+			<Button
+				onClick={handleAuthorDeleteClick}
 			>REJECT</Button>
 
-			<Button variant="contained" color="success"
+			<Button variant="contained" color="secondary"
 				onClick={handleAuthorCompleteClick}
-			>SUCCESS!</Button>
+			>COMPLETE!!</Button>
 		</>}
 
 
@@ -216,7 +214,7 @@ Se verrà accettata dopo 24 ore avverrà il pagamento.`,
 			<Button variant="contained" color="primary"
 				onClick={handleDevLeaveClick}
 			>LEAVE</Button>
-			<Button variant="contained" color="success"
+			<Button variant="contained" color="secondary"
 				onClick={handleDevReleaseClick}
 			>RELEASE</Button>
 		</>}

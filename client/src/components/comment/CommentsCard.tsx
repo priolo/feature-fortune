@@ -55,7 +55,7 @@ const CommentsCard: React.FC<Props> = ({
 
 	return <>
 	
-		<Card id="comment-list-card"
+		<Card id="comments-card"
 			title="COMMENTS"
 			icon={<CommentBank />}
 			titleEndRender={

@@ -1,11 +1,11 @@
 import Card from '@/components/Card';
 import FundingDialog from '@/components/funding/FundingDialog';
-import FundingList from '@/components/funding/FundingList';
+import FundingView from '@/components/funding/FundingView';
 import MessageBanner from '@/components/MessageBanner';
 import fundingListSo from '@/stores/funding/list';
 import { Funding } from '@/types/Funding';
 import { Add, Payment } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import { Button, List, ListItem } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';
 
@@ -69,7 +69,15 @@ const FundingsCard: React.FC<Props> = ({
         >
 
             {!isVoid ? (
-                <FundingList fundings={fundings} />
+                <List> {fundings.map((funding, index) => (
+
+                    <ListItem key={funding.id}
+                        divider={index < fundings.length - 1}
+                    >
+                        <FundingView funding={funding} />
+                    </ListItem>
+
+                ))} </List>
             ) : (
                 <MessageBanner>
                     No fundings yet for this feature.

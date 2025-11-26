@@ -51,14 +51,10 @@ const FeatureListPag: React.FC = () => {
 	// RENDER
 	return <Framework sx={{ py: 2 }}
 		leftRender={<FeatureOverviewSide />}
-		rightRender={
-			<Box sx={{ position: 'sticky', top: 20, pt: 2 }}>
-				<RightRender />
-			</Box>
-		}
+		rightRender={<RightRender />}
 	>
 
-		<Card id="feature-list-card" sx={{ mt: 3 }}>
+		<Card>
 			<List>
 				{features.map((feature, index) => (
 

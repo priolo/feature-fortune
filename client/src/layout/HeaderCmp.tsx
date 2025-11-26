@@ -44,8 +44,8 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 	return (
 		<Box sx={sxRoot}>
 
-			<Box sx={{ flex: 1 }}>
-				<Button
+			<Box sx={{ flex: 1, display:"flex", justifyContent: 'flex-end' }}>
+				<Button sx={{ marginRight: '22px' }}
 					onClick={handleLogoClick}
 				>LOGO</Button>
 			</Box>

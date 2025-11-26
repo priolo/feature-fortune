@@ -52,7 +52,7 @@ const ActionsMenu: FunctionComponent<Props> = ({
 	if (!actions || actions.length == 0) return null
 	return <>
 		<Tooltip title={tooltip} placement="top">
-			<IconButton sx={sx}
+			<IconButton sx={sx} size='small'
 				disabled={disabled}
 				onClick={handleClick}
 			><MoreVertIcon /></IconButton>

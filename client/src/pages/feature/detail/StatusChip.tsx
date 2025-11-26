@@ -1,16 +1,18 @@
-import { Feature, FEATURE_STATUS } from '@/types/feature/Feature';
+import { FEATURE_STATUS } from '@/types/feature/Feature';
 import { Build, Close, DesignServices, Done, WaterDrop } from '@mui/icons-material';
-import { Chip, Tooltip } from '@mui/material';
+import { Chip, SxProps, Tooltip } from '@mui/material';
 import React, { useMemo } from 'react';
 
 
 
 interface Props {
+    sx?: SxProps
     status?: FEATURE_STATUS;
     onClick?: React.MouseEventHandler<HTMLDivElement>
 }
 
 const FeatureStatusChip: React.FC<Props> = ({
+    sx,
     status,
     onClick,
 }) => {
@@ -19,7 +21,7 @@ const FeatureStatusChip: React.FC<Props> = ({
     const label = item?.label?.toUpperCase() ?? "N/A";
 
     return (
-        <Tooltip title={item?.subtitle ?? ""}>
+        <Tooltip title={item?.subtitle ?? ""} sx={sx}>
             <Chip
                 icon={item?.icon}
                 label={label}
@@ -46,7 +48,7 @@ export const FeatureStatusItems = [
         label: 'Development',
         value: FEATURE_STATUS.IN_DEVELOPMENT,
         subtitle: 'Feature accepted by an DEVELOPER and is in progress',
-        color: 'secondary',
+        color: 'info',
         icon: <Build />
     },
     {
@@ -60,7 +62,7 @@ export const FeatureStatusItems = [
         label: 'Completed',
         value: FEATURE_STATUS.COMPLETED,
         subtitle: 'AUTHOOR confirms the feature is SUCCESSFUL',
-        color: 'success',
+        color: 'secondary',
         icon: <Done />
     },
     {

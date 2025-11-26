@@ -40,7 +40,7 @@ const GithubRepoViewer: React.FC<Props> = ({
 
             <Box sx={sxContent}>
 
-                <Link href={!noLink ? repository.html_url : undefined}>
+                <Link href={!noLink ? repository.html_url : undefined} alignSelf="start">
                     {repository.full_name}
                 </Link>
 

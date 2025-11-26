@@ -1,17 +1,17 @@
 import paymentApi from "@/api/payment";
 import Card from "@/components/Card";
 import authSo from "@/stores/auth/repo";
+import dialogSo, { DIALOG_TYPE } from "@/stores/layout/dialogStore";
+import themeSo from "@/stores/layout/theme";
 import { Money } from "@mui/icons-material";
-import { Box, Button, SxProps, Typography, useTheme } from "@mui/material";
+import { Box, Button, SxProps, Theme } from "@mui/material";
 import { useStore } from "@priolo/jon";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import { PaymentMethod } from "@stripe/stripe-js";
+import { PaymentMethod, StripeCardElementOptions } from "@stripe/stripe-js";
 import { useEffect, useState } from "react";
-import CreditCardViewer from "./CreditCardViewer";
 import { Trans, useTranslation } from "react-i18next";
 import MessageCmp from "../MessageCmp";
-import themeSo from "@/stores/layout/theme";
-import dialogSo, { DIALOG_TYPE } from "@/stores/layout/dialogStore";
+import CreditCardViewer from "./CreditCardViewer";
 
 
 
@@ -117,7 +117,9 @@ const StripeCreditCard: React.FC<Props> = ({
 
 
 	// RENDER
+	const theme = themeSo.state.current
 	const status = !havePaymentMethod ? 'warn' : 'done';
+
 
 	return (
 		<Card id="stripe-credit-card"
@@ -125,7 +127,7 @@ const StripeCreditCard: React.FC<Props> = ({
 			icon={<Money color="primary" />}
 		>
 
-			<MessageCmp variant={status} title={t(`cards.StripeCreditCard.status.${status}.title`)} sx={{ mb: 1}}>
+			<MessageCmp variant={status} title={t(`cards.StripeCreditCard.status.${status}.title`)} sx={{ mb: 1 }}>
 				<Trans i18nKey={`cards.StripeCreditCard.status.${status}.desc`} />
 			</MessageCmp>
 
@@ -134,7 +136,7 @@ const StripeCreditCard: React.FC<Props> = ({
 				<CreditCardViewer card={paymentMethod?.card} />
 			) : (
 				<Box sx={sxCardElement}>
-					<CardElement options={cardElementOptions} />
+					<CardElement options={cardElementOptions(theme)} />
 				</Box>
 			)}
 
@@ -157,17 +159,19 @@ const StripeCreditCard: React.FC<Props> = ({
 
 export default StripeCreditCard;
 
-
-const theme = themeSo.state.current
-
 const sxActions: SxProps = {
 	display: 'flex',
 	justifyContent: 'end',
 	paddingTop: 1,
 };
 
+const sxCardElement: SxProps = {
+	borderRadius: 2,
+	p: 2,
+	bgcolor: "background.input",
+};
 
-const cardElementOptions = {
+const cardElementOptions = (theme: Theme): StripeCardElementOptions => ({
 	style: {
 		base: {
 			color: theme.palette.text.primary,
@@ -178,11 +182,5 @@ const cardElementOptions = {
 			},
 		},
 	},
-};
-const sxCardElement: SxProps = {
-	borderRadius: 2,
-	p: 2,
-	bgcolor: "background.paper",
-};
-
+})
 
