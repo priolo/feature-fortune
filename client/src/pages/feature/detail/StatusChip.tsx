@@ -23,7 +23,7 @@ const FeatureStatusChip: React.FC<Props> = ({
     return (
         <Tooltip title={item?.subtitle ?? ""} sx={sx}>
             <Chip
-                icon={item?.icon}
+                icon={item?.icon && <item.icon sx={{ width: "16px", height: "16px" }} />}
                 label={label}
                 color={item?.color as any || 'default'}
                 onClick={onClick}
@@ -32,7 +32,7 @@ const FeatureStatusChip: React.FC<Props> = ({
     );
 };
 
-export default FeatureStatusChip; 
+export default FeatureStatusChip;
 
 
 
@@ -42,35 +42,35 @@ export const FeatureStatusItems = [
         value: FEATURE_STATUS.PROPOSED,
         subtitle: 'Feature has been proposed from AUTHOR',
         color: 'default',
-        icon: <DesignServices />
+        icon: DesignServices,
     },
     {
         label: 'Development',
         value: FEATURE_STATUS.IN_DEVELOPMENT,
         subtitle: 'Feature accepted by an DEVELOPER and is in progress',
         color: 'info',
-        icon: <Build />
+        icon: Build,
     },
     {
         label: 'Released',
         value: FEATURE_STATUS.RELEASED,
         subtitle: 'DEVELOPER declares the feature COMPLETED',
         color: 'primary',
-        icon: <WaterDrop />
+        icon: WaterDrop
     },
     {
         label: 'Completed',
         value: FEATURE_STATUS.COMPLETED,
         subtitle: 'AUTHOOR confirms the feature is SUCCESSFUL',
         color: 'secondary',
-        icon: <Done />
+        icon: Done
     },
     {
         label: 'Cancelled',
         value: FEATURE_STATUS.CANCELLED,
         subtitle: 'AUTHOR or DEVELOPER has CANCELLED the feature',
         color: 'error',
-        icon: <Close />
+        icon: Close
     }
 ];
 

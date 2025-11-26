@@ -13,13 +13,13 @@ const FeatureOverviewSide: React.FC = () => {
             <Typography variant="h6">
                 Overview
             </Typography>
-            
+
             <Typography variant="body2" color="text.secondary">
                 Browse all requested features, vote for the ones you want, or fund them to speed up development.
             </Typography>
 
             <Box sx={{ mt: 2 }}>
-                <Typography variant="h4" color="primary">
+                <Typography variant="h4" color="primary" sx={{ fontWeight: 600 }}>
                     {allFeatures.length}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">

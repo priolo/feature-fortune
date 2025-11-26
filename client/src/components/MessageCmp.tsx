@@ -1,4 +1,4 @@
-import { DoneOutlineRounded, ErrorOutline, InfoOutline, Warning } from '@mui/icons-material';
+import { DoneOutlineRounded, ErrorOutline, Info, InfoOutline, InfoOutlineSharp, Warning } from '@mui/icons-material';
 import { SxProps, Typography } from '@mui/material';
 import React from 'react';
 
@@ -24,7 +24,7 @@ const MessageCmp: React.FC<MessageCmpProps> = ({
 		"done": { Icon: DoneOutlineRounded, color: "secondary" },
 		"warn": { Icon: Warning, color: "primary" },
 		"error": { Icon: ErrorOutline, color: "error" },
-		"info": { Icon: InfoOutline, color: "info" },
+		"info": { Icon: Info, color: "info" },
 	}[variant] ?? { Icon: InfoOutline, color: "info" };
 
 	return (
