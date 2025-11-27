@@ -43,19 +43,19 @@ const GithubUserViewer: React.FC<Props> = ({
                 </Box>
 
                 <Box sx={sxClips}>
-                    <Chip size="small"
+                    <Chip sx={sxChip}
                         label={dayjs(user.created_at).format('MMM YYYY')}
                     />
-                    {user.location && <Chip size="small"
+                    {!!user.location && <Chip sx={sxChip}
                         label={user.location}
                     />}
-                    {user.public_repos && <Chip
+                    {!!user.public_repos && <Chip sx={sxChip}
                         label={`Repo: ${user.public_repos}`}
                     />}
-                    {user.followers && <Chip
+                    {!!user.followers && <Chip sx={sxChip}
                         label={`Followers: ${user.followers}`}
                     />}
-                    {user.following && <Chip
+                    {!!user.following && <Chip sx={sxChip}
                         label={`Following: ${user.following}`}
                     />}
                 </Box>
@@ -66,3 +66,7 @@ const GithubUserViewer: React.FC<Props> = ({
 }
 
 export default GithubUserViewer;
+
+const sxChip:SxProps = {
+    textTransform: "uppercase",
+}

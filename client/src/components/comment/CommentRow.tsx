@@ -28,15 +28,15 @@ const CommentRow: React.FC<Props> = ({
 		const items = [];
 		// DEVELOPER
 		if (featureDetailSo.state.feature?.accountDevId === comment.accountId) {
-			items.push({ label: 'DEVELOPER', color: 'primary', icon: <Build fontSize="small" /> });
+			items.push({ label: 'DEVELOPER', color: 'primary', icon: <Build sx={sxIcon} /> });
 		}
 		// AUTHOR
 		if (featureDetailSo.state.feature?.accountId === comment.accountId) {
-			items.push({ label: 'AUTHOR', color: 'secondary', icon: <Person fontSize="small" /> });
+			items.push({ label: 'AUTHOR', color: 'secondary', icon: <Person sx={sxIcon} /> });
 		}
 		// FOUNDER
 		if (fundingListSo.state.all?.some(f => f.accountId === comment.accountId)) {
-			items.push({ label: 'FOUDER', color: 'success', icon: <AttachMoney fontSize="small" /> });
+			items.push({ label: 'FOUDER', color: 'success', icon: <AttachMoney sx={sxIcon} /> });
 		}
 		return items;
 	}, [comment, featureDetailSo.state.feature, fundingListSo.state.all])
@@ -63,7 +63,7 @@ const CommentRow: React.FC<Props> = ({
 
 				<Box sx={{ display: "flex", gap: 1, alignItems: 'center' }}>
 					{chips.map((item, index) => (
-						<Chip key={index} size="small"
+						<Chip key={index}
 							label={item.label}
 							color={item.color}
 							icon={item.icon}
@@ -98,4 +98,9 @@ const sxAvatarRow: SxProps = {
 	display: 'flex',
 	gap: 1,
 	alignItems: 'center',
+}
+
+const sxIcon:SxProps = {
+	width: "14px",
+	height: "14px"
 }

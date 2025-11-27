@@ -2,7 +2,7 @@ import MessageBanner from '@/components/MessageBanner';
 import { sxClips, sxContent, sxRoot } from '@/theme/AvatarStyle';
 import { GitHubRepository } from '@/types/github/GitHub';
 import { Star } from '@mui/icons-material';
-import { Avatar, Box, Chip, Link, Typography } from '@mui/material';
+import { Avatar, Box, Chip, Link, SxProps, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -50,12 +50,12 @@ const GithubRepoViewer: React.FC<Props> = ({
 
                 <Box sx={sxClips}>
 
-                    <Chip size="small" icon={<Star />}
+                    <Chip sx={sxChip} icon={<Star sx={{ width: ".9em", height: ".9em" }} />}
                         label={repository.stargazers_count}
                     />
 
                     {topics.slice(0, 10).map((topic, index) => (
-                        <Chip key={index} label={topic} size="small" />
+                        <Chip key={index} label={topic} sx={sxChip} />
                     ))}
 
                 </Box>
@@ -67,3 +67,7 @@ const GithubRepoViewer: React.FC<Props> = ({
 };
 
 export default GithubRepoViewer;
+
+const sxChip: SxProps = {
+    textTransform: "uppercase",
+}

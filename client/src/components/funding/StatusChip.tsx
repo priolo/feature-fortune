@@ -1,6 +1,6 @@
 import { FUNDING_STATUS } from '@/types/Funding';
 import { Close, Done, PlayArrow, PointOfSale } from '@mui/icons-material';
-import { Chip, Tooltip } from '@mui/material';
+import { Chip, SxProps, Tooltip } from '@mui/material';
 import React, { useMemo } from 'react';
 
 
@@ -33,6 +33,10 @@ const StatusChip: React.FC<Props> = ({
 export default StatusChip;
 
 
+const sxIcon: SxProps = {
+    width: "14px",
+    height: "14px"
+}
 
 export const FundingStatusItems = [
     {
@@ -40,35 +44,35 @@ export const FundingStatusItems = [
         value: FUNDING_STATUS.PENDING,
         subtitle: 'Funding is pending approval',
         color: 'default',
-        icon: <PlayArrow />
+        icon: <PlayArrow sx={sxIcon} />,
     },
     {
         label: 'Cancelled',
         value: FUNDING_STATUS.CANCELLED,
         subtitle: 'Funding has been cancelled',
         color: 'error',
-        icon: <Close />
+        icon: <Close sx={sxIcon} />,
     },
     {
         label: 'Payable',
         value: FUNDING_STATUS.PAYABLE,
         subtitle: 'Funding is ready to be paid',
         color: 'primary',
-        icon: <PointOfSale />
+        icon: <PointOfSale sx={sxIcon} />,
     },
     {
         label: 'Paied',
         value: FUNDING_STATUS.PAIED,
         subtitle: 'Funding has been successfully paid',
-        color: 'success',
-        icon: <Done />
+        color: 'secondary',
+        icon: <Done sx={sxIcon} />,
     },
     {
         label: 'Error',
         value: FUNDING_STATUS.ERROR,
         subtitle: 'Feature has been cancelled',
         color: 'error',
-        icon: <Close />
+        icon: <Close sx={sxIcon} />,
     }
 ];
 

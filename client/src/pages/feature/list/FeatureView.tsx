@@ -1,11 +1,10 @@
 import CurrencyLabel from '@/components/CurrencyLabel';
-import { sxClips, sxContent, sxRoot } from '@/theme/AvatarStyle';
-import { Comment } from '@/types/Comment';
+import FundingsAvatarGroup from '@/components/funding/FundingsAvatarGroup';
+import { sxContent, sxRoot } from '@/theme/AvatarStyle';
 import { Feature } from '@/types/feature/Feature';
 import { Avatar, Box, Link, SxProps, Typography } from '@mui/material';
 import React from 'react';
 import FeatureStatusChip from '../detail/StatusChip';
-import { array } from '@priolo/jon-utils'
 
 
 interface Props {
@@ -21,8 +20,6 @@ const FeatureView: React.FC<Props> = ({
 	// RENDER
 	const repo = feature.githubRepoMetadata
 
-	//const values = array.groupByKey(feature.fundings, (funding) => funding.currency)
-
 	let haveValues = false;
 	const valuesDic = feature.fundings.reduce((acc, funding) => {
 		const key = funding.currency;
@@ -34,8 +31,6 @@ const FeatureView: React.FC<Props> = ({
 		return acc;
 	}, {} as Record<string, number>)
 	const values = Object.entries(valuesDic)
-
-	
 
 	return (
 		<Box sx={[sxRoot, sx] as SxProps}>
@@ -56,6 +51,10 @@ const FeatureView: React.FC<Props> = ({
 
 					<Box sx={{ flex: 1 }} />
 
+					<FundingsAvatarGroup sx={{ alignSelf: "center" }}
+						fundings={feature.fundings} 
+					/>
+
 					{/* AMMOUNT */}
 					<Box sx={{display: "flex", alignItems: "baseline", gap: 1 }}>
 						{ !haveValues && '--' }
@@ -73,9 +72,7 @@ const FeatureView: React.FC<Props> = ({
 						{feature.title ?? feature.description.slice(0, 200)}
 					</Typography>
 
-					<Box sx={sxClips}>
-						<FeatureStatusChip status={feature.status} />
-					</Box>
+					<FeatureStatusChip status={feature.status} />
 
 				</Box>
 

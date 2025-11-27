@@ -23,7 +23,7 @@ const FeatureStatusChip: React.FC<Props> = ({
     return (
         <Tooltip title={item?.subtitle ?? ""} sx={sx}>
             <Chip
-                icon={item?.icon && <item.icon sx={{ width: "16px", height: "16px" }} />}
+                icon={item?.icon && <item.icon sx={{ width: "12px", height: "12px" }} />}
                 label={label}
                 color={item?.color as any || 'default'}
                 onClick={onClick}

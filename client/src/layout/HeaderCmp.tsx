@@ -1,15 +1,19 @@
+import logo from '@/assets/logo.svg';
+import logoLight from '@/assets/logo_light.svg';
+import logoDark from '@/assets/logo_dark.svg';
+import AccountHeader from '@/pages/account/AccountHeader';
+import FeatureDetailHeader from '@/pages/feature/detail/DetailHeader';
 import FeatureListHeader from '@/pages/feature/list/ListHeader';
+import LoginHeader from '@/pages/login/LoginHeader';
+import MessageHeader from '@/pages/message/MessageHeader';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
-import { Box, SxProps, IconButton, Tooltip, Button } from '@mui/material';
+import { Box, Button, SxProps } from '@mui/material';
+import themeSo from '@/stores/layout/theme';
 import { useStore } from '@priolo/jon';
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import UserCmp from './UserCmp';
 import MessagesCmp from './MessagesCmp';
-import FeatureDetailHeader from '@/pages/feature/detail/DetailHeader';
-import LoginHeader from '@/pages/login/LoginHeader';
-import AccountHeader from '@/pages/account/AccountHeader';
-import MessageHeader from '@/pages/message/MessageHeader';
+import UserCmp from './UserCmp';
 
 
 
@@ -20,11 +24,11 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 }) => {
 
 	// STORES
+	useStore(themeSo)
 	useStore(locationSo)
 
 	// HOOKS
 	const navigate = useNavigate();
-
 	const header = useMemo(() => {
 		return {
 			[LOCATION_PAGE.FeaturesList]: <FeatureListHeader />,
@@ -40,14 +44,18 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 		navigate('/app/');
 	}
 
+	// Pick logo based on theme
+	const isDark = themeSo.state.current?.palette?.mode === 'dark';
+	const logo = isDark ? logoDark : logoLight;
+
 	// RENDER
 	return (
 		<Box sx={sxRoot}>
 
-			<Box sx={{ flex: 1, display:"flex", justifyContent: 'flex-end' }}>
+			<Box sx={{ flex: 1, display: "flex", justifyContent: 'flex-end' }}>
 				<Button sx={{ marginRight: '22px' }}
 					onClick={handleLogoClick}
-				>LOGO</Button>
+				><img src={logo} alt="Logo" style={{ height: 36, verticalAlign: 'middle' }} /></Button>
 			</Box>
 
 			<Box sx={{ flex: 1, display: "flex", minWidth: "800px", alignItems: "center", gap: 2 }}>
