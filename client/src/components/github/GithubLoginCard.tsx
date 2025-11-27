@@ -1,7 +1,7 @@
 import gitHubApi from '@/api/githubService';
 import Card, { sxActionCard } from '@/components/Card';
 import GithubUserViewer from '@/components/github/users/GithubUserViewer';
-import authSo from '@/stores/auth/repo';
+import authSo from '@/stores/auth';
 import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 import { GitHubUser } from '@/types/github/GitHub';
 import GitHubIcon from '@mui/icons-material/GitHub';

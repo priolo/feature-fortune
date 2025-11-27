@@ -1,4 +1,4 @@
-import authSo from '@/stores/auth/repo';
+import authSo from '@/stores/auth';
 import featureDetailSo from '@/stores/feature/detail';
 import { Box, Button, Typography } from '@mui/material';
 import React from 'react';

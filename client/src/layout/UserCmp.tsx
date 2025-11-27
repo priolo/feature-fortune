@@ -1,4 +1,4 @@
-import authSo from '@/stores/auth/repo';
+import authSo from '@/stores/auth';
 import { Box, Button, Divider, List, ListItem, ListItemButton, ListItemIcon, Menu, MenuItem, SxProps, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';

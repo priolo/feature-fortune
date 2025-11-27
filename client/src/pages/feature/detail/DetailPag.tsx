@@ -4,7 +4,7 @@ import CommentsCard from '@/components/comment/CommentsCard';
 import Framework from '@/layout/Framework';
 import FeatureDetailCard from '@/pages/feature/detail/FeatureDetailCard';
 import FundingsCard from '@/pages/feature/detail/FundingsCard';
-import authSo from '@/stores/auth/repo';
+import authSo from '@/stores/auth';
 import featureDetailSo from '@/stores/feature/detail';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
 import { Account } from '@/types/Account';

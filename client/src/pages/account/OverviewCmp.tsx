@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Alert, SxProps } from '@mui/material';
 import { useStore } from '@priolo/jon';
-import authSo from '@/stores/auth/repo';
+import authSo from '@/stores/auth';
 
 
 

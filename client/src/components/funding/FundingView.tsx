@@ -6,7 +6,7 @@ import React from 'react';
 import AvatarCmp from '../AvatarCmp';
 import CurrencyLabel from '../CurrencyLabel';
 import StatusChip from './StatusChip';
-import authSo from '@/stores/auth/repo';
+import authSo from '@/stores/auth';
 import ActionsMenu from '../ActionsMenu';
 
 

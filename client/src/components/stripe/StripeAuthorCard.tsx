@@ -1,6 +1,6 @@
 import stripeApi from '@/api/stripe';
 import Card from '@/components/Card';
-import authSo from '@/stores/auth/repo';
+import authSo from '@/stores/auth';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { Box, Button, SxProps } from '@mui/material';
 import { useStore } from '@priolo/jon';

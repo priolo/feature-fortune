@@ -1,4 +1,4 @@
-import authSo from '@/stores/auth/repo';
+import authSo from '@/stores/auth';
 import { FEATURE_FILTER, FEATURE_SORT } from "@/stores/feature/types";
 import { FEATURE_STATUS } from '@/types/feature/Feature';
 import { Add, Close, Search } from '@mui/icons-material';

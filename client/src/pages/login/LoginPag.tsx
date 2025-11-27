@@ -1,5 +1,5 @@
 
-import authSo from '@/stores/auth/repo';
+import authSo from '@/stores/auth';
 import { Box, SxProps } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';

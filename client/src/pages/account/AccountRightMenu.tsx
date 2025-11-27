@@ -1,6 +1,6 @@
 import React from 'react';
 import PageMenu from '../../components/PageMenu';
-import authSo from '@/stores/auth/repo';
+import authSo from '@/stores/auth';
 import { useStore } from '@priolo/jon';
 
 

@@ -1,5 +1,5 @@
 import Framework from '@/layout/Framework';
-import authSo, { stripePromise } from '@/stores/auth/repo';
+import authSo, { stripePromise } from '@/stores/auth';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
 import { useStore } from '@priolo/jon';
 import { Elements } from '@stripe/react-stripe-js';

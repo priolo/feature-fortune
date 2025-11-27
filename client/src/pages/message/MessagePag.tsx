@@ -2,7 +2,7 @@ import Card from '@/components/Card';
 import Framework from '@/layout/Framework';
 import MessagesList from '@/pages/message/MessagesList';
 import MessageView from '@/pages/message/MessageView';
-import authSo from '@/stores/auth/repo';
+import authSo from '@/stores/auth';
 import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
 import messageListSo from '@/stores/message/list';

@@ -1,6 +1,6 @@
 import Card, { sxActionCard } from '@/components/Card';
 import Paragraph from '@/layout/Paragraph';
-import authSo from '@/stores/auth/repo';
+import authSo from '@/stores/auth';
 import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 import themeSo from '@/stores/layout/theme';
 import { lightTheme } from '@/theme/theme';

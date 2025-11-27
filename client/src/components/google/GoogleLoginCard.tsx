@@ -1,6 +1,6 @@
 
 import Card, { sxActionCard } from '@/components/Card';
-import authSo from '@/stores/auth/repo';
+import authSo from '@/stores/auth';
 import GoogleIcon from '@mui/icons-material/Google';
 import { Box, Button } from '@mui/material';
 import { useStore } from '@priolo/jon';

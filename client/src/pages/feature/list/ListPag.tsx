@@ -1,7 +1,7 @@
 import Card from '@/components/Card';
 import MessageBanner from '@/components/MessageBanner';
 import Framework from '@/layout/Framework';
-import authSo from '@/stores/auth/repo';
+import authSo from '@/stores/auth';
 import featureListSo from '@/stores/feature/list';
 import { FEATURE_FILTER, FEATURE_SORT } from "@/stores/feature/types";
 import { filterByAccount, filterByStatus, filterByText, sort } from '@/stores/feature/utils';
