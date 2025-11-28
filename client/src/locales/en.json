@@ -291,6 +291,23 @@
 				"change": "CHANGE",
 				"select": "SELECT"
 			}
+		},
+		"FundingsCard": {
+			"title": "FUNDINGS",
+			"actions": {
+				"contribute": "CONTRIBUTE"
+			},
+			"empty": "No fundings yet for this feature.",
+			"alerts": {
+				"pay": {
+					"success": "Payment processed successfully!",
+					"error": "Error processing payment: {{message}}"
+				},
+				"cancel": {
+					"success": "Funding cancelled successfully!",
+					"error": "Error cancelling funding: {{message}}"
+				}
+			}
 		}
 	},
 	"viewers": {

@@ -18,6 +18,7 @@ class FundingRoute extends httpRouter.Service {
 			routers: [
 				{ path: "/", verb: "get", method: "index" },
 				{ path: "/", verb: "post", method: "save" },
+				{ path: "/:id", verb: "delete", method: "delete" },
 			]
 		}
 	}
@@ -69,12 +70,44 @@ class FundingRoute extends httpRouter.Service {
 		funding.status = FUNDING_STATUS.PENDING
 
 		// salvo
-		const fundingNew: AccountRepo = await new Bus(this, this.state.funding_repo).dispatch({
+		const fundingNew: FundingRepo = await new Bus(this, this.state.funding_repo).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: funding
 		})
 
 		res.json({ funding: fundingNew })
+	}
+
+	async delete(req: Request, res: Response) {
+		const userJwt: AccountRepo = req["jwtPayload"]
+		const id = req.params["id"]
+		if (!id) return
+
+		// fetch
+		const funding: FundingRepo = await new Bus(this, this.state.funding_repo).dispatch({
+			type: typeorm.Actions.GET_BY_ID,
+			payload: id
+		})
+
+		// check
+		if (!funding) {
+			return res.status(404).json({ error: "Funding not found" })
+		}
+		if (funding.accountId !== userJwt.id) {
+			return res.status(403).json({ error: "You are not the owner of this funding" })
+		}
+
+		// update
+		const fundingUpdate: FundingRepo = await new Bus(this, this.state.funding_repo).dispatch({
+			type: typeorm.Actions.SAVE,
+			payload: {
+				id: funding.id,
+				status: FUNDING_STATUS.CANCELLED,
+			}
+		})
+
+		// return
+		res.json({ success: true })
 	}
 
 }

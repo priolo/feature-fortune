@@ -3,7 +3,7 @@ import { Funding } from "@/types/Funding"
 
 
 
-function pay(fundingId: string, opt?: CallOptions): Promise<{ funding: Funding }> {
+function pay(fundingId: string, opt?: CallOptions): Promise<{ success: boolean }> {
 	return ajax.post(`stripe/pay`, { fundingId }, opt)
 }
 

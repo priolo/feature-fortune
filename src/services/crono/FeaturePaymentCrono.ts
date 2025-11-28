@@ -116,7 +116,6 @@ class FeaturePaymentCrono extends CronoService {
 		if (!funding) throw new Error("Funding not found");
 		//if (funding.status !== FUNDING_STATUS.PAYABLE) throw new Error("Funding not payable");
 
-
 		// recupero l'id ACCOUNT di chi deve ricevere i soldi (sarebbe il DEV dell FEATURE)
 		const dev: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
 			type: typeorm.Actions.GET_BY_ID,
@@ -126,13 +125,21 @@ class FeaturePaymentCrono extends CronoService {
 			throw new Error(`Developer not found for feature ${funding.feature.id}`);
 		}
 
-
-
 		// setup DATA
 		const amount = funding.amount
 		const destination = dev.stripeAccountId
 		const customer = funding.account.stripeCustomerId
 		const paymentMethod = funding.account.stripePaymentMethodId
+		// check
+		if ( !destination ) {
+			throw new Error(`Developer ${dev.id} has no Stripe Account ID`);
+		}
+		if ( !customer ) {
+			throw new Error(`Funding ${funding.id} has no Stripe Customer ID`);
+		}
+		if ( !paymentMethod ) {
+			throw new Error(`Funding ${funding.id} has no Stripe Payment Method ID`);
+		}
 		console.log(">>> paymentFunding", { amount, destination, customer, paymentMethod })
 
 		// Execute the payment using StripeService

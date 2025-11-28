@@ -125,12 +125,12 @@ const FeatureDetailPag: React.FC<Props> = ({
             onChange={handleGithubRepoChange}
         />
 
-        {feature.status == FEATURE_STATUS.PROPOSED && (
+        {/* {feature.status == FEATURE_STATUS.PROPOSED && (
             <GithubUserSelectorCard readOnly={!canAuthorEdit}
                 githubOwnerId={feature.githubDevId}
                 onChange={handleGithubDevChange}
             />
-        )}
+        )} */}
 
 
         <AccountSelectorCard readOnly={!canAuthorEdit}

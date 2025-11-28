@@ -1,5 +1,5 @@
 import fundingApi from "@/api/funding"
-import { Funding } from "@/types/Funding"
+import { Funding, FUNDING_STATUS } from "@/types/Funding"
 import { createStore, StoreCore } from "@priolo/jon"
 
 
@@ -14,6 +14,9 @@ const setup = {
 	},
 
 	getters: {
+		getById: (id: string, store?: FundingListStore): Funding => {
+			return store.state.all?.find(f => f.id === id) ?? null
+		}
 	},
 
 	actions: {
@@ -28,6 +31,16 @@ const setup = {
 			const { funding } = await fundingApi.save(store.state.selected)
 			store.setSelected(funding)
 			await store.fetch()
+		},
+
+		async remove(id: string, store?: FundingListStore): Promise<boolean> {
+			const res = await fundingApi.remove(id)
+			if (!res.success) return false
+			const funding = store.getById(id)
+			if (!funding) return true
+			funding.status = FUNDING_STATUS.CANCELLED
+			store._update()
+			return true
 		}
 
 	},

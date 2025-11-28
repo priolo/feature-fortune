@@ -12,10 +12,15 @@ function save(funding: Funding, opt?: CallOptions): Promise<{ funding: Funding }
 	return ajax.post(`fundings`, { funding }, opt)
 }
 
+/** DELETE */
+function remove(id: string, opt?: CallOptions): Promise<{ success: boolean }> {
+	return ajax.delete(`fundings/${id}`, null, opt)
+}
 
 
 const fundingApi = {
 	index,
 	save,
+	remove
 }
 export default fundingApi

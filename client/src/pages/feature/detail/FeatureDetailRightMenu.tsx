@@ -23,32 +23,29 @@ const FeatureDetailRightMenu: React.FC<Props> = ({
     const feature = featureDetailSo.state.feature
     if (!feature) return null
 
-    const fundingCount = fundingListSo.state.all?.length || null;
-    const commentCount = commentListSo.state.all?.length || null;
+    const fundingCount = fundingListSo.state.all?.length || null
+    const commentCount = commentListSo.state.all?.length || null
+    const haveDescription = !(feature.description?.trim().length > 0 && feature.title?.trim().length > 0)
 
     return <PageMenu items={[
-        // {
-        //     id: 'account-selector-author',
-        //     label: 'Author',
-        //     subLabel: 'Feature creator'
-        // },
         {
             id: 'github-repo-selector-card',
             label: 'Repository',
-            subLabel: "GitHub Repository",
+            subLabel: feature.githubRepoId ? feature.githubRepoMetadata?.full_name ?? "--" : 'Not linked',
             warnIcon: !feature.githubRepoId,
 
         },
         {
             id: 'dev-selector',
             label: 'Developer',
-            subLabel: 'Assigned developer',
+            subLabel: feature.accountDevId ? "Assigned" : 'Not assigned',
+            warnIcon: !feature.accountDevId,
         },
         {
             id: 'feature-detail-card',
             label: 'Details',
-            subLabel: 'Feature description',
-            warnIcon: !feature.accountDevId,
+            subLabel: haveDescription ? 'Feature description' : "Write a title and description",
+            warnIcon: !haveDescription,
         },
         {
             id: 'fundings-card',

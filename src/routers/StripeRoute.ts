@@ -5,6 +5,7 @@ import { AccountRepo } from "../repository/Account.js";
 import PaymentCrono from "../services/crono/FeaturePaymentCrono.js";
 import { Actions } from "../services/stripe/types.js";
 import { getGithubHtmlUrl } from "./GithubRoute.js";
+import { FundingRepo } from "src/repository/Funding.js";
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
@@ -36,12 +37,22 @@ class StripeRoute extends httpRouter.Service {
 	async pay(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		let { fundingId }: { fundingId: string } = req.body
-		if (!fundingId) return
-		const paymentCronoService = this.nodeByPath(this.state.payment_service) as PaymentCrono
+		if (!fundingId) return res.status(400).json({ error: "Funding ID is required" })
 
+		// check
+		const funding: FundingRepo = await new Bus(this, this.state.repository).dispatch({
+			type: typeorm.Actions.GET_BY_ID,
+			payload: fundingId
+		})
+		if (funding.accountId !== userJwt.id) {
+			return res.status(403).json({ error: "You are not the owner of this funding" })
+		}
+
+		// payment
+		const paymentCronoService = this.nodeByPath(this.state.payment_service) as PaymentCrono
 		try {
 			const funding = await paymentCronoService.paymentFunding(fundingId)
-			res.json({ funding })
+			res.json({ success: true })
 		} catch (error) {
 			res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
 		}

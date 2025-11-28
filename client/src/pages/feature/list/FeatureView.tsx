@@ -5,6 +5,7 @@ import { Feature } from '@/types/feature/Feature';
 import { Avatar, Box, Link, SxProps, Typography } from '@mui/material';
 import React from 'react';
 import FeatureStatusChip from '../detail/StatusChip';
+import { FUNDING_STATUS } from '@/types/Funding';
 
 
 interface Props {
@@ -22,6 +23,7 @@ const FeatureView: React.FC<Props> = ({
 
 	let haveValues = false;
 	const valuesDic = feature.fundings.reduce((acc, funding) => {
+		if ( funding.status == FUNDING_STATUS.CANCELLED || funding.status == FUNDING_STATUS.ERROR  ) return acc
 		const key = funding.currency;
 		const amount = funding.amount ?? 0;
 		if (amount > 0) haveValues = true;

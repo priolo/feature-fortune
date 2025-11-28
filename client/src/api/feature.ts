@@ -41,7 +41,7 @@ function update(feature: Feature, opt?: CallOptions): Promise<{ feature: Feature
 	return ajax.patch(`features`, { feature }, opt)
 }
 
-/** PATCH: UPDATE */
+/** DELETE */
 function remove(featureId: string, opt?: CallOptions): Promise<{ success: boolean }> {
 	return ajax.delete(`features/${featureId}`, null, opt)
 }
