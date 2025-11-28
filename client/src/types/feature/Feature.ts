@@ -11,7 +11,11 @@ import { Funding } from '../Funding';
 export interface GithubRepoMetadata {
 	name: string;
 	full_name: string;
-	avatar_url: string; // avatar del owner
+	owner: {
+		id: number,
+		login: string,
+		avatar_url: string,
+	},
 	description?: string;
 	html_url?: string;
 }
@@ -96,7 +100,7 @@ export enum FEATURE_ACTIONS {
 
 
 export interface Feature extends AccountAsset {
-	
+
 	id?: string;
 
 	title: string;
@@ -106,11 +110,11 @@ export interface Feature extends AccountAsset {
 	status: FEATURE_STATUS
 
 	createdAt?: Date;
-	
+
 
 
 	/** il REPO del progetto soggetto della FEATURE */
-	githubRepoId?: number	
+	githubRepoId?: number
 
 	/**
 	 * Metadati del repository GitHub (nome, avatar, ecc.)
@@ -124,7 +128,7 @@ export interface Feature extends AccountAsset {
 	/** l'ACCOUNT interno che deve implementare la FEATURE */
 	accountDevId?: string
 
-	
+
 
 	/**
 	 * the accounts that funded this feature

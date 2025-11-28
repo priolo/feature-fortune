@@ -100,18 +100,19 @@ class AuthGithubRoute extends httpRouter.Service {
 			}
 
 			// ACCOUNT UPDATE
+			// aggiorno l'ACCOUNT
 			user = await new Bus(this, this.state.account_repo).dispatch({
 				type: typeorm.Actions.SAVE,
 				payload: <AccountRepo>{
-					email: email,
-					name: userGithub.name ?? userGithub.login,
-					avatarUrl: userGithub.avatar_url,
-					...user,
+					id: user.id,
+					email: user.email ?? email,
+					name: user.name ?? userGithub.name ?? userGithub.login,
+					avatarUrl: user.avatarUrl ?? userGithub.avatar_url,
 					githubId: userGithub.id,
 				}
 			})
 
-			
+
 
 			// Genera il token JWT con l'email nel payload
 			const jwtToken = await new Bus(this, "/jwt").dispatch({

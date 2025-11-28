@@ -279,11 +279,15 @@
 			"status": {
 				"selected": {
 					"title": "Account Selected",
-					"desc": "<br/>The account has been selected."
+					"desc": "<br/>Attenzione però: Non è il proprietario del repository Github. Ti fidi?"
+				},
+				"matched": {
+					"title": "Account Selected (Match)",
+					"desc": "<br/>Benissimo è proprio il poprietario del repository GitHub."
 				},
 				"none": {
-					"title": "No Account Selected",
-					"desc": "<br/>Select the account that will be used to open issues and pull requests on GitHub."
+					"title": "Seleziona l'account che dovrà svolgere la modifica",
+					"desc": "<br/>Se non trovi il proprietario del repository, contattalo e fallo registrare a questa piattaforma!<br/>Altrimenti cerca qualcun'altro oppure lascialo vuoto e spera che qualcuno si faccia avanti"
 				}
 			},
 			"actions": {

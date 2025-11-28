@@ -30,7 +30,7 @@ const GithubRepoMetadataViewer: React.FC<Props> = ({
 
             <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                 <Avatar
-                    src={metadata.avatar_url}
+                    src={metadata?.owner.avatar_url}
                     alt={metadata.name}
                     sx={{ width: 40, height: 40 }}
                 />

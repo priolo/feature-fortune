@@ -25,7 +25,7 @@ const FeatureDetailRightMenu: React.FC<Props> = ({
 
     const fundingCount = fundingListSo.state.all?.length || null
     const commentCount = commentListSo.state.all?.length || null
-    const haveDescription = !(feature.description?.trim().length > 0 && feature.title?.trim().length > 0)
+    const haveDescription = feature.description?.trim().length > 0 && feature.title?.trim().length > 0
 
     return <PageMenu items={[
         {

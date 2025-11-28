@@ -1,5 +1,5 @@
 import AccountFinderDialog from '@/components/account/AccountFinderDialog';
-import MessageCmp from '@/components/MessageCmp';
+import MessageCmp, { MessageVariant } from '@/components/MessageCmp';
 import { Account } from '@/types/Account';
 import { Keyboard } from '@mui/icons-material';
 import { Box, Button, ListItemButton } from '@mui/material';
@@ -13,6 +13,7 @@ import AccountIdView from './AccountIdView';
 interface Props {
     id?: string,
     accountId?: string
+    match?: boolean,
     readOnly?: boolean,
 
     icon?: React.ReactNode,
@@ -27,6 +28,7 @@ interface Props {
 const AccountSelectorCard: React.FC<Props> = ({
     id,
     accountId,
+    match,
     readOnly,
 
     icon,
@@ -36,31 +38,38 @@ const AccountSelectorCard: React.FC<Props> = ({
 }) => {
 
     // STORES
-    const { t } = useTranslation();
+    const { t } = useTranslation()
+
 
     // HOOKS
     const [dialogOpen, setDialogOpen] = useState(false);
+    //const [account, setAccount] = useState<Account>(null);
 
 
     // HANDLERS
     const handleSelectClick = () => {
         setDialogOpen(true)
     }
-    const handleDialogClose = async (account: Account) => {
+    const handleDialogClose = async (accountSelected: Account) => {
         setDialogOpen(false)
-        if (!account) return
-        onChange?.(account)
+        if (!accountSelected) return
+        onChange?.(accountSelected)
     }
     const handleRemoveClick = () => {
         onChange?.(null)
     }
+    // const handleAccountLoad = (account: Account) => {
+    //     setAccount(account)
+    // }
+
 
 
     // RENDER
     const isSelected = !!accountId
     const status = isSelected
-        ? { status: 'selected', variant: 'done' }
-        : { status: 'none', variant: 'warn' };
+        ? (
+            match ? { status: 'matched', variant: 'done' } : { status: 'selected', variant: 'done' }
+        ) : { status: 'none', variant: 'warn' }
 
     return <>
 
@@ -76,10 +85,12 @@ const AccountSelectorCard: React.FC<Props> = ({
                 {<Trans i18nKey={`cards.${variant}.status.${status.status}.desc`} />}
             </MessageCmp>
 
-            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input" }} 
+            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input" }}
                 onClick={!readOnly ? handleSelectClick : undefined}
             >
-                <AccountIdView accountId={accountId} />
+                <AccountIdView accountId={accountId}
+                    //onLoad={handleAccountLoad}
+                />
             </ListItemButton>
 
             {!readOnly &&
@@ -92,7 +103,7 @@ const AccountSelectorCard: React.FC<Props> = ({
                     <Button
                         onClick={handleSelectClick}
                     >
-                        {t(`cards.${variant}.actions.${!!isSelected? "change": "select"}`)}
+                        {t(`cards.${variant}.actions.${!!isSelected ? "change" : "select"}`)}
                     </Button>
                 </Box>
             }

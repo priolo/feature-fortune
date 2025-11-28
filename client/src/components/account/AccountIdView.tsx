@@ -7,6 +7,7 @@ import React, { useEffect, useState } from 'react';
 
 interface Props {
     accountId?: string
+    onLoad?: (account: Account) => void
 }
 
 /**
@@ -14,6 +15,7 @@ interface Props {
  */
 const AccountIdView: React.FC<Props> = ({
     accountId,
+    onLoad,
 }) => {
 
 
@@ -29,6 +31,7 @@ const AccountIdView: React.FC<Props> = ({
         const load = async () => {
             const account = await accountApi.get(accountId)
             setAccount(account)
+            onLoad?.(account)
         }
         load();
     }, [accountId])

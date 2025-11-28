@@ -38,7 +38,7 @@ const FeatureView: React.FC<Props> = ({
 		<Box sx={[sxRoot, sx] as SxProps}>
 
 			<Avatar
-				src={repo?.avatar_url}
+				src={repo?.owner?.avatar_url}
 				alt={repo?.full_name}
 			/>
 

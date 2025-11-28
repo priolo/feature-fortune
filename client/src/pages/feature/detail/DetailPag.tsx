@@ -71,15 +71,24 @@ const FeatureDetailPag: React.FC<Props> = ({
             githubRepoMetadata: repo ? {
                 name: repo.name,
                 full_name: repo.full_name,
-                avatar_url: repo.owner.avatar_url,
+                owner: {
+                    id: repo.owner.id,
+                    login: repo.owner.login,
+                    avatar_url: repo.owner.avatar_url,
+                },
                 description: repo.description,
                 html_url: repo.html_url,
             } : null,
         })
 
         // auto-link githubDevId
-        if (!!repo.owner && !feature.githubDevId) {
-            handleGithubDevChange(repo.owner)
+        // if (!!repo.owner && !feature.githubDevId) {
+        //     handleGithubDevChange(repo.owner)
+        // }
+        if (!!repo.owner && !feature.accountDevId) {
+            //handleGithubDevChange(repo.owner)
+            const res = await accountApi.getByGithubUserId(repo.owner.id)
+            handleAccountDevChange(res.account)
         }
     }
 
@@ -98,7 +107,8 @@ const FeatureDetailPag: React.FC<Props> = ({
     const handleAccountDevChange = async (account: Account) => {
         featureDetailSo.setFeature({
             ...featureDetailSo.state.feature,
-            accountDevId: account?.id ?? null,
+            accountDevId: account?.id,
+            githubDevId: account?.githubId,
         })
     };
 
@@ -132,10 +142,10 @@ const FeatureDetailPag: React.FC<Props> = ({
             />
         )} */}
 
-
         <AccountSelectorCard readOnly={!canAuthorEdit}
             id="dev-selector"
             accountId={feature.accountDevId}
+            match={!!feature.githubDevId && feature.githubRepoMetadata?.owner?.id == feature.githubDevId}
             onChange={handleAccountDevChange}
         />
 
