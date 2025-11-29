@@ -1,11 +1,13 @@
 import CurrencyLabel from '@/components/CurrencyLabel';
 import FundingsAvatarGroup from '@/components/funding/FundingsAvatarGroup';
+import { amountFunded } from "@/stores/funding/utils";
 import { sxContent, sxRoot } from '@/theme/AvatarStyle';
 import { Feature } from '@/types/feature/Feature';
 import { Avatar, Box, Link, SxProps, Typography } from '@mui/material';
-import React from 'react';
+import React, { useMemo } from 'react';
 import FeatureStatusChip from '../detail/StatusChip';
-import { FUNDING_STATUS } from '@/types/Funding';
+import CurrencyGroupsLabel from '@/components/CurrencyGroupsLabel';
+
 
 
 interface Props {
@@ -20,19 +22,7 @@ const FeatureView: React.FC<Props> = ({
 
 	// RENDER
 	const repo = feature.githubRepoMetadata
-
-	let haveValues = false;
-	const valuesDic = feature.fundings.reduce((acc, funding) => {
-		if ( funding.status == FUNDING_STATUS.CANCELLED || funding.status == FUNDING_STATUS.ERROR  ) return acc
-		const key = funding.currency;
-		const amount = funding.amount ?? 0;
-		if (amount > 0) haveValues = true;
-		let subtotal = acc[key] ?? 0;
-		subtotal = subtotal == null ? amount : subtotal + amount;
-		acc[key] = subtotal;
-		return acc;
-	}, {} as Record<string, number>)
-	const values = Object.entries(valuesDic)
+	const values = useMemo(() => amountFunded(feature.fundings), [feature.fundings]);
 
 	return (
 		<Box sx={[sxRoot, sx] as SxProps}>
@@ -54,17 +44,11 @@ const FeatureView: React.FC<Props> = ({
 					<Box sx={{ flex: 1 }} />
 
 					<FundingsAvatarGroup sx={{ alignSelf: "center" }}
-						fundings={feature.fundings} 
+						fundings={feature.fundings}
 					/>
 
 					{/* AMMOUNT */}
-					<Box sx={{display: "flex", alignItems: "baseline", gap: 1 }}>
-						{ !haveValues && '--' }
-						{values.map(([currency, amount], index) => <React.Fragment key={currency}>
-							<CurrencyLabel amount={amount} currency={currency} />
-							{index < values.length - 1 && <span>+</span>}
-						</React.Fragment>)}
-					</Box>
+					<CurrencyGroupsLabel values={values} />
 
 				</Box>
 

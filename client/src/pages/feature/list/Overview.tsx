@@ -3,7 +3,7 @@ import { Box, SxProps, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import featureListSo from '@/stores/feature/list';
 
-const FeatureOverviewSide: React.FC = () => {
+const FeatureListOverview: React.FC = () => {
     const featureListSa = useStore(featureListSo);
     const allFeatures = featureListSa.all || [];
 
@@ -30,7 +30,7 @@ const FeatureOverviewSide: React.FC = () => {
     );
 };
 
-export default FeatureOverviewSide;
+export default FeatureListOverview;
 
 const sxRoot: SxProps = {
     position: 'sticky',

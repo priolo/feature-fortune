@@ -1,10 +1,13 @@
-import AvatarCmp from '@/components/AvatarCmp';
+import AccountIdView from '@/components/account/AccountIdView';
+import CurrencyGroupsLabel from '@/components/CurrencyGroupsLabel';
 import featureDetailSo from '@/stores/feature/detail';
+import fundingListSo from '@/stores/funding/list';
+import { amountFunded } from '@/stores/funding/utils';
 import { Box, Paper, SxProps, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import FeatureStatusChip from './StatusChip';
-import AccountIdView from '@/components/account/AccountIdView';
 
 
 
@@ -16,6 +19,9 @@ const FeatureDetailOverview: React.FC<Props> = ({
     sx
 }) => {
 
+    // STORES
+    const { t } = useTranslation()
+    useStore(fundingListSo)
 
     // STORES
     const featureDetailSa = useStore(featureDetailSo);
@@ -25,26 +31,43 @@ const FeatureDetailOverview: React.FC<Props> = ({
     const feature = featureDetailSa.feature;
     if (!feature) return null;
 
+    const values = useMemo(() => amountFunded(fundingListSo.state.all), [fundingListSo.state.all]);
+
+
+
     return (
         <Box sx={[sxRoot, sx] as SxProps}>
 
             <Typography variant="h6">
-                Overview
+                {t('overview.title', 'Overview')}
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-                Questa FEATURE è una bozza.
-                <br />Deve essere accettata da un DEVELOPER per iniziare lo sviluppo.
+                <Trans i18nKey={t(`overview.feature.message.${feature.status}`)} />
             </Typography>
 
             <FeatureStatusChip sx={{ alignSelf: 'flex-end' }}
-                status={feature?.status}
+                status={feature.status}
             />
+
+            {values.length > 0 && (
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.5 }}>
+
+                    <Typography variant="overline" color="text.secondary">
+                        {t('overview.label.author', 'AMOUNT')}
+                    </Typography>
+
+                    <Typography variant="h6" color="primary" sx={{ fontWeight: 600 }}>
+                        <CurrencyGroupsLabel values={values} />
+                    </Typography>
+
+                </Box>
+            )}
 
             {feature.accountId && (
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.5 }}>
                     <Typography variant="overline" color="text.secondary">
-                        AUTHOR
+                        {t('overview.label.author', 'AUTHOR')}
                     </Typography>
                     <Paper sx={{ p: 1, borderRadius: 2 }}>
                         <AccountIdView accountId={feature.accountId} />
@@ -52,18 +75,16 @@ const FeatureDetailOverview: React.FC<Props> = ({
                 </Box>
             )}
 
-
             {feature.createdAt && (
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.5 }}>
                     <Typography variant="overline" color="text.secondary">
-                        CREATED AT
+                        {t('overview.label.create_at', 'CREATE AT')}
                     </Typography>
                     <Typography variant="body2">
                         {new Date(feature.createdAt).toLocaleDateString()}
                     </Typography>
                 </Box>
             )}
-
 
         </Box>
     );

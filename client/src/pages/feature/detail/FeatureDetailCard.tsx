@@ -1,9 +1,11 @@
 import Card from '@/components/Card';
 import ReadOnlyTextField from '@/components/ReadOnlyTextField';
 import Paragraph from '@/layout/Paragraph';
+import { amountFunded } from '@/stores/funding/utils';
 import { Feature } from '@/types/feature/Feature';
 import { FeaturedPlayList } from '@mui/icons-material';
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -20,6 +22,7 @@ const FeatureDetailCard: React.FC<Props> = ({
 }) => {
 
 	// HOOKS
+	const { t } = useTranslation()
 
 
 	// HANDLER
@@ -35,25 +38,27 @@ const FeatureDetailCard: React.FC<Props> = ({
 	return (
 
 		<Card id="feature-detail-card"
-			title="DETAIL"
+			title={t('cards.FeatureDetailCard.title', 'DETAILS')}
 			icon={<FeaturedPlayList />}
 		>
 
-			<Paragraph title="TITLE">
+			<Paragraph title={t('cards.FeatureDetailCard.title_field.title')}>
 				<ReadOnlyTextField fullWidth
 					readOnly={readOnly}
 					value={title}
 					onChange={(e) => handlePropChange({ title: e.target.value })}
-					placeholder="Enter a short title for the feature"
+					placeholder={t('cards.FeatureDetailCard.title_field.placeholder')}
 				/>
 			</Paragraph>
 
-			<Paragraph title="DESCRIPTION" sx={{ alignItems: 'start' }} sxLabel={{ mt: ".7rem" }}>
+			<Paragraph sx={{ alignItems: 'start' }} sxLabel={{ mt: ".7rem" }}
+				title={t('cards.FeatureDetailCard.description.title')}
+			>
 				<ReadOnlyTextField fullWidth multiline rows={6}
 					readOnly={readOnly}
 					value={description}
 					onChange={(e) => handlePropChange({ description: e.target.value })}
-					placeholder="Enter a complete description of the feature..."
+					placeholder={t("cards.FeatureDetailCard.description.placeholder")}
 				/>
 			</Paragraph>
 

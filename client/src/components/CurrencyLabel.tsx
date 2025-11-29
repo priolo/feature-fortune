@@ -21,13 +21,13 @@ const CurrencyLabel: FunctionComponent<Props> = ({
 	return (
 		<Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
 
-			<Typography>
+			<span>
 				{displayAmount}
-			</Typography>
+			</span>
 			
-			<Typography variant="overline" color="textSecondary" sx={{ fontFamily: 'monospace' }}>
+			<span style={{ fontFamily: 'monospace', opacity: 0.7, fontSize: '0.75em' }}>
 				{currency ?? "---"}
-			</Typography>
+			</span>
 
 		</Box>
 	);

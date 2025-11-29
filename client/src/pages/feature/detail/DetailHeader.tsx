@@ -1,6 +1,6 @@
 import authSo from '@/stores/auth';
 import featureDetailSo from '@/stores/feature/detail';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Toolbar, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../../../layout/BackButton';
@@ -158,6 +158,7 @@ Se verrà accettata dopo 24 ore avverrà il pagamento.`,
 		// se non c'e l'accountDevId, controllo githubId
 		|| (featureLoaded?.accountDevId == null && !!authSo.state.user?.githubId && featureLoaded?.githubDevId == authSo.state.user?.githubId)
 	)
+	 
 
 	return <>
 
@@ -178,9 +179,11 @@ Se verrà accettata dopo 24 ore avverrà il pagamento.`,
 		>BACK</Button> */}
 
 		{isAuthor && feature.status == FEATURE_STATUS.PROPOSED && (
+			<Tooltip title={isNew ? "Create the feature" : "Save the feature changes"}>
 			<Button variant="contained"
 				onClick={handleAuthorSaveClick}
 			>{isNew ? "CREATE" : "MODIFY"}</Button>
+			</Tooltip>
 		)}
 
 		{isAuthor && feature.status == FEATURE_STATUS.IN_DEVELOPMENT && <>

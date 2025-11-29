@@ -11,7 +11,7 @@ import { Box, List, ListItemButton } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import FeatureOverviewSide from './FeatureOverviewSide';
+import FeatureListOverview from './Overview';
 import FeatureView from './FeatureView';
 import RightRender from './RightRender';
 
@@ -50,7 +50,7 @@ const FeatureListPag: React.FC = () => {
 
 	// RENDER
 	return <Framework sx={{ py: 2 }}
-		leftRender={<FeatureOverviewSide />}
+		leftRender={<FeatureListOverview />}
 		rightRender={<RightRender />}
 	>
 

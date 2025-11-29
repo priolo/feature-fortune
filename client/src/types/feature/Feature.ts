@@ -109,6 +109,8 @@ export interface Feature extends AccountAsset {
 
 	status: FEATURE_STATUS
 
+	completedAt?: Date;
+	
 	createdAt?: Date;
 
 
