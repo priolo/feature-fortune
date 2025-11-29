@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import { FindManyOptions } from "typeorm";
 import { AccountRepo, accountSendable, EMAIL_CODE, JWTPayload } from "../repository/Account.js";
 import { ENV_TYPE } from "../types/env.js";
-import { Actions } from "src/services/email/EmailResendService.js";
+import { Actions } from "../services/email/EmailResendService.js";
 
 
 
