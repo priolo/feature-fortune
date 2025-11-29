@@ -2,7 +2,7 @@ import authSo from '@/stores/auth';
 import { FEATURE_FILTER, FEATURE_SORT } from "@/stores/feature/types";
 import { FEATURE_STATUS } from '@/types/feature/Feature';
 import { Add, Close, Search } from '@mui/icons-material';
-import { Box, Button, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
+import { Box, Button, debounce, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -10,7 +10,8 @@ import FeatureFilterSelector from "./FeatureFilterSelector";
 import FeatureSortSelector from "./FeatureSortSelector";
 import FeatureStatusSelector from "./FeatureStatusSelector";
 import featureDetailSo from '@/stores/feature/detail';
-
+import { useTranslation } from 'react-i18next';
+import { time } from "@priolo/jon-utils"
 
 
 const FeatureListHeader: React.FC = () => {
@@ -19,8 +20,11 @@ const FeatureListHeader: React.FC = () => {
 	useStore(authSo)
 
 	// HOOKS
+	const { t } = useTranslation()
 	const navigate = useNavigate()
-	const [searchParams, setSearchParams] = useSearchParams();
+	const [searchParams, setSearchParams] = useSearchParams()
+	const params = Object.fromEntries(searchParams.entries())
+	const [searchText, setSearchText] = React.useState(() => params.search ?? '')
 
 	// HANDLERS
 	const handleNewFeatureClick = () => {
@@ -52,21 +56,26 @@ const FeatureListHeader: React.FC = () => {
 		setSearchParams({ ...params, status })
 	}
 	const handleSearchChange = (search: string) => {
+		setSearchText(search ?? '')
 		if (search == null || search.trim() == '') {
 			delete params.search
 			setSearchParams(params)
 			return
 		}
-		setSearchParams({ ...params, search })
+		if (search.length < 3) return
+		time.debounce(
+			"features_search",
+			() => setSearchParams({ ...params, search }),
+			500
+		)
 	}
 
 	// RENDER
 	const logged = !!authSo.state.user
-	const params = Object.fromEntries(searchParams.entries())
 	const filterId = params.filter as FEATURE_FILTER
 	const sortId = params.sort as FEATURE_SORT
 	const statusId = params.status as FEATURE_STATUS
-	const search = params.search as string ?? ''
+
 
 	return <>
 		<Typography variant="h5">
@@ -92,7 +101,7 @@ const FeatureListHeader: React.FC = () => {
 			/> */}
 
 			<TextField sx={{ flex: 1 }}
-				value={search}
+				value={searchText}
 				slotProps={{
 					input: {
 						startAdornment: <InputAdornment position="start">

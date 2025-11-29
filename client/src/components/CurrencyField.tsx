@@ -17,10 +17,10 @@ interface Props {
 
 const CurrencyField: FunctionComponent<Props> = ({
 	value,
-	currency = "USD",
+	currency = "usd",
 	onChange,
 
-	currencies = ["USD", "EUR", "GBP", "JPY"],
+	currencies = ["usd", "eur", "gbp", "jpy"],
 }) => {
 
 	// HOOKS
@@ -42,23 +42,13 @@ const CurrencyField: FunctionComponent<Props> = ({
 	return (
 		<Box sx={{ flex: 1, display: 'flex', gap: 1 }}>
 
-			{/* <TextField select
-				value={currency}
-				onChange={handleCurrencyChange}
-			>
-				{currencies.map((curr) => (
-					<MenuItem key={curr} value={curr}>
-						{curr}
-					</MenuItem>
-				))}
-			</TextField> */}
 			<Select
 				value={currency}
 				onChange={handleCurrencyChange}
 			>
 				{currencies.map((curr) => (
 					<MenuItem key={curr} value={curr}>
-						{curr}
+						{curr.toUpperCase()}
 					</MenuItem>
 				))}
 			</Select>

@@ -2,8 +2,11 @@ import type { Relation } from 'typeorm';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { AccountAsset } from './AccountAsset.js';
 import { FeatureRepo } from './Feature.js';
+import { getTimestampType } from './dbConfig.js';
 
 
+
+const dateTimeType = getTimestampType()
 
 export enum FUNDING_STATUS {
 	/** 
@@ -54,16 +57,16 @@ export class FundingRepo extends AccountAsset {
 	@Column({ type: 'text', nullable: true })
 	message?: string;
 
-	@Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+	@Column({ type: dateTimeType, default: () => 'CURRENT_TIMESTAMP' })
 	createdAt?: Date;
 
-	@Column({ type: 'datetime', nullable: true })
+	@Column({ type: dateTimeType, nullable: true })
 	expiresAt?: Date;
 
 	/**
 	 * When the fundig is paied
 	 */
-	@Column({ type: 'datetime', nullable: true })
+	@Column({ type: dateTimeType, nullable: true })
 	paidAt?: Date;
 
 	/**

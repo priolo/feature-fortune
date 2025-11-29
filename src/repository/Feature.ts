@@ -3,7 +3,11 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { AccountAsset } from './AccountAsset.js';
 import { CommentRepo } from './Comment.js';
 import { FundingRepo } from './Funding.js';
+import { getTimestampType } from './dbConfig.js';
 
+
+
+const dateTimeType = getTimestampType()
 
 /**
  * Metadati essenziali del repository GitHub
@@ -120,10 +124,10 @@ export class FeatureRepo extends AccountAsset {
 	/**
 	 * data in cui è stata settata a COMPLETED
 	 */
-	@Column({ type: 'datetime', nullable: true })
+	@Column({ type: dateTimeType, nullable: true })
 	completedAt: Date;
 
-	@Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+	@Column({ type: dateTimeType, default: () => 'CURRENT_TIMESTAMP' })
 	createdAt: Date;
 
 

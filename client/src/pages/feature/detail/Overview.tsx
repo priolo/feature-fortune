@@ -32,8 +32,8 @@ const FeatureDetailOverview: React.FC<Props> = ({
     if (!feature) return null;
 
     const values = useMemo(() => amountFunded(fundingListSo.state.all), [fundingListSo.state.all]);
-
-
+    const isNew = !feature.id
+    const messageStatus = isNew ? 'new' : feature.status
 
     return (
         <Box sx={[sxRoot, sx] as SxProps}>
@@ -43,12 +43,14 @@ const FeatureDetailOverview: React.FC<Props> = ({
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-                <Trans i18nKey={t(`overview.feature.message.${feature.status}`)} />
+                <Trans i18nKey={t(`overview.feature.message.${messageStatus}`)} />
             </Typography>
 
-            <FeatureStatusChip sx={{ alignSelf: 'flex-end' }}
-                status={feature.status}
-            />
+            {!isNew && (
+                <FeatureStatusChip sx={{ alignSelf: 'flex-end' }}
+                    status={feature.status}
+                />
+            )}
 
             {values.length > 0 && (
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 0.5 }}>
@@ -99,6 +101,7 @@ const sxRoot: SxProps = {
     textAlign: 'right',
     display: 'flex',
     flexDirection: 'column',
-    gap: 1,
-    mr: 4, ml: 'auto', pt: 2, maxWidth: 300,
+    gap: 3,
+    mr: 4, ml: 'auto', pt: 2, 
+    maxWidth: 300,
 }

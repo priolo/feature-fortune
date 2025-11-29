@@ -1,25 +1,18 @@
 const en = {
-	
-	
-	feature: {
-		title: "Features",
-		list: "Feature List",
-		detail: {
-			title: "Feature Detail"
+	common: {
+		save: "Save",
+		ok: "OK",
+		cancel: "Cancel",
+		delete: "Delete",
+		edit: "Edit",
+		close: "Close",
+		loading: "Loading...",
+		msgbox: {
+			info: "INFO",
+			warning: "WARNING",
+			error: "ERROR",
+			success: "SUCCESS"
 		}
-	},
-	account: {
-		title: "Account",
-		profile: "Profile"
-	},
-	comment: {
-		add: "Add Comment",
-		edit: "Edit Comment",
-		delete: "Delete Comment"
-	},
-	funding: {
-		title: "Funding",
-		amount: "Amount"
 	},
 	cards: {
 		GithubRepoSelectorCard: {
@@ -317,6 +310,8 @@ const en = {
 		title: "Overview",
 		feature: {
 			message: {
+				new: `Indica il repository GitHub e inserisci il dettaglio della FEATURE che vorresti fosse implementata.
+		<br />Quindi CREA la FEATURE per renderla disponibile.`,
 				proposed: `Questa FEATURE è una bozza.
         <br />Deve essere accettata da un DEVELOPER per iniziare lo sviluppo.`,
 				in_development: `Questa FEATURE è in fase di sviluppo.
@@ -334,6 +329,36 @@ const en = {
 				author: "AUTHOR",
 				created_at: "CREATED AT"
 			}
+		}
+	},
+	header: {
+		feature: {
+			title: "FEATURE",
+			label: {
+				create: "CREATE",
+				modify: "MODIFY",
+				delete: "DELETE",
+				reject: "REJECT",
+				complete: "COMPLETE",
+				accept: "ACCEPT",
+				decline: "DECLINE",
+				leave: "LEAVE",
+				release: "RELEASE"
+			},
+			tooltip: {
+				save_yes: "Save the feature",
+				save_no: "Iserisci il repo Github e il dettaglio",
+				delete: "Delete the feature",
+				reject: "Reject the feature",
+				complete: "Complete the feature",
+				accept: "Accept to develop the feature",
+				decline: "Decline to develop the feature",
+				leave: "Leave the development of the feature",
+				release: "Release the feature"
+			}
+		},
+		features: {
+			title: "FEATURES"
 		}
 	},
 	viewers: {

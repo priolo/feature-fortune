@@ -2,7 +2,11 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGenerat
 import { AccountAsset } from './AccountAsset.js';
 import { MessageContentRepo } from './MessageContent.js';
 import type { Relation } from 'typeorm';
+import { getTimestampType } from './dbConfig.js';
 
+
+
+const dateTimeType = getTimestampType()
 
 export enum MESSAGE_ROLE {
 	SENDER = 1,
@@ -37,9 +41,9 @@ export class MessageRepo extends AccountAsset {
 	// @Column({ type: 'boolean', default: false })
 	// isArchived: boolean;
 
-	@CreateDateColumn({ type: 'datetime' })
+	@CreateDateColumn({ type: dateTimeType })
 	createdAt?: Date;
 
-	@UpdateDateColumn({ type: 'datetime' })
+	@UpdateDateColumn({ type: dateTimeType })
 	updatedAt?: Date;
 }

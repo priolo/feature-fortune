@@ -22,14 +22,16 @@ export function filterByAccount(features: Feature[], filter: FEATURE_FILTER, use
 }
 
 export function filterByText(features: Feature[], text: string): Feature[] {
-
 	if (!features) return []
 	if (!text) return features
 	const lowerText = text.toLowerCase()
 
 	return features.filter(feature =>
-		feature.title.toLowerCase().includes(lowerText) ||
+		feature.title.toLowerCase().includes(lowerText) 
+		||
 		(feature.description && feature.description.toLowerCase().includes(lowerText))
+		||
+		(feature.githubRepoMetadata?.full_name && feature.githubRepoMetadata?.full_name.toLowerCase().includes(lowerText))
 	)
 }
 
@@ -48,23 +50,23 @@ export function sortByCreatedAt(features: Feature[], descending: boolean = true)
 	})
 }
 
-export function sort(features: Feature[], sort: FEATURE_SORT): Feature[] {
+export function sort(features: Feature[], sort: FEATURE_SORT = FEATURE_SORT.RECENT): Feature[] {
 	if (!features) return []
-	if (!sort) return features
 
 	return features.sort((a, b) => {
 		let valueA = 0
 		let valueB = 0
 		switch (sort) {
-			case FEATURE_SORT.RECENT:
-			case FEATURE_SORT.OLDEST:
-				valueA = a.createdAt ? new Date(a.createdAt).getTime() : 0
-				valueB = b.createdAt ? new Date(b.createdAt).getTime() : 0
-				break
 			case FEATURE_SORT.RICHEST:
 			case FEATURE_SORT.POOREST:
 				valueA = a.fundings ? a.fundings.reduce((sum, f) => sum + (f.amount || 0), 0) : 0
 				valueB = b.fundings ? b.fundings.reduce((sum, f) => sum + (f.amount || 0), 0) : 0
+				break
+			default:
+			case FEATURE_SORT.RECENT:
+			case FEATURE_SORT.OLDEST:
+				valueA = a.createdAt ? new Date(a.createdAt).getTime() : 0
+				valueB = b.createdAt ? new Date(b.createdAt).getTime() : 0
 				break
 		}
 		const descending = sort == FEATURE_SORT.RECENT || sort == FEATURE_SORT.RICHEST

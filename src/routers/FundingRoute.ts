@@ -62,20 +62,30 @@ class FundingRoute extends httpRouter.Service {
 	async save(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		let { funding }: { funding: FundingRepo } = req.body
-		if (!funding) return
 
-		// è sempre nuovo
-		delete funding.id
-		funding.accountId = userJwt.id
-		funding.status = FUNDING_STATUS.PENDING
+		// check
+		if (!funding) return res.status(400).json({ error: "Funding data is required" })
+		if (!funding.amount || funding.amount <= 0 || funding.amount > 100) return res.status(400).json({ error: "Amount must be between 1 and 100" })
+		if (!funding.currency || !["usd", "eur", "gbp", "jpy"].includes(funding.currency)) return res.status(400).json({ error: "Currency must be one of: usd, eur, gbp, jpy" })
+		if (!funding.featureId) return res.status(400).json({ error: "Feature ID is required" })
+
+		// è sempre nuovo un FUNDING non puo' essere modificato
+		const fundingNew: FundingRepo = {
+			accountId: userJwt.id,
+			status: FUNDING_STATUS.PENDING,
+			amount: funding.amount,
+			currency: funding.currency,
+			featureId: funding.featureId,
+			message: funding.message,
+		}
 
 		// salvo
-		const fundingNew: FundingRepo = await new Bus(this, this.state.funding_repo).dispatch({
+		const fundingNewDb: FundingRepo = await new Bus(this, this.state.funding_repo).dispatch({
 			type: typeorm.Actions.SAVE,
-			payload: funding
+			payload: fundingNew
 		})
 
-		res.json({ funding: fundingNew })
+		res.json({ funding: fundingNewDb })
 	}
 
 	async delete(req: Request, res: Response) {

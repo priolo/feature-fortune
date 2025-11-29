@@ -1,13 +1,12 @@
 import authSo from '@/stores/auth';
 import featureDetailSo from '@/stores/feature/detail';
-import { Box, Button, Toolbar, Tooltip, Typography } from '@mui/material';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import BackButton from '../../../layout/BackButton';
-import { useStore } from '@priolo/jon';
 import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
-import FeatureStatusChip from './StatusChip';
 import { FEATURE_ACTIONS, FEATURE_STATUS } from '@/types/feature/Feature';
+import { Box, Button, Tooltip, Typography } from '@mui/material';
+import { useStore } from '@priolo/jon';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -18,6 +17,7 @@ const FeatureDetailHeader: React.FC = () => {
 
 
 	// HOOKS
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 
 
@@ -158,19 +158,16 @@ Se verrà accettata dopo 24 ore avverrà il pagamento.`,
 		// se non c'e l'accountDevId, controllo githubId
 		|| (featureLoaded?.accountDevId == null && !!authSo.state.user?.githubId && featureLoaded?.githubDevId == authSo.state.user?.githubId)
 	)
-	 
+	const canSave = !!feature.githubRepoId && !!feature.title && !!feature.description
+
 
 	return <>
 
 		{/* <BackButton /> */}
 
 		<Typography variant="h5">
-			FEATURE
+			{t("header.feature.title", "FEATURE")}
 		</Typography>
-
-		{/* <FeatureStatusChip
-			status={feature?.status}
-		/> */}
 
 		<Box sx={{ flex: 1 }}></Box>
 
@@ -179,47 +176,65 @@ Se verrà accettata dopo 24 ore avverrà il pagamento.`,
 		>BACK</Button> */}
 
 		{isAuthor && feature.status == FEATURE_STATUS.PROPOSED && (
-			<Tooltip title={isNew ? "Create the feature" : "Save the feature changes"}>
-			<Button variant="contained"
-				onClick={handleAuthorSaveClick}
-			>{isNew ? "CREATE" : "MODIFY"}</Button>
-			</Tooltip>
+			<Tooltip title={t(`header.feature.tooltip.${canSave ? "save_yes" : "save_no"}`)}><div>
+				<Button variant="contained"
+					onClick={handleAuthorSaveClick}
+					disabled={!canSave}
+				>{t(`header.feature.label.${isNew ? "create" : "modify"}`)}</Button>
+			</div></Tooltip>
 		)}
 
 		{isAuthor && feature.status == FEATURE_STATUS.IN_DEVELOPMENT && <>
-			<Button
-				onClick={handleAuthorDeleteClick}
-			>DELETE</Button>
+			<Tooltip title={t(`header.feature.tooltip.delete`)}>
+				<Button
+					onClick={handleAuthorDeleteClick}
+				>{t("header.feature.label.delete", "DELETE")}</Button>
+			</Tooltip>
 		</>}
 
-		{isAuthor && feature.status == FEATURE_STATUS.RELEASED && <>
-			<Button
-				onClick={handleAuthorDeleteClick}
-			>REJECT</Button>
 
-			<Button variant="contained" color="secondary"
-				onClick={handleAuthorCompleteClick}
-			>COMPLETE!!</Button>
+		{isAuthor && feature.status == FEATURE_STATUS.RELEASED && <>
+			<Tooltip title={t(`header.feature.tooltip.reject`)}>
+				<Button
+					onClick={handleAuthorDeleteClick}
+				>{t("header.feature.label.reject", "REJECT")}</Button>
+			</Tooltip>
+
+			<Tooltip title={t(`header.feature.tooltip.complete`)}>
+				<Button variant="contained" color="secondary"
+					onClick={handleAuthorCompleteClick}
+				>{t("header.feature.label.complete", "COMPLETE")}</Button>
+			</Tooltip>
 		</>}
 
 
 
 		{isDeveloper && feature.status == FEATURE_STATUS.PROPOSED && <>
-			<Button variant="contained" color="primary"
-				onClick={handleDevAcceptClick}
-			>ACCEPT</Button>
-			<Button variant="contained" color="primary"
-				onClick={handleDevDeclineClick}
-			>DECLINE</Button>
+			<Tooltip title={t(`header.feature.tooltip.accept`)}>
+				<Button variant="contained" color="primary"
+					onClick={handleDevAcceptClick}
+				>{t("header.feature.label.accept", "ACCEPT")}</Button>
+			</Tooltip>
+
+			<Tooltip title={t(`header.feature.tooltip.decline`)}>
+				<Button variant="contained" color="primary"
+					onClick={handleDevDeclineClick}
+				>{t("header.feature.label.decline", "DECLINE")}</Button>
+			</Tooltip>
 		</>}
 
 		{isDeveloper && feature.status == FEATURE_STATUS.IN_DEVELOPMENT && <>
-			<Button variant="contained" color="primary"
-				onClick={handleDevLeaveClick}
-			>LEAVE</Button>
-			<Button variant="contained" color="secondary"
-				onClick={handleDevReleaseClick}
-			>RELEASE</Button>
+			<Tooltip title={t(`header.feature.tooltip.leave`)}>
+				<Button variant="contained" color="primary"
+					onClick={handleDevLeaveClick}
+				>{t("header.feature.label.leave", "LEAVE")}</Button>
+			</Tooltip>
+
+			<Tooltip title={t(`header.feature.tooltip.release`)}>
+				<Button variant="contained" color="secondary"
+					onClick={handleDevReleaseClick}
+				>{t("header.feature.label.release", "RELEASE")}</Button>
+			</Tooltip>
 		</>}
 
 	</>

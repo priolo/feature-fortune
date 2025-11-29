@@ -36,16 +36,16 @@ const FeatureDetailRightMenu: React.FC<Props> = ({
 
         },
         {
-            id: 'dev-selector',
-            label: 'Developer',
-            subLabel: feature.accountDevId ? "Assigned" : 'Not assigned',
-            warnIcon: !feature.accountDevId,
-        },
-        {
             id: 'feature-detail-card',
             label: 'Details',
             subLabel: haveDescription ? 'Feature description' : "Write a title and description",
             warnIcon: !haveDescription,
+        },
+        {
+            id: 'dev-selector',
+            label: 'Developer',
+            subLabel: feature.accountDevId ? "Assigned" : 'Not assigned',
+            warnIcon: !feature.accountDevId,
         },
         {
             id: 'fundings-card',

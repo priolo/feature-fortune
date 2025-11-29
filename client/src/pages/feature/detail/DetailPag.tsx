@@ -135,6 +135,11 @@ const FeatureDetailPag: React.FC<Props> = ({
             onChange={handleGithubRepoChange}
         />
 
+        <FeatureDetailCard readOnly={!canAuthorEdit}
+            feature={feature}
+            onChange={handleDetailChange}
+        />
+
         {/* {feature.status == FEATURE_STATUS.PROPOSED && (
             <GithubUserSelectorCard readOnly={!canAuthorEdit}
                 githubOwnerId={feature.githubDevId}
@@ -147,11 +152,6 @@ const FeatureDetailPag: React.FC<Props> = ({
             accountId={feature.accountDevId}
             match={!!feature.githubDevId && feature.githubRepoMetadata?.owner?.id == feature.githubDevId}
             onChange={handleAccountDevChange}
-        />
-
-        <FeatureDetailCard readOnly={!canAuthorEdit}
-            feature={feature}
-            onChange={handleDetailChange}
         />
 
         <FundingsCard readonly={!isFundable}

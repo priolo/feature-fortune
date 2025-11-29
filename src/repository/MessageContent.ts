@@ -1,7 +1,11 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { MessageRepo } from './Message.js';
 import { AccountAsset } from './AccountAsset.js';
+import { getTimestampType } from './dbConfig.js';
 
+
+
+const dateTimeType = getTimestampType()
 
 /**
  * Il contenuto di un messaggio
@@ -17,7 +21,7 @@ export class MessageContentRepo extends AccountAsset {
 	@Column({ type: 'text' })
 	text: string;
 
-	@Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+	@Column({ type: dateTimeType, default: () => 'CURRENT_TIMESTAMP' })
 	createdAt?: Date;
 
 	

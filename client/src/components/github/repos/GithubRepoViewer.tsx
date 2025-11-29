@@ -13,6 +13,9 @@ interface Props {
     noLink?: boolean
 }
 
+/**
+ * Visualizza una riga con i dati del repo github
+ */
 const GithubRepoViewer: React.FC<Props> = ({
     repository,
     noLink = false,

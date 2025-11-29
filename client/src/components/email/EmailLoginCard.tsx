@@ -38,7 +38,8 @@ const EmailLoginCard: React.FC<Props> = ({
         setEmail(e.target.value);
     };
     const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setCode(e.target.value);
+        let value = e.target.value.toUpperCase().replace(/[^0-9A-F]/g, '').slice(0, 5);
+        setCode(value);
     };
     const handleSendEmailClick = async () => {
         if (!email) {

@@ -22,15 +22,13 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 	onClose,
 }) => {
 
-
 	// HOOKs
-
 	const [funding, setFunding] = useState<Funding>(null)
 
 	useEffect(() => {
 		if (!isOpen) return
 		const defaultFunding = fundingToEdit ?? {
-			currency: 'USD',
+			currency: 'usd',
 			amount: 500,
 			status: FUNDING_STATUS.PENDING,
 			message: '',
@@ -77,13 +75,6 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 							onChange={(value, currency) => handlePropChange({ amount: value, currency })}
 						/>
 					</Paragraph>
-
-					{/* <Paragraph title="EXPIRATION">
-						<TextField type="date" fullWidth
-							value={funding.expiresAt ? dayjs(funding.expiresAt).format('YYYY-MM-DD') : ""}
-							onChange={(e) => handlePropChange({ expiresAt: dayjs(e.target.value).toDate() })}
-						/>
-					</Paragraph> */}
 
 					<Typography variant="body2" color="text.secondary" whiteSpace={"pre-line"}>
 						{`Puoi annullare il finanziamento in qualunque momento durante lo sviluppo della FEATURE.

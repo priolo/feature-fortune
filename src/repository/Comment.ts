@@ -1,7 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { AccountAsset } from './AccountAsset.js';
+import { getTimestampType } from './dbConfig.js';
 
 
+
+const dateTimeType = getTimestampType()
 
 @Entity('comments')
 export class CommentRepo extends AccountAsset {
@@ -12,7 +15,7 @@ export class CommentRepo extends AccountAsset {
 	@Column({ type: 'text' })
 	text: string;
 
-	@Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+	@Column({ type: dateTimeType, default: () => 'CURRENT_TIMESTAMP' })
 	createdAt?: Date;
 
 

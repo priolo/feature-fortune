@@ -28,8 +28,14 @@ export async function seeding(root: RootService) {
 				stripeAccountId: "acct_1SVezP3ftUTNzyqH",
 				stripeAccountStatus: "ready",
 			},
-			{ id: "id-user-2", name: "Mario Rossi", email: "mario.rossi@gmail.com", },
-			{ id: "id-user-3", name: "Luigi Bianchi", email: "luigi.bianchi@gmail.com", },
+			{ 
+				//id: "id-user-2", 
+				name: "Mario Rossi", email: "mario.rossi@gmail.com", 
+			},
+			{ 
+				//id: "id-user-3", 
+				name: "Luigi Bianchi", email: "luigi.bianchi@gmail.com", 
+			},
 		]
 	});
 
@@ -38,14 +44,14 @@ export async function seeding(root: RootService) {
 		payload: <FeatureRepo[]>[
 			{ type: typeorm.RepoStructActions.TRUNCATE },
 			{
-				id: "id-feature-1",
+				//id: "id-feature-1",
 				githubRepoId: 334893295, //"priolo/jon", 
 				title: "Vorrei una funzionalità X", 
 				description: "La funzionalità X mi permetterebbe di fare Y e Z, migliorando il mio flusso di lavoro in questo modo...", 
 				accountId: accounts[0].id!,
 			},
 			{
-				id: "id-feature-2",
+				//id: "id-feature-2",
 				githubRepoId: 875133378, //"priolo/jess", 
 				title: "Vorrei una funzionalità Y",
 				description: "La funzionalità Y sarebbe fantastica perché mi aiuterebbe a risolvere il problema di A e B, rendendo tutto più efficiente...",

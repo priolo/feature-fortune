@@ -21,13 +21,14 @@ import PaymentRoute from "./routers/PaymentRoute.js";
 import StripeHookRoute from "./routers/StripeHookRoute.js";
 import StripeRoute from "./routers/StripeRoute.js";
 import FeaturePaymentCrono from "./services/crono/FeaturePaymentCrono.js";
-import EmailService from "./services/email/EmailService.js";
+import EmailGoogleService from "./services/email/EmailGoogleService.js";
 import ReflectionRoute from "./services/reflection/ReflectionRoute.js";
 import StripeService from "./services/stripe/StripeService.js";
 import { ENV_TYPE, envInit } from "./types/env.js";
 import GithubRoute from "./routers/GithubRoute.js";
 import AccountRoute from "./routers/AccountRoute.js";
 import StripeServiceMock from "./services/stripe/StripeServiceMock.js";
+import EmailResendService from "./services/email/EmailResendService.js";
 
 
 
@@ -66,8 +67,11 @@ function buildNodeConfig(params?: ConfigParams) {
 				: StripeServiceMock,
 		},
 
+		// {
+		// 	class: EmailGoogleService,
+		// },
 		{
-			class: EmailService,
+			class: EmailResendService,
 		},
 
 		!noHttp && <http.conf>{

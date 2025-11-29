@@ -110,11 +110,14 @@ class StripeService extends ServiceBase {
 		// Creiamo una copia del metodo di pagamento sull'account del venditore
 		const clonedPaymentMethod = await stripe.paymentMethods.create(
 			{
-				customer: data.customer,       // ID Customer sulla TUA Platform
-				payment_method: data.paymentMethod, // ID PaymentMethod sulla TUA Platform
+				/** ID Customer sulla TUA Platform */
+				customer: data.customer,       
+				/** ID PaymentMethod sulla TUA Platform */
+				payment_method: data.paymentMethod,
 			},
 			{
-				stripeAccount: data.destination, // ID Account Venditore
+				/** ID Account Venditore */
+				stripeAccount: data.destination,
 			}
 		);
 		return await stripe.paymentIntents.create(
