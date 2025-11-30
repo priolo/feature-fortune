@@ -155,16 +155,16 @@ const en = {
 					desc: "<br/>Ti permetterà di ricevere le notifiche e di accedere al tuo account senza password."
 				},
 				none: {
-					title: "Il tuo account non ha ancora una email associata.",
-					desc: "<br/>Inseriscila qui sotto per ricevere un codice di accesso temporaneo."
+					title: "Il tuo account non ha una email associata.",
+					desc: `<br/>Inseriscila qui sotto per ricevere un codice di accesso temporaneo.`,
 				},
 				unverified: {
 					title: "La tua email non è ancora verificata.",
-					desc: "<br/>Controlla la tua casella di posta e clicca sul link di verifica."
+					desc: "<br/>Invia un CODICE alla tua EMAIL per poterla verificare."
 				},
 				done: {
 					title: "La tua email è verificata.",
-					desc: "<br/>Ora puoi usare la tua email per accedere al tuo account."
+					desc: "<br/>Puoi usare la tua email per accedere al tuo accounte ricevere le notifiche."
 				}
 			},
 			alerts: {
@@ -285,6 +285,7 @@ const en = {
 			empty: "No fundings yet for this feature.",
 			alerts: {
 				pay: {
+					check: "Confermando (OK) procederai con il pagamento immediato del funding.",
 					success: "Payment processed successfully!",
 					error: "Error processing payment: {{message}}"
 				},
@@ -329,6 +330,48 @@ const en = {
 				author: "AUTHOR",
 				created_at: "CREATED AT"
 			}
+		},
+		features: {
+			message: {
+				default: `Browse all requested features, vote for the ones you want, 
+				or fund them to speed up development.`,
+			},
+			label: {
+				total: "TOTAL FEATURES"
+			}
+		},
+		account: {
+			message: {
+				default: `This page allows you to manage your personal information, 
+				linked login services, and payment details.
+                Keep your profile up to date to ensure smooth collaboration 
+				and funding processing.`,
+				email: {
+					warning: `Non possiamo mandarti notifiche importanti per EMAIL.`,
+					success: `Riceverai nella tua EMAIL le notifiche importanti.
+					Per esempio se una FEATURE a cui hai contribuito viene rilasciata.`
+				},
+				github: {
+					warning: `Non potrai proporti come DEVELOPER senza un repository GitHub.`,
+					success: `Puoi proporti come DEVELOPER di una FEATURE.`
+				},
+				credit_card: {
+					warning: `Non potrai finanziare le FEATURE senza una carta di credito`,
+					success: `Puoi finanziare le FEATURE con la tua carta di credito.`
+				},
+				stripe: {
+					warning: `Non potrai ricevere fondi senza un account STRIPE `,
+					success: `Puoi ricevere fondi nel tuo account STRIPE per le FEATURE che sviluppi.`
+				},
+			},
+			label: {
+				total: "TOTAL FEATURES"
+			}
+		}
+	},
+	rightmenu: {
+		account: {
+
 		}
 	},
 	header: {

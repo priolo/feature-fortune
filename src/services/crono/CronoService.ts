@@ -1,4 +1,5 @@
 import { ServiceBase } from "@priolo/julian";
+import { TypeLog } from "@priolo/julian/dist/core/types.js";
 
 
 
@@ -66,7 +67,7 @@ abstract class CronoService extends ServiceBase {
 			try {
 				await this.onCronoTick()
 			} catch (error) {
-				console.error("Error in startCrono:", error)
+				this.log("crono:setTimeout", error, TypeLog.ERROR)
 			} finally {
 				if ( this.state.status == CRONO_STATUS.STOPPED ) return
 				this.startCrono()

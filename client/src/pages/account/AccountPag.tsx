@@ -10,8 +10,8 @@ import GoogleLoginCard from '../../components/google/GoogleLoginCard';
 import StripeAuthorCard from '../../components/stripe/StripeAuthorCard';
 import StripeCreditCard from '../../components/stripe/StripeCreditCard';
 import SettingsCard from './SettingsCard';
-import OverviewCmp from './OverviewCmp';
-import AccountRightMenu from './AccountRightMenu';
+import AccountOverview from './Overview';
+import AccountRightMenu from './RightMenu';
 
 
 
@@ -44,37 +44,26 @@ const AccountPag: React.FC<AccountPagProps> = ({
 
 
     // RENDER
-    if (!authSo.state.user) {
-        return <div style={{ display: 'flex', flexDirection: "column", gap: 10, alignItems: 'center' }}>
-            NULL
-        </div>
-    }
+    if (!authSo.state.user) return null
 
     return <Framework sx={{ py: 2 }}
-        leftRender={<OverviewCmp sx={{mr: 4, ml: 'auto', pt: 2,maxWidth: 300}} />}
+        leftRender={<AccountOverview />}
         rightRender={<AccountRightMenu />}
     >
 
         <SettingsCard />
 
-        {/* EMAIL ZONE */}
         <EmailLoginCard />
 
-        {/* GOOGLE ZONE */}
         <GoogleLoginCard />
 
-        {/* GITHUB ZONE */}
         <GithubLoginCard />
 
-        {/* STRIPE CUSTOMER ZONE */}
         <Elements stripe={stripePromise}>
             <StripeCreditCard />
         </Elements>
 
-        {/* STRIPE AUTHOR ZONE */}
         <StripeAuthorCard />
-
-
 
     </Framework>
 }

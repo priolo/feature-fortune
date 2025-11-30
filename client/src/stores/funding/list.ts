@@ -1,4 +1,5 @@
 import fundingApi from "@/api/funding"
+import stripeApi from "@/api/stripe"
 import { Funding, FUNDING_STATUS } from "@/types/Funding"
 import { createStore, StoreCore } from "@priolo/jon"
 
@@ -39,6 +40,16 @@ const setup = {
 			const funding = store.getById(id)
 			if (!funding) return true
 			funding.status = FUNDING_STATUS.CANCELLED
+			store._update()
+			return true
+		},
+
+		async pay(id: string, store?: FundingListStore): Promise<boolean> {
+			const res = await stripeApi.pay(id)
+			if (!res.success) return false
+			const funding = store.getById(id)
+			if (!funding) return true
+			funding.status = FUNDING_STATUS.PAIED
 			store._update()
 			return true
 		}

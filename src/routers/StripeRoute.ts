@@ -5,7 +5,8 @@ import { AccountRepo } from "../repository/Account.js";
 import PaymentCrono from "../services/crono/FeaturePaymentCrono.js";
 import { Actions } from "../services/stripe/types.js";
 import { getGithubHtmlUrl } from "./GithubRoute.js";
-import { FundingRepo } from "src/repository/Funding.js";
+import { FUNDING_STATUS, FundingRepo } from "src/repository/Funding.js";
+import { FindManyOptions } from "typeorm";
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
@@ -13,12 +14,13 @@ const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
 class StripeRoute extends httpRouter.Service {
 
-	get stateDefault(): httpRouter.conf & any {
+	get stateDefault() {
 		return {
 			...super.stateDefault,
 			path: "/stripe",
 			repository: "/typeorm/fundings",
 			account_repo: "/typeorm/accounts",
+			funding_repo: "/typeorm/fundings",
 			payment_service: "/payments-crono",
 			stripe_service: "/stripe",
 			routers: [
@@ -44,18 +46,40 @@ class StripeRoute extends httpRouter.Service {
 			type: typeorm.Actions.GET_BY_ID,
 			payload: fundingId
 		})
+		// const funding: FundingRepo = await new Bus(this, this.state.funding_repo).dispatch({
+		// 	type: typeorm.Actions.FIND_ONE,
+		// 	payload: <FindManyOptions<FundingRepo>>{
+		// 		where: { id: fundingId },
+		// 		relations: {
+		// 			feature: true,
+		// 			account: true,
+		// 		}
+		// 	}
+		// })
 		if (funding.accountId !== userJwt.id) {
 			return res.status(403).json({ error: "You are not the owner of this funding" })
 		}
-
-		// payment
-		const paymentCronoService = this.nodeByPath(this.state.payment_service) as PaymentCrono
-		try {
-			const funding = await paymentCronoService.paymentFunding(fundingId)
-			res.json({ success: true })
-		} catch (error) {
-			res.status(500).json({ error: error instanceof Error ? error.message : 'Unknown error' });
+		if (funding.status !== FUNDING_STATUS.PENDING && funding.status !== FUNDING_STATUS.ERROR) {
+			return res.status(400).json({ error: `Funding status must be PENDING or ERROR, current status is ${funding.status}` })
 		}
+
+		// transform in PAYABLE
+		const featureUp = await new Bus(this, this.state.funding_repo).dispatch({
+			type: typeorm.Actions.SAVE,
+			payload: {
+				id: funding.id,
+				status: FUNDING_STATUS.PAYABLE,
+			}
+		})
+		if (!featureUp) {
+			return res.status(500).json({ error: "Funding not updated to PAYABLE" });
+		}
+
+		// get payment service and pay
+		const paymentCronoService = this.nodeByPath(this.state.payment_service) as PaymentCrono
+		await paymentCronoService.paymentFunding(fundingId)
+
+		res.json({ success: true })
 	}
 
 	/**

@@ -1,4 +1,3 @@
-import stripeApi from '@/api/stripe';
 import Card from '@/components/Card';
 import FundingDialog from '@/components/funding/FundingDialog';
 import FundingView from '@/components/funding/FundingView';
@@ -59,8 +58,9 @@ const FundingsCard: React.FC<Props> = ({
             modal: true,
         })
         if (!r) return
-        const res = await stripeApi.pay(funding.id)
-        if (!res.success) return
+        const success = await fundingListSo.pay(funding.id)
+        if (!success) return
+
         dialogSo.dialogOpen({ type: DIALOG_TYPE.SUCCESS, text: t('cards.FundingsCard.alerts.pay.success') });
     }
     const handleCancel = async (funding: Funding) => {

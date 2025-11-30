@@ -15,7 +15,7 @@ class FeaturePaymentCrono extends CronoService {
 			...super.stateDefault,
 			name: "payments-crono",
 			/** ogni quanto tempo controllo le FEATURES */
-			delay: 1000 * 60 * 10, // ogni 10 minuti
+			delay: 1000 * 5, // ogni ... minuti
 			/** il tempo (ms) che deve passare dopo il COMPLETE per far partire i pagamenti */
 			delayComplete: 1000 * 60 * 60 * 24,
 			funding_repo: "/typeorm/fundings",
@@ -114,7 +114,9 @@ class FeaturePaymentCrono extends CronoService {
 
 		// check
 		if (!funding) throw new Error("Funding not found");
-		//if (funding.status !== FUNDING_STATUS.PAYABLE) throw new Error("Funding not payable");
+		if (funding.status !== FUNDING_STATUS.PAYABLE) {
+			throw new Error("Funding status must be PENDING or PAYABLE to execute payment")
+		}
 
 		// recupero l'id ACCOUNT di chi deve ricevere i soldi (sarebbe il DEV dell FEATURE)
 		const dev: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
@@ -125,17 +127,30 @@ class FeaturePaymentCrono extends CronoService {
 
 
 		// setup DATA and PAY
-		const payload:PaymentIntentData = {
+		const payload: PaymentIntentData = {
 			amount: funding.amount,
 			currency: funding.currency,
 			customer: funding.account.stripeCustomerId,
 			paymentMethod: funding.account.stripePaymentMethodId,
 			destination: dev.stripeAccountId,
 		}
-		const paymentIntent = await new Bus(this, this.state.stripe_service).dispatch({
-			type: Actions.PAYMENT_EXECUTE,
-			payload
-		})
+		let paymentIntent: any
+		try {
+			paymentIntent = await new Bus(this, this.state.stripe_service).dispatch({
+				type: Actions.PAYMENT_EXECUTE,
+				payload
+			})
+		} catch (error) {
+			throw error
+		} finally {
+			await new Bus(this, this.state.funding_repo).dispatch({
+				type: typeorm.Actions.SAVE,
+				payload: {
+					id: funding.id,
+					status: FUNDING_STATUS.ERROR,
+				}
+			})
+		}
 
 
 		// update funding in DB

@@ -22,36 +22,36 @@ const AccountRightMenu: React.FC<Props> = ({
     return <PageMenu items={[
         {
             id: 'settings-card',
-            label: 'Settings',
+            label: 'SETTINGS',
             subLabel: 'General account settings',
         },
         {
             id: 'email-login-card',
-            label: 'Email',
+            label: 'EMAIL',
             subLabel: 'Manage email login',
             warnIcon: !user.email,
         },
         {
             id: 'google-login-card',
-            label: 'Google',
+            label: 'GOOGLE',
             subLabel: 'Link Google account',
             warnIcon: !user.googleEmail,
         },
         {
             id: 'github-login-card',
-            label: 'GitHub',
+            label: 'GITHUB',
             subLabel: 'Link GitHub account',
             warnIcon: !user.githubId,
         },
         {
             id: 'stripe-credit-card',
-            label: 'Credit Card',
+            label: 'CREDIT CARD',
             subLabel: 'Manage payment methods',
             warnIcon: !user.stripeHaveCard,
         },
         {
             id: 'stripe-author-card',
-            label: 'Stripe Author',
+            label: 'STRIPE AUTHOR',
             subLabel: 'Manage payout details',
             warnIcon: !user.stripeAccountId,
         },

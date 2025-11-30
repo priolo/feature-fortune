@@ -1,44 +1,49 @@
-import React from 'react';
-import { Box, SxProps, Typography } from '@mui/material';
-import { useStore } from '@priolo/jon';
+import { sxOverviewRoot } from '@/pages/styles';
 import featureListSo from '@/stores/feature/list';
+import { Box, Typography } from '@mui/material';
+import { useStore } from '@priolo/jon';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+
+
 
 const FeatureListOverview: React.FC = () => {
+
+    // STORES
     const featureListSa = useStore(featureListSo);
+
+    // HOOKS
+    const { t } = useTranslation()
+
+    // RENDER
     const allFeatures = featureListSa.all || [];
 
     return (
-        <Box sx={sxRoot}>
+        <Box sx={sxOverviewRoot}>
 
             <Typography variant="h6">
-                Overview
+                {t('overview.title', 'Overview')}
             </Typography>
 
-            <Typography variant="body2" color="text.secondary">
-                Browse all requested features, vote for the ones you want, or fund them to speed up development.
+
+
+            <Typography variant="body2" color="text.secondary" /*sx={{ whiteSpace: 'pre-line' }}*/>
+                {t('overview.features.message.default')}
             </Typography>
 
-            <Box sx={{ mt: 2 }}>
+
+
+            <Box>
+                <Typography variant="overline" color="text.secondary">
+                    {t('overview.features.label.total', 'TOTAL FEATURES')}
+                </Typography>
                 <Typography variant="h4" color="primary" sx={{ fontWeight: 600 }}>
                     {allFeatures.length}
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
-                    TOTAL FEATURES
-                </Typography>
             </Box>
+
         </Box>
     );
 };
 
 export default FeatureListOverview;
-
-const sxRoot: SxProps = {
-    position: 'sticky',
-    top: 0,
-    alignItems: 'flex-end',
-    textAlign: 'right',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 1,
-    mr: 4, ml: 'auto', pt: 2, maxWidth: 300,
-}

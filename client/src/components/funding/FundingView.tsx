@@ -30,11 +30,12 @@ const FundingView: React.FC<Props> = ({
 	// RENDER
 	const message = !!funding.message && funding.message.trim().length > 0 ? funding.message : "No Message";
 	const youAreFunder = funding.accountId === authSo.state.user?.id;
-	const canEditable = funding.status == FUNDING_STATUS.PAYABLE || funding.status == FUNDING_STATUS.PENDING
+	const canEditable = funding.status == FUNDING_STATUS.PENDING || funding.status == FUNDING_STATUS.ERROR
 	const actions: ActionMenuProps[] = [
 		//{ label: "PAUSE", icon: <Pause />, onClick: null },
 		{ label: "CANCEL", icon: <Cancel />, onClick: () => onCancel(funding) },
-		{ label: "PAY NOW!", icon: <Payment />, onClick: () => onPayNow(funding) },
+		{ label: "PAY NOW!", icon: <Payment />, onClick: () => onPayNow(funding), hidden: funding.status !== FUNDING_STATUS.PENDING  },
+		{ label: "TRY AGAIN!", icon: <Payment />, onClick: () => onPayNow(funding), hidden: funding.status !== FUNDING_STATUS.ERROR  },
 	]
 
 	return (
