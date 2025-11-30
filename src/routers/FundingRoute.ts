@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { AccountRepo } from "../repository/Account.js";
 import { FUNDING_STATUS, FundingRepo } from "../repository/Funding.js";
 import { FindManyOptions } from "typeorm";
+import { paymentCheck } from "src/services/stripe/utils.js";
 
 
 
@@ -65,9 +66,9 @@ class FundingRoute extends httpRouter.Service {
 
 		// check
 		if (!funding) return res.status(400).json({ error: "Funding data is required" })
-		if (!funding.amount || funding.amount <= 0 || funding.amount > 100) return res.status(400).json({ error: "Amount must be between 1 and 100" })
-		if (!funding.currency || !["usd", "eur", "gbp", "jpy"].includes(funding.currency)) return res.status(400).json({ error: "Currency must be one of: usd, eur, gbp, jpy" })
 		if (!funding.featureId) return res.status(400).json({ error: "Feature ID is required" })
+		const error = paymentCheck(funding.amount, funding.currency)
+		if (!!error) throw new Error(error)
 
 		// è sempre nuovo un FUNDING non puo' essere modificato
 		const fundingNew: FundingRepo = {

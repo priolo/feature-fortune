@@ -56,12 +56,12 @@ class FeaturePaymentCrono extends CronoService {
 			await new Bus(this, this.state.funding_repo).dispatch({
 				type: typeorm.Actions.UPDATE,
 				payload: {
-					criteria: { 
+					criteria: {
 						featureId: feature.id,
-						status: FUNDING_STATUS.PENDING 
+						status: FUNDING_STATUS.PENDING
 					},
-					partial: { 
-						status: FUNDING_STATUS.PAYABLE 
+					partial: {
+						status: FUNDING_STATUS.PAYABLE
 					},
 				},
 			})
@@ -77,7 +77,7 @@ class FeaturePaymentCrono extends CronoService {
 			console.log(ret)
 		}
 
-		
+
 
 
 		// cerco tutti i FUNDING di tipo PAYABLE e li pago!!!
@@ -121,39 +121,21 @@ class FeaturePaymentCrono extends CronoService {
 			type: typeorm.Actions.GET_BY_ID,
 			payload: funding.feature.accountDevId
 		})
-		if (!dev) {
-			throw new Error(`Developer not found for feature ${funding.feature.id}`);
-		}
+		if (!dev) throw new Error(`Developer not found for feature ${funding.feature.id}`);
 
-		// setup DATA
-		const amount = funding.amount
-		const destination = dev.stripeAccountId
-		const customer = funding.account.stripeCustomerId
-		const paymentMethod = funding.account.stripePaymentMethodId
-		// check
-		if ( !destination ) {
-			throw new Error(`Developer ${dev.id} has no Stripe Account ID`);
-		}
-		if ( !customer ) {
-			throw new Error(`Funding ${funding.id} has no Stripe Customer ID`);
-		}
-		if ( !paymentMethod ) {
-			throw new Error(`Funding ${funding.id} has no Stripe Payment Method ID`);
-		}
-		console.log(">>> paymentFunding", { amount, destination, customer, paymentMethod })
 
-		// Execute the payment using StripeService
+		// setup DATA and PAY
+		const payload:PaymentIntentData = {
+			amount: funding.amount,
+			currency: funding.currency,
+			customer: funding.account.stripeCustomerId,
+			paymentMethod: funding.account.stripePaymentMethodId,
+			destination: dev.stripeAccountId,
+		}
 		const paymentIntent = await new Bus(this, this.state.stripe_service).dispatch({
 			type: Actions.PAYMENT_EXECUTE,
-			payload: {
-				amount: amount,
-				currency: "EUR",
-				customer: customer,
-				paymentMethod: paymentMethod,
-				destination: destination,
-			} as PaymentIntentData
-		});
-
+			payload
+		})
 
 
 		// update funding in DB
@@ -168,6 +150,9 @@ class FeaturePaymentCrono extends CronoService {
 		})
 		funding.feature = featureUp
 
+
+		// log & return
+		this.log("funding:payment:", payload)
 		return funding
 	}
 

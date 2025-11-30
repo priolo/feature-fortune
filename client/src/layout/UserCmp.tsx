@@ -1,5 +1,5 @@
 import authSo from '@/stores/auth';
-import { Box, Button, Divider, List, ListItem, ListItemButton, ListItemIcon, Menu, MenuItem, SxProps, Typography } from '@mui/material';
+import { Box, Button, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, SxProps, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -92,10 +92,16 @@ const UserCmp: React.FC<UserCmpProps> = ({
 
 				<List>
 					<ListItemButton onClick={handleAccount}>
-						ACCOUNT
+						<ListItemIcon>
+							<AccountCircle fontSize="small" />
+						</ListItemIcon>
+						<ListItemText>CONFIG</ListItemText>
 					</ListItemButton>
 					<ListItemButton onClick={handleLogout}>
-						LOGOUT
+						<ListItemIcon>
+							<Logout fontSize="small" />
+						</ListItemIcon>
+						<ListItemText>LOGOUT</ListItemText>
 					</ListItemButton>
 				</List>
 

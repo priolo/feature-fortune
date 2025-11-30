@@ -4,6 +4,7 @@ import Paragraph from '@/layout/Paragraph';
 import { amountFunded } from '@/stores/funding/utils';
 import { Feature } from '@/types/feature/Feature';
 import { FeaturedPlayList } from '@mui/icons-material';
+import { Box, SxProps, Typography } from '@mui/material';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -42,25 +43,31 @@ const FeatureDetailCard: React.FC<Props> = ({
 			icon={<FeaturedPlayList />}
 		>
 
-			<Paragraph title={t('cards.FeatureDetailCard.title_field.title')}>
-				<ReadOnlyTextField fullWidth
-					readOnly={readOnly}
-					value={title}
-					onChange={(e) => handlePropChange({ title: e.target.value })}
-					placeholder={t('cards.FeatureDetailCard.title_field.placeholder')}
-				/>
-			</Paragraph>
+			{/* <Paragraph title={t('cards.FeatureDetailCard.title_field.title')}> */}
+			<Typography variant='caption' color="textSecondary">
+				{t('cards.FeatureDetailCard.title_field.title')}
+			</Typography>
+			<ReadOnlyTextField fullWidth
+				readOnly={readOnly}
+				value={title}
+				onChange={(e) => handlePropChange({ title: e.target.value })}
+				placeholder={t('cards.FeatureDetailCard.title_field.placeholder')}
+			/>
+			{/* </Paragraph> */}
 
-			<Paragraph sx={{ alignItems: 'start' }} sxLabel={{ mt: ".7rem" }}
+			{/* <Paragraph sx={{ alignItems: 'start' }} sxLabel={{ mt: ".7rem" }}
 				title={t('cards.FeatureDetailCard.description.title')}
-			>
-				<ReadOnlyTextField fullWidth multiline rows={6}
-					readOnly={readOnly}
-					value={description}
-					onChange={(e) => handlePropChange({ description: e.target.value })}
-					placeholder={t("cards.FeatureDetailCard.description.placeholder")}
-				/>
-			</Paragraph>
+			> */}
+			<Typography variant='caption' color="textSecondary">
+				{t('cards.FeatureDetailCard.description.title')}
+			</Typography>
+			<ReadOnlyTextField fullWidth multiline rows={6}
+				readOnly={readOnly}
+				value={description}
+				onChange={(e) => handlePropChange({ description: e.target.value })}
+				placeholder={t("cards.FeatureDetailCard.description.placeholder")}
+			/>
+			{/* </Paragraph> */}
 
 		</Card>
 	);

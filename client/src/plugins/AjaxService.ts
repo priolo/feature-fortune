@@ -1,6 +1,5 @@
 import layoutSo from "@/stores/layout"
-import logSo from "@/stores/log"
-import { MESSAGE_TYPE } from "@/stores/log/utils"
+import dialogSo, { DIALOG_TYPE } from "@/stores/layout/dialogStore"
 
 
 
@@ -80,12 +79,7 @@ export class AjaxService {
 		} catch (e) {
 			if (options.noError) return
 			if (e.code != 20) {
-				logSo.add({
-					type: MESSAGE_TYPE.ERROR,
-					title: "http:error:fetch",
-					body: e.toString(),
-					targetId: options.store?.state?.uuid,
-				})
+				dialogSo.dialogOpen({ type: DIALOG_TYPE.ERROR, text: e})
 			}
 			throw e
 		} finally {
@@ -107,12 +101,7 @@ export class AjaxService {
 		const status = response.status
 		if (status >= 400 && !options.noError) {
 			const error = ret?.error as string ?? jsonError ?? `${status} generic`
-			logSo.add({
-				type: MESSAGE_TYPE.ERROR,
-				title: `http:error:${status}`,
-				body: error,
-				targetId: options.store?.state?.uuid,
-			})
+			dialogSo.dialogOpen({ type: DIALOG_TYPE.ERROR, text: error})
 			throw error
 		}
 		

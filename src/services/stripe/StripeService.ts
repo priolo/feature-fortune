@@ -1,6 +1,7 @@
 import { ServiceBase } from "@priolo/julian";
 import Stripe from "stripe";
 import { Actions, PaymentIntentData } from "./types.js";
+import { paymentCheck } from "./utils.js";
 
 
 
@@ -107,11 +108,18 @@ class StripeService extends ServiceBase {
 	 */
 	async executePayment(data: PaymentIntentData): Promise<Stripe.PaymentIntent> {
 
+		// check
+		if (!data.destination) throw new Error(`Funding ${data} has no Stripe Destination Account ID`)
+		if (!data.customer) throw new Error(`Funding ${data} has no Stripe Customer ID`)
+		if (!data.paymentMethod) throw new Error(`Funding ${data} has no Stripe Payment Method ID`)
+		const error = paymentCheck(data.amount, data.currency)
+		if ( !!error ) throw new Error(error)
+
 		// Creiamo una copia del metodo di pagamento sull'account del venditore
 		const clonedPaymentMethod = await stripe.paymentMethods.create(
 			{
 				/** ID Customer sulla TUA Platform */
-				customer: data.customer,       
+				customer: data.customer,
 				/** ID PaymentMethod sulla TUA Platform */
 				payment_method: data.paymentMethod,
 			},
@@ -268,16 +276,16 @@ export type CreateAccountParams = {
 
 
 // Funzione per formattare correttamente la voce
-function formatDescriptor(projectName:string) {
-    // Prefisso es: "PUCE "
-    const prefix = `${process.env.STRIPE_PLATFORM_NAME}* `; 
-    
-    // Calcola quanto spazio rimane (22 è il limite imposto da Stripe)
-    const remainingChars = 22 - prefix.length;
-    
-    // Pulisci il nome del progetto (via caratteri strani) e taglialo
-    const cleanProjectName = projectName.replace(/[^a-zA-Z0-9 ]/g, "").toUpperCase();
-    const truncatedProjectName = cleanProjectName.substring(0, remainingChars);
-    
-    return `${prefix}${truncatedProjectName}`;
+function formatDescriptor(projectName: string) {
+	// Prefisso es: "PUCE "
+	const prefix = `${process.env.STRIPE_PLATFORM_NAME}* `;
+
+	// Calcola quanto spazio rimane (22 è il limite imposto da Stripe)
+	const remainingChars = 22 - prefix.length;
+
+	// Pulisci il nome del progetto (via caratteri strani) e taglialo
+	const cleanProjectName = projectName.replace(/[^a-zA-Z0-9 ]/g, "").toUpperCase();
+	const truncatedProjectName = cleanProjectName.substring(0, remainingChars);
+
+	return `${prefix}${truncatedProjectName}`;
 }

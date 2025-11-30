@@ -6,7 +6,7 @@ import { FunctionComponent } from "react";
 interface Props {
 	/** The amount in cents */
 	amount?: number;
-	/** Currency code (e.g., USD, EUR, GBP) */
+	/** Currency code (e.g., usd, eur, gbp) */
 	currency?: string;
 }
 
