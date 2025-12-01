@@ -135,7 +135,7 @@ export class FeatureRepo extends AccountAsset {
 	/**
 	 * GITHUB REPO ID collegato a questa FEATURE
 	 */
-	@Column({ type: 'bigint', nullable: true })
+	@Column({ type: 'int', nullable: true })
 	githubRepoId?: number;
 
 	/**
@@ -148,7 +148,7 @@ export class FeatureRepo extends AccountAsset {
 	/**
 	 * GITHUB USER ID del DEV a cui è assegnata questa feature
 	 */
-	@Column({ type: 'bigint', nullable: true })
+	@Column({ type: 'int', nullable: true })
 	githubDevId?: number;
 
 	/**

@@ -40,7 +40,7 @@ export class AccountRepo {
 	/**
 	 * ACCOUNT GITHUB that are the owner
 	 */
-	@Column({ type: 'bigint', nullable: true })
+	@Column({ type: 'int', nullable: true })
 	githubId?: number;
 
 
