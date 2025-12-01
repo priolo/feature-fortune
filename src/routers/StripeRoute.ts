@@ -1,12 +1,11 @@
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
+import { FUNDING_STATUS, FundingRepo } from "../repository/Funding.js";
 import Stripe from "stripe";
 import { AccountRepo } from "../repository/Account.js";
 import PaymentCrono from "../services/crono/FeaturePaymentCrono.js";
 import { Actions } from "../services/stripe/types.js";
 import { getGithubHtmlUrl } from "./GithubRoute.js";
-import { FUNDING_STATUS, FundingRepo } from "src/repository/Funding.js";
-import { FindManyOptions } from "typeorm";
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 

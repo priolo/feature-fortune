@@ -1,9 +1,9 @@
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
+import { FindManyOptions } from "typeorm";
 import { AccountRepo } from "../repository/Account.js";
 import { FUNDING_STATUS, FundingRepo } from "../repository/Funding.js";
-import { FindManyOptions } from "typeorm";
-import { paymentCheck } from "src/services/stripe/utils.js";
+import { paymentCheck } from "../services/stripe/utils.js";
 
 
 
