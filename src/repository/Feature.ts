@@ -154,7 +154,7 @@ export class FeatureRepo extends AccountAsset {
 	/**
 	 * ACCOUNT ID APP del DEV a cui è assegnata questa feature
 	 */
-	@Column({ type: 'bigint', nullable: true })
+	@Column({ type: 'uuid', nullable: true })
 	accountDevId?: string;
 
 
