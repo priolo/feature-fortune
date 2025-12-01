@@ -153,7 +153,8 @@ class StripeService extends ServiceBase {
 
 				// Metti il nome del progetto specifico per questa donazione.
 				// Deve sempre contenere caratteri latini e max 22 char.
-				statement_descriptor: formatDescriptor('NOME PROGETTO'),
+				//statement_descriptor: formatDescriptor('NOME PROGETTO'),
+				statement_descriptor_suffix: 'NOME PROGETTO GITHUB',
 			},
 			{
 				stripeAccount: data.destination, // Eseguito sul conto del venditore

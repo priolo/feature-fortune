@@ -20,12 +20,13 @@ export async function seeding(root: RootService) {
 				id: "id-user-1", 
 				name: "Ivano Iorio", 
 				email: "iorioivano@gmail.com", 
-				googleEmail: "iorioivano@gmail.com", 
+				googleEmail: "iorioivano@gmail.com",
+				avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocKA4wD4lM9V5uEQ17xEAUPziv77OEdGj04wZ-uZPG5H9l7CEukn=s96-c",
 				emailCode: EMAIL_CODE.VERIFIED,
 				githubId: 402921, //"octocat"
-				stripeCustomerId: "cus_TSMpgPvkCIxXNR",
-				stripePaymentMethodId: "pm_1SVS683sTEVFLjPv0lakKZAV",
-				stripeAccountId: "acct_1SVezP3ftUTNzyqH",
+				stripeCustomerId: "cus_TVzu5h5ZsSSO5p",
+				stripePaymentMethodId: "pm_1SYxuV3sTEVFLjPv83RAuOVI",
+				stripeAccountId: "acct_1SYxul3yTNMQLcVc",
 				stripeAccountStatus: "ready",
 			},
 			{ 
@@ -45,7 +46,8 @@ export async function seeding(root: RootService) {
 			{ type: typeorm.RepoStructActions.TRUNCATE },
 			{
 				//id: "id-feature-1",
-				githubRepoId: 334893295, //"priolo/jon", 
+				githubRepoId: 760117937, //"priolo/jon", 
+				githubRepoMetadata: {"name":"nui","full_name":"nats-nui/nui","owner":{"id":160540751,"login":"nats-nui","avatar_url":"https://avatars.githubusercontent.com/u/160540751?v=4"},"description":"Free and Open Source NATS management GUI.","html_url":"https://github.com/nats-nui/nui"},
 				title: "Vorrei una funzionalità X", 
 				description: "La funzionalità X mi permetterebbe di fare Y e Z, migliorando il mio flusso di lavoro in questo modo...", 
 				accountId: accounts[0].id!,

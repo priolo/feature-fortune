@@ -63,21 +63,21 @@ class StripeRoute extends httpRouter.Service {
 			return res.status(400).json({ error: `Funding status must be PENDING or ERROR, current status is ${funding.status}` })
 		}
 
-		// transform in PAYABLE
-		const featureUp = await new Bus(this, this.state.funding_repo).dispatch({
-			type: typeorm.Actions.SAVE,
-			payload: {
-				id: funding.id,
-				status: FUNDING_STATUS.PAYABLE,
-			}
-		})
-		if (!featureUp) {
-			return res.status(500).json({ error: "Funding not updated to PAYABLE" });
-		}
+		// // transform in PAYABLE
+		// const featureUp = await new Bus(this, this.state.funding_repo).dispatch({
+		// 	type: typeorm.Actions.SAVE,
+		// 	payload: {
+		// 		id: funding.id,
+		// 		status: FUNDING_STATUS.PAYABLE,
+		// 	}
+		// })
+		// if (!featureUp) {
+		// 	return res.status(500).json({ error: "Funding not updated to PAYABLE" });
+		// }
 
 		// get payment service and pay
 		const paymentCronoService = this.nodeByPath(this.state.payment_service) as PaymentCrono
-		await paymentCronoService.paymentFunding(fundingId)
+		await paymentCronoService.paymentFunding(fundingId, true)
 
 		res.json({ success: true })
 	}

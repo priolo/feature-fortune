@@ -97,7 +97,7 @@ class FeaturePaymentCrono extends CronoService {
 	/**
 	 * Execute the PAYMENT for a FUNDING
 	 */
-	async paymentFunding(fundingId: string): Promise<FundingRepo> {
+	async paymentFunding(fundingId: string, ignoreState:boolean = false): Promise<FundingRepo> {
 
 		// load FUNDING from DB
 		const funding: FundingRepo = await new Bus(this, this.state.funding_repo).dispatch({
@@ -114,7 +114,7 @@ class FeaturePaymentCrono extends CronoService {
 
 		// check
 		if (!funding) throw new Error("Funding not found");
-		if (funding.status !== FUNDING_STATUS.PAYABLE) {
+		if (funding.status !== FUNDING_STATUS.PAYABLE && !ignoreState) {
 			throw new Error("Funding status must be PENDING or PAYABLE to execute payment")
 		}
 
