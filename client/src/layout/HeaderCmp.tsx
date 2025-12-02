@@ -14,6 +14,7 @@ import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MessagesCmp from './MessagesCmp';
 import UserCmp from './UserCmp';
+import authSo from '@/stores/auth';
 
 
 
@@ -45,6 +46,7 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 	}
 
 	// Pick logo based on theme
+	const logged = !!authSo.state.user;
 	const isDark = themeSo.state.current?.palette?.mode === 'dark';
 	const logo = isDark ? logoDark : logoLight;
 
@@ -63,12 +65,8 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 			</Box>
 
 			<Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 1 }}>
-
-
-				<MessagesCmp />
-
+				{logged && <MessagesCmp />}
 				<UserCmp />
-
 			</Box>
 
 		</Box>

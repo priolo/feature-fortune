@@ -1,14 +1,16 @@
 import AccountIdView from '@/components/account/AccountIdView';
 import CurrencyGroupsLabel from '@/components/CurrencyGroupsLabel';
+import { sxOverviewRoot } from '@/pages/styles';
 import featureDetailSo from '@/stores/feature/detail';
 import fundingListSo from '@/stores/funding/list';
 import { amountFunded } from '@/stores/funding/utils';
+import { FEATURE_STATUS } from '@/types/feature/Feature';
 import { Box, Paper, SxProps, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import Countdown from './Countdown';
 import FeatureStatusChip from './StatusChip';
-import { sxOverviewRoot } from '@/pages/styles';
 
 
 
@@ -35,6 +37,8 @@ const FeatureDetailOverview: React.FC<Props> = ({
     const values = useMemo(() => amountFunded(fundingListSo.state.all), [fundingListSo.state.all]);
     const isNew = !feature.id
     const messageStatus = isNew ? 'new' : feature.status
+    const haveCountdown = feature.status === FEATURE_STATUS.COMPLETED && feature.completedAt
+    const delta = Number(import.meta.env.PAYMENT_AFTER_COMPLETION_MIN ?? 60) * 60 * 1000
 
     return (
         <Box sx={[sxOverviewRoot, sx] as SxProps}>
@@ -88,6 +92,13 @@ const FeatureDetailOverview: React.FC<Props> = ({
                         {new Date(feature.createdAt).toLocaleDateString()}
                     </Typography>
                 </Box>
+            )}
+
+            {haveCountdown && (
+                <Countdown 
+                    date={feature.completedAt} 
+                    delta={delta}
+                />
             )}
 
         </Box>

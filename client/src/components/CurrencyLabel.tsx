@@ -25,7 +25,7 @@ const CurrencyLabel: FunctionComponent<Props> = ({
 				{displayAmount}
 			</span>
 			
-			<span style={{ fontFamily: 'monospace', opacity: 0.7, fontSize: '0.75em' }}>
+			<span style={{ fontFamily: 'monospace', opacity: 0.7, fontSize: '0.6em', textTransform: 'uppercase' }}>
 				{currency ?? "---"}
 			</span>
 

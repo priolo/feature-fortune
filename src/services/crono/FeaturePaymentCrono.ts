@@ -15,9 +15,9 @@ class FeaturePaymentCrono extends CronoService {
 			...super.stateDefault,
 			name: "payments-crono",
 			/** ogni quanto tempo controllo le FEATURES */
-			delay: 1000 * 5, // ogni ... minuti
+			delay: 1000 * 5,
 			/** il tempo (ms) che deve passare dopo il COMPLETE per far partire i pagamenti */
-			delayComplete: 1000 * 60 * 60 * 24,
+			delayComplete: 1000 * 60 * Number(process.env.PAYMENT_AFTER_COMPLETION_MIN ?? 60),
 			funding_repo: "/typeorm/fundings",
 			account_repo: "/typeorm/accounts",
 			feature_repo: "/typeorm/features",
