@@ -135,6 +135,7 @@ class StripeService extends ServiceBase {
 
 				// Usiamo il metodo appena clonato
 				payment_method: clonedPaymentMethod.id,
+				setup_future_usage: "off_session",
 
 				// IMPORTANTE: NON specificare il parametro 'customer'.
 				// Non collegando questo pagamento a un Customer ID dell'account venditore,
@@ -212,11 +213,10 @@ class StripeService extends ServiceBase {
 
 				// Precompili i dati del profilo business
 				business_profile: {
-					name: `${process.env.STRIPE_PLATFORM_NAME}* `,
+					name: process.env.STRIPE_CUSTOMER_BUSINESS_NAME ?? "PUCE",
 					url: url, // è il github del profilo
 					mcc: '5734', // Codice categoria merceologica (es. software, servizi, etc.) - Stripe non lo chiederà
 					product_description: 'Piattaforma di donazioni per progetti open source',
-
 				},
 
 				// Se hai già dati anagrafici, passali qui (Stripe li verificherà ma l'utente non deve riscriverli)
