@@ -48,6 +48,22 @@ The application is assembled in `src/config.ts` and started via `src/start.ts`.
 - **Repositories**: Registered as services in `src/config.ts` under the `typeorm` configuration.
 - **Access**: Do NOT use TypeORM repositories directly in controllers. Use the `Bus` with `typeorm.Actions` (FIND, SAVE, DELETE, etc.).
 
+## Payments (Stripe)
+- **Service**: `src/services/stripe/StripeService.ts` handles all Stripe interactions.
+- **Library**: Uses the official `stripe` Node.js library.
+- **Architecture**:
+  - Extends `ServiceBase` and exposes functionality via `executablesMap`.
+  - Accessed by other services via the `Bus` using actions defined in `src/services/stripe/types.ts`.
+- **Key Features**:
+  - **Customer Management**: Creates or retrieves Stripe customers, linking them to internal Account IDs via metadata.
+  - **Payment Methods**: Handles listing, retrieving, and removing payment methods (cards).
+  - **Setup Intents**: Creates setup intents for saving payment methods for future use.
+  - **Connect Accounts**: Manages "Standard" Stripe Connect accounts for authors (sellers), including account creation and onboarding link generation.
+  - **Payment Execution**:
+    - Clones payment methods from the platform customer to the connected account.
+    - Creates `PaymentIntent` on the connected account (`stripeAccount: destination`).
+    - Supports `off_session` payments.
+
 ## Testing
 - **Type**: Integration tests are preferred over unit tests for routes.
 - **Tooling**: Jest + Axios.

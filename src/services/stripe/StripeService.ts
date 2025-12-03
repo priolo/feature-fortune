@@ -135,7 +135,6 @@ class StripeService extends ServiceBase {
 
 				// Usiamo il metodo appena clonato
 				payment_method: clonedPaymentMethod.id,
-				setup_future_usage: "off_session",
 
 				// IMPORTANTE: NON specificare il parametro 'customer'.
 				// Non collegando questo pagamento a un Customer ID dell'account venditore,

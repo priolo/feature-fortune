@@ -2,6 +2,7 @@ import fs from "fs";
 import { ENV_TYPE, envInit } from "../types/env.js";
 import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
+import { DataSourceOptions } from "typeorm";
 
 
 
@@ -11,7 +12,7 @@ const __dirname = dirname(__filename);
 
 
 // in base ai settaggi dell'env imposto la connessione al DB
-export const getDBConnectionConfig = (noLog: boolean = false) => {
+export const getDBConnectionConfig = (noLog: boolean = false): DataSourceOptions => {
 
 	let config: any = null
 
@@ -27,7 +28,9 @@ export const getDBConnectionConfig = (noLog: boolean = false) => {
 
 	return {
 		...config,
-		synchronize: true,//process.env.NODE_ENV != ENV_TYPE.PROD, // in prod mai
+		synchronize: false, // process.env.NODE_ENV != ENV_TYPE.PROD, // in prod mai
+		//migrations: ["src/migration/*.ts"], // Dove leggere le migration
+		//migrationsTableName: "migrations",  // Tabella nel DB che tiene traccia della storia
 		logging: !noLog //&& process.env.NODE_ENV != ENV_TYPE.PROD, // in prod mai
 	}
 
