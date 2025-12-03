@@ -79,7 +79,7 @@ export class AjaxService {
 		} catch (e) {
 			if (options.noError) return
 			if (e.code != 20) {
-				dialogSo.dialogOpen({ type: DIALOG_TYPE.ERROR, text: e})
+				dialogSo.dialogOpen({ type: DIALOG_TYPE.ERROR, text: e })
 			}
 			throw e
 		} finally {
@@ -100,11 +100,12 @@ export class AjaxService {
 		// MANAGE HTTP ERRORS
 		const status = response.status
 		if (status >= 400 && !options.noError) {
-			const error = ret?.error as string ?? jsonError ?? `${status} generic`
-			dialogSo.dialogOpen({ type: DIALOG_TYPE.ERROR, text: error})
+			const error = ret?.error ?? jsonError
+			const textMsg = !error ? "generic error" : typeof error === 'string' ? error : error.doc_url ?? error.code ?? JSON.stringify(error)
+			dialogSo.dialogOpen({ type: DIALOG_TYPE.ERROR, text: textMsg })
 			throw error
 		}
-		
+
 		return ret
 	}
 }

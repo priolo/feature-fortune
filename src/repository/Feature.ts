@@ -116,6 +116,12 @@ export class FeatureRepo extends AccountAsset {
 	description: string;
 
 	/**
+	 * link to the feature spec (e.g. issue, doc, etc.)
+	 */
+	@Column({ type: 'text' })
+	link: string;
+
+	/**
 	 * current status of the feature
 	 */
 	@Column({ type: 'varchar', default: FEATURE_STATUS.PROPOSED })

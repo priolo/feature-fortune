@@ -33,7 +33,7 @@ class StripeService extends ServiceBase {
 
 			[Actions.PAYMENT_EXECUTE]: (data: PaymentIntentData) => this.executePayment(data),
 
-			[Actions.ACCOUNT_CREATE]: (data: { email: string, accountId: string }) => this.accountCreate(data),
+			[Actions.ACCOUNT_CREATE]: (data: { email: string, accountId: string }) => this.createAccount(data),
 			[Actions.ACCOUNT_URL]: (stripeAccountId: string) => this.accountUrl(stripeAccountId),
 		}
 	}
@@ -195,7 +195,7 @@ class StripeService extends ServiceBase {
 	/**
 	 * Create a express account for AUTHOR
 	 */
-	async accountCreate(data: CreateAccountParams): Promise<Stripe.Account> {
+	async createAccount(data: CreateAccountParams): Promise<Stripe.Account> {
 		const { name, email, accountId, url, country = 'IT' } = data
 
 		// Separiamo nome e cognome per facilitare l'onboarding su Stripe

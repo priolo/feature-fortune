@@ -9,6 +9,7 @@ import FeatureListPag from './pages/feature/list/ListPag';
 import LoginPag from './pages/login/LoginPag';
 import MessagePag from './pages/message/MessagePag';
 import themeSo from './stores/layout/theme';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 
 
@@ -21,19 +22,21 @@ function App() {
 	return <ThemeProvider theme={themeSo.state.current}>
 		<CssBaseline />
 
-		<Router>
-			<Routes>
-				<Route path="/app" element={<Layout />}>
+		<ErrorBoundary>
+			<Router>
+				<Routes>
+					<Route path="/app" element={<Layout />}>
 
-					<Route index element={<FeatureListPag />} />
-					<Route path="account" element={<AccountPag />} />
-					<Route path="login" element={<LoginPag />} />
-					<Route path="messages" element={<MessagePag />} />
-					<Route path="feature/:id" element={<FeatureDetailPag />} />
+						<Route index element={<FeatureListPag />} />
+						<Route path="account" element={<AccountPag />} />
+						<Route path="login" element={<LoginPag />} />
+						<Route path="messages" element={<MessagePag />} />
+						<Route path="feature/:id" element={<FeatureDetailPag />} />
 
-				</Route>
-			</Routes>
-		</Router>
+					</Route>
+				</Routes>
+			</Router>
+		</ErrorBoundary>
 
 		<MsgBox />
 

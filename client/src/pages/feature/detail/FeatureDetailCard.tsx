@@ -1,11 +1,9 @@
 import Card from '@/components/Card';
 import ReadOnlyTextField from '@/components/ReadOnlyTextField';
-import Paragraph from '@/layout/Paragraph';
-import { amountFunded } from '@/stores/funding/utils';
 import { Feature } from '@/types/feature/Feature';
 import { FeaturedPlayList } from '@mui/icons-material';
-import { Box, SxProps, Typography } from '@mui/material';
-import React, { useMemo } from 'react';
+import { Typography } from '@mui/material';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 
@@ -35,6 +33,7 @@ const FeatureDetailCard: React.FC<Props> = ({
 	// RENDER
 	const title = feature?.title ?? '';
 	const description = feature?.description ?? '';
+	const link = feature?.link ?? '';
 
 	return (
 
@@ -43,7 +42,6 @@ const FeatureDetailCard: React.FC<Props> = ({
 			icon={<FeaturedPlayList />}
 		>
 
-			{/* <Paragraph title={t('cards.FeatureDetailCard.title_field.title')}> */}
 			<Typography variant='caption' color="textSecondary">
 				{t('cards.FeatureDetailCard.title_field.title')}
 			</Typography>
@@ -53,11 +51,7 @@ const FeatureDetailCard: React.FC<Props> = ({
 				onChange={(e) => handlePropChange({ title: e.target.value })}
 				placeholder={t('cards.FeatureDetailCard.title_field.placeholder')}
 			/>
-			{/* </Paragraph> */}
 
-			{/* <Paragraph sx={{ alignItems: 'start' }} sxLabel={{ mt: ".7rem" }}
-				title={t('cards.FeatureDetailCard.description.title')}
-			> */}
 			<Typography variant='caption' color="textSecondary">
 				{t('cards.FeatureDetailCard.description.title')}
 			</Typography>
@@ -67,7 +61,16 @@ const FeatureDetailCard: React.FC<Props> = ({
 				onChange={(e) => handlePropChange({ description: e.target.value })}
 				placeholder={t("cards.FeatureDetailCard.description.placeholder")}
 			/>
-			{/* </Paragraph> */}
+
+			<Typography variant='caption' color="textSecondary">
+				{t('cards.FeatureDetailCard.link.title')}
+			</Typography>
+			<ReadOnlyTextField fullWidth
+				readOnly={readOnly}
+				value={link}
+				onChange={(e) => handlePropChange({ link: e.target.value })}
+				placeholder={t("cards.FeatureDetailCard.link.placeholder")}
+			/>
 
 		</Card>
 	);

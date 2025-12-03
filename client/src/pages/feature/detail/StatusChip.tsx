@@ -1,5 +1,5 @@
 import { FEATURE_STATUS } from '@/types/feature/Feature';
-import { Build, Close, DesignServices, Done, WaterDrop } from '@mui/icons-material';
+import { AttachMoney, Build, Close, DesignServices, Done, WaterDrop } from '@mui/icons-material';
 import { Chip, SxProps, Tooltip } from '@mui/material';
 import React, { useMemo } from 'react';
 
@@ -62,8 +62,15 @@ export const FeatureStatusItems = [
         label: 'Completed',
         value: FEATURE_STATUS.COMPLETED,
         subtitle: 'AUTHOOR confirms the feature is SUCCESSFUL',
-        color: 'secondary',
+        color: 'success',
         icon: Done
+    },
+    {
+        label: 'Paid',
+        value: FEATURE_STATUS.PAID,
+        subtitle: 'AUTHOR confirms the feature is PAID',
+        color: 'secondary',
+        icon: AttachMoney
     },
     {
         label: 'Cancelled',

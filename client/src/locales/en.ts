@@ -304,7 +304,11 @@ const en = {
 			description: {
 				title: "DESCRIPTION",
 				placeholder: "Enter a complete description of the feature..."
-			}
+			},
+			link: {
+				title: "LINK",
+				placeholder: "Enter a link related to the feature (e.g., issues, discussion, etc.)",
+			},
 		}
 	},
 	overview: {

@@ -1,0 +1,1 @@
+TRUNCATE TABLE accounts, comments, features, fundings, messages, messages_content
