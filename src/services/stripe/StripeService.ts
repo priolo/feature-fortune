@@ -5,7 +5,9 @@ import { paymentCheck } from "./utils.js";
 
 
 
-const stripe = new Stripe(process.env.STRIPE_API_KEY!);
+const stripe = new Stripe(process.env.STRIPE_API_KEY!, {
+	apiVersion: '2025-10-29.clover',
+});
 
 class StripeService extends ServiceBase {
 
@@ -52,8 +54,13 @@ class StripeService extends ServiceBase {
 				if (!customer.deleted) {
 					return customer as Stripe.Customer;
 				}
-			} catch (error) {
-				console.warn("Customer not found, creating new one");
+			} catch (error: any) {
+				if (error.code === 'resource_missing') {
+					console.warn(`Customer ${stripeCustomerId} not found in Stripe, creating new one.`);
+				} else {
+					console.error("Error retrieving customer:", error);
+					throw error;
+				}
 			}
 		}
 
@@ -70,6 +77,7 @@ class StripeService extends ServiceBase {
 		return await stripe.setupIntents.create({
 			customer: customerId,
 			payment_method_types: ["card"],
+			usage: "off_session",
 		});
 	}
 
@@ -161,12 +169,12 @@ class StripeService extends ServiceBase {
 					// Stripe toglierà a data.destination:
 					// 1. I 10€ che vanno a te
 					// 2. Le commissioni Stripe (es. 1.4% + 0.25€)
-					//application_fee_amount: 500, // La tua commissione
+					application_fee_amount: data.applicationFee, // La tua commissione
 
 					// Metti il nome del progetto specifico per questa donazione.
 					// Deve sempre contenere caratteri latini e max 22 char.
 					//statement_descriptor: formatDescriptor('NOME PROGETTO'),
-					statement_descriptor_suffix: formatSuffix(data.projectName || 'DONAZIONE'),
+					statement_descriptor_suffix: formatSuffix(data.projectName ?? 'DONAZIONE'),
 				},
 				{
 					stripeAccount: data.destination, // Eseguito sul conto del venditore
@@ -188,46 +196,48 @@ class StripeService extends ServiceBase {
 	 * Create a express account for AUTHOR
 	 */
 	async accountCreate(data: CreateAccountParams): Promise<Stripe.Account> {
-		const { name, email, accountId, url } = data
-		try {
-			const account = await stripe.accounts.create({
-				type: "standard",
+		const { name, email, accountId, url, country = 'IT' } = data
 
+		// Separiamo nome e cognome per facilitare l'onboarding su Stripe
+		const nameParts = name ? name.split(' ') : [];
+		const firstName = nameParts[0];
+		const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : undefined;
+
+		const account = await stripe.accounts.create({
+			type: "standard",
+
+			email: email,
+			business_type: "individual",
+			country: country,
+
+			// Precompili i dati del profilo business
+			business_profile: {
+				// Usa il nome dell'autore come nome business, così l'utente si riconosce
+				name: name ?? undefined,
+				url: url, // è il github del profilo
+				mcc: '5734', // Codice categoria merceologica: Computer Software Stores
+				product_description: 'Sviluppo di funzionalità software open source su richiesta',
+			},
+
+			// Passiamo i dati anagrafici per saltare passaggi nell'onboarding
+			individual: {
+				first_name: firstName,
+				last_name: lastName,
 				email: email,
-				business_type: "individual",
-				country: 'IT',
+			},
 
-				// Precompili i dati del profilo business
-				business_profile: {
-					name: process.env.STRIPE_CUSTOMER_BUSINESS_NAME ?? "PUCE",
-					url: url, // è il github del profilo
-					mcc: '5734', // Codice categoria merceologica (es. software, servizi, etc.) - Stripe non lo chiederà
-					product_description: 'Piattaforma di donazioni per progetti open source',
-				},
+			capabilities: {
+				card_payments: { requested: true },
+				transfers: { requested: true },
+			},
 
-				// Se hai già dati anagrafici, passali qui (Stripe li verificherà ma l'utente non deve riscriverli)
-				individual: {
-					first_name: name,
-					//last_name: 'Rossi',
-					email: email,
-					//phone: '+393331234567',
-					id_number: "",
-				},
+			metadata: {
+				accountId: accountId,
+				platform: "FeatureFortune"
+			}
+		})
 
-				capabilities: {
-					card_payments: { requested: true },
-					transfers: { requested: true },
-				},
-
-				metadata: {
-					accountId: accountId
-				}
-			})
-			return account
-		} catch (error) {
-			console.error("Error creating express account:", error);
-			throw error;
-		}
+		return account
 	}
 
 	/**
@@ -259,6 +269,7 @@ export type CreateAccountParams = {
 	email?: string,
 	accountId?: string,
 	url?: string,
+	country?: string,
 }
 
 

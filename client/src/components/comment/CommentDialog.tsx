@@ -50,7 +50,7 @@ const CommentDialog: FunctionComponent<Partial<Props>> = ({
 			<DialogTitle>COMMENT</DialogTitle>
 
 			<DialogContent>
-				<TextField multiline rows={4} fullWidth
+				<TextField multiline rows={4} fullWidth autoFocus
 					value={message || ''}
 					onChange={(e) => setMessage(e.target.value)}
 					placeholder="Add a message"

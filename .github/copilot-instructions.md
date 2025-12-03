@@ -64,6 +64,19 @@ The application is assembled in `src/config.ts` and started via `src/start.ts`.
     - Creates `PaymentIntent` on the connected account (`stripeAccount: destination`).
     - Supports `off_session` payments.
 
+## Entities
+
+CUSTOMER: è un account Stripe che ha dato la sua carta di credito e provvede al finanziamento delle FEATURE grazie ai FUNDING
+
+ACCOUNT DIRECT: è un account Stripe collegato (Connect Standard) che riceve i pagamenti dai 
+CUSTOMER per le FEATURE che ha pubblicato
+
+FEATURE: rappresenta un REPO-GITHUB e una funzionalità software. E' pubblicata dall' AUTHOR. Questa puo' essere finanziata dai CUSTOMER tramite i FUNDING
+
+AUTHOR: è l'utente che pubblica una FEATURE
+
+FUNDING: è l'entità che rappresenta il finanziamento di una FEATURE da parte di un CUSTOMER, include l'importo, lo stato (completato, fallito, in attesa), la data, ecc.
+
 ## Testing
 - **Type**: Integration tests are preferred over unit tests for routes.
 - **Tooling**: Jest + Axios.

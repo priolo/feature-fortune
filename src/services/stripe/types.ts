@@ -48,6 +48,8 @@ export interface PaymentIntentData {
 	receiptEmail?: string;
 	/** Nome del progetto finanziato che appare come descrizione nell'addebito */
 	projectName?: string;
+	/** Commissione della piattaforma in centesimi (opzionale) */
+	applicationFee?: number;
 }
 
 
