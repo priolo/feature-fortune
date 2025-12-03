@@ -106,19 +106,19 @@ export class FeatureRepo extends AccountAsset {
 	/**
 	 * title of the feature
 	 */
-	@Column({ type: 'varchar' })
+	@Column({ type: 'varchar', nullable: true })
 	title: string;
 
 	/**
 	 * description of the feature
 	 */
-	@Column({ type: 'text' })
+	@Column({ type: 'text', nullable: true })
 	description: string;
 
 	/**
 	 * link to the feature spec (e.g. issue, doc, etc.)
 	 */
-	@Column({ type: 'text' })
+	@Column({ type: 'text', nullable: true })
 	link: string;
 
 	/**
