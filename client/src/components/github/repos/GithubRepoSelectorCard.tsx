@@ -5,7 +5,7 @@ import GithubReposFinderDialog from '@/components/github/repos/GithubReposFinder
 import MessageCmp from '@/components/MessageCmp';
 import { GitHubRepository } from '@/types/github/GitHub';
 import { GitHub } from '@mui/icons-material';
-import { Box, Button, ListItemButton } from '@mui/material';
+import { Box, Button, CircularProgress, ListItemButton } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -30,6 +30,7 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
     const { t } = useTranslation();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [repo, setRepo] = useState<GitHubRepository>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (!githubRepoId) {
@@ -38,8 +39,13 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
         }
         if (repo?.id === githubRepoId) return
         const load = async () => {
-            const repo = await gitHubApi.getRepository(githubRepoId)
-            setRepo(repo)
+            setIsLoading(true)
+            try {
+                const repo = await gitHubApi.getRepository(githubRepoId)
+                setRepo(repo)
+            } finally {
+                setIsLoading(false)
+            }
         }
         load();
     }, [githubRepoId])
@@ -80,10 +86,13 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
             </MessageCmp>
 
 
-            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input" }}
+            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input", justifyContent: 'center' }}
                 onClick={!readOnly ? handleFindRepoClick : undefined}
             >
-                <GithubRepoViewer repository={repo} />
+                {isLoading
+                    ? <CircularProgress sx={{ m: 1 }} />
+                    : <GithubRepoViewer repository={repo} />
+                }
             </ListItemButton>
 
             {!readOnly && (

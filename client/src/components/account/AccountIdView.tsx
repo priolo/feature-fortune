@@ -1,6 +1,7 @@
 import accountApi from '@/api/account';
 import AccountViewer from '@/components/account/AccountViewer';
 import { Account } from '@/types/Account';
+import { CircularProgress } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 
@@ -21,6 +22,7 @@ const AccountIdView: React.FC<Props> = ({
 
     // HOOKS
     const [account, setAccount] = useState<Account>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (!accountId) {
@@ -29,9 +31,14 @@ const AccountIdView: React.FC<Props> = ({
         }
         if (account?.id === accountId) return
         const load = async () => {
-            const account = await accountApi.get(accountId)
-            setAccount(account)
-            onLoad?.(account)
+            setIsLoading(true)
+            try {
+                const account = await accountApi.get(accountId)
+                setAccount(account)
+                onLoad?.(account)
+            } finally {
+                setIsLoading(false)
+            }
         }
         load();
     }, [accountId])
@@ -41,6 +48,8 @@ const AccountIdView: React.FC<Props> = ({
 
 
     // RENDER
+
+    if (isLoading) return <CircularProgress />
 
     return <AccountViewer account={account} />
 };

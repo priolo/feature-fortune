@@ -5,7 +5,7 @@ import GithubUsersFinderDialog from '@/components/github/users/GithubUsersFinder
 import MessageCmp from '@/components/MessageCmp';
 import { GitHubUser } from '@/types/github/GitHub';
 import { GitHub } from '@mui/icons-material';
-import { Box, Button, ListItemButton } from '@mui/material';
+import { Box, Button, CircularProgress, ListItemButton } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -32,6 +32,7 @@ const GithubUserSelectorCard: React.FC<Props> = ({
     // HOOKS
     const [dialogOpen, setDialogOpen] = useState(false);
     const [user, setUser] = useState<GitHubUser>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (!githubOwnerId) {
@@ -40,8 +41,13 @@ const GithubUserSelectorCard: React.FC<Props> = ({
         }
         if (user?.id === githubOwnerId) return
         const load = async () => {
-            const owner = await gitHubApi.getUserById(githubOwnerId)
-            setUser(owner)
+            setIsLoading(true)
+            try {
+                const owner = await gitHubApi.getUserById(githubOwnerId)
+                setUser(owner)
+            } finally {
+                setIsLoading(false)
+            }
         }
         load();
     }, [githubOwnerId])
@@ -82,10 +88,13 @@ const GithubUserSelectorCard: React.FC<Props> = ({
                 <Trans i18nKey={`cards.GithubUserSelectorCard.status.${status.status}.desc`} />
             </MessageCmp>
 
-            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input" }} 
+            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input", justifyContent: 'center' }} 
                 onClick={!readOnly ? handleSelectUserClick : undefined}
             >
-                <GithubUserViewer user={user} />
+                {isLoading
+                    ? <CircularProgress />
+                    : <GithubUserViewer user={user} />
+                }
             </ListItemButton>
 
             {!readOnly && <Box sx={sxActionCard}>

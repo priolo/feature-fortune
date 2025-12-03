@@ -1,2 +1,2 @@
-loading sulla card tipo il repo github
 
+icona e titolo della pagina
