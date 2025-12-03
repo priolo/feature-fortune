@@ -133,6 +133,10 @@ class FeaturePaymentCrono extends CronoService {
 			customer: funding.account.stripeCustomerId,
 			paymentMethod: funding.account.stripePaymentMethodId,
 			destination: dev.stripeAccountId,
+			fundingId: funding.id, 
+			receiptEmail: funding.account.email,
+			/** [II] TO DO */
+			//projectName: 
 		}
 		let paymentIntent: any
 		try {

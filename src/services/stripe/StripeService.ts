@@ -113,7 +113,7 @@ class StripeService extends ServiceBase {
 		if (!data.customer) throw new Error(`Funding ${data} has no Stripe Customer ID`)
 		if (!data.paymentMethod) throw new Error(`Funding ${data} has no Stripe Payment Method ID`)
 		const error = paymentCheck(data.amount, data.currency)
-		if ( !!error ) throw new Error(error)
+		if (!!error) throw new Error(error)
 
 		// Creiamo una copia del metodo di pagamento sull'account del venditore
 		const clonedPaymentMethod = await stripe.paymentMethods.create(
@@ -128,72 +128,59 @@ class StripeService extends ServiceBase {
 				stripeAccount: data.destination,
 			}
 		);
-		return await stripe.paymentIntents.create(
-			{
-				amount: data.amount,
-				currency: data.currency,
 
-				// Usiamo il metodo appena clonato
-				payment_method: clonedPaymentMethod.id,
+		try {
+			return await stripe.paymentIntents.create(
+				{
+					amount: data.amount,
+					currency: data.currency,
 
-				// IMPORTANTE: NON specificare il parametro 'customer'.
-				// Non collegando questo pagamento a un Customer ID dell'account venditore,
-				// il metodo di pagamento non viene salvato nel "portafoglio" del venditore.
-				// Risulterà come un pagamento "Guest" (Ospite).
+					// Usiamo il metodo appena clonato
+					payment_method: clonedPaymentMethod.id,
 
-				off_session: true,
-				confirm: true,
+					// IMPORTANTE: NON specificare il parametro 'customer'.
+					// Non collegando questo pagamento a un Customer ID dell'account venditore,
+					// il metodo di pagamento non viene salvato nel "portafoglio" del venditore.
+					// Risulterà come un pagamento "Guest" (Ospite).
 
-				// Qui definisci SOLO il tuo guadagno netto.
-				// Esempio: Se amount è 100€ e tu vuoi 10€, metti 1000.
-				// Stripe toglierà a data.destination:
-				// 1. I 10€ che vanno a te
-				// 2. Le commissioni Stripe (es. 1.4% + 0.25€)
-				//application_fee_amount: 500, // La tua commissione
+					off_session: true,
+					confirm: true,
 
-				// Metti il nome del progetto specifico per questa donazione.
-				// Deve sempre contenere caratteri latini e max 22 char.
-				//statement_descriptor: formatDescriptor('NOME PROGETTO'),
-				statement_descriptor_suffix: 'NOME PROGETTO GITHUB',
-			},
-			{
-				stripeAccount: data.destination, // Eseguito sul conto del venditore
-			}
-		);
-		return await stripe.paymentIntents.create(
+					// Metadata per il venditore
+					metadata: {
+						platform_customer_id: data.customer,
+						funding_id: data.fundingId || 'N/A',
+						original_pm_id: data.paymentMethod
+					},
 
-			{
-				amount: data.amount,
-				currency: data.currency,
-				customer: data.customer,
-				payment_method: data.paymentMethod,
-				off_session: true,
-				confirm: true,
-			},
-			{
-				// definisce che la transazione viene eseguita per conto di un ACCOUNT CONNECTED
-				stripeAccount: data.destination,
-			}
+					// Invia ricevuta al cliente
+					receipt_email: data.receiptEmail,
 
-		)
-		return await stripe.paymentIntents.create(
+					// Qui definisci SOLO il tuo guadagno netto.
+					// Esempio: Se amount è 100€ e tu vuoi 10€, metti 1000.
+					// Stripe toglierà a data.destination:
+					// 1. I 10€ che vanno a te
+					// 2. Le commissioni Stripe (es. 1.4% + 0.25€)
+					//application_fee_amount: 500, // La tua commissione
 
-			{
-				amount: data.amount,
-				currency: data.currency,
-				customer: data.customer,
-				payment_method: data.paymentMethod,
-				off_session: true,
-				confirm: true,
-				transfer_data: {
-					destination: data.destination,
+					// Metti il nome del progetto specifico per questa donazione.
+					// Deve sempre contenere caratteri latini e max 22 char.
+					//statement_descriptor: formatDescriptor('NOME PROGETTO'),
+					statement_descriptor_suffix: formatSuffix(data.projectName || 'DONAZIONE'),
 				},
-				// Questo sposta la responsabilità legale e dei chargeback sul venditore,
-				// anche se tecnicamente il pagamento passa dalla piattaforma.
-				on_behalf_of: data.destination,
-			},
-
-		)
+				{
+					stripeAccount: data.destination, // Eseguito sul conto del venditore
+					// Idempotenza: Se ri-esegui questa funzione con lo stesso fundingId, Stripe non addebiterà due volte
+					idempotencyKey: data.fundingId ? `fund_${data.fundingId}` : undefined
+				}
+			);
+		} catch (e: any) {
+			// Gestione specifica errori SCA
+			if (e.code === 'authentication_required') {
+				console.error("Il pagamento richiede autenticazione 3D Secure (SCA).");
+			}
+			throw e;
+		}
 	}
 
 
@@ -275,17 +262,12 @@ export type CreateAccountParams = {
 }
 
 
-// Funzione per formattare correttamente la voce
-function formatDescriptor(projectName: string) {
-	// Prefisso es: "PUCE "
-	const prefix = `${process.env.STRIPE_PLATFORM_NAME}* `;
-
-	// Calcola quanto spazio rimane (22 è il limite imposto da Stripe)
-	const remainingChars = 22 - prefix.length;
-
-	// Pulisci il nome del progetto (via caratteri strani) e taglialo
-	const cleanProjectName = projectName.replace(/[^a-zA-Z0-9 ]/g, "").toUpperCase();
-	const truncatedProjectName = cleanProjectName.substring(0, remainingChars);
-
-	return `${prefix}${truncatedProjectName}`;
+// Funzione per formattare correttamente il suffisso
+function formatSuffix(text: string): string {
+	// Rimuovi caratteri non permessi (tieni solo lettere, numeri e spazi)
+	let clean = text.replace(/[^a-zA-Z0-9 ]/g, "");
+	// Rimuovi spazi doppi
+	clean = clean.replace(/\s+/g, " ").trim();
+	// Taglia a max 18 caratteri (lasciando spazio per il prefisso se necessario)
+	return clean.substring(0, 18).toUpperCase();
 }

@@ -32,11 +32,22 @@ export enum Actions {
  * Data needed for execute a payment
  */
 export interface PaymentIntentData {
+	/** somma da trasferire in centesimi: 1030 "eur"= 10.30 euro */
 	amount: number;
+	/** valuta: */
 	currency: string;
+	/** id dell'CUSTOMER-STRIPE che paga */
 	customer: string;
+	/** id del PaymentMethod che verra' clonato */
 	paymentMethod: string;
+	/** id dell'ACCOUNT-STRIPE collegato alla piattaforma che riceve il direct payment */
 	destination: string;
+	/** permette di effettuare il pagamento una sola volta */
+	fundingId?: string;
+	/** email del CUSTOMER in maniera che Stripe lo avverta quando c'e' una transazione */
+	receiptEmail?: string;
+	/** Nome del progetto finanziato che appare come descrizione nell'addebito */
+	projectName?: string;
 }
 
 
