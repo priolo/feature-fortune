@@ -20,7 +20,7 @@ const GithubUserViewer: React.FC<Props> = ({
     // RENDER
 
     if (!user) return <MessageBanner>
-        No user selected
+        NO USER SELECTED
     </MessageBanner>
 
     return (

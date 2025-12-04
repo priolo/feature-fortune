@@ -15,7 +15,6 @@ import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import GithubRepoSelectorCard from '../../../components/github/repos/GithubRepoSelectorCard';
-import GithubUserSelectorCard from '../../../components/github/users/GithubUserSelectorCard';
 import FeatureDetailOverview from './Overview';
 import FeatureDetailRightMenu from './RightMenu';
 

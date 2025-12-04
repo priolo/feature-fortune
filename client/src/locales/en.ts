@@ -306,7 +306,7 @@ const en = {
 				placeholder: "Enter a complete description of the feature..."
 			},
 			link: {
-				title: "LINK",
+				title: "LINK (e.g. issue GitHub)",
 				placeholder: "Enter a link related to the feature (e.g., issues, discussion, etc.)",
 			},
 		}
@@ -411,7 +411,7 @@ const en = {
 	viewers: {
 		githubRepo: {
 			no_description: "No description available",
-			empty: "No repository selected"
+			empty: "NO REPOSITORY SELECTED"
 		}
 	}
 }

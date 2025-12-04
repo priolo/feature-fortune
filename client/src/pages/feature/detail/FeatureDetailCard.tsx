@@ -1,5 +1,6 @@
 import Card from '@/components/Card';
 import ReadOnlyTextField from '@/components/ReadOnlyTextField';
+import LinkField from './LinkField';
 import { Feature } from '@/types/feature/Feature';
 import { FeaturedPlayList } from '@mui/icons-material';
 import { Typography } from '@mui/material';
@@ -17,7 +18,7 @@ interface Props {
 const FeatureDetailCard: React.FC<Props> = ({
 	feature,
 	readOnly,
-	onChange: onChange,
+	onChange,
 }) => {
 
 	// HOOKS
@@ -34,7 +35,7 @@ const FeatureDetailCard: React.FC<Props> = ({
 	const title = feature?.title ?? '';
 	const description = feature?.description ?? '';
 	const link = feature?.link ?? '';
-
+readOnly = true
 	return (
 
 		<Card id="feature-detail-card"
@@ -65,10 +66,10 @@ const FeatureDetailCard: React.FC<Props> = ({
 			<Typography variant='caption' color="textSecondary">
 				{t('cards.FeatureDetailCard.link.title')}
 			</Typography>
-			<ReadOnlyTextField fullWidth
+			<LinkField
 				readOnly={readOnly}
 				value={link}
-				onChange={(e) => handlePropChange({ link: e.target.value })}
+				onChange={(val) => handlePropChange({ link: val })}
 				placeholder={t("cards.FeatureDetailCard.link.placeholder")}
 			/>
 

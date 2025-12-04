@@ -3,6 +3,7 @@ import { Box, SxProps, Typography } from '@mui/material';
 import React from 'react';
 
 interface MessageBannerProps {
+    align?: 'left' | 'center' | 'right';
     icon?: React.ReactNode;
     children?: React.ReactNode;
 }
@@ -12,6 +13,7 @@ interface MessageBannerProps {
  * For example: notify that a list is empty or no element is selected
  */
 const MessageBanner: React.FC<MessageBannerProps> = ({
+    align = 'left',
     icon = <InfoOutlined color="action" />,
     children,
 }) => {

@@ -27,7 +27,7 @@ const GithubRepoViewer: React.FC<Props> = ({
     // RENDER
 
     if (!repository) return <MessageBanner>
-        {t('viewers.githubRepo.empty', 'No repository selected')}
+        {t('viewers.githubRepo.empty', 'NO REPOSITORY SELECTED')}
     </MessageBanner>;
 
     const description = repository.description?.slice(0, 200) ?? t('viewers.githubRepo.no_description');
