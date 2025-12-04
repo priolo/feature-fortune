@@ -68,7 +68,7 @@ const setup = {
 		},
 
 		async fetchUnreadCount(_: void, store?: MessageListStore) {
-			const { count } = await messageApi.getUnreadCount({ noError: true, noBusy: false })
+			const { count } = await messageApi.getUnreadCount({ noError: true, noBusy: true })
 			store.setUnreadCount(count)
 		},
 

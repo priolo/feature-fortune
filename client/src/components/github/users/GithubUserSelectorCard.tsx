@@ -88,7 +88,7 @@ const GithubUserSelectorCard: React.FC<Props> = ({
                 <Trans i18nKey={`cards.GithubUserSelectorCard.status.${status.status}.desc`} />
             </MessageCmp>
 
-            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input", justifyContent: 'center' }} 
+            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input", justifyContent: 'center', p:2 }} 
                 onClick={!readOnly ? handleSelectUserClick : undefined}
             >
                 {isLoading

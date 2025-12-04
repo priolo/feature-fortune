@@ -64,7 +64,7 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 				{header}
 			</Box>
 
-			<Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 1 }}>
+			<Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 2 }}>
 				{logged && <MessagesCmp />}
 				<UserCmp />
 			</Box>

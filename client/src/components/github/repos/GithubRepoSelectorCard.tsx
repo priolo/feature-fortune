@@ -86,7 +86,7 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
             </MessageCmp>
 
 
-            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input", justifyContent: 'center' }}
+            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input", justifyContent: 'center', p:2 }}
                 onClick={!readOnly ? handleFindRepoClick : undefined}
             >
                 {isLoading

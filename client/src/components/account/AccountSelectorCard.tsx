@@ -1,5 +1,5 @@
 import AccountFinderDialog from '@/components/account/AccountFinderDialog';
-import MessageCmp, { MessageVariant } from '@/components/MessageCmp';
+import MessageCmp from '@/components/MessageCmp';
 import { Account } from '@/types/Account';
 import { Keyboard } from '@mui/icons-material';
 import { Box, Button, ListItemButton } from '@mui/material';
@@ -85,7 +85,7 @@ const AccountSelectorCard: React.FC<Props> = ({
                 {<Trans i18nKey={`cards.${variant}.status.${status.status}.desc`} />}
             </MessageCmp>
 
-            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input" }}
+            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input", justifyContent: 'center', p:2 }}
                 onClick={!readOnly ? handleSelectClick : undefined}
             >
                 <AccountIdView accountId={accountId}
