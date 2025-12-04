@@ -35,7 +35,7 @@ const FeatureDetailCard: React.FC<Props> = ({
 	const title = feature?.title ?? '';
 	const description = feature?.description ?? '';
 	const link = feature?.link ?? '';
-readOnly = true
+
 	return (
 
 		<Card id="feature-detail-card"

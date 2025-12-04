@@ -1,5 +1,5 @@
 import { Funding, FUNDING_STATUS } from "@/types/Funding";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Box, Typography, Tooltip } from "@mui/material";
 import { FunctionComponent, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import CurrencyField from "../CurrencyField";
@@ -56,9 +56,17 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 	// RENDER 
 	if (!funding) return null
 
+	const error = !funding.amount || funding.amount < Number(import.meta.env.VITE_FUNDING_MIN_AMOUNT ?? 100)
+		? "amount_too_low"
+		: funding.amount > Number(import.meta.env.VITE_FUNDING_MAX_AMOUNT ?? 10000)
+			? "amount_too_high"
+			: null;
+	const bttOkEnabled = !error;
+	const tooltip = error
+
 	return (
 
-		<Dialog 
+		<Dialog
 			open={isOpen}
 			onClose={handleClose}
 		>
@@ -98,9 +106,12 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 					onClick={handleClose}
 				>CANCEL</Button>
 
-				<Button variant="contained" color="primary"
-					onClick={handleOk}
-				>OK</Button>
+				<Tooltip title={tooltip || ''}><div>
+					<Button variant="contained" color="primary"
+						onClick={handleOk}
+						disabled={!bttOkEnabled}
+					>OK</Button>
+				</div></Tooltip>
 
 			</DialogActions>
 		</Dialog>

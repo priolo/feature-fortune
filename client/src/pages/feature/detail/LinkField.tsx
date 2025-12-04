@@ -1,7 +1,7 @@
 import ReadOnlyTextField from '@/components/ReadOnlyTextField';
 import { OpenInNew } from '@mui/icons-material';
 import { IconButton, InputAdornment, Link, TextField, Typography } from '@mui/material';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 
 
@@ -18,11 +18,14 @@ const LinkField: React.FC<Props> = ({
 	onChange,
 	placeholder,
 }) => {
-	const href = value && !/^https?:\/\//i.test(value) ? `https://${value}` : value;
+	
+
+	// RENDER
+	const href = useMemo(() => value && !/^https?:\/\//i.test(value) ? `https://${value}` : value, [value]);
 
 	return (
 		<>
-			{readOnly && value ? (
+			{readOnly ? (
 				<Typography
 					variant="body1"
 					sx={{ p: '8.5px 14px' }}

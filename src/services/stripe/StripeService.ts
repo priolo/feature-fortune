@@ -34,7 +34,8 @@ class StripeService extends ServiceBase {
 			[Actions.PAYMENT_EXECUTE]: (data: PaymentIntentData) => this.executePayment(data),
 
 			[Actions.ACCOUNT_CREATE]: (data: { email: string, accountId: string }) => this.createAccount(data),
-			[Actions.ACCOUNT_URL]: (stripeAccountId: string) => this.accountUrl(stripeAccountId),
+			[Actions.ACCOUNT_URL]: (stripeAccountId: string) => this.getAccountUrl(stripeAccountId),
+			[Actions.ACCOUNT_GET]: (stripeAccountId: string) => this.getAccount(stripeAccountId),
 		}
 	}
 
@@ -233,7 +234,7 @@ class StripeService extends ServiceBase {
 
 			metadata: {
 				accountId: accountId,
-				platform: "FeatureFortune"
+				platform: "PUCE"
 			}
 		})
 
@@ -243,7 +244,7 @@ class StripeService extends ServiceBase {
 	/**
 	 * Create a express account link for AUTHOR
 	 */
-	async accountUrl(stripeAccountId: string): Promise<string> {
+	async getAccountUrl(stripeAccountId: string): Promise<string> {
 		try {
 			const accountLink = await stripe.accountLinks.create({
 				account: stripeAccountId,
@@ -256,6 +257,13 @@ class StripeService extends ServiceBase {
 			console.error("Error creating account link:", error);
 			throw error;
 		}
+	}
+
+	/**
+	 * Retrieve a connected account
+	 */
+	async getAccount(stripeAccountId: string): Promise<Stripe.Account> {
+		return await stripe.accounts.retrieve(stripeAccountId);
 	}
 
 }

@@ -412,6 +412,9 @@ const en = {
 		githubRepo: {
 			no_description: "No description available",
 			empty: "NO REPOSITORY SELECTED"
+		},
+		funding: {
+			
 		}
 	}
 }

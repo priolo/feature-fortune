@@ -3,6 +3,7 @@ import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 import Stripe from "stripe";
 import { AccountRepo } from "../repository/Account.js";
+import { TypeLog } from "@priolo/julian/dist/core/types.js";
 
 
 
@@ -108,8 +109,7 @@ class PaymentRoute extends httpRouter.Service {
 					payload: user.stripeCustomerId
 				});
 			} catch (error) {
-				console.error('Error removing payment methods:', error);
-				return res.status(500).json({ error });
+				this.log('Error removing payment methods:', error, TypeLog.ERROR);
 			}
 		}
 

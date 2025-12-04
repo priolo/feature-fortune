@@ -26,6 +26,7 @@ export enum Actions {
 	 */
 	ACCOUNT_CREATE = "stripe:account:create",
 	ACCOUNT_URL = "stripe:account:url",
+	ACCOUNT_GET = "stripe:account:get",
 }
 
 /**

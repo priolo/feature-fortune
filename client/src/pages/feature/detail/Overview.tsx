@@ -38,7 +38,7 @@ const FeatureDetailOverview: React.FC<Props> = ({
     const isNew = !feature.id
     const messageStatus = isNew ? 'new' : feature.status
     const haveCountdown = feature.status === FEATURE_STATUS.COMPLETED && feature.completedAt
-    const delta = Number(import.meta.env.PAYMENT_AFTER_COMPLETION_MIN ?? 60) * 60 * 1000
+    const delta = Number(import.meta.env.VITE_PAYMENT_AFTER_COMPLETION_MIN ?? 60) * 60 * 1000
 
     return (
         <Box sx={[sxOverviewRoot, sx] as SxProps}>

@@ -92,32 +92,42 @@ class StripeRoute extends httpRouter.Service {
 		})
 
 
-
+		// CHECK
 		if (!user) return res.status(404).json({ error: "User not found" });
 		const email = user.email ?? user.googleEmail
 		if (!email) return res.status(400).json({ error: "User has no email" });
 
-		// check if the user have already a stripe account and are READY
-		if (!!user.stripeAccountId && user.stripeAccountStatus === "ready") {
-			return res.status(400).json({ error: "User already have a stripe account" });
-		}
 
-		// [DA CONTROLLARE] controllo che non ci sia un altro account con la stessa email
-		const userEmail = await new Bus(this, this.state.account_repo).dispatch({
-			type: typeorm.Actions.FIND_ONE,
-			payload: {
-				where: [{ email: email }, { googleEmail: email }]
+		// GET the existing STRIPE ACCOUNT to check if still exist
+		let isNewAccount = false;
+		let stripeAccount: Stripe.Account | null = null;
+		if (!!user.stripeAccountId) {
+			try {
+				stripeAccount = await new Bus(this, this.state.stripe_service).dispatch({
+					type: Actions.ACCOUNT_GET,
+					payload: user.stripeAccountId,
+				})
+			} catch (error) {
+				// se non esiste lo resetto
+				await new Bus(this, this.state.account_repo).dispatch({
+					type: typeorm.Actions.SAVE,
+					payload: <AccountRepo>{
+						id: user.id,
+						stripeAccountId: null,
+						stripeAccountStatus: null,
+					},
+				});
+				user.stripeAccountId = null;
+				user.stripeAccountStatus = null;
 			}
-		})
-		if (userEmail && userEmail.id !== user.id && !!userEmail.stripeAccountId) {
-			return res.status(400).json({ error: "Another user with the same email already have a stripe account" });
 		}
 
-		const githubUrl = await getGithubHtmlUrl(user.githubId!)
-
-		// se l'account non ha ancora uno stripe account lo creo
+		// CREATE se l'account non ha ancora uno stripe account lo creo
 		if (!user.stripeAccountId) {
-			const stripeAccount = await new Bus(this, this.state.stripe_service).dispatch({
+			isNewAccount = true;
+			const githubUrl = await getGithubHtmlUrl(user.githubId!)
+
+			stripeAccount = await new Bus(this, this.state.stripe_service).dispatch({
 				type: Actions.ACCOUNT_CREATE,
 				payload: {
 					name: user.name,
@@ -126,7 +136,7 @@ class StripeRoute extends httpRouter.Service {
 					url: githubUrl,
 				}
 			})
-			if (!stripeAccount.id) return res.status(500).json({ error: "Stripe account not created" });
+			if (!stripeAccount?.id) return res.status(500).json({ error: "Stripe account not created" });
 
 			// salvo lo stripe account id
 			user = await new Bus(this, this.state.account_repo).dispatch({
@@ -139,11 +149,16 @@ class StripeRoute extends httpRouter.Service {
 			});
 		}
 
-		// creo il link per la registrazione
+
+		// LINK creo il link per la registrazione
+		// Se l'account è nuovo o non ha ancora inviato i dettagli, uso onboarding
+		const useOnboarding = isNewAccount || (stripeAccount && !stripeAccount.details_submitted);
+
 		const url = await new Bus(this, this.state.stripe_service).dispatch({
 			type: Actions.ACCOUNT_URL,
-			payload: user.stripeAccountId!
+			payload: user.stripeAccountId!,
 		})
+
 
 		// ritorno il link
 		res.status(200).json({ url })
