@@ -36,7 +36,7 @@ class StripeHookRoute extends httpRouter.Service {
 			return;
 		}
 
-		this.log(`STRIPE:Event:type:${event.type}`)
+		console.log(`STRIPE:Event:type:${event.type}`)
 
 		// Handle the event
 		switch (event.type) {
