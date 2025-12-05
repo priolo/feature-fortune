@@ -28,10 +28,12 @@ class StripeHookRoute extends httpRouter.Service {
 	async webhook(request: Request, response: Response) {
 		const sig = request.headers['stripe-signature'];
 		let event: Stripe.Event;
-
+		console.log(`*******WEBHOOK START*********`)
+		
 		try {
 			event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
 		} catch (err) {
+			console.log(`*******WEBHOOK ERROR*********`)
 			response.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
 			return;
 		}
