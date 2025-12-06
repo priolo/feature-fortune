@@ -27,25 +27,15 @@ class StripeHookRoute extends httpRouter.Service {
 	 * eventi da STRIPE
 	 */
 	async webhook(request: Request, response: Response) {
-		console.log(`*******WEBHOOK START*********`)
-
 		const sig = request.headers['stripe-signature'];
 		let event: Stripe.Event;
 
 		try {
 			event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
 		} catch (err) {
-			console.log(`*******WEBHOOK ERROR*********`)
-			console.error(err);
 			response.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
 			return;
 		}
-
-		console.log(`***********************************`)
-		console.log(`***********************************`)
-		console.log(`STRIPE:Event:type:${event.type}`)
-		console.log(`***********************************`)
-		console.log(`***********************************`)
 
 		// Handle the event
 		switch (event.type) {
@@ -121,7 +111,4 @@ class StripeHookRoute extends httpRouter.Service {
 
 }
 
-
 export default StripeHookRoute
-
-
