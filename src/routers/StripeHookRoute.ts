@@ -35,6 +35,7 @@ class StripeHookRoute extends httpRouter.Service {
 			event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
 		} catch (err) {
 			console.log(`*******WEBHOOK ERROR*********`)
+			console.error(err);
 			response.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : 'Unknown error'}`);
 			return;
 		}
