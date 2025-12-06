@@ -31,7 +31,7 @@ class StripeServiceMock extends ServiceBase {
 			[Actions.PAYMENT_EXECUTE]: (data: PaymentIntentData) => this.executePayment(data),
 
 			[Actions.ACCOUNT_CREATE]: (data: { email: string, accountId: string }) => this.expressAccountCreate(data),
-			[Actions.ACCOUNT_URL]: (stripeAccountId: string) => this.expressAccountUrl(stripeAccountId),
+			[Actions.ACCOUNT_LINK]: (stripeAccountId: string) => this.expressAccountUrl(stripeAccountId),
 		}
 	}
 

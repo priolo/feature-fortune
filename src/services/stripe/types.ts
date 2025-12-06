@@ -25,7 +25,7 @@ export enum Actions {
 	 * Registration completion is notified in the WEBHOOK
 	 */
 	ACCOUNT_CREATE = "stripe:account:create",
-	ACCOUNT_URL = "stripe:account:url",
+	ACCOUNT_LINK = "stripe:account:link",
 	ACCOUNT_GET = "stripe:account:get",
 }
 

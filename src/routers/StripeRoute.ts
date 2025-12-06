@@ -149,7 +149,7 @@ class StripeRoute extends httpRouter.Service {
 
 		// prendo il link di registrazione/continuazione
 		const url = await new Bus(this, this.state.stripe_service).dispatch({
-			type: Actions.ACCOUNT_URL,
+			type: Actions.ACCOUNT_LINK,
 			payload: user.stripeAccountId!,
 		})
 		// ritorno il link
