@@ -6,8 +6,10 @@ export enum Actions {
 	 **/
 	PAYMENT_EXECUTE = "stripe:payment:execute",
 
-	/** get o create new if not exist */
-	CUSTOMER_GET_CREATE = "stripe:customer:get-create",
+	/** get a existent STRIPE-CUSTOMER */
+	CUSTOMER_GET = "stripe:customer:get",
+	/** create a new STRIPE-CUSTOMER */
+	CUSTOMER_CREATE = "stripe:customer:create",
 
 	/** create a setup intent where in future save cards data */
 	INTENT_SETUP = "stripe:intent:setup",

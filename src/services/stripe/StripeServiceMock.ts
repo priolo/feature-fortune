@@ -23,7 +23,7 @@ class StripeServiceMock extends ServiceBase {
 		return {
 			...super.executablesMap,
 
-			[Actions.CUSTOMER_GET_CREATE]: (data: { stripeCustomerId: string | null, accountId: string }) => this.getOrCreateCustomer(data.stripeCustomerId, data.accountId),
+			[Actions.CUSTOMER_GET]: (data: { stripeCustomerId: string | null, accountId: string }) => this.getOrCreateCustomer(data.stripeCustomerId, data.accountId),
 
 			[Actions.INTENT_SETUP]: (customerId: string) => this.createSetupIntent(customerId),
 

@@ -39,12 +39,22 @@ class PaymentRoute extends httpRouter.Service {
 		if (!user) return res.status(404).json({ error: "User not found" });
 
 
-		// Get or create customer using StripeService
-		const customer: Stripe.Customer = await new Bus(this, this.state.stripe_service).dispatch({
-			type: Actions.CUSTOMER_GET_CREATE,
-			payload: { stripeCustomerId: user.stripeCustomerId, accountId: user.id }
-		});
-		if ( !customer.id ) return res.status(500).json({ error: "Customer not created" });
+		// try get the STRIPE-CUSTOMER
+		let customer: Stripe.Customer;
+		if (!!user.stripeCustomerId) {
+			customer = await new Bus(this, this.state.stripe_service).dispatch({
+				type: Actions.CUSTOMER_GET,
+				payload: user.stripeCustomerId,
+			})
+		}
+		// or create a new one
+		if (!customer?.id) {
+			customer = await new Bus(this, this.state.stripe_service).dispatch({
+				type: Actions.CUSTOMER_CREATE,
+				payload: user.id,
+			})
+		}
+
 
 		// Save the customer ID to your database if it's new
 		if (customer.id !== user.stripeCustomerId) {
@@ -57,6 +67,7 @@ class PaymentRoute extends httpRouter.Service {
 			})
 		}
 
+		
 		// Create setup intent using StripeService
 		const setupIntent: Stripe.SetupIntent = await new Bus(this, this.state.stripe_service).dispatch({
 			type: Actions.INTENT_SETUP,
@@ -136,8 +147,8 @@ class PaymentRoute extends httpRouter.Service {
 			payload: userJwt.id,
 		})
 		if (!user) return res.status(404).json({ error: "User not found" });
-		
-		if ( !user.stripePaymentMethodId ) return res.status(404).json({ error: "No payment method found for user" });
+
+		if (!user.stripePaymentMethodId) return res.status(404).json({ error: "No payment method found for user" });
 		let paymentMethods: Stripe.PaymentMethod;
 		try {
 			paymentMethods = await new Bus(this, this.state.stripe_service).dispatch({

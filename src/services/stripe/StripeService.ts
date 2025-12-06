@@ -23,7 +23,8 @@ class StripeService extends ServiceBase {
 		return {
 			...super.executablesMap,
 
-			[Actions.CUSTOMER_GET_CREATE]: (data: { stripeCustomerId: string | null, accountId: string }) => this.getOrCreateCustomer(data.stripeCustomerId, data.accountId),
+			[Actions.CUSTOMER_GET]: (stripeCustomerId: string) => this.getCustomer(stripeCustomerId),
+			[Actions.CUSTOMER_CREATE]: (accountId: string) => this.createCustomer(accountId),
 
 			[Actions.INTENT_SETUP]: (customerId: string) => this.createSetupIntent(customerId),
 
@@ -40,36 +41,37 @@ class StripeService extends ServiceBase {
 	}
 
 	/**
-	 * Create or retrieve a Stripe Customer
+	 * retrieve a Stripe Customer
 	 * @param stripeCustomerId the id of stripe customer
-	 * @param accountId put it in stripe metadata
-	 * @returns 
 	 */
-	async getOrCreateCustomer(stripeCustomerId: string | null, accountId: string): Promise<Stripe.Customer> {
-		// First, check if customer already exists in Stripe
-		let customer: Stripe.Customer | Stripe.DeletedCustomer | null = null;
+	async getCustomer(stripeCustomerId: string): Promise<Stripe.Customer> {
+		if (!stripeCustomerId) throw new Error("No stripe customer id provided")
 
-		if (stripeCustomerId) {
-			try {
-				customer = await stripe.customers.retrieve(stripeCustomerId);
-				if (!customer.deleted) {
-					return customer as Stripe.Customer;
-				}
-			} catch (error: any) {
-				if (error.code === 'resource_missing') {
-					console.warn(`Customer ${stripeCustomerId} not found in Stripe, creating new one.`);
-				} else {
-					console.error("Error retrieving customer:", error);
-					throw error;
-				}
+		let customer: Stripe.Customer | Stripe.DeletedCustomer | null = null;
+		try {
+			customer = await stripe.customers.retrieve(stripeCustomerId);
+			if (customer.deleted) return null
+			return customer as Stripe.Customer;
+		} catch (error: any) {
+			if (error.code === 'resource_missing') {
+				return null
+			} else {
+				throw error;
 			}
 		}
+	}
 
-		// Create new customer if doesn't exist
+	/**
+	 * retrieve a Stripe Customer
+	 * @param accountId put it in stripe metadata
+	 */
+	async createCustomer(accountId: string): Promise<Stripe.Customer> {
+		if (!accountId) throw new Error("No account id provided")
 		return await stripe.customers.create({
 			metadata: { accountId }
-		});
+		})
 	}
+
 
 	/**
 	 * Setup Intent operations (for saving cards)
