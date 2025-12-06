@@ -2,7 +2,10 @@ import { AccountRepo, accountSendable, JWTPayload } from "../repository/Account.
 import { Bus, httpRouter, jwt, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 import { OAuth2Client } from 'google-auth-library';
+import { envInit } from "../types/env.js";
 import { FindManyOptions } from "typeorm";
+
+envInit()
 
 
 

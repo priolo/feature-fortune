@@ -5,6 +5,9 @@ import { AccountRepo } from "../../repository/Account.js";
 import { FUNDING_STATUS, FundingRepo } from "../../repository/Funding.js";
 import { Actions, PaymentIntentData } from "../stripe/types.js";
 import CronoService from "./CronoService.js";
+import { envInit } from "../../types/env.js";
+
+envInit();
 
 
 
@@ -137,6 +140,7 @@ class FeaturePaymentCrono extends CronoService {
 			receiptEmail: funding.account.email,
 			/** specifico il nome del progetto */
 			projectName: funding.feature.githubRepoMetadata?.name,
+			descriptorSuffix: process.env.STRIPE_CUSTOMER_BUSINESS_NAME ?? "PUCE"
 		}
 		let paymentIntent: any
 		try {

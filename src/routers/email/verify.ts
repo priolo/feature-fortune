@@ -1,8 +1,10 @@
 import { AccountRepo, EMAIL_CODE } from "../../repository/Account.js";
-import { ENV_TYPE } from "../../types/env.js";
+import { ENV_TYPE, envInit } from "../../types/env.js";
 import { Bus, email as emailNs, ServiceBase, typeorm } from "@priolo/julian";
 import crypto from "crypto";
 import { FindManyOptions } from "typeorm";
+
+envInit()
 
 
 

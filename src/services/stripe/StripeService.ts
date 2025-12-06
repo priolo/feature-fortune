@@ -159,7 +159,8 @@ class StripeService extends ServiceBase {
 					metadata: {
 						platform_customer_id: data.customer,
 						funding_id: data.fundingId || 'N/A',
-						original_pm_id: data.paymentMethod
+						original_pm_id: data.paymentMethod,
+						project_name: data.projectName || 'N/A',
 					},
 
 					// Invia ricevuta al cliente
@@ -175,7 +176,7 @@ class StripeService extends ServiceBase {
 					// Metti il nome del progetto specifico per questa donazione.
 					// Deve sempre contenere caratteri latini e max 22 char.
 					//statement_descriptor: formatDescriptor('NOME PROGETTO'),
-					statement_descriptor_suffix: formatSuffix(data.projectName ?? 'DONAZIONE'),
+					statement_descriptor_suffix: formatSuffix(data.descriptorSuffix ?? 'PUCE'),
 				},
 				{
 					stripeAccount: data.destination, // Eseguito sul conto del venditore

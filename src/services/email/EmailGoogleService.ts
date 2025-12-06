@@ -1,5 +1,8 @@
 import { ServiceBase } from "@priolo/julian";
 import { google } from 'googleapis';
+import { envInit } from "../../types/env.js";
+
+envInit();
 
 
 

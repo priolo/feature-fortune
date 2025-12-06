@@ -6,10 +6,13 @@ import { AccountRepo } from "../repository/Account.js";
 import PaymentCrono from "../services/crono/FeaturePaymentCrono.js";
 import { Actions } from "../services/stripe/types.js";
 import { getGithubHtmlUrl } from "./GithubRoute.js";
+import { envInit } from "../types/env.js";
+
+envInit();
+
+
 
 const stripe = new Stripe(process.env.STRIPE_API_KEY!);
-
-
 
 class StripeRoute extends httpRouter.Service {
 

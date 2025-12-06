@@ -3,6 +3,9 @@ import { Request, Response } from "express";
 import { FindManyOptions } from "typeorm";
 import { AccountRepo, accountSendable } from "../repository/Account.js";
 import { client } from "./AuthGoogleRoute.js";
+import { envInit } from "../types/env.js";
+
+envInit()
 
 
 

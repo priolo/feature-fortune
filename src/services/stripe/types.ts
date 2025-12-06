@@ -49,6 +49,8 @@ export interface PaymentIntentData {
 	receiptEmail?: string;
 	/** Nome del progetto finanziato che appare come descrizione nell'addebito */
 	projectName?: string;
+	/** Suffisso da aggiungere al descriptor (max 22 char) */
+	descriptorSuffix?: string;
 	/** Commissione della piattaforma in centesimi (opzionale) */
 	applicationFee?: number;
 }
