@@ -28,7 +28,7 @@ class StripeService extends ServiceBase {
 
 			[Actions.INTENT_SETUP]: (customerId: string) => this.createSetupIntent(customerId),
 
-			[Actions.PAYMENT_METHOD_LIST]: (customerId: string) => this.listPaymentMethods(customerId),
+			//[Actions.PAYMENT_METHOD_LIST]: (customerId: string) => this.listPaymentMethods(customerId),
 			[Actions.PAYMENT_METHOD_GET]: (paymentMethodId: string) => this.getPaymentMethod(paymentMethodId),
 			[Actions.PAYMENT_METHOD_REMOVE_ALL]: (customerId: string) => this.removeAllPaymentMethods(customerId),
 
@@ -87,13 +87,13 @@ class StripeService extends ServiceBase {
 	/** 
 	 * List all payment methods for a customer
 	 */
-	async listPaymentMethods(customerId: string): Promise<Stripe.PaymentMethod[]> {
-		const paymentMethods = await stripe.paymentMethods.list({
-			customer: customerId,
-			type: 'card',
-		});
-		return paymentMethods.data;
-	}
+	// async listPaymentMethods(customerId: string): Promise<Stripe.PaymentMethod[]> {
+	// 	const paymentMethods = await stripe.paymentMethods.list({
+	// 		customer: customerId,
+	// 		type: 'card',
+	// 	});
+	// 	return paymentMethods.data;
+	// }
 
 	/**
 	 * Fetch a payment method by its id
@@ -107,11 +107,14 @@ class StripeService extends ServiceBase {
 	 * Remove all payment methods for a customer
 	 */
 	async removeAllPaymentMethods(customerId: string): Promise<void> {
-		const paymentMethods = await this.listPaymentMethods(customerId);
-
-		for (const paymentMethod of paymentMethods) {
-			await stripe.paymentMethods.detach(paymentMethod.id);
-		}
+		const res = await stripe.paymentMethods.list({
+			customer: customerId,
+			//type: 'card',
+			//limit: 100,
+		});
+		const paymentMethods = res?.data;
+		if ( !paymentMethods || paymentMethods.length === 0 ) return;
+		await Promise.all(paymentMethods.map(pm => stripe.paymentMethods.detach(pm.id)));
 	}
 
 	/**
