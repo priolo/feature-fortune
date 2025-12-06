@@ -104,9 +104,6 @@ class StripeRoute extends httpRouter.Service {
 		// GET the existing STRIPE ACCOUNT to check if still exist
 		let stripeAccount: Stripe.Account | null = null;
 		if (!!user.stripeAccountId) {
-console.log( "ACCOUNT:CREATE:UPDATE***************************")
-console.log( "***************************")
-
 			try {
 				stripeAccount = await new Bus(this, this.state.stripe_service).dispatch({
 					type: Actions.ACCOUNT_GET,
@@ -130,9 +127,6 @@ console.log( "***************************")
 		// CREATE se l'account non ha ancora uno stripe account lo creo
 		if (!user.stripeAccountId) {
 			const githubUrl = await getGithubHtmlUrl(user.githubId!)
-console.log( "ACCOUNT:CREATE:NEW***************************")
-console.log( githubUrl )
-console.log( "***************************")
 			stripeAccount = await new Bus(this, this.state.stripe_service).dispatch({
 				type: Actions.ACCOUNT_CREATE,
 				payload: {

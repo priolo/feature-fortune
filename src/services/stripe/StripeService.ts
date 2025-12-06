@@ -252,6 +252,10 @@ class StripeService extends ServiceBase {
 				refresh_url: process.env.STRIPE_REFESH_URL,
 				return_url: process.env.STRIPE_RETURN_URL,
 				type: "account_onboarding",
+				collection_options: {
+					fields: 'eventually_due',          // upfront onboarding
+					future_requirements: 'include',    // gather future requirements too
+				},
 			});
 			return accountLink.url
 		} catch (error) {
