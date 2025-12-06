@@ -5,7 +5,7 @@ import Stripe from "stripe";
 
 
 
-const stripe = new Stripe(process.env.STRIPE_API_KEY!);
+const stripe = new Stripe(process.env.STRIPE_API_KEY!, { apiVersion: "2025-10-29.clover" });
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
 class StripeHookRoute extends httpRouter.Service {
@@ -26,10 +26,11 @@ class StripeHookRoute extends httpRouter.Service {
 	 * eventi da STRIPE
 	 */
 	async webhook(request: Request, response: Response) {
+		console.log(`*******WEBHOOK START*********`)
+
 		const sig = request.headers['stripe-signature'];
 		let event: Stripe.Event;
-		console.log(`*******WEBHOOK START*********`)
-		
+
 		try {
 			event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
 		} catch (err) {

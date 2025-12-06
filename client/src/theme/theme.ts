@@ -124,13 +124,13 @@ export const lightTheme = createTheme({
 	palette: {
 		mode: 'light',
 		primary: {
-			main: '#d900ffff',
+			main: '#d900ffff', // '#d900ffff', // ba52fe // feff34 // ff5e6c
 			light: '#e96fff',
 			dark: '#c814e7',
 			contrastText: 'rgba(255, 255, 255, 0.87)',
 		},
 		secondary: {
-			main: '#91ff00ff',
+			main: '#91ff00ff', //'#91ff00ff', // 81fe82 // fd5707 // 69c1fc
 			light: '#befc6dff',
 			dark: '#6cbe00ff',
 			contrastText: 'rgba(0, 0, 0, 0.87)',

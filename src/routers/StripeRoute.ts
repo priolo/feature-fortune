@@ -99,7 +99,6 @@ class StripeRoute extends httpRouter.Service {
 
 
 		// GET the existing STRIPE ACCOUNT to check if still exist
-		let isNewAccount = false;
 		let stripeAccount: Stripe.Account | null = null;
 		if (!!user.stripeAccountId) {
 			try {
@@ -124,7 +123,6 @@ class StripeRoute extends httpRouter.Service {
 
 		// CREATE se l'account non ha ancora uno stripe account lo creo
 		if (!user.stripeAccountId) {
-			isNewAccount = true;
 			const githubUrl = await getGithubHtmlUrl(user.githubId!)
 
 			stripeAccount = await new Bus(this, this.state.stripe_service).dispatch({
@@ -149,17 +147,11 @@ class StripeRoute extends httpRouter.Service {
 			});
 		}
 
-
-		// LINK creo il link per la registrazione
-		// Se l'account è nuovo o non ha ancora inviato i dettagli, uso onboarding
-		const useOnboarding = isNewAccount || (stripeAccount && !stripeAccount.details_submitted);
-
+		// prendo il link di registrazione/continuazione
 		const url = await new Bus(this, this.state.stripe_service).dispatch({
 			type: Actions.ACCOUNT_URL,
 			payload: user.stripeAccountId!,
 		})
-
-
 		// ritorno il link
 		res.status(200).json({ url })
 	}
