@@ -54,6 +54,6 @@ export default FeatureSortSelector;
 export const featureSort = [
 	{ id: FEATURE_SORT.RECENT, label: "RECENT" },
 	{ id: FEATURE_SORT.OLDEST, label: "OLDER" },
-	{ id: FEATURE_SORT.RICHEST, label: "RICHEST" },
-	{ id: FEATURE_SORT.POOREST, label: "POOREST" },
+	{ id: FEATURE_SORT.MOST_FUNDED, label: "RICHEST" },
+	{ id: FEATURE_SORT.LEAST_FUNDED, label: "POOREST" },
 ]

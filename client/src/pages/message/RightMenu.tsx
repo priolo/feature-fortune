@@ -1,9 +1,8 @@
-import { HeaderItems } from '@/layout/right/HeaderItems';
 import { ItemRow } from '@/layout/right/ItemRow';
 import messageListSo from '@/stores/message/list';
 import { getAllSenders } from '@/stores/message/utils';
 import { Account } from '@/types/Account';
-import { Box } from '@mui/material';
+import { Box, SxProps, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
@@ -14,7 +13,7 @@ const AccountSystem: Account = {
     email: '',
 };
 
-const RightRender: React.FC = () => {
+const RightMenu: React.FC = () => {
 
     // STORES
     useStore(messageListSo);
@@ -55,7 +54,10 @@ const RightRender: React.FC = () => {
     // RENDER
     return (
         <Box sx={{ position: 'sticky', top: 20 }}>
-            <HeaderItems>Status</HeaderItems>
+
+            <Typography variant="overline" color="text.secondary" sx={sxHeader}>
+                Status
+            </Typography>
             <ItemRow
                 label="ALL"
                 selected={readStatus == null}
@@ -72,7 +74,10 @@ const RightRender: React.FC = () => {
                 onClick={() => handleReadStatusChange('true')}
             />
 
-            <HeaderItems>By Sender</HeaderItems>
+
+            <Typography variant="overline" color="text.secondary" sx={sxHeader}>
+                By Sender
+            </Typography>
 
             <ItemRow
                 label="ALL"
@@ -92,4 +97,11 @@ const RightRender: React.FC = () => {
     );
 };
 
-export default RightRender;
+export default RightMenu;
+
+const sxHeader: SxProps = {
+    fontWeight: 200,
+    //opacity: .8, 
+    mb: 1,
+    mt: 2
+};

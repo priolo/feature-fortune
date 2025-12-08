@@ -405,6 +405,22 @@ const en = {
 				ok: "number of discussions",
 				warn: "Ancora nessun commento",
 			}
+		},
+		features: {
+			sort: {
+				title: "SORT BY",
+				newest: "NEWEST",
+				oldest: "OLDEST",
+				most_funded: "MOST FUNDED",
+				least_funded: "LEAST FUNDED",
+			},
+			filter: {
+				title: "FILTER BY",
+				all: "ALL",
+				my: "I CREATED",
+				financed: "I CONTRIBUTE",
+				developed: "I DEVELOP",
+			},
 		}
 	},
 	header: {
@@ -503,6 +519,32 @@ const en = {
 				label: "CARD",
 				tooltip: "HA INSERITO LA CARTA DI CREDITO",
 			}
+		},
+		feature: {
+			proposed: {
+				label: "PROPOSED",
+				desc: "Feature has been proposed from AUTHOR"
+			},
+			in_development: {
+				label: "IN DEVELOPMENT",
+				desc: "Feature accepted by an DEVELOPER and is in progress"
+			},
+			released: {
+				label: "RELEASED",
+				desc: "DEVELOPER declares the feature COMPLETED"
+			},
+			completed: {	
+				label: "COMPLETED",
+				desc: "AUTHOOR confirms the feature is SUCCESSFUL"
+			},
+			paid: {
+				label: "PAID",
+				desc: "AUTHOR confirms the feature is PAID"
+			},
+			cancelled: {
+				label: "CANCELLED",
+				desc: "AUTHOR or DEVELOPER has CANCELLED the feature"
+			},
 		}
 	}
 }

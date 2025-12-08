@@ -13,7 +13,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import FeatureListOverview from './Overview';
 import FeatureView from './FeatureView';
-import RightRender from './RightRender';
+import RightMenu from './RightMenu';
 
 
 
@@ -51,7 +51,7 @@ const FeatureListPag: React.FC = () => {
 	// RENDER
 	return <Framework sx={{ py: 2 }}
 		leftRender={<FeatureListOverview />}
-		rightRender={<RightRender />}
+		rightRender={<RightMenu />}
 	>
 
 		<Card>

@@ -1,8 +1,9 @@
 import SelectorDialogBase from '@/components/SelectorDialogBase';
 import { FEATURE_STATUS } from '@/types/feature/Feature';
-import { FeatureStatusItems, StatusItem } from '../detail/StatusChip';
+import { FeatureStatusItems, StatusItem } from '@/types/feature/enum';
 import { Chip } from '@mui/material';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -16,16 +17,24 @@ const FeatureStatusSelector: React.FC<Props> = ({
 	onChange,
 }) => {
 
+
+	// HOOKS
+	const { t } = useTranslation()
 	const [isOpen, setIsOpen] = React.useState(false);
+	const selected: StatusItem = React.useMemo(() =>
+		FeatureStatusItems.find(item => item.value === statusId), [statusId]
+	)
 
-	const selected = React.useMemo(() => FeatureStatusItems.find(item => item.value === statusId), [statusId]);
 
+	// HANDLERS
 	const handleClose = (status: StatusItem | null) => {
 		if (!!status) onChange(status.value);
 		setIsOpen(false);
 	};
 
-	const label = selected?.label?.toUpperCase() ?? 'ALL STATUSES';
+
+	// RENDER
+	const label = t(`view.feature.${selected.value}.label`) ?? 'ALL STATUSES';
 	const isDefault = selected == null
 
 	return <>
@@ -41,9 +50,9 @@ const FeatureStatusSelector: React.FC<Props> = ({
 
 			idSelect={selected?.value ?? undefined}
 			items={FeatureStatusItems}
-			fnTextFromItem={item => item.label.toUpperCase()}
-			fnSecondaryFromItem={item => item.subtitle}
-			fnIdFromItem={item => item.value}
+			fnTextFromItem={(item: StatusItem) => t(`view.feature.${item.value}.label`)}
+			fnSecondaryFromItem={(item: StatusItem) => t(`view.feature.${item.value}.desc`)}
+			fnIdFromItem={(item: StatusItem) => item.value}
 
 			isOpen={isOpen}
 			onClose={handleClose}

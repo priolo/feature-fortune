@@ -7,8 +7,8 @@ export enum FEATURE_FILTER {
 }
 
 export enum FEATURE_SORT {
-	RECENT = "recent",
+	RECENT = "newest",
 	OLDEST = "oldest",
-	RICHEST = "richest",
-	POOREST = "poorest",
+	MOST_FUNDED = "most_funded",
+	LEAST_FUNDED = "least_funded",
 }

@@ -1,7 +1,8 @@
+import { FeatureStatusItems } from '@/types/feature/enum';
 import { FEATURE_STATUS } from '@/types/feature/Feature';
-import { AttachMoney, Build, Close, DesignServices, Done, WaterDrop } from '@mui/icons-material';
 import { Chip, SxProps, Tooltip } from '@mui/material';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -17,12 +18,19 @@ const FeatureStatusChip: React.FC<Props> = ({
     onClick,
 }) => {
 
+
+    // HOOKS
+    const { t } = useTranslation()
+
+
+    // RENDER
     const item = useMemo(() => FeatureStatusItems.find(i => i.value === status), [status]);
-    const label = item?.label?.toUpperCase() ?? "N/A";
+    const label = t(`view.feature.${status}.label`) ?? "N/A";
+    const tooltip = t(`view.feature.${status}.desc`) ?? "";
 
     return (
-        <Tooltip title={item?.subtitle ?? ""} sx={sx}>
-            <Chip
+        <Tooltip title={tooltip ?? ""} >
+            <Chip sx={sx}
                 icon={item?.icon && <item.icon sx={{ width: "12px", height: "12px" }} />}
                 label={label}
                 color={item?.color as any || 'default'}
@@ -36,50 +44,4 @@ export default FeatureStatusChip;
 
 
 
-export const FeatureStatusItems = [
-    {
-        label: 'Proposed',
-        value: FEATURE_STATUS.PROPOSED,
-        subtitle: 'Feature has been proposed from AUTHOR',
-        color: 'default',
-        icon: DesignServices,
-    },
-    {
-        label: 'Development',
-        value: FEATURE_STATUS.IN_DEVELOPMENT,
-        subtitle: 'Feature accepted by an DEVELOPER and is in progress',
-        color: 'info',
-        icon: Build,
-    },
-    {
-        label: 'Released',
-        value: FEATURE_STATUS.RELEASED,
-        subtitle: 'DEVELOPER declares the feature COMPLETED',
-        color: 'primary',
-        icon: WaterDrop
-    },
-    {
-        label: 'Completed',
-        value: FEATURE_STATUS.COMPLETED,
-        subtitle: 'AUTHOOR confirms the feature is SUCCESSFUL',
-        color: 'success',
-        icon: Done
-    },
-    {
-        label: 'Paid',
-        value: FEATURE_STATUS.PAID,
-        subtitle: 'AUTHOR confirms the feature is PAID',
-        color: 'secondary',
-        icon: AttachMoney
-    },
-    {
-        label: 'Cancelled',
-        value: FEATURE_STATUS.CANCELLED,
-        subtitle: 'AUTHOR or DEVELOPER has CANCELLED the feature',
-        color: 'error',
-        icon: Close
-    }
-];
-
-export type StatusItem = (typeof FeatureStatusItems)[number];
 

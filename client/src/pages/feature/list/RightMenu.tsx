@@ -1,24 +1,26 @@
+import { sxRightMenuRoot } from "@/pages/styles";
 import { FEATURE_FILTER, FEATURE_SORT } from "@/stores/feature/types";
+import { FeatureStatusItems, StatusItem } from '@/types/feature/enum';
 import { FEATURE_STATUS } from '@/types/feature/Feature';
-import { Box } from '@mui/material';
+import { Box, SxProps, Typography } from '@mui/material';
 import React from 'react';
+import { useTranslation } from "react-i18next";
 import { useSearchParams } from 'react-router-dom';
-import { FeatureStatusItems } from '../detail/StatusChip';
-import { featureFiltes } from './FeatureFilterSelector';
-import { featureSort } from './FeatureSortSelector';
-import { HeaderItems } from '../../../layout/right/HeaderItems';
 import { ItemRow } from '../../../layout/right/ItemRow';
 
 
 
-const RightRender: React.FC = () => {
+const RightMenu: React.FC = () => {
+
 
     // HOOKS
+    const { t } = useTranslation()
     const [searchParams, setSearchParams] = useSearchParams();
     const params = Object.fromEntries(searchParams.entries());
     const filterId = params.filter as FEATURE_FILTER ?? FEATURE_FILTER.ALL;
     const sortId = params.sort as FEATURE_SORT ?? FEATURE_SORT.RECENT;
     const statusId = params.status as FEATURE_STATUS ?? null;
+
 
     // HANDLERS
     const handleFilterChange = (filter: FEATURE_FILTER) => {
@@ -51,40 +53,49 @@ const RightRender: React.FC = () => {
         setSearchParams({ ...params, status });
     };
 
+
     // RENDER
 
     return (
-        <Box sx={{ position: 'sticky', top: 20 }}>
-            <HeaderItems>Sort By</HeaderItems>
-            {featureSort.map(item => (
+        <Box sx={sxRightMenuRoot}>
+
+
+            <Typography variant="overline" color="text.secondary" sx={sxHeader}>
+                Sort by
+            </Typography>
+            {Object.values(FEATURE_SORT).map(item => (
                 <ItemRow
-                    key={item.id}
-                    label={item.label}
-                    selected={sortId === item.id}
-                    onClick={() => handleSortChange(item.id)}
+                    key={item}
+                    label={t(`rightmenu.features.sort.${item}`)}
+                    selected={sortId === item}
+                    onClick={() => handleSortChange(item)}
                 />
             ))}
 
-            <HeaderItems>Filter By</HeaderItems>
-            {featureFiltes.map(item => (
+            <Typography variant="caption" color="text.secondary" sx={sxHeader}>
+                Filter By
+            </Typography>
+            {Object.values(FEATURE_FILTER).map(item => (
                 <ItemRow
-                    key={item.id}
-                    label={item.label}
-                    selected={filterId === item.id}
-                    onClick={() => handleFilterChange(item.id)}
+                    key={item}
+                    label={t(`rightmenu.features.filter.${item}`)}
+                    selected={filterId === item}
+                    onClick={() => handleFilterChange(item)}
                 />
             ))}
 
-            <HeaderItems>Status</HeaderItems>
+            <Typography variant="caption" color="text.secondary" sx={sxHeader}>
+                Status
+            </Typography>
             <ItemRow
                 label="ALL"
                 selected={statusId == null}
                 onClick={() => handleStatusChange(null)}
             />
-            {FeatureStatusItems.map(item => (
+            {FeatureStatusItems.map((item: StatusItem) => (
                 <ItemRow
                     key={item.value}
-                    label={item.label}
+                    label={t(`view.feature.${item.value}.label`)}
                     selected={statusId === item.value}
                     onClick={() => handleStatusChange(item.value)}
                 />
@@ -93,4 +104,11 @@ const RightRender: React.FC = () => {
     );
 };
 
-export default RightRender;
+export default RightMenu;
+
+const sxHeader: SxProps = {
+    fontWeight: 200,
+    //opacity: .8, 
+    mb: 1,
+    mt: 2
+};

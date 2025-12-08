@@ -12,3 +12,11 @@ export const sxOverviewRoot: SxProps = {
     mr: 4, ml: 'auto', pt: 2,
     maxWidth: 300,
 };
+
+export const sxRightMenuRoot: SxProps = {
+    position: 'sticky',
+    top: 20,
+    p: 2,
+    display: 'flex',
+    flexDirection: 'column',
+};

@@ -57,8 +57,8 @@ export function sort(features: Feature[], sort: FEATURE_SORT = FEATURE_SORT.RECE
 		let valueA = 0
 		let valueB = 0
 		switch (sort) {
-			case FEATURE_SORT.RICHEST:
-			case FEATURE_SORT.POOREST:
+			case FEATURE_SORT.MOST_FUNDED:
+			case FEATURE_SORT.LEAST_FUNDED:
 				valueA = a.fundings ? a.fundings.reduce((sum, f) => sum + (f.amount || 0), 0) : 0
 				valueB = b.fundings ? b.fundings.reduce((sum, f) => sum + (f.amount || 0), 0) : 0
 				break
@@ -69,7 +69,7 @@ export function sort(features: Feature[], sort: FEATURE_SORT = FEATURE_SORT.RECE
 				valueB = b.createdAt ? new Date(b.createdAt).getTime() : 0
 				break
 		}
-		const descending = sort == FEATURE_SORT.RECENT || sort == FEATURE_SORT.RICHEST
+		const descending = sort == FEATURE_SORT.RECENT || sort == FEATURE_SORT.MOST_FUNDED
 		return descending ? valueB - valueA : valueA - valueB
 	})
 }

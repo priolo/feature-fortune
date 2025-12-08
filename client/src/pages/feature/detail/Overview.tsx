@@ -22,11 +22,13 @@ const FeatureDetailOverview: React.FC<Props> = ({
     sx
 }) => {
 
+    
     // STORES
-    const { t } = useTranslation()
     useStore(fundingListSo)
 
+
     // STORES
+    const { t } = useTranslation()
     const featureDetailSa = useStore(featureDetailSo);
 
 
@@ -47,13 +49,9 @@ const FeatureDetailOverview: React.FC<Props> = ({
                 {t('overview.title', 'Overview')}
             </Typography>
 
-
-
             <Typography variant="body2" color="text.secondary">
                 <Trans i18nKey={t(`overview.feature.message.${messageStatus}`)} />
             </Typography>
-
-
 
             {!isNew && (
                 <FeatureStatusChip sx={{ alignSelf: 'flex-end' }}

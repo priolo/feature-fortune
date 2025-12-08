@@ -21,20 +21,12 @@ export const ItemRow: React.FC<Props> = ({
             onClick={onClick}
             sx={sxRoot}
         >
-
-            <Box sx={{ width: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', mr: 1 }}>
-                {selected && <Box sx={sxSelectedIndicator} />}
-            </Box>
-
-            <Box>
-                <Typography variant="body2"
-                    fontWeight={selected ? 'bold' : 'normal'}
-                    color={selected ? 'text.primary' : 'text.secondary'}
-                >
-                    {label}
-                </Typography>
-            </Box>
-            
+            <Typography variant="body2"
+                fontWeight={selected ? 'bold' : 'normal'}
+                color={selected ? 'secondary.main' : 'text.secondary'}
+            >
+                {label}
+            </Typography>
         </Box>
     );
 };
@@ -44,12 +36,4 @@ const sxRoot: SxProps = {
     alignItems: 'center',
     cursor: 'pointer',
     py: 0.5,
-    px: 2,
-}
-
-const sxSelectedIndicator: SxProps = {
-    width: 5,
-    height: 5,
-    borderRadius: '50%',
-    bgcolor: 'text.primary',
 }

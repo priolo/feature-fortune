@@ -10,7 +10,7 @@ import { Message } from '@/types/Message';
 import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';
 import MessageOverviewSide from './MessageOverviewSide';
-import RightRender from './RightRender';
+import RightMenu from './RightMenu';
 
 
 
@@ -46,7 +46,7 @@ const MessagePag: React.FC = () => {
 
 	return <Framework sx={{ py: 2 }}
 		leftRender={<MessageOverviewSide />}
-		rightRender={<RightRender />}
+		rightRender={<RightMenu />}
 	>
 
 		<MessageView

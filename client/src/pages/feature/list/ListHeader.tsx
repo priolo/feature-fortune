@@ -6,8 +6,8 @@ import { Box, Button, debounce, IconButton, InputAdornment, TextField, Typograph
 import { useStore } from '@priolo/jon';
 import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import FeatureFilterSelector from "./FeatureFilterSelector";
-import FeatureSortSelector from "./FeatureSortSelector";
+import FeatureFilterSelector from "./_FeatureFilterSelector";
+import FeatureSortSelector from "./_FeatureSortSelector";
 import FeatureStatusSelector from "./FeatureStatusSelector";
 import featureDetailSo from '@/stores/feature/detail';
 import { useTranslation } from 'react-i18next';
