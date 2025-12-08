@@ -31,6 +31,9 @@ export interface DialogMsg {
 const setup = {
 
 	state: {
+		// per la policy dialog
+		isPolicyOpen: false,
+
 		isOpen: false,
 		title: "",
 		text: "",
@@ -81,6 +84,7 @@ const setup = {
 	mutators: {
 		setDialogIsOpen: (isOpen: boolean) => ({ isOpen }),
 		setDialogOpen: (conf: DialogMsg) => conf,
+		setIsPolicyOpen: (isPolicyOpen: boolean) => ({ isPolicyOpen }),
 	},
 }
 

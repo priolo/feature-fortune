@@ -5,7 +5,11 @@ import { Account } from '@/types/Account';
 import { Box, SxProps, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
+import { sxRightMenuRoot } from "@/pages/styles";
+
+
 
 const AccountSystem: Account = {
     id: "sys",
@@ -19,6 +23,7 @@ const RightMenu: React.FC = () => {
     useStore(messageListSo);
 
     // HOOKS
+    const { t } = useTranslation()
     const [searchParams, setSearchParams] = useSearchParams();
     const params = Object.fromEntries(searchParams.entries());
     const receiverId = params.receiver ?? null;
@@ -53,38 +58,36 @@ const RightMenu: React.FC = () => {
 
     // RENDER
     return (
-        <Box sx={{ position: 'sticky', top: 20 }}>
+        <Box sx={sxRightMenuRoot}>
 
-            <Typography variant="overline" color="text.secondary" sx={sxHeader}>
-                Status
+            <Typography variant="overline" color="text.secondary" sx={[sxHeader, { mt: 0 }] as SxProps}>
+                {t(`rightmenu.messages.status.title`)}
             </Typography>
             <ItemRow
-                label="ALL"
+                label={t(`rightmenu.messages.status.all`)}
                 selected={readStatus == null}
                 onClick={() => handleReadStatusChange(null)}
             />
             <ItemRow
-                label="TO READ"
+                label={t(`rightmenu.messages.status.to_read`)}
                 selected={readStatus === 'false'}
                 onClick={() => handleReadStatusChange('false')}
             />
             <ItemRow
-                label="ALREADY READ"
+                label={t(`rightmenu.messages.status.read`)}
                 selected={readStatus === 'true'}
                 onClick={() => handleReadStatusChange('true')}
             />
 
 
             <Typography variant="overline" color="text.secondary" sx={sxHeader}>
-                By Sender
+                {t(`rightmenu.messages.sender.title`)}
             </Typography>
-
             <ItemRow
-                label="ALL"
+                label={t(`rightmenu.messages.sender.all`)}
                 selected={receiverId == null}
                 onClick={() => handleReceiverChange(null)}
             />
-
             {receivers.map(account => (
                 <ItemRow
                     key={account.id}
@@ -101,7 +104,6 @@ export default RightMenu;
 
 const sxHeader: SxProps = {
     fontWeight: 200,
-    //opacity: .8, 
     mb: 1,
     mt: 2
 };

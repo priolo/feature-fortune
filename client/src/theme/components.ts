@@ -38,13 +38,13 @@ export const commonOptions = (palette: PaletteOptions): ThemeOptions => ({
 				},
 			},
 		},
-		MuiCard: {
-			styleOverrides: {
-				root: {
-					//boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-				},
-			},
-		},
+		// MuiCard: {
+		// 	styleOverrides: {
+		// 		root: {
+		// 			boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+		// 		},
+		// 	},
+		// },
 		MuiPaper: {
 			styleOverrides: {
 				root: {

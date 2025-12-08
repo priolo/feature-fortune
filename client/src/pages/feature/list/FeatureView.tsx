@@ -1,4 +1,4 @@
-import CurrencyLabel from '@/components/CurrencyLabel';
+import CurrencyGroupsLabel from '@/components/CurrencyGroupsLabel';
 import FundingsAvatarGroup from '@/components/funding/FundingsAvatarGroup';
 import { amountFunded } from "@/stores/funding/utils";
 import { sxContent, sxRoot } from '@/theme/AvatarStyle';
@@ -6,7 +6,6 @@ import { Feature } from '@/types/feature/Feature';
 import { Avatar, Box, Link, SxProps, Typography } from '@mui/material';
 import React, { useMemo } from 'react';
 import FeatureStatusChip from '../detail/StatusChip';
-import CurrencyGroupsLabel from '@/components/CurrencyGroupsLabel';
 
 
 

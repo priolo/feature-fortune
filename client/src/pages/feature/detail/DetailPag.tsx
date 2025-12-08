@@ -144,6 +144,7 @@ const FeatureDetailPag: React.FC<Props> = ({
         <FeatureDetailCard readOnly={!canAuthorEdit}
             feature={feature}
             onChange={handleDetailChange}
+            onSave={canAuthorEdit ? () => featureDetailSo.save() : undefined}
         />
 
         {/* {feature.status == FEATURE_STATUS.PROPOSED && (

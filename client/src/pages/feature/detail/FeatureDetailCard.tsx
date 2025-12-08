@@ -1,9 +1,9 @@
-import Card from '@/components/Card';
+import Card, { sxActionCard } from '@/components/Card';
 import ReadOnlyTextField from '@/components/ReadOnlyTextField';
 import LinkField from './LinkField';
 import { Feature } from '@/types/feature/Feature';
-import { FeaturedPlayList } from '@mui/icons-material';
-import { Typography } from '@mui/material';
+import { Add, FeaturedPlayList } from '@mui/icons-material';
+import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -13,12 +13,14 @@ interface Props {
 	feature: Feature
 	readOnly?: boolean
 	onChange: (feature: Feature) => void;
+	onSave?: () => Promise<void>;
 }
 
 const FeatureDetailCard: React.FC<Props> = ({
 	feature,
 	readOnly,
 	onChange,
+	onSave,
 }) => {
 
 	// HOOKS
@@ -72,6 +74,15 @@ const FeatureDetailCard: React.FC<Props> = ({
 				onChange={(val) => handlePropChange({ link: val })}
 				placeholder={t("cards.FeatureDetailCard.link.placeholder")}
 			/>
+
+			{!readOnly && (
+				<Box sx={sxActionCard}>
+					<Button
+						onClick={() => onSave?.()}
+					>{t('cards.FeatureDetailCard.save', 'SAVE DETAILS')}
+					</Button>
+				</Box>
+			)}
 
 		</Card>
 	);

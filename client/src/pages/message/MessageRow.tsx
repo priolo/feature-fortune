@@ -117,6 +117,7 @@ const sxContainer = (isRead?: boolean): SxProps => ({
 	p: 2,
 	borderRadius: 3,
 	borderColor: isRead ? null : 'secondary.main',
+	borderWidth: 2,
 	// transition: 'background-color 0.2s ease',
 	// '&:hover': {
 	// 	bgcolor: isRead ? 'background.paper' : 'action.hover',

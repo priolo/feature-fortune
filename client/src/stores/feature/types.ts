@@ -9,6 +9,9 @@ export enum FEATURE_FILTER {
 export enum FEATURE_SORT {
 	RECENT = "newest",
 	OLDEST = "oldest",
+
 	MOST_FUNDED = "most_funded",
-	LEAST_FUNDED = "least_funded",
+	//LESS_FUNDED = "less_funded",
+	
+	GITHUB = "github",
 }

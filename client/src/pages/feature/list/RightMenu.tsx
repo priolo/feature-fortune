@@ -59,9 +59,8 @@ const RightMenu: React.FC = () => {
     return (
         <Box sx={sxRightMenuRoot}>
 
-
-            <Typography variant="overline" color="text.secondary" sx={sxHeader}>
-                Sort by
+            <Typography variant="overline" color="text.secondary" sx={[sxHeader, { mt: 0 }] as SxProps}>
+                {t(`rightmenu.features.sort.title`)}
             </Typography>
             {Object.values(FEATURE_SORT).map(item => (
                 <ItemRow
@@ -72,8 +71,8 @@ const RightMenu: React.FC = () => {
                 />
             ))}
 
-            <Typography variant="caption" color="text.secondary" sx={sxHeader}>
-                Filter By
+            <Typography variant="overline" color="text.secondary" sx={sxHeader}>
+                {t(`rightmenu.features.filter.title`)}
             </Typography>
             {Object.values(FEATURE_FILTER).map(item => (
                 <ItemRow
@@ -84,8 +83,8 @@ const RightMenu: React.FC = () => {
                 />
             ))}
 
-            <Typography variant="caption" color="text.secondary" sx={sxHeader}>
-                Status
+            <Typography variant="overline" color="text.secondary" sx={sxHeader}>
+                {t(`rightmenu.features.status.title`)}
             </Typography>
             <ItemRow
                 label="ALL"
@@ -108,7 +107,6 @@ export default RightMenu;
 
 const sxHeader: SxProps = {
     fontWeight: 200,
-    //opacity: .8, 
     mb: 1,
     mt: 2
-};
+}

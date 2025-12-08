@@ -10,6 +10,7 @@ import LoginPag from './pages/login/LoginPag';
 import MessagePag from './pages/message/MessagePag';
 import themeSo from './stores/layout/theme';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import PolicyDialog from './layout/PolicyDialog';
 
 
 
@@ -39,6 +40,7 @@ function App() {
 		</ErrorBoundary>
 
 		<MsgBox />
+		<PolicyDialog />
 
 	</ThemeProvider>
 }

@@ -9,7 +9,7 @@ import messageListSo from '@/stores/message/list';
 import { Message } from '@/types/Message';
 import { useStore } from '@priolo/jon';
 import React, { useEffect } from 'react';
-import MessageOverviewSide from './MessageOverviewSide';
+import MessageOverview from './Overview';
 import RightMenu from './RightMenu';
 
 
@@ -45,7 +45,7 @@ const MessagePag: React.FC = () => {
 	const currentUserId = authSo.state.user?.id
 
 	return <Framework sx={{ py: 2 }}
-		leftRender={<MessageOverviewSide />}
+		leftRender={<MessageOverview />}
 		rightRender={<RightMenu />}
 	>
 

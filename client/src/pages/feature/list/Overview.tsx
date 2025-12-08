@@ -25,19 +25,15 @@ const FeatureListOverview: React.FC = () => {
                 {t('overview.title', 'Overview')}
             </Typography>
 
-
-
             <Typography variant="body2" color="text.secondary" /*sx={{ whiteSpace: 'pre-line' }}*/>
                 {t('overview.features.message.default')}
             </Typography>
-
-
 
             <Box>
                 <Typography variant="overline" color="text.secondary">
                     {t('overview.features.label.total', 'TOTAL FEATURES')}
                 </Typography>
-                <Typography variant="h4" color="primary" sx={{ fontWeight: 600 }}>
+                <Typography variant="h4" color="primary" >
                     {allFeatures.length}
                 </Typography>
             </Box>

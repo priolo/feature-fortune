@@ -58,7 +58,7 @@ export function sort(features: Feature[], sort: FEATURE_SORT = FEATURE_SORT.RECE
 		let valueB = 0
 		switch (sort) {
 			case FEATURE_SORT.MOST_FUNDED:
-			case FEATURE_SORT.LEAST_FUNDED:
+			//case FEATURE_SORT.LESS_FUNDED:
 				valueA = a.fundings ? a.fundings.reduce((sum, f) => sum + (f.amount || 0), 0) : 0
 				valueB = b.fundings ? b.fundings.reduce((sum, f) => sum + (f.amount || 0), 0) : 0
 				break
@@ -68,6 +68,9 @@ export function sort(features: Feature[], sort: FEATURE_SORT = FEATURE_SORT.RECE
 				valueA = a.createdAt ? new Date(a.createdAt).getTime() : 0
 				valueB = b.createdAt ? new Date(b.createdAt).getTime() : 0
 				break
+			// mette in ordine alfabetico sulla base del nomde del repo github sui metadata
+			case FEATURE_SORT.GITHUB:
+				return (a.githubRepoMetadata?.full_name ?? "").localeCompare(b.githubRepoMetadata?.full_name ?? "")
 		}
 		const descending = sort == FEATURE_SORT.RECENT || sort == FEATURE_SORT.MOST_FUNDED
 		return descending ? valueB - valueA : valueA - valueB

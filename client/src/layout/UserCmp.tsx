@@ -4,7 +4,7 @@ import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AvatarCmp from '@/components/AvatarCmp';
-import { AccountCircle, Logout } from '@mui/icons-material';
+import { AccountCircle, Face, Logout } from '@mui/icons-material';
 
 
 
@@ -20,7 +20,7 @@ const UserCmp: React.FC<UserCmpProps> = ({
 
 	// HOOKS
 	const navigate = useNavigate();
-	
+
 
 	// STATE
 	const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<null | HTMLElement>(null);
@@ -56,7 +56,7 @@ const UserCmp: React.FC<UserCmpProps> = ({
 	if (!authSo.state.user) return (
 		<Button
 			onClick={handleLoginClick}
-			color="inherit"
+			color="primary"
 		>LOGIN</Button>
 	)
 
@@ -85,22 +85,22 @@ const UserCmp: React.FC<UserCmpProps> = ({
 					</Typography>
 				</Box>
 
-				<Divider />
+				<ListItemButton onClick={handleAccount}>
+					<ListItemIcon>
+						<Face fontSize="small" />
+					</ListItemIcon>
+					<ListItemText>CONFIG</ListItemText>
+				</ListItemButton>
 
-				<List>
-					<ListItemButton onClick={handleAccount}>
-						<ListItemIcon>
-							<AccountCircle fontSize="small" />
-						</ListItemIcon>
-						<ListItemText>CONFIG</ListItemText>
-					</ListItemButton>
-					<ListItemButton onClick={handleLogout}>
-						<ListItemIcon>
-							<Logout fontSize="small" />
-						</ListItemIcon>
-						<ListItemText>LOGOUT</ListItemText>
-					</ListItemButton>
-				</List>
+				<Divider sx={{ my: 2 }} />
+
+				<ListItemButton onClick={handleLogout}>
+					<ListItemIcon>
+						<Logout fontSize="small" />
+					</ListItemIcon>
+					<ListItemText>LOGOUT</ListItemText>
+				</ListItemButton>
+
 
 			</Box>
 		</Menu>

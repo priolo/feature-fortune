@@ -14,6 +14,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import FeatureListOverview from './Overview';
 import FeatureView from './FeatureView';
 import RightMenu from './RightMenu';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -23,6 +24,7 @@ const FeatureListPag: React.FC = () => {
 	useStore(featureListSo)
 
 	// HOOKS
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const [searchParams, setSearchParams] = useSearchParams();
 
@@ -70,8 +72,8 @@ const FeatureListPag: React.FC = () => {
 				))}
 
 				{features.length === 0 && (
-					<MessageBanner>
-						No features found. Create your first feature to get started!
+					<MessageBanner align="center">
+						{t(`pag.features.empty`)}
 					</MessageBanner>
 				)}
 			</List>
