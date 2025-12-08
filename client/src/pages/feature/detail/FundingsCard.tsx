@@ -109,7 +109,7 @@ const FundingsCard: React.FC<Props> = ({
 
                 ))} </List>
             ) : (
-                <MessageBanner>
+                <MessageBanner align="center">
                     {t('cards.FundingsCard.empty')}
                 </MessageBanner>
             )}

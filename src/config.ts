@@ -6,9 +6,9 @@ import { CommentRepo } from "./repository/Comment.js";
 import { getDBConnectionConfig } from './repository/dbConfig.js';
 import { FeatureRepo } from "./repository/Feature.js";
 import { FundingRepo } from "./repository/Funding.js";
-import { MessageContentRepo } from "./repository/MessageContent.js";
 import { MessageRepo } from "./repository/Message.js";
-import GoogleRoute from "./routers/GoogleRoute.js";
+import { MessageContentRepo } from "./repository/MessageContent.js";
+import AccountRoute from "./routers/AccountRoute.js";
 import AuthEmailRoute from "./routers/AuthEmailRoute.js";
 import AuthGithubRoute from "./routers/AuthGithubRoute.js";
 import AuthGoogleRoute from "./routers/AuthGoogleRoute.js";
@@ -16,19 +16,18 @@ import AuthRoute from "./routers/AuthRoute.js";
 import CommentRoute from "./routers/CommentRoute.js";
 import FeatureRoute from "./routers/FeatureRoute.js";
 import FundingRoute from "./routers/FundingRoute.js";
+import GithubRoute from "./routers/GithubRoute.js";
+import GoogleRoute from "./routers/GoogleRoute.js";
 import MessageRoute from "./routers/MessageRoute.js";
 import PaymentRoute from "./routers/PaymentRoute.js";
 import StripeHookRoute from "./routers/StripeHookRoute.js";
 import StripeRoute from "./routers/StripeRoute.js";
 import FeaturePaymentCrono from "./services/crono/FeaturePaymentCrono.js";
-import EmailGoogleService from "./services/email/EmailGoogleService.js";
+import EmailResendService from "./services/email/EmailResendService.js";
 import ReflectionRoute from "./services/reflection/ReflectionRoute.js";
 import StripeService from "./services/stripe/StripeService.js";
-import { ENV_TYPE, envInit } from "./types/env.js";
-import GithubRoute from "./routers/GithubRoute.js";
-import AccountRoute from "./routers/AccountRoute.js";
 import StripeServiceMock from "./services/stripe/StripeServiceMock.js";
-import EmailResendService from "./services/email/EmailResendService.js";
+import { ENV_TYPE, envInit } from "./types/env.js";
 
 
 
@@ -114,6 +113,8 @@ function buildNodeConfig(params?: ConfigParams) {
 							children: [
 								{ class: FeatureRoute },
 								{ class: AccountRoute },
+								{ class: FundingRoute },
+								{ class: CommentRoute },
 							]
 						},
 						<httpRouter.jwt.conf>{
@@ -125,8 +126,6 @@ function buildNodeConfig(params?: ConfigParams) {
 								{ class: GithubRoute },
 								{ class: GoogleRoute },
 								{ class: PaymentRoute },
-								{ class: FundingRoute },
-								{ class: CommentRoute },
 								{ class: MessageRoute },
 								{ class: StripeRoute },
 							]
@@ -141,7 +140,6 @@ function buildNodeConfig(params?: ConfigParams) {
 			class: "typeorm",
 			options: {
 				...getDBConnectionConfig(noLog),
-				//entities: repositories
 			},
 			children: [
 				{

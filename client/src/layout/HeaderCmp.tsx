@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import MessagesCmp from './MessagesCmp';
 import UserCmp from './UserCmp';
 import authSo from '@/stores/auth';
+import BackButton from './BackButton';
 
 
 
@@ -48,6 +49,7 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 	// Pick logo based on theme
 	const logged = !!authSo.state.user;
 	const isDark = themeSo.state.current?.palette?.mode === 'dark';
+	const isHome = locationSo.state.current === LOCATION_PAGE.FeaturesList;
 	const logo = isDark ? logoDark : logoLight;
 
 	// RENDER
@@ -60,8 +62,13 @@ const HeaderCmp: React.FC<HeaderCmpProps> = ({
 				><img src={logo} alt="Logo" style={{ height: 36, verticalAlign: 'middle' }} /></Button>
 			</Box>
 
-			<Box sx={{ flex: 1, display: "flex", minWidth: "800px", alignItems: "center", gap: 2 }}>
-				{header}
+			<Box sx={{ flex: 1, display: "flex", minWidth: "800px", alignItems: "center" }}>
+				{ !isHome &&
+					<BackButton toHome />
+				}
+				<Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 2 }}>
+					{header}
+				</Box>
 			</Box>
 
 			<Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 2 }}>

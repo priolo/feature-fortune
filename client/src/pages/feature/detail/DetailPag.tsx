@@ -17,6 +17,7 @@ import { useParams } from 'react-router-dom';
 import GithubRepoSelectorCard from '../../../components/github/repos/GithubRepoSelectorCard';
 import FeatureDetailOverview from './Overview';
 import FeatureDetailRightMenu from './RightMenu';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -31,6 +32,7 @@ const FeatureDetailPag: React.FC<Props> = ({
 
     // STORES
     useStore(featureDetailSo)
+    const { t } = useTranslation()
 
 
     // HOOKS
@@ -91,17 +93,17 @@ const FeatureDetailPag: React.FC<Props> = ({
         }
     }
 
-    const handleGithubDevChange = async (githubDev: GitHubUser) => {
-        featureDetailSo.setFeature({
-            ...featureDetailSo.state.feature,
-            githubDevId: githubDev?.id ?? null,
-        })
+    // const handleGithubDevChange = async (githubDev: GitHubUser) => {
+    //     featureDetailSo.setFeature({
+    //         ...featureDetailSo.state.feature,
+    //         githubDevId: githubDev?.id ?? null,
+    //     })
 
-        // auto-link accountDevId
-        if (featureDetailSo.state.feature?.accountDevId) return
-        const res = await accountApi.getByGithubUserId(githubDev?.id)
-        handleAccountDevChange(res.account)
-    };
+    //     // auto-link accountDevId
+    //     if (featureDetailSo.state.feature?.accountDevId) return
+    //     const res = await accountApi.getByGithubUserId(githubDev?.id)
+    //     handleAccountDevChange(res.account)
+    // };
 
     const handleAccountDevChange = async (account: Account) => {
         featureDetailSo.setFeature({
@@ -116,11 +118,16 @@ const FeatureDetailPag: React.FC<Props> = ({
     const feature = featureDetailSo.state.feature
     if (!feature) return null
 
+    // c'e' un login
     const logged = !!authSo.state.user
+    // è una nuova feature
     const isNew = !feature.id
-    //const authorId = isNew ? authSo.state.user?.id : feature.accountId
+    // è l'AUTHOR della feature
     const isAuthor = logged && (isNew || feature?.accountId == authSo.state.user?.id)
-    const isFundable = feature?.status != FEATURE_STATUS.CANCELLED && feature?.status != FEATURE_STATUS.COMPLETED
+    // è possibile finanziare 
+    const isFundable = logged && feature?.status != FEATURE_STATUS.CANCELLED && feature?.status != FEATURE_STATUS.COMPLETED
+    // è possibile commentare
+    const isCommentable = logged
     // posso editare solo se sono l'AUTHOR e lo stato è PROPOSED
     const canAuthorEdit = isAuthor && feature.status == FEATURE_STATUS.PROPOSED
 
@@ -157,7 +164,7 @@ const FeatureDetailPag: React.FC<Props> = ({
             featureId={feature.id}
         />
 
-        <CommentsCard
+        <CommentsCard readonly={!isCommentable}
             featureId={feature.id}
         />
 

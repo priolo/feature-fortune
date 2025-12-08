@@ -1,4 +1,6 @@
-import { createTheme, ThemeOptions } from '@mui/material/styles';
+import { createTheme } from '@mui/material/styles';
+import { commonOptions } from './components';
+import { paletteDark, paletteLight } from './palette';
 
 declare module '@mui/material/styles' {
 	// interface Theme {
@@ -17,165 +19,21 @@ declare module '@mui/material/styles' {
 	}
 }
 
-// Common theme options
-const commonOptions = (theme: string): ThemeOptions => ({
-	typography: {
-		h1: { lineHeight: 'unset' },
-		h2: { lineHeight: 'unset' },
-		h3: { lineHeight: 'unset' },
-		h4: { lineHeight: 'unset' },
-		h5: { lineHeight: 'unset' },
-		h6: { lineHeight: 'unset', fontWeight: 500, fontSize: '1.2rem' },
-		subtitle1: { lineHeight: 'unset' },
-		subtitle2: { lineHeight: 'unset' },
-		body1: { lineHeight: 'unset', fontSize: '1rem' },
-		body2: { lineHeight: 'unset', fontSize: '.85rem' },
-		button: { lineHeight: 'unset', fontSize: '.92rem' },
-		caption: { lineHeight: 'unset', fontSize: '.9rem' },
-		overline: { lineHeight: 'unset', fontSize: '.76rem' },
-	},
-	shape: {
-		borderRadius: 8,
-	},
-	components: {
-		MuiButton: {
-			styleOverrides: {
-				root: {
-					borderRadius: 150,
-					fontWeight: 600,
-				},
-			},
-		},
-		MuiCard: {
-			styleOverrides: {
-				root: {
-					//boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-				},
-			},
-		},
-		MuiPaper: {
-			styleOverrides: {
-				root: {
-					backgroundImage: 'none',
-				},
-			},
-		},
-		MuiLink: {
-			defaultProps: {
-				target: '_blank',
-				rel: 'noopener noreferrer',
-				color: 'inherit',
-				underline: 'hover',
-			},
-		},
-		MuiChip: {
-			defaultProps: {
-				size: 'small',
-			},
-			styleOverrides: {
-				root: {
-					height: 20,
-					fontSize: '0.65rem',
-				},
-			},
-		},
-		MuiAvatar: {
-			styleOverrides: {
-				root: {
-					width: 40,
-					height: 40,
-				},
-			},
-		},
-		MuiTextField: {
-			defaultProps: {
-				size: 'small',
-				fullWidth: true,
-			},
-		},
-		MuiOutlinedInput: {
-			defaultProps: {
-				size: 'small',
-			},
-			styleOverrides: {
-				notchedOutline: {
-					border: "none",
-					borderRadius: 15,
-					backgroundColor: theme == "dark" ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.1)',
-				},
-			},
-		},
-		MuiDialog: {
-			styleOverrides: {
-				paper: {
-					borderRadius: 24,
-				},
-			},
-		},
-	},
-})
-
 // Light theme
 export const lightTheme = createTheme({
-	...commonOptions("light"),
+	...commonOptions(paletteLight),
 	// custom: {
 	// 	myNewParam: 'value for light theme',
 	// },
-	palette: {
-		mode: 'light',
-		primary: {
-			main: '#d900ff', // '#d900ffff', // ba52fe // feff34 // ff5e6c
-			light: '#e96fff',
-			dark: '#c814e7',
-			contrastText: 'rgba(255, 255, 255, 0.87)',
-		},
-		secondary: {
-			main: '#91ff00', //'#91ff00ff', // 81fe82 // fd5707 // 69c1fc
-			light: '#befc6d',
-			dark: '#6cbe00',
-			contrastText: 'rgba(0, 0, 0, 0.87)',
-		},
-		background: {
-			default: '#f5f5f5',
-			paper: '#ffffff',
-			input: 'rgba(0, 0, 0, 0.1)',
-		},
-		text: {
-			primary: 'rgba(0, 0, 0, 0.87)',
-			secondary: 'rgba(0, 0, 0, 0.6)',
-		},
-	},
+	palette: paletteLight,
 });
 
 
 // Dark theme
 export const darkTheme = createTheme({
-	...commonOptions("dark"),
+	...commonOptions(paletteDark),
 	// custom: {
 	// 	myNewParam: 'value for dark theme',
 	// },
-	palette: {
-		mode: 'dark',
-		primary: {
-			main: '#e149fc',		// '#e149fc', // ba52fe // feff34 // ff5e6c
-			light: '#e96fff',
-			dark: '#c814e7',
-			contrastText: 'rgba(0, 0, 0, 0.87)',
-		},
-		secondary: {
-			main: '#91ff00',		//'#91ff00', // 81fe82 // fd5707 // 69c1fc
-			light: '#befc6d',
-			dark: '#6cbe00',
-			contrastText: 'rgba(0, 0, 0, 0.87)',
-		},
-		background: {
-			default: '#121212',
-			paper: '#1e1e1e',
-			input: 'rgba(0, 0, 0, 0.2)',
-		},
-		text: {
-			primary: '#fff',
-			secondary: 'rgba(255, 255, 255, 0.7)',
-		},
-	},
+	palette: paletteDark
 });

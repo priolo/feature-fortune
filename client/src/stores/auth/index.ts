@@ -36,17 +36,12 @@ const setup = {
 		 */
 		current: async (_: void, store?: AuthStore) => {
 			if (!!store.state.user) return
-			let user: Account = null
-			try {
-				user = (await authApi.current())?.user
-			} catch (error) {
-				console.error('Error fetching current user:', error);
-			}
+			let user: Account = (await authApi.current({ noError: true, noBusy: true }))?.user
 			store.setUser(user)
 		},
 
 		update: async (_: void, store?: AuthStore) => {
-			if ( !store.state.userInEdit?.name ) return
+			if (!store.state.userInEdit?.name) return
 			const newAccount: Partial<Account> = {
 				name: store.state.userInEdit?.name,
 				language: store.state.userInEdit?.language ?? undefined,
@@ -150,3 +145,7 @@ export interface AuthStore extends StoreCore<AuthState>, AuthGetters, AuthAction
 }
 const authSo = createStore(setup) as AuthStore
 export default authSo
+
+
+// effettua una chiamata allo startup per vedere se c'e' un login attivo
+authSo.current()

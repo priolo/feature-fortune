@@ -35,7 +35,6 @@ const GoogleLoginCard: React.FC<Props> = ({
 			text: t(`cards.GoogleLoginCard.alerts.login.success`),
 			type: DIALOG_TYPE.SUCCESS,
 		})
-
     }
     // hook chiamato da google per il fallimento
     const handleLoginFailure = () => {

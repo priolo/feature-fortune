@@ -5,6 +5,7 @@ import { Add, CommentBank } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Card from '../Card';
 import MessageBanner from '../MessageBanner';
 import CommentsList from './CommentsList';
@@ -13,17 +14,21 @@ import CommentsList from './CommentsList';
 
 interface Props {
 	featureId?: string
+	readonly?: boolean
 }
 
 const CommentsCard: React.FC<Props> = ({
-	featureId
+	featureId,
+	readonly = false,
 }) => {
+
 
 	// STORES
 	useStore(commentListSo)
 
 
 	// HOOKS
+	const { t } = useTranslation()
 	const [dialogOpen, setDialogOpen] = useState(false)
 	useEffect(() => {
 		if (!featureId) {
@@ -54,16 +59,16 @@ const CommentsCard: React.FC<Props> = ({
 	const isVoid = comments.length == 0;
 
 	return <>
-	
+
 		<Card id="comments-card"
-			title="COMMENTS"
+			title={t('cards.CommentsCard.title', "COMMENTS")}
 			icon={<CommentBank />}
-			titleEndRender={
-				<Button variant='contained' size="small" 
+			titleEndRender={!readonly && (
+				<Button variant='contained' size="small"
 					startIcon={<Add />}
 					onClick={handleCommentClick}
-				>ADD</Button>
-			}
+				>{t('cards.CommentsCard.lable.add', "ADD")}</Button>
+			)}
 		>
 
 			{!isVoid ? (
@@ -71,8 +76,8 @@ const CommentsCard: React.FC<Props> = ({
 					comments={comments}
 				/>
 			) : (
-				<MessageBanner>
-					No comments yet for this feature.
+				<MessageBanner align="center">
+					{t('cards.CommentsCard.empty', "NO COMMENTS YET")}
 				</MessageBanner>
 			)}
 

@@ -57,6 +57,7 @@ class CommentRoute extends httpRouter.Service {
 
 	async save(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
+		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
 		let { comment }: { comment: CommentRepo } = req.body
 		if (!comment) return res.status(400).json({ error: "Comment data is required" })
 

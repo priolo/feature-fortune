@@ -1,7 +1,8 @@
 import { FUNDING_STATUS } from '@/types/Funding';
-import { Close, Done, PlayArrow, PointOfSale } from '@mui/icons-material';
+import { ChevronRight, Close, Done, PlayArrow, PointOfSale } from '@mui/icons-material';
 import { Chip, SxProps, Tooltip } from '@mui/material';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -10,20 +11,63 @@ interface Props {
     onClick?: React.MouseEventHandler<HTMLDivElement>
 }
 
+type ItemRow = {
+    tooltip?: string,
+    label?: string,
+    color?: string,
+    icon?: React.ReactNode
+}
+
 const StatusChip: React.FC<Props> = ({
     status,
     onClick,
 }) => {
 
-    const item = useMemo(() => FundingStatusItems.find(i => i.value === status), [status]);
-    const label = item?.label?.toUpperCase() ?? "N/A";
 
+    // HOOKS
+    const { t } = useTranslation()
+    const item: ItemRow = useMemo(() => {
+        let item: ItemRow = {
+            [FUNDING_STATUS.PENDING]: {
+                color: 'default',
+                icon: <ChevronRight sx={sxIcon} />,
+            },
+            [FUNDING_STATUS.CANCELLED]: {
+                color: 'error',
+                icon: <Close sx={sxIcon} />,
+            },
+            [FUNDING_STATUS.PAYABLE]: {
+                color: 'primary',
+                icon: <PointOfSale sx={sxIcon} />,
+            },
+            [FUNDING_STATUS.PAIED]: {
+                color: 'secondary',
+                icon: <Done sx={sxIcon} />,
+            },
+            [FUNDING_STATUS.ERROR]: {
+                color: 'error',
+                icon: <Close sx={sxIcon} />,
+            }
+        }[status]
+        item.label = t(`view.funding.status.${status}.label`, status);
+        item.tooltip = t(`view.funding.status.${status}.tooltip`);
+        return item;
+    }, [status]);
+
+
+
+
+
+
+    // RENDER
+    if ( !item ) return null;
+    
     return (
-        <Tooltip title={item?.subtitle ?? ""}>
+        <Tooltip title={item.tooltip}>
             <Chip
-                icon={item?.icon}
-                label={label}
-                color={item?.color as any || 'default'}
+                icon={item.icon as any}
+                label={item.label}
+                color={item?.color as any}
                 onClick={onClick}
             />
         </Tooltip>
@@ -37,44 +81,4 @@ const sxIcon: SxProps = {
     width: "14px",
     height: "14px"
 }
-
-export const FundingStatusItems = [
-    {
-        label: 'Pending',
-        value: FUNDING_STATUS.PENDING,
-        subtitle: 'Funding is pending approval',
-        color: 'default',
-        icon: <PlayArrow sx={sxIcon} />,
-    },
-    {
-        label: 'Cancelled',
-        value: FUNDING_STATUS.CANCELLED,
-        subtitle: 'Funding has been cancelled',
-        color: 'error',
-        icon: <Close sx={sxIcon} />,
-    },
-    {
-        label: 'Payable',
-        value: FUNDING_STATUS.PAYABLE,
-        subtitle: 'Funding is ready to be paid',
-        color: 'primary',
-        icon: <PointOfSale sx={sxIcon} />,
-    },
-    {
-        label: 'Paied',
-        value: FUNDING_STATUS.PAIED,
-        subtitle: 'Funding has been successfully paid',
-        color: 'secondary',
-        icon: <Done sx={sxIcon} />,
-    },
-    {
-        label: 'Error',
-        value: FUNDING_STATUS.ERROR,
-        subtitle: 'Feature has been cancelled',
-        color: 'error',
-        icon: <Close sx={sxIcon} />,
-    }
-];
-
-export type StatusItem = (typeof FundingStatusItems)[number];
 

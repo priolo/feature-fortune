@@ -57,11 +57,9 @@ class FundingRoute extends httpRouter.Service {
 		res.json({ fundings });
 	}
 
-	/**
-	 * 
-	 */
 	async save(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
+		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
 		let { funding }: { funding: FundingRepo } = req.body
 
 		// check
@@ -91,6 +89,7 @@ class FundingRoute extends httpRouter.Service {
 
 	async delete(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
+		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
 		const id = req.params["id"]
 		if (!id) return
 

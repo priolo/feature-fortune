@@ -3,7 +3,7 @@ import { Box, SxProps, Typography } from '@mui/material';
 import React from 'react';
 
 interface MessageBannerProps {
-    align?: 'left' | 'center' | 'right';
+    align?: "start" | "center" | "end";
     icon?: React.ReactNode;
     children?: React.ReactNode;
 }
@@ -13,7 +13,7 @@ interface MessageBannerProps {
  * For example: notify that a list is empty or no element is selected
  */
 const MessageBanner: React.FC<MessageBannerProps> = ({
-    align = 'left',
+    align = 'start',
     icon = <InfoOutlined color="action" />,
     children,
 }) => {
@@ -21,16 +21,16 @@ const MessageBanner: React.FC<MessageBannerProps> = ({
     if (!children) return null;
 
     return (
-        <Box sx={sxRoot}>
+        <Box sx={[sxRoot, { justifyContent: align }] as SxProps}>
 
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex' }}>
                 {icon}
             </Box>
 
             <Typography variant="body2" color="text.secondary">
                 {children}
             </Typography>
-            
+
         </Box>
     );
 };

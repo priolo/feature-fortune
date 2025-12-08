@@ -4,6 +4,7 @@ import featureDetailSo from '@/stores/feature/detail';
 import { useStore } from '@priolo/jon';
 import fundingListSo from '@/stores/funding/list';
 import commentListSo from '@/stores/comment/list';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -19,6 +20,10 @@ const FeatureDetailRightMenu: React.FC<Props> = ({
     useStore(commentListSo)
 
 
+    // HOOKS
+    const { t } = useTranslation()
+
+
     // RENDER
     const feature = featureDetailSo.state.feature
     if (!feature) return null
@@ -30,33 +35,33 @@ const FeatureDetailRightMenu: React.FC<Props> = ({
     return <PageMenu items={[
         {
             id: 'github-repo-selector-card',
-            label: 'Repository',
-            subLabel: feature.githubRepoId ? feature.githubRepoMetadata?.full_name ?? "--" : 'Not linked',
+            label: t('rightmenu.feature.repo.label'),
+            subLabel: feature.githubRepoId ? feature.githubRepoMetadata?.full_name ?? "--" : t('rightmenu.feature.repo.warn'),
             warnIcon: !feature.githubRepoId,
 
         },
         {
             id: 'feature-detail-card',
-            label: 'Details',
-            subLabel: haveDescription ? 'Feature description' : "Write a title and description",
+            label: t('rightmenu.feature.details.label'),
+            subLabel: t(`rightmenu.feature.details.${haveDescription ? "ok" : "warn"}`),
             warnIcon: !haveDescription,
         },
         {
             id: 'dev-selector',
-            label: 'Developer',
-            subLabel: feature.accountDevId ? "Assigned" : 'Not assigned',
+            label: t('rightmenu.feature.developer.label'),
+            subLabel: t(`rightmenu.feature.developer.${feature.accountDevId ? "ok" : "warn"}`),
             warnIcon: !feature.accountDevId,
         },
         {
             id: 'fundings-card',
-            label: 'Fundings',
-            subLabel: 'Backers and funds',
+            label: t('rightmenu.feature.fundings.label'),
+            subLabel: t(`rightmenu.feature.fundings.${!fundingCount ? "warn" : "ok"}`),
             startRender: fundingCount,
         },
         {
             id: 'comments-card',
-            label: 'Comments',
-            subLabel: 'Discussion',
+            label: t('rightmenu.feature.comments.label'),
+            subLabel: t(`rightmenu.feature.comments.${!commentCount ? "warn" : "ok"}`),
             startRender: commentCount,
         }
     ]} />

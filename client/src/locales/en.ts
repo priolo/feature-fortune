@@ -1,3 +1,5 @@
+import { add } from "@priolo/jon-utils/dist/object/diff";
+
 const en = {
 	common: {
 		save: "Save",
@@ -258,16 +260,16 @@ const en = {
 			title: "DEVELOPER",
 			status: {
 				selected: {
-					title: "Account Selected",
-					desc: `<br/>Attenzione però: Non è il proprietario del repository Github. Ti fidi?`
+					title: "Account selezionato",
+					desc: `<br/>Attenzione però: Non è il proprietario del repo Github. Ci fidiamo?`
 				},
 				matched: {
-					title: "Account Selected (Match)",
-					desc: "<br/>Benissimo è proprio il poprietario del repository GitHub."
+					title: "Account trovato!",
+					desc: "<br/>Benissimo è proprio il poprietario del repository GitHub. Siamo sicuri che farà un buon lavoro!"
 				},
 				none: {
-					title: "Seleziona l'account che dovrà svolgere la modifica",
-					desc: `<br/>Se non trovi il proprietario del repository, contattalo e fallo registrare a questa piattaforma!
+					title: "Seleziona il developer che dovrà implementare la feature",
+					desc: `<br/>Se non trovi il proprietario del repo GitHub, contattalo e fallo registrare a questa piattaforma!
 					<br/>Altrimenti cerca qualcun'altro oppure lascialo vuoto e spera che qualcuno si faccia avanti`
 				}
 			},
@@ -282,7 +284,7 @@ const en = {
 			actions: {
 				contribute: "CONTRIBUTE"
 			},
-			empty: "No fundings yet for this feature.",
+			empty: "NO FUNDINGS YET FOR THIS FEATURE",
 			alerts: {
 				pay: {
 					check: "Confermando (OK) procederai con il pagamento immediato del funding.",
@@ -309,10 +311,17 @@ const en = {
 				title: "LINK (e.g. issue GitHub)",
 				placeholder: "Enter a link related to the feature (e.g., issues, discussion, etc.)",
 			},
+		},
+		CommentsCard: {
+			title: "COMMENTS",
+			empty: "NO COMMENTS YET",
+			label: {
+				add: "ADD"
+			}
 		}
 	},
 	overview: {
-		title: "Overview",
+		title: "OVERVIEW",
 		feature: {
 			message: {
 				new: `Indica il repository GitHub e inserisci il dettaglio della FEATURE che vorresti fosse implementata.
@@ -346,26 +355,23 @@ const en = {
 		},
 		account: {
 			message: {
-				default: `This page allows you to manage your personal information, 
-				linked login services, and payment details.
-                Keep your profile up to date to ensure smooth collaboration 
-				and funding processing.`,
+				default: `Gestisci i tuoi dati di account e le tue preferenze qui.`,
 				email: {
-					warning: `Non possiamo mandarti notifiche importanti per EMAIL.`,
-					success: `Riceverai nella tua EMAIL le notifiche importanti.
-					Per esempio se una FEATURE a cui hai contribuito viene rilasciata.`
+					warning: `Non possiamo mandarti notifiche per <0>email</0>.`,
+					success: `Riceverai nella tua <0>email</0> le notifiche più importanti.
+					Per esempio se una <0>feature</0> a cui hai contribuito è stata rilasciata.`
 				},
 				github: {
-					warning: `Non potrai proporti come DEVELOPER senza un repository GitHub.`,
-					success: `Puoi proporti come DEVELOPER di una FEATURE.`
+					warning: `Non puoi proporti come <0>developer</0> senza un repository <0>GitHub</0>`,
+					success: `Puoi proporti come <0>developer</0> di una <0>feature</0>.`
 				},
 				credit_card: {
-					warning: `Non potrai finanziare le FEATURE senza una carta di credito`,
-					success: `Puoi finanziare le FEATURE con la tua carta di credito.`
+					warning: `Non puoi finanziare le <0>feature</0> se non inserisci una <0>carta di credito</0>`,
+					success: `Puoi finanziare le <0>feature</0> con la tua <0>carta di credito</0>.`
 				},
 				stripe: {
-					warning: `Non potrai ricevere fondi senza un account STRIPE `,
-					success: `Puoi ricevere fondi nel tuo account STRIPE per le FEATURE che sviluppi.`
+					warning: `Non potrai ricevere <0>donazioni</0> senza un account <0>Stripe</0> collegato.`,
+					success: `Puoi ricevere <0>donazioni</0> nel tuo account <0>Stripe</0>.`
 				},
 			},
 			label: {
@@ -374,8 +380,31 @@ const en = {
 		}
 	},
 	rightmenu: {
-		account: {
-
+		feature: {
+			repo: {
+				label: "REPOSITORY",
+				warn: "Inserisci un repository GitHub",
+			},
+			details: {
+				label: "DETAILS",
+				ok: "La feature è descritta",
+				warn: "Scrivi un titolo e una descrizione (ed eventualmente un link)"
+			},
+			developer: {
+				label: "DEVELOPER",
+				ok: "Assigned",
+				warn: "Cerca e seleziona un developer"
+			},
+			fundings: {
+				label: "FUNDINGS",
+				ok: "number of donations",
+				warn: "Ancora nessuna donazione",
+			},
+			comments: {
+				label: "COMMENTS",
+				ok: "number of discussions",
+				warn: "Ancora nessun commento",
+			}
 		}
 	},
 	header: {
@@ -408,13 +437,72 @@ const en = {
 			title: "FEATURES"
 		}
 	},
-	viewers: {
+	view: {
 		githubRepo: {
 			no_description: "No description available",
 			empty: "NO REPOSITORY SELECTED"
 		},
 		funding: {
-			
+			label: {
+				cancel: "CANCEL",
+				pay_now: "PAY NOW!",
+				try_again: "TRY AGAIN!"
+			},
+			status: {
+				pending: {
+					label: "PENDING",
+					tooltip: "FUNDING IS PENDING APPROVAL"
+				},
+				cancelled: {
+					label: "CANCELLED",
+					tooltip: "FUNDING HAS BEEN CANCELLED"
+				},
+				payable: {
+					label: "PAYABLE",
+					tooltip: "FUNDING IS READY TO BE PAID"
+				},
+				paied: {
+					label: "PAIED",
+					tooltip: "FUNDING HAS BEEN SUCCESSFULLY PAID"
+				},
+				error: {
+					label: "ERROR",
+					tooltip: "FEATURE HAS BEEN CANCELLED"
+				},
+			}
+		},
+		account: {
+			empty: "NO ACCOUNT SELECTED",
+			stripe: {
+				ready: {
+					label: "STRIPE READY",
+					tooltip: "ABILITATO A RICEVERE PAGAMENTI",
+				},
+				partial: {
+					label: "STRIPE PARTIAL",
+					tooltip: "PUO' RICEVERE PAGAMENTI MA DEVE COMPLETARE LA REGISTRAZIONE",
+				},
+				no: {
+					label: "NO STRIPE",
+					tooltip: "ATTUALMENTE NON PUO' RICEVERE PAGAMENTI STRIPE",
+				},
+			},
+			email: {
+				label: "EMAIL",
+				tooltip: "L'EMAIL E' VERIFICATA",
+			},
+			google: {
+				label: "GOOGLE",
+				tooltip: "HA UN ACCOUNT GOOGLE",
+			},
+			github: {
+				label: "GITHUB",
+				tooltip: "HA UN ACCOUNT GITHUB",
+			},
+			card: {
+				label: "CARD",
+				tooltip: "HA INSERITO LA CARTA DI CREDITO",
+			}
 		}
 	}
 }

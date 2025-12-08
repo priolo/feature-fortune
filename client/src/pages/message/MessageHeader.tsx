@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
-import BackButton from '../../layout/BackButton';
+import HomeButton from '../../layout/BackButton';
 import { Add, Refresh } from '@mui/icons-material';
 import messageListSo from '@/stores/message/list';
 import { useSearchParams } from 'react-router-dom';

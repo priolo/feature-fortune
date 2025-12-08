@@ -1,4 +1,4 @@
-import { ArrowBack } from '@mui/icons-material';
+import { ArrowBack, NavigateBefore } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -31,7 +31,7 @@ const BackButton: React.FC<Props> = ({
 	return (
 		<IconButton
 			onClick={handleGoBack}
-		><ArrowBack /> </IconButton>
+		><NavigateBefore /> </IconButton>
 	)
 }
 

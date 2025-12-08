@@ -1,3 +1,4 @@
+import HomeButton from '@/layout/BackButton';
 import authSo from '@/stores/auth';
 import featureDetailSo from '@/stores/feature/detail';
 import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
@@ -6,7 +7,6 @@ import { Box, Button, Tooltip, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 
 
 
@@ -18,7 +18,6 @@ const FeatureDetailHeader: React.FC = () => {
 
 	// HOOKS
 	const { t } = useTranslation()
-	const navigate = useNavigate()
 
 
 	// HANDLERS
@@ -141,9 +140,6 @@ Se verrà accettata dopo 24 ore avverrà il pagamento.`,
 		})
 	}
 
-	const handleCancelClick = () => {
-		navigate(-1)
-	}
 
 	// RENDER
 	const feature = featureDetailSo.state.feature
@@ -163,17 +159,11 @@ Se verrà accettata dopo 24 ore avverrà il pagamento.`,
 
 	return <>
 
-		{/* <BackButton /> */}
-
 		<Typography variant="h5">
 			{t("header.feature.title", "FEATURE")}
 		</Typography>
 
 		<Box sx={{ flex: 1 }}></Box>
-
-		{/* <Button
-			onClick={handleCancelClick}
-		>BACK</Button> */}
 
 		{isAuthor && feature.status == FEATURE_STATUS.PROPOSED && (
 			<Tooltip title={t(`header.feature.tooltip.${canSave ? "save_yes" : "save_no"}`)}><div>

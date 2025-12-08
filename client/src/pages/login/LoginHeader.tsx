@@ -1,6 +1,5 @@
-import { Box, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import React from 'react';
-import BackButton from '../../layout/BackButton';
 
 
 
@@ -13,13 +12,11 @@ const LoginHeader: React.FC = () => {
 	// HANDLERS
 	
 	// RENDER
-	return <>
-		<BackButton toHome />
+	return (
 		<Typography variant="h5">
 			LOGIN
 		</Typography>
-		<Box sx={{ flex: 1 }}></Box>
-	</>
+	)
 }
 
 export default LoginHeader;

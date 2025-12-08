@@ -1,12 +1,14 @@
+import { sxClips, sxContent, sxRoot } from '@/theme/AvatarStyle';
 import { Account } from '@/types/Account';
-import { Done, PriorityHigh, WarningAmber } from '@mui/icons-material';
-import { Box, Chip, Typography } from '@mui/material';
+import { Box, Chip, Tooltip, Typography } from '@mui/material';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import AvatarCmp from '../AvatarCmp';
 import MessageBanner from '../MessageBanner';
-import { sxClips, sxContent, sxRoot } from '@/theme/AvatarStyle';
 
 
+
+type StrupeStatus = "ready" | "partial" | "no"
 
 interface Props {
     account: Account;
@@ -16,17 +18,27 @@ const AccountViewer: React.FC<Props> = ({
     account
 }) => {
 
-    // RENDER
+    // HOOKS
+    const { t } = useTranslation()
 
+
+    // RENDER
     if (!account) return <MessageBanner>
-        NO ACCOUNT SELECTED
+        {t('view.account.empty', 'NO ACCOUNT SELECTED')}
     </MessageBanner>
 
-    const stripeAccProps: any = !!account.stripeAccountId
-        ? (account.stripeAccountStatus === 'ready'
-            ? { color: 'secondary', label: 'STRIPE READY' }
-            : { color: 'warning', label: 'STRIPE INCOMPLETE' }
-        ) : { color: 'primary', label: 'NO STRIPE' }
+
+    const stripeStatus: StrupeStatus = !!account.stripeAccountId
+        ? (account.stripeAccountStatus === 'ready' ? "ready" : "partial")
+        : "no"
+    const stripeLabel = t(`view.account.stripe.${stripeStatus}.label`)
+    const stripeTooltip = t(`view.account.stripe.${stripeStatus}.tooltip`)
+    const stripeColor = {
+        ready: 'secondary',
+        partial: 'warning',
+        no: 'primary',
+    }[stripeStatus]
+
 
     return (
         <Box sx={sxRoot}>
@@ -40,28 +52,40 @@ const AccountViewer: React.FC<Props> = ({
                 </Typography>
 
                 <Box sx={sxClips}>
+
                     {account.emailVerified && (
-                        <Chip icon={<Done />} color="success"
-                            label="VERIFIED"
-                        />
-                    )}
-                    {account.googleEmail && (
-                        <Chip color="primary"
-                            label="GOOGLE"
-                        />
-                    )}
-                    {account.githubId && (
-                        <Chip color="primary"
-                            label="GITHUB"
-                        />
-                    )}
-                    {account.stripeHaveCard && (
-                        <Chip
-                            label="CARD"
-                        />
+                        <Tooltip title={t("view.account.email.tooltip")}>
+                            <Chip color="success"
+                                label={t("view.account.email.label", 'EMAIL')}
+                            />
+                        </Tooltip>
                     )}
 
-                    <Chip {...stripeAccProps} />
+                    {account.googleEmail && (
+                        <Tooltip title={t("view.account.google.tooltip")}>
+                            <Chip color="primary"
+                                label={t("view.account.google.label", 'GOOGLE')}
+                            />
+                        </Tooltip>
+                    )}
+
+                    {account.githubId && (
+                        <Tooltip title={t("view.account.github.tooltip")}>
+                            <Chip color="primary"
+                                label={t("view.account.github.label", 'GITHUB')}
+                            />
+                        </Tooltip>
+                    )}
+
+                    {account.stripeHaveCard && (
+                        <Tooltip title={t("view.account.card.tooltip")}>
+                            <Chip label={t("view.account.card.label", 'CARD')} />
+                        </Tooltip>
+                    )}
+
+                    <Tooltip title={stripeTooltip}>
+                        <Chip label={stripeLabel} color={stripeColor as any} />
+                    </Tooltip>
 
                 </Box>
             </Box>

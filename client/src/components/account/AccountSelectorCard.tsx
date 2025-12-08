@@ -38,12 +38,11 @@ const AccountSelectorCard: React.FC<Props> = ({
 }) => {
 
     // STORES
-    const { t } = useTranslation()
-
+    
 
     // HOOKS
+    const { t } = useTranslation()
     const [dialogOpen, setDialogOpen] = useState(false);
-    //const [account, setAccount] = useState<Account>(null);
 
 
     // HANDLERS
@@ -58,10 +57,6 @@ const AccountSelectorCard: React.FC<Props> = ({
     const handleRemoveClick = () => {
         onChange?.(null)
     }
-    // const handleAccountLoad = (account: Account) => {
-    //     setAccount(account)
-    // }
-
 
 
     // RENDER
@@ -88,9 +83,7 @@ const AccountSelectorCard: React.FC<Props> = ({
             <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input", justifyContent: 'center', p:2 }}
                 onClick={!readOnly ? handleSelectClick : undefined}
             >
-                <AccountIdView accountId={accountId}
-                    //onLoad={handleAccountLoad}
-                />
+                <AccountIdView accountId={accountId} />
             </ListItemButton>
 
             {!readOnly &&

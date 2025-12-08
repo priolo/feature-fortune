@@ -20,10 +20,7 @@ const UserCmp: React.FC<UserCmpProps> = ({
 
 	// HOOKS
 	const navigate = useNavigate();
-	useEffect(() => {
-		authSo.current()
-	}, [])
-
+	
 
 	// STATE
 	const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<null | HTMLElement>(null);

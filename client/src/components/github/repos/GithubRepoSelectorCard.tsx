@@ -86,7 +86,7 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
             </MessageCmp>
 
 
-            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input", justifyContent: 'center', p:2 }}
+            <ListItemButton sx={{ borderRadius: 2, bgcolor: "background.input", justifyContent: 'center', p: 2 }}
                 onClick={!readOnly ? handleFindRepoClick : undefined}
             >
                 {isLoading
@@ -105,7 +105,7 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
                     <Button
                         onClick={handleFindRepoClick}
                     >
-                        {isSelected ? t('cards.GithubRepoSelectorCard.actions.change') : t('cards.GithubRepoSelectorCard.actions.select')}
+                        {t(`cards.GithubRepoSelectorCard.actions.${isSelected ? "change" : "select"}`)}
                     </Button>
                 </Box>
             )}

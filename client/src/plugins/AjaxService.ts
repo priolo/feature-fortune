@@ -100,6 +100,7 @@ export class AjaxService {
 		// MANAGE HTTP ERRORS
 		const status = response.status
 		if (status >= 400 && !options.noError) {
+			
 			const error = ret?.error ?? jsonError
 			const textMsg = !error ? "generic error" : typeof error === 'string' ? error : error.doc_url ?? error.code ?? JSON.stringify(error)
 			dialogSo.dialogOpen({ type: DIALOG_TYPE.ERROR, text: textMsg })
