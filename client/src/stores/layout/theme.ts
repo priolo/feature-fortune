@@ -46,7 +46,8 @@ export interface ThemeStore extends StoreCore<ThemeState>, ThemeGetters, ThemeAc
 const themeSo = createStore<ThemeState>(setup);
 
 // Detect system preference if no theme is saved
-const themeName = /*localStorage.getItem('themeMode') ??*/ window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+//const themeName = localStorage.getItem('themeMode') ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+const themeName = localStorage.getItem('themeMode') ?? 'dark'
 themeSo.state.current = themeName == 'dark' ? darkTheme : lightTheme;
 
 export default themeSo as ThemeStore;

@@ -38,9 +38,9 @@ export const paletteLight: PaletteOptions = {
 		contrastText: 'rgba(255, 255, 255, 0.87)',
 	},
 	secondary: {
-		main: '#91ff00', 		// '#91ff00ff', // 81fe82 // fd5707 // 69c1fc
-		light: '#befc6d',
-		dark: '#6cbe00',
+		main: '#69c1fc', 		// '#629421ff', // #81fe82 // #fd5707 // #69c1fc
+		light: '#8bcefaff',
+		dark: '#287fb9ff',
 		contrastText: 'rgba(0, 0, 0, 0.87)',
 	},
 	background: {
