@@ -1,4 +1,5 @@
 import { http, httpRouter, httpStatic, jwt, log, typeorm, types } from "@priolo/julian";
+import { IAccount } from "@priolo/julian/dist/services/email/types.js";
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { AccountRepo } from "./repository/Account.js";
@@ -23,7 +24,6 @@ import PaymentRoute from "./routers/PaymentRoute.js";
 import StripeHookRoute from "./routers/StripeHookRoute.js";
 import StripeRoute from "./routers/StripeRoute.js";
 import FeaturePaymentCrono from "./services/crono/FeaturePaymentCrono.js";
-import EmailResendService from "./services/email/EmailResendService.js";
 import ReflectionRoute from "./services/reflection/ReflectionRoute.js";
 import StripeService from "./services/stripe/StripeService.js";
 import StripeServiceMock from "./services/stripe/StripeServiceMock.js";
@@ -51,7 +51,7 @@ function buildNodeConfig(params?: ConfigParams) {
 			class: "log",
 			exclude: [types.TypeLog.SYSTEM],
 			onParentLog: (log) => {
-				if ( noLog ) return false
+				if (noLog) return false
 				if (!!log?.payload && ['nc:init', 'nc:destroy', "ns:set-state"].includes(log.payload.type)) return false
 			}
 		},
@@ -61,16 +61,29 @@ function buildNodeConfig(params?: ConfigParams) {
 		},
 
 		{
-			class: process.env.NODE_ENV != ENV_TYPE.TEST 
-				? StripeService 
+			class: process.env.NODE_ENV != ENV_TYPE.TEST
+				? StripeService
 				: StripeServiceMock,
 		},
 
 		// {
 		// 	class: EmailGoogleService,
 		// },
+		// {
+		// 	class: EmailResendService,
+		// },
 		{
-			class: EmailResendService,
+			class: "email",
+			name: "puce-email",
+			account: <IAccount>{
+				host: process.env.EMAIL_HOST,
+				port: Number(process.env.EMAIL_PORT),
+				secure: true,
+				auth: {
+					user: process.env.EMAIL_USER,
+					pass: process.env.EMAIL_PASSWORD,
+				}
+			},
 		},
 
 		!noHttp && <http.conf>{

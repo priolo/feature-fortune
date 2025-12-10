@@ -1,10 +1,9 @@
-import { Bus, httpRouter, jwt, typeorm } from "@priolo/julian";
+import { Bus, httpRouter, jwt, typeorm, email as emailNs } from "@priolo/julian";
 import crypto from "crypto";
 import { Request, Response } from "express";
 import { FindManyOptions } from "typeorm";
 import { AccountRepo, accountSendable, EMAIL_CODE, JWTPayload } from "../repository/Account.js";
 import { ENV_TYPE, envInit } from "../types/env.js";
-import { Actions } from "../services/email/EmailResendService.js";
 
 envInit()
 
@@ -16,7 +15,7 @@ class AuthEmailRoute extends httpRouter.Service {
 		return {
 			...super.stateDefault,
 			path: "/api/auth",
-			email_path: "/resend-email",
+			email_path: "/puce-email",
 			repository: "/typeorm/accounts",
 			jwt: "/jwt",
 			routers: [
@@ -61,9 +60,9 @@ class AuthEmailRoute extends httpRouter.Service {
 
 		// INVIO EMAIL con il codice
 		await new Bus(this, this.state.email_path).dispatch({
-			type: Actions.SEND,
+			type: emailNs.Actions.SEND,
 			payload: {
-				from: process.env.EMAIL_SENDER ?? "from@support.com",
+				from: process.env.EMAIL_USER,
 				to: email,
 				subject: "Richiesta registraziuone",
 				html: `

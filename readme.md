@@ -43,14 +43,14 @@ cambiare i paramentri:
 `Homepage URL`
 - "local"  
 http://localhost:3000/app/
-- "render"  
-https://feature-fortune.onrender.com/app/
+- "remote"  
+https://<sito>/app/
 
 `Authorization callback URL`  
 - "local"  
 http://localhost:3000/api/auth/github/callback  
-- "render"  
-https://feature-fortune.onrender.com/api/auth/github/callback
+- "remote"  
+https://<sito>/api/auth/github/callback
 
 
 
@@ -101,7 +101,7 @@ Panoramica / Strumenti per test / Chiave privata
 
 Sviluppatori (drawer in basso) / Webhook
 se devi agguingere un webhook: "Destinazioni eventi"
-`https://feature-fortune.onrender.com/api/stripe/webhook`  
+`https://<sito>/api/stripe/webhook`  
 copiare "Chiave privata della firma digitale"  
 mettere in .env STRIPE_WEBHOOK_SECRET
 

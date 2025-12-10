@@ -31,7 +31,7 @@ class EmailResendService extends ServiceBase {
 	get stateDefault() {
 		return {
 			...super.stateDefault,
-			name: "resend-email",
+			name: "puce-email",
 		}
 	}
 	declare state: typeof this.stateDefault;

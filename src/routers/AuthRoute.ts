@@ -15,7 +15,7 @@ class AuthRoute extends httpRouter.Service {
 		return {
 			...super.stateDefault,
 			path: "/api/auth",
-			email_path: "/resend-email",
+			email_path: "/puce-email",
 			repository: "/typeorm/accounts",
 			jwt: "/jwt",
 			routers: [
