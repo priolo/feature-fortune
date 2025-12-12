@@ -17,7 +17,7 @@ interface Props {
 	onClose: (repo: Funding | null) => void
 }
 
-const COMPLETION_TIME = import.meta.env.VITE_PAYMENT_AFTER_COMPLETION_MIN
+const COMPLETION_TIME = import.meta.env.VITE_PAYMENT_AFTER_COMPLETION_HOURS
 
 const FundingDialog: FunctionComponent<Partial<Props>> = ({
 	fundingToEdit,

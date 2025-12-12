@@ -1,11 +1,28 @@
 import { Bus, httpRouter, jwt, typeorm, email as emailNs } from "@priolo/julian";
 import crypto from "crypto";
+import fs from "node:fs/promises";
+import path from "node:path";
 import { Request, Response } from "express";
 import { FindManyOptions } from "typeorm";
 import { AccountRepo, accountSendable, EMAIL_CODE, JWTPayload } from "../repository/Account.js";
 import { ENV_TYPE, envInit } from "../types/env.js";
+import { http } from "@priolo/julian";
 
 envInit()
+
+
+let authEmailCodeTemplateCached: string | null = null;
+async function getEmailCodeTemplate(templateVars: Record<string, string>): Promise<string> {
+	let template: string = null 
+	if (authEmailCodeTemplateCached) {
+		template = authEmailCodeTemplateCached
+	} else {
+		const templatePath = path.resolve(process.cwd(), "templates/email/code.html")
+		template = await fs.readFile(templatePath, "utf-8")
+	}
+	// Replace all {{var}} placeholders in the template
+	return template.replace(/{{(\w+)}}/g, (_, key) => templateVars[key] || "");
+}
 
 
 
@@ -15,7 +32,7 @@ class AuthEmailRoute extends httpRouter.Service {
 		return {
 			...super.stateDefault,
 			path: "/api/auth",
-			email_path: "/puce-email",
+			email_path: "/email-noreply",
 			repository: "/typeorm/accounts",
 			jwt: "/jwt",
 			routers: [
@@ -26,12 +43,18 @@ class AuthEmailRoute extends httpRouter.Service {
 	}
 	declare state: typeof this.stateDefault
 
+	limiter = new http.RateLimiter(3, 10_000); // 3 calls / 10 seconds
 
 	/**
 	 * Grazie all'"email" registra un nuovo utente
 	 */
 	async emailSendCode(req: Request, res: Response) {
 		const { email } = req.body
+
+		// RATE LIMITER
+		if (this.limiter.isLimited(email)) {
+			return res.status(429).json({ error: "Too many requests. Please try again later." });
+		}
 
 		// creo il codice segreto da inviare per email
 		const code = process.env.NODE_ENV == ENV_TYPE.TEST
@@ -58,27 +81,21 @@ class AuthEmailRoute extends httpRouter.Service {
 			},
 		})
 
-		// INVIO EMAIL con il codice
+		// INVIO EMAIL con il codice e altri placeholder
+		const html = await getEmailCodeTemplate({
+			code,
+			support: "support@puce.app",
+			url: "https://puce.com/app/account",
+		})
 		await new Bus(this, this.state.email_path).dispatch({
 			type: emailNs.Actions.SEND,
 			payload: {
 				from: process.env.EMAIL_USER,
 				to: email,
 				subject: "Richiesta registraziuone",
-				html: `
-				<div style="font-family: Arial, sans-serif; background: #f9f9f9; padding: 32px; border-radius: 8px; max-width: 480px; margin: 0 auto; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-					<h2 style="color: #2d7ff9;">Welcome to Feature Fortune!</h2>
-					<p style="font-size: 16px; color: #333;">Thank you for registering your account. To complete your registration, please use the following verification code:</p>
-					<div style="margin: 24px 0; text-align: center;">
-						<span style="display: inline-block; background: #eaf4ff; color: #2d7ff9; font-size: 28px; font-weight: bold; letter-spacing: 4px; padding: 16px 32px; border-radius: 6px;">${code}</span>
-					</div>
-					<p style="font-size: 15px; color: #555;">Enter this code in the app to activate your account. If you did not request this, you can safely ignore this email.</p>
-					<hr style="margin: 32px 0; border: none; border-top: 1px solid #eee;">
-					<p style="font-size: 13px; color: #aaa;">If you have any questions, please contact our support team.</p>
-				</div>
-				`,
+				html,
 			}
-		})
+		});
 
 		res.status(200).json({ data: "ok" })
 	}

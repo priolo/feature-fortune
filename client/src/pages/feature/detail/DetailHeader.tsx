@@ -23,62 +23,71 @@ const FeatureDetailHeader: React.FC = () => {
 	const handleAuthorSaveClick = async () => {
 		await featureDetailSo.save()
 		dialogSo.dialogOpen({
-			title: "Success",
-			text: "Feature saved successfully",
+			text: t("header.feature.message.modify"),
 			type: DIALOG_TYPE.SUCCESS,
 			modal: false,
 		})
 	}
 
+
 	const handleAuthorDeleteClick = async () => {
 		const res = await dialogSo.dialogOpen({
-			title: "ATTENZIONE",
-			text: `Tutti i FUNDERS verranno annullati e Il DEVELOPER non verrà pagato.
-Questa FEATURE verrà chiusa definitivamente e non sarà modificabile.`,
+			title: t("header.feature.dialog.warning"),
+			text: t("header.feature.dialog.delete"),
 			type: DIALOG_TYPE.WARNING,
 			modal: true,
 		})
 		if (!res) return
 		await featureDetailSo.action(FEATURE_ACTIONS.ATH_CANCEL)
 		dialogSo.dialogOpen({
-			title: "Success",
-			text: "Feature cancelled successfully",
+			text: t("header.feature.message.delete"),
+			type: DIALOG_TYPE.SUCCESS,
+			modal: false,
+		})
+	}
+	const handleAuthorRejectClick = async () => {
+		const res = await dialogSo.dialogOpen({
+			title: t("header.feature.dialog.warning"),
+			text: t("header.feature.dialog.reject"),
+			type: DIALOG_TYPE.WARNING,
+			modal: true,
+		})
+		if (!res) return
+		await featureDetailSo.action(FEATURE_ACTIONS.ATH_REJECTED)
+		dialogSo.dialogOpen({
+			text: t("header.feature.message.reject"),
 			type: DIALOG_TYPE.SUCCESS,
 			modal: false,
 		})
 	}
 	const handleAuthorCompleteClick = async () => {
 		const res = await dialogSo.dialogOpen({
-			title: "ATTENZIONE",
-			text: `Dichiari che la FEATURE è completata. 
-Quindi tra 24 ore i pagamenti al DEVELOPER verranno effettuati automaticamente.`,
+			title: t("header.feature.dialog.warning"),
+			text: t("header.feature.dialog.complete"),
 			type: DIALOG_TYPE.WARNING,
 			modal: true,
 		})
 		if (!res) return
 		await featureDetailSo.action(FEATURE_ACTIONS.ATH_COMPLETE)
 		dialogSo.dialogOpen({
-			title: "Success",
-			text: "Feature completed successfully",
+			text: t("header.feature.message.complete"),
 			type: DIALOG_TYPE.SUCCESS,
 			modal: false,
 		})
 	}
 
 
-
 	const handleDevAcceptClick = async () => {
 		const res = await dialogSo.dialogOpen({
-			title: "Please wait",
-			text: "Accepting the feature...",
+			title: t("header.feature.dialog.warning"),
+			text: t("header.feature.dialog.accept"),
 			type: DIALOG_TYPE.INFO,
 			modal: true,
 		})
-		console.log("RES", res)
+		if (!res) return
 		await featureDetailSo.action(FEATURE_ACTIONS.DEV_ACCEPT)
 		dialogSo.dialogOpen({
-			title: "Success",
-			text: "Feature accepted successfully",
+			text: t("header.feature.message.accept"),
 			type: DIALOG_TYPE.SUCCESS,
 			modal: false,
 		})
@@ -86,16 +95,16 @@ Quindi tra 24 ore i pagamenti al DEVELOPER verranno effettuati automaticamente.`
 
 	const handleDevDeclineClick = async () => {
 		const res = await dialogSo.dialogOpen({
-			title: "ATTENZIONE",
-			text: `Stai rifiutando la FEATURE.`,
+			title: t("header.feature.dialog.warning"),
+			text: t("header.feature.dialog.decline"),
 			labelCancel: "ANNULLA",
 			type: DIALOG_TYPE.WARNING,
 			modal: true,
 		})
+		if (!res) return
 		await featureDetailSo.action(FEATURE_ACTIONS.DEV_DECLINE)
 		dialogSo.dialogOpen({
-			title: "Success",
-			text: "Feature declined successfully",
+			text: t("header.feature.message.decline"),
 			type: DIALOG_TYPE.SUCCESS,
 			modal: false,
 		})
@@ -103,18 +112,15 @@ Quindi tra 24 ore i pagamenti al DEVELOPER verranno effettuati automaticamente.`
 
 	const handleDevLeaveClick = async () => {
 		const res = await dialogSo.dialogOpen({
-			title: "ATTENZIONE",
-			text: `Stai abbandonado la FEATURE. 
-Verrai rimosso come DEVELOPER e la FEATURE tornerà in stato PROPOSED.`,
-			labelCancel: "ANNULLA",
+			title: t("header.feature.dialog.warning"),
+			text: t("header.feature.dialog.leave"),
 			type: DIALOG_TYPE.WARNING,
 			modal: true,
 		})
 		if (!res) return
 		await featureDetailSo.action(FEATURE_ACTIONS.DEV_LEAVE)
 		dialogSo.dialogOpen({
-			title: "Success",
-			text: "You have left the feature successfully",
+			text: t("header.feature.message.leave"),
 			type: DIALOG_TYPE.SUCCESS,
 			modal: false,
 		})
@@ -122,18 +128,15 @@ Verrai rimosso come DEVELOPER e la FEATURE tornerà in stato PROPOSED.`,
 
 	const handleDevReleaseClick = async () => {
 		const res = await dialogSo.dialogOpen({
-			title: "ATTENZIONE",
-			text: `Dopo il rilascio, l'AUTHOR dovrà accettare o rifiutare
-Se verrà accettata dopo 24 ore avverrà il pagamento.`,
-			labelCancel: "ANNULLA",
+			title: t("header.feature.dialog.warning"),
+			text: t("header.feature.dialog.release"),
 			type: DIALOG_TYPE.WARNING,
 			modal: true,
 		})
 		if (!res) return
 		await featureDetailSo.action(FEATURE_ACTIONS.DEV_RELEASE)
 		dialogSo.dialogOpen({
-			title: "Success",
-			text: "Feature released successfully",
+			text: t("header.feature.message.release"),
 			type: DIALOG_TYPE.SUCCESS,
 			modal: false,
 		})
@@ -164,6 +167,15 @@ Se verrà accettata dopo 24 ore avverrà il pagamento.`,
 
 		<Box sx={{ flex: 1 }}></Box>
 
+
+		{isAuthor && feature.status == FEATURE_STATUS.IN_DEVELOPMENT || feature.status == FEATURE_STATUS.PROPOSED && <>
+			<Tooltip title={t(`header.feature.tooltip.delete`)}>
+				<Button
+					onClick={handleAuthorDeleteClick}
+				>{t("header.feature.label.delete", "DELETE")}</Button>
+			</Tooltip>
+		</>}
+
 		{isAuthor && feature.status == FEATURE_STATUS.PROPOSED && (
 			<Tooltip title={t(`header.feature.tooltip.${canSave ? "save_yes" : "save_no"}`)}><div>
 				<Button variant="contained"
@@ -173,19 +185,10 @@ Se verrà accettata dopo 24 ore avverrà il pagamento.`,
 			</div></Tooltip>
 		)}
 
-		{isAuthor && feature.status == FEATURE_STATUS.IN_DEVELOPMENT && <>
-			<Tooltip title={t(`header.feature.tooltip.delete`)}>
-				<Button
-					onClick={handleAuthorDeleteClick}
-				>{t("header.feature.label.delete", "DELETE")}</Button>
-			</Tooltip>
-		</>}
-
-
 		{isAuthor && feature.status == FEATURE_STATUS.RELEASED && <>
 			<Tooltip title={t(`header.feature.tooltip.reject`)}>
 				<Button
-					onClick={handleAuthorDeleteClick}
+					onClick={handleAuthorRejectClick}
 				>{t("header.feature.label.reject", "REJECT")}</Button>
 			</Tooltip>
 

@@ -48,13 +48,19 @@ const setup = {
 		async save(_: void, store?: FeatureDetailStore) {
 			const feature = store.state.feature
 			let updatedFeature: Feature
-			if (!!feature.id) {
+			let isNew = !feature.id
+			if (!isNew) {
 				updatedFeature = (await featureApi.update(feature))?.feature
 			} else {
 				updatedFeature = (await featureApi.create(feature))?.feature
 			}
 			store.state.featureLoaded = { ...updatedFeature }
 			store.setFeature(updatedFeature)
+
+			if (isNew) {
+				const newPath = `/app/feature/${updatedFeature.id}`
+				window.history.replaceState(window.history.state, "", newPath)
+			}
 		},
 
 		/**

@@ -30,7 +30,7 @@ const MessagesCmp: React.FC = () => {
 
 	return (
 		<IconButton color="inherit" size="medium" onClick={handleMessagesClick}>
-			<Badge badgeContent={messageListSo.state.unreadCount} color="error">
+			<Badge badgeContent={messageListSo.state.unreadCount} color="primary">
 				<MailIcon />
 			</Badge>
 		</IconButton>

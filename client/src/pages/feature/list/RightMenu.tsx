@@ -87,7 +87,7 @@ const RightMenu: React.FC = () => {
                 {t(`rightmenu.features.status.title`)}
             </Typography>
             <ItemRow
-                label="ALL"
+                label={t(`rightmenu.features.status.all`)}
                 selected={statusId == null}
                 onClick={() => handleStatusChange(null)}
             />

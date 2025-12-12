@@ -2,7 +2,7 @@ import authSo from '@/stores/auth';
 import { FEATURE_FILTER, FEATURE_SORT } from "@/stores/feature/types";
 import { FEATURE_STATUS } from '@/types/feature/Feature';
 import { Add, Close, Search } from '@mui/icons-material';
-import { Box, Button, debounce, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
+import { Box, Button, debounce, IconButton, InputAdornment, TextField, Tooltip, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -79,7 +79,7 @@ const FeatureListHeader: React.FC = () => {
 
 	return <>
 		<Typography variant="h5">
-			FEATURES
+			{t("header.features.title")}
 		</Typography>
 
 
@@ -115,14 +115,15 @@ const FeatureListHeader: React.FC = () => {
 					},
 				}}
 				onChange={(e) => handleSearchChange(e.target.value)}
-				placeholder="Search Features..."
+				placeholder={t("header.features.placeholder")}
 			/>
 
-
-			<Button variant="contained"
-				startIcon={<Add />}
-				onClick={handleNewFeatureClick}
-			>NEW</Button>
+			<Tooltip title={t("header.features.new.tooltip")}>
+				<Button variant="contained"
+					startIcon={<Add />}
+					onClick={handleNewFeatureClick}
+				>{t("header.features.new.label")}</Button>
+			</Tooltip>
 
 		</>}
 	</>

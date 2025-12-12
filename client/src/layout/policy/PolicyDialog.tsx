@@ -1,10 +1,15 @@
 import dialogSo from '@/stores/layout/dialogStore';
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material';
+import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useStore } from '@priolo/jon';
-import { FunctionComponent } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { FunctionComponent, lazy, Suspense, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 
+
+const docs: Record<string, React.LazyExoticComponent<FunctionComponent>> = {
+	en: lazy(() => import('./docs/PolicyEn')),
+	it: lazy(() => import('./docs/PolicyIt')),
+}
 
 const PolicyDialog: FunctionComponent = () => {
 
@@ -12,7 +17,8 @@ const PolicyDialog: FunctionComponent = () => {
 	useStore(dialogSo)
 
 	// HOOKs
-	const { t } = useTranslation()
+	const { t, i18n } = useTranslation()
+	const DocCmp = useMemo(() => docs[i18n.language] || docs['en'], [i18n.language])
 
 	// HANDLE
 
@@ -27,16 +33,9 @@ const PolicyDialog: FunctionComponent = () => {
 		</DialogTitle>
 
 		<DialogContent>
-			<DialogContentText>
-				<Trans
-					i18nKey="policy.content"
-					components={{
-						// title
-						"title": <Typography variant='h6' />,
-						"subtitle": <Typography variant='body1' sx={{ mb: 2 }} />,
-					}}
-				/>
-			</DialogContentText>
+			<Suspense fallback={<CircularProgress sx={{ display: 'block', mx: 'auto', my: 4 }} />}>
+				<DocCmp />
+			</Suspense>
 		</DialogContent>
 
 		<DialogActions>

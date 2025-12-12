@@ -74,7 +74,20 @@ function buildNodeConfig(params?: ConfigParams) {
 		// },
 		{
 			class: "email",
-			name: "puce-email",
+			name: "email-noreply",
+			account: <IAccount>{
+				host: process.env.EMAIL_HOST,
+				port: Number(process.env.EMAIL_PORT),
+				secure: true,
+				auth: {
+					user: process.env.EMAIL_USER,
+					pass: process.env.EMAIL_PASSWORD,
+				}
+			},
+		},
+		{
+			class: "email",
+			name: "email-info",
 			account: <IAccount>{
 				host: process.env.EMAIL_HOST,
 				port: Number(process.env.EMAIL_PORT),

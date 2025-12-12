@@ -92,6 +92,12 @@ export enum FEATURE_ACTIONS {
 	ATH_CANCEL = "ath_cancel",
 	/**
 	 * Chiamata dall'AUTHOR
+	 * Riporta la FEATURE allo stato di IN_DEVELOPMENT
+	 * RELEASED -> IN_DEVELOPMENT
+	 */
+	ATH_REJECTED = "ath_rejected",
+	/**
+	 * Chiamata dall'AUTHOR
 	 * Segna la FEATURE come completata
 	 * RELEASED -> COMPLETED
 	 */

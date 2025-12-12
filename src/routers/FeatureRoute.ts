@@ -311,6 +311,17 @@ class FeatureRoute extends httpRouter.Service {
 				authorMessage = `Hello,\n\nThe feature titled "${feature.title}" has been cancelled by its creator.\n\nBest regards,\nFeature Fortune Team`
 				break;
 
+			case FEATURE_ACTIONS.ATH_REJECTED:
+				if (feature.accountId != userJwt.id) {
+					return res.status(403).json({ error: "You are not allowed to reject this feature" })
+				}
+				if (feature.status != FEATURE_STATUS.IN_DEVELOPMENT) {
+					return res.status(400).json({ error: `You can reject a feature only if its status is ${FEATURE_STATUS.IN_DEVELOPMENT}` })
+				}
+				partial = { status: FEATURE_STATUS.IN_DEVELOPMENT }
+				authorMessage = `Hello,\n\nThe feature titled "${feature.title}" has been rejected by its creator.\n\nBest regards,\nFeature Fortune Team`
+				break;
+
 			case FEATURE_ACTIONS.ATH_COMPLETE:
 				if (feature.accountId != userJwt.id) {
 					return res.status(403).json({ error: "You are not allowed to cancel this feature" })
@@ -318,7 +329,7 @@ class FeatureRoute extends httpRouter.Service {
 				if (feature.status != FEATURE_STATUS.RELEASED) {
 					return res.status(400).json({ error: `You can complete a feature only if its status is ${FEATURE_STATUS.IN_DEVELOPMENT}` })
 				}
-				partial = <Partial<FeatureRepo>>{ 
+				partial = <Partial<FeatureRepo>>{
 					status: FEATURE_STATUS.COMPLETED,
 					completedAt: new Date(),
 				}

@@ -37,7 +37,7 @@ export function filterByText(features: Feature[], text: string): Feature[] {
 
 export function filterByStatus(features: Feature[], status?: FEATURE_STATUS | null): Feature[] {
 	if (!features) return []
-	if (!status) return features
+	if (!status) return features.filter(feature => feature.status != FEATURE_STATUS.CANCELLED)
 	return features.filter(feature => feature.status === status)
 }
 

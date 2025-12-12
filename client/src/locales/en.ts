@@ -18,7 +18,7 @@ const en = {
 	},
 	pag: {
 		features: {
-			empty: "NO FEATURES FOUND",
+			empty: "ANCORA NON CI SONO FEATURE! :(",
 		}
 	},
 	cards: {
@@ -344,33 +344,49 @@ const en = {
 		title: "OVERVIEW",
 		feature: {
 			message: {
-				new: `Indica il repository GitHub e inserisci il dettaglio della FEATURE che vorresti fosse implementata.
-		<br />Quindi CREA la FEATURE per renderla disponibile.`,
-				proposed: `Questa FEATURE è una bozza.
-        <br />Deve essere accettata da un DEVELOPER per iniziare lo sviluppo.`,
-				in_development: `Questa FEATURE è in fase di sviluppo.
-		<br />Il DEVELOPER sta lavorando per completarla.`,
-				released: `Questa FEATURE è stata rilasciata dal DEVELOPER.,
-		<br />ora l'AUTHOR deve confermarne il completamento.`,
-				completed: `Questa FEATURE è stata completata dall'AUTHOR.
-		<br />Ora il sistema la segnerà come PAGATA.`,
-				paid: `Questa FEATURE è stata PAGATA dal sistema.
-		<br />Grazie per aver usato Feature Fortune!`,
-				cancelled: `Questa FEATURE è stata ANNULLATA.
-		<br />Non sarà più possibile procedere con il suo sviluppo.`
+				new: `Indica il repository GitHub e inserisci il dettaglio della <0>feature</0> che vorresti fosse implementata.
+		<br/>Quindi <0>CREA</0> la feature per renderla disponibile.`,
+				proposed_no_dev: `Questa feature è una <0>bozza</0> (proposed).
+        <br/>Deve essere proposta e accettata da un <0>developer</0> per iniziare lo sviluppo.
+		Sarebbe perfetto se fosse il proprietario del repository GitHub stesso!
+		<br/>Se non c'è tra i registrati a PUCE, contattalo e fagli creare un account!
+		<br/>Oppure aspettiamo che qualcuno si faccia avanti`,
+				proposed: `Questa feature è una <0>bozza</0> ed è stata proposta ad un <0>developer</0>.
+		<br/>Ora è lo sviluppatore che deve accettare e portare avanti la feature.
+		<br/>Per invogliarlo puoi contribuire finanziariamente!`,
+				in_development: `Siamo in fase di sviluppo.
+		<br/>Il <0>developer</0> sta lavorando per completare la <0>feature</0>. 
+		<br/>Quando avrà finito rilascerà una <0>release</0> che dovà essere confermata dall'<0>autore</0>.
+		<br/>Nel frattempo puoi sempre contribuire finanziariamente!`,
+				released: `La feature è stata rilasciata dal <0>developer</0>.,
+		<br/>Ora l'<0>autore</0> deve confermarne il completamento.
+		<br/>Se conferma, si attiva un <0>countdown</0> e dopo il sistema effettuerà i pagamenti al <0>developer</0>.
+		<br/>Affettati a contribuire: Quando userai questa feature ti sentirai meglio!`,
+				completed: `Evviva! La feature è stata accettata dall'<0>autore</0>!
+		<br/>Dopo un <0>countdwon</0> di {{time}} ore il sistema effettuerà il pagamento al <0>developer</0>.
+		<br/>Se hai contribuito controlla che sia tutto ok: puoi sempre annullare il finanziamento prima dello scadere del <0>countdown</0>.`,
+				paid: `Questa feature è stata pagata dal sistema.
+		<br/>Grazie per aver usato PUCE speriamo di aver contribuito al finanziamento dell Open Source!`,
+				cancelled: `Purtroppo questa FEATURE è stata ANNULLATA.
+		<br/>Non sarà più possibile procedere con il suo sviluppo.
+		<br/>Se hai contribuito finanziariamente, i tuoi non sono stati addebitati. 
+		<br/>Se vuoi, puoi sempre ricreare la feature!`
 			},
 			label: {
-				author: "AUTHOR",
-				created_at: "CREATED AT"
+				author: "AUTORE",
+				created_at: "CREATA IL"
 			}
 		},
 		features: {
 			message: {
-				default: `Browse all requested features, vote for the ones you want, 
-				or fund them to speed up development.`,
+				default: `Naviga tra le feature. 
+				Le puoi filtrare o mettere in odine con il menù a destra. 
+				Oppure scrivi in alto per cercare una feature specifica.
+				Natualmente puoi anche CREARE una nuova feature!
+				`,
 			},
 			label: {
-				total: "TOTAL FEATURES"
+				total: "NUMERO FEATURES"
 			}
 		},
 		messages: {
@@ -437,21 +453,22 @@ const en = {
 		},
 		features: {
 			sort: {
-				title: "SORT BY",
-				newest: "NEWEST",
-				oldest: "OLDEST",
-				most_funded: "MOST FUNDED",
+				title: "ORDINA PER",
+				newest: "NUOVE",
+				oldest: "VECCHIE",
+				most_funded: "PIU' FINANZIATE",
 				github: "GITHUB REPO",
 			},
 			filter: {
-				title: "FILTER BY",
-				all: "ALL",
-				my: "I CREATED",
-				financed: "I CONTRIBUTE",
-				developed: "I DEVELOP",
+				title: "FILTRA PER",
+				all: "TUTTE",
+				my: "HO CREATO",
+				financed: "HO CONTRIBUITO",
+				developed: "HO SVILUPPATO",
 			},
 			status: {
-				title: "STATUS"
+				title: "STATO",
+				all: "TUTTE (NO CANCELLED)",
 			}
 		},
 		messages: {
@@ -471,30 +488,67 @@ const en = {
 		feature: {
 			title: "FEATURE",
 			label: {
-				create: "CREATE",
-				modify: "MODIFY",
-				delete: "DELETE",
-				reject: "REJECT",
-				complete: "COMPLETE",
-				accept: "ACCEPT",
-				decline: "DECLINE",
-				leave: "LEAVE",
-				release: "RELEASE"
+				create: "CREA",
+
+				modify: "MODIFICA",
+				accept: "ACCETTA",
+				decline: "RIFIUTA",
+
+				delete: "ELIMINA",
+				leave: "ABBANDONA",
+				release: "RILASCIA",
+
+				reject: "RIFIUTA",
+				complete: "FINITA!",
 			},
 			tooltip: {
-				save_yes: "Save the feature",
-				save_no: "Iserisci il repo Github e il dettaglio",
-				delete: "Delete the feature",
-				reject: "Reject the feature",
-				complete: "Complete the feature",
-				accept: "Accept to develop the feature",
-				decline: "Decline to develop the feature",
-				leave: "Leave the development of the feature",
-				release: "Release the feature"
+				save_yes: "SALVA LE MODIFICHE FATTE",
+				save_no: "PER SALVARE ISERISCI GITHUB E IL DETTAGLIO",
+
+				accept: "ACCETTA DI IMPLEMENTARE QUESTA FEATURE",
+				decline: "RIFIUTA! NON IMPLEMENTERAI QUESTA FEATURE",
+
+				delete: "CANCELLA LA FEATURE DEFINITIVAMENTE O.O",
+				leave: "RINUNCIA! NON IMPLEMENTERAI PIU' QUESTA FEATURE",
+				release: "OK! LA FEATURE è STATA IMPLEMENTATA",
+
+				reject: "QUALCOSA NON VA NELL'IMPLEMENTAZIONE. RIPROVA",
+				complete: "PERFETTO! LA FEATURE E' COMPLETATA",
+			},
+			message: {
+				modify: "MODIFICHE SALVATE CON SUCCESSO!",
+				accept: "Hai accettato di sviluppare questa feature!",
+				decline: "Hai rifiutato di sviluppare questa feature.",
+
+				delete: "Feature eliminata definitivamente.",
+				leave: "Hai abbandonato lo sviluppo di questa feature.",
+				release: "Hai rilasciato la feature come completata.",
+
+				reject: "Hai rifiutato l'implementazione della feature.",
+				complete: "Hai confermato il completamento della feature.",
+			},
+			dialog:{
+				warning: "ATTENZIONE",
+
+				accept: "TI IMPEGNI A SVILUPPARE QUESTA FEATURE. SEI SICURO?",
+				decline: "SE RIFIUTI QUESTA FEATURE NON SARA' PIU' ASSEGNATA A TE. SEI SICURO?",
+
+				delete: "LE DONAZIONI VERRANNO ANNULLATE E IL DEVELOPER NON VERRÀ PAGATO. QUESTA FEATURE VERRÀ CHIUSA DEFINITIVAMENTE E NON SARÀ MODIFICABILE",
+				leave: "STAI ABBANDONADO LA FEATURE. VERRAI RIMOSSO COME DEVELOPER E LA FEATURE TORNERÀ IN UNO STATO DI PROPOSTA",
+				release: "DOPO QUESTO RILASCIO, L'AUTORE DOVRÀ ACCETTARE O RIFIUTARE. SE ACCETTA DOPO {{time}} ORE AVVERRÀ IL PAGAMENTO",
+
+				reject: "SE RESPINGI LE RELEASE LA FEATURE TORNERÀ ALLO STATO DI SVILUPPO E DOVRÀ ESSERE ACCETTATA NUOVAMENTE",
+				complete: "DICHIARI CHE LA FEATURE È COMPLETATA. QUINDI TRA {{time}} ORE VERRANNO EFFETTUATI I PAGAMENTI AL DEVELOPER",
+
 			}
 		},
 		features: {
-			title: "FEATURES"
+			title: "FEATURES",
+			placeholder: "Cerca per titolo, descrizione o github ...",
+			new: {
+				label: "CREA",
+				tooltip: "Crea una richiesta per una funzionalità su un repository GitHub",
+			},
 		}
 	},
 	view: {
@@ -595,85 +649,6 @@ const en = {
 		title: "PRIVACY POLICY",
 		button_ok: "ACCEPT",
 		last_updated: "Last updated: June 10, 2024",
-		content: `
-		<title>1. Privacy Policy</title>
-
-		<subtitle>Titolare del Trattamento</subtitle>
-		<p>
-			Il Titolare del trattamento dei dati è:<br>
-			<strong>[Tuo Nome o Ragione Sociale]</strong><br>
-			Indirizzo: [Il tuo indirizzo fisico completo]<br>
-			Email di contatto: <a href="mailto:[Tua Email]">[Tua Email]</a>
-		</p>
-
-		<h3>Dati raccolti e finalità</h3>
-		<p>Raccogliamo e trattiamo i tuoi dati personali (es. nome, email, identificativi online) esclusivamente per:</p>
-		<ul>
-			<li>Permettere la registrazione e l'accesso alla piattaforma.</li>
-			<li>Mettere in contatto donatori e sviluppatori di progetti Open Source.</li>
-			<li>Gestire la sicurezza della piattaforma e prevenire frodi.</li>
-			<li>Adempiere agli obblighi di legge (es. conservazione fiscale delle transazioni).</li>
-		</ul>
-
-		<h3>Destinatari dei dati e Servizi Terzi</h3>
-		<p>Per fornire il servizio, ci avvaliamo di fornitori terzi affidabili. I tuoi dati potrebbero essere trasmessi a:</p>
-
-		<div class="highlight">
-			<h4>Elaborazione Pagamenti (Stripe)</h4>
-			<p>
-				Per processare le donazioni utilizziamo <strong>Stripe</strong>. Quando effettui una donazione, alcuni dati (come l'ID utente, l'importo e l'email) vengono trasferiti a Stripe. Stripe agisce come Titolare autonomo per i dati finanziari e l'elaborazione del pagamento (inclusi i controlli antifrode e antiriciclaggio). Noi non memorizziamo mai i dati della tua carta di credito.
-				<br>Per maggiori informazioni: <a href="https://stripe.com/it/privacy" target="_blank">Privacy Policy di Stripe</a>.
-			</p>
-
-			<h4>Autenticazione (Google)</h4>
-			<p>
-				Questa Piattaforma permette di effettuare l'accesso tramite il servizio "Sign in with Google" fornito da Google Ireland Ltd / Google LLC.
-				Quando utilizzi questa funzionalità, Google raccoglie dati relativi al tuo dispositivo e al tuo account Google per verificare la tua identità e fornirci un token di accesso sicuro. Noi non abbiamo accesso alla tua password Google.
-				<br>Per maggiori informazioni: <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy di Google</a>.
-			</p>
-		</div>
-
-		<h3>Conservazione dei dati</h3>
-		<p>
-			I dati del tuo account sono conservati finché il tuo account è attivo. I dati relativi alle transazioni economiche sono conservati per 10 anni come richiesto dalle normative fiscali vigenti.
-		</p>
-
-		<h3>I tuoi diritti</h3>
-		<p>
-			Ai sensi del GDPR, hai il diritto di chiedere al Titolare l'accesso ai tuoi dati, la rettifica, la cancellazione degli stessi (diritto all'oblio) o la limitazione del trattamento. Puoi esercitare questi diritti scrivendo all'indirizzo email sopra indicato.
-		</p>
-
-		<h2>2. Cookie Policy</h2>
-
-		<p>
-			Questo sito <strong>non utilizza cookie di profilazione</strong> commerciale o pubblicitaria, né propri né di terze parti.
-		</p>
-		<p>
-			Utilizziamo esclusivamente <strong>cookie tecnici</strong> (o strumenti analoghi come il Local Storage) strettamente necessari per il corretto funzionamento della piattaforma e per garantire la sicurezza della navigazione.
-		</p>
-
-		<h3>Tipologie di Cookie Tecnici utilizzati</h3>
-		<ul>
-			<li>
-				<strong>Funzionamento e Sessione:</strong> Utilizziamo token tecnici (es. JWT o cookie di sessione) per riconoscere il tuo utente una volta effettuato il login e permetterti di navigare nell'area riservata senza dover reinserire le credenziali ad ogni pagina.
-			</li>
-			<li>
-				<strong>Sicurezza Pagamenti (Stripe):</strong> Utilizziamo cookie tecnici di terze parti forniti da Stripe Inc. necessari per elaborare i pagamenti, garantire la sicurezza delle transazioni e prevenire le frodi.
-			</li>
-			<li>
-				<strong>Autenticazione Federata (Google):</strong> Utilizziamo cookie tecnici di terze parti strettamente necessari per la gestione del servizio "Sign-in with Google". Questi sono necessari per permettere l'accesso rapido tramite il tuo account Google.
-			</li>
-		</ul>
-
-		<p class="highlight">
-			<strong>Base giuridica:</strong> Ai sensi della Direttiva ePrivacy e dei provvedimenti del Garante Privacy, per l'installazione di tali cookie tecnici necessari non è richiesto il consenso preventivo dell'utente, pertanto non viene mostrato il banner di blocco preventivo.
-		</p>
-
-
-		<footer>
-			<p>&copy; 2024 [Nome Piattaforma] - Tutti i diritti riservati.</p>
-		</footer>
-		`
 	}
 }
 

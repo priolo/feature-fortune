@@ -11,6 +11,7 @@ import React, { useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import Countdown from './Countdown';
 import FeatureStatusChip from './StatusChip';
+import themeSo from '@/stores/layout/theme';
 
 
 
@@ -22,7 +23,7 @@ const FeatureDetailOverview: React.FC<Props> = ({
     sx
 }) => {
 
-    
+
     // STORES
     useStore(fundingListSo)
 
@@ -35,12 +36,21 @@ const FeatureDetailOverview: React.FC<Props> = ({
     // RENDER
     const feature = featureDetailSa.feature;
     if (!feature) return null;
+    const isNew = !feature.id
+    const haveDeveloper = !!feature.githubDevId
 
     const values = useMemo(() => amountFunded(fundingListSo.state.all), [fundingListSo.state.all]);
-    const isNew = !feature.id
-    const messageStatus = isNew ? 'new' : feature.status
+    const messageStatus = isNew ? 'new'
+        : feature.status == FEATURE_STATUS.PROPOSED && !haveDeveloper ? 'proposed_no_dev'
+            : feature.status;
     const haveCountdown = feature.status === FEATURE_STATUS.COMPLETED && feature.completedAt
-    const delta = Number(import.meta.env.VITE_PAYMENT_AFTER_COMPLETION_MIN ?? 60) * 60 * 1000
+    const hours = Number(import.meta.env.VITE_PAYMENT_AFTER_COMPLETION_HOURS ?? 12)
+    const deltaMin = haveCountdown ? hours * 60 * 60 * 1000 : 0
+
+    const palette = themeSo.state.current.palette
+    const TransCmps = useMemo(() => [
+        <span style={{ color: palette.text.primary, fontWeight: 600 }} />
+    ], [palette.text.primary])
 
     return (
         <Box sx={[sxOverviewRoot, sx] as SxProps}>
@@ -50,7 +60,11 @@ const FeatureDetailOverview: React.FC<Props> = ({
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-                <Trans i18nKey={t(`overview.feature.message.${messageStatus}`)} />
+                <Trans
+                    i18nKey={t(`overview.feature.message.${messageStatus}`)}
+                    values={{ time: hours }}
+                    components={TransCmps}
+                />
             </Typography>
 
             {!isNew && (
@@ -75,7 +89,7 @@ const FeatureDetailOverview: React.FC<Props> = ({
                     <Typography variant="overline" color="text.secondary">
                         {t('overview.feature.label.author', 'AUTHOR')}
                     </Typography>
-                    <Paper sx={{ p: 1, borderRadius: 2 }}>
+                    <Paper sx={{ p: 1, borderRadius: 2, mt: 1 }}>
                         <AccountIdView accountId={feature.accountId} />
                     </Paper>
                 </Box>
@@ -84,7 +98,7 @@ const FeatureDetailOverview: React.FC<Props> = ({
             {feature.createdAt && (
                 <Box>
                     <Typography variant="overline" color="text.secondary">
-                        {t('overview.feature.label.create_at', 'CREATE AT')}
+                        {t('overview.feature.label.created_at', 'CREATE AT')}
                     </Typography>
                     <Typography variant="body2">
                         {new Date(feature.createdAt).toLocaleDateString()}
@@ -93,9 +107,9 @@ const FeatureDetailOverview: React.FC<Props> = ({
             )}
 
             {haveCountdown && (
-                <Countdown 
-                    date={feature.completedAt} 
-                    delta={delta}
+                <Countdown
+                    date={feature.completedAt}
+                    delta={deltaMin}
                 />
             )}
 
