@@ -100,12 +100,12 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
                     {isSelected && (
                         <Button
                             onClick={handleRemoveClick}
-                        >{t('cards.GithubRepoSelectorCard.actions.remove')}</Button>
+                        >{t('common.delete')}</Button>
                     )}
                     <Button
                         onClick={handleFindRepoClick}
                     >
-                        {t(`cards.GithubRepoSelectorCard.actions.${isSelected ? "change" : "select"}`)}
+                        {t(`common.${isSelected ? "edit" : "select"}`)}
                     </Button>
                 </Box>
             )}
@@ -115,6 +115,7 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
         <GithubReposFinderDialog
             isOpen={dialogOpen}
             onClose={handleRepoDialogClose}
+            placeholder={t("cards.GithubRepoSelectorCard.dialog.placeholder")}
         />
 
     </>

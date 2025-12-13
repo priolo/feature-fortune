@@ -3,6 +3,7 @@ import { Dialog, DialogTitle, List, ListItem, ListItemButton, ListItemText, Text
 import React, { FunctionComponent, useEffect } from "react";
 import gitHubApi from "@/api/githubService";
 import GithubRepoViewer from "./GithubRepoViewer";
+import { useTranslation } from "react-i18next";
 
 
 
@@ -28,11 +29,12 @@ interface Props {
 
 const GithubReposFinderDialog: FunctionComponent<Partial<Props>> = ({
 	isOpen,
-	placeholder = "Type to filter items...",
+	placeholder,
 	onClose,
 }) => {
 
 	// HOOKs
+	const { t } = useTranslation()
 	const [filterText, setFilterText] = React.useState('')
 	const [items, setItems] = React.useState<GitHubRepository[]>([])
 	const [loading, setLoading] = React.useState(false)
@@ -115,7 +117,9 @@ const GithubReposFinderDialog: FunctionComponent<Partial<Props>> = ({
 			</DialogContent>
 
 			<DialogActions>
-				<Button onClick={() => handleClose()}>Cancel</Button>
+				<Button onClick={() => handleClose()}>
+					{t("common.cancel")}
+				</Button>
 			</DialogActions>
 		</Dialog>
 	)

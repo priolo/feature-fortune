@@ -1,5 +1,6 @@
 import type { Relation } from 'typeorm';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { AccountRepo } from './Account.js';
 import { AccountAsset } from './AccountAsset.js';
 import { CommentRepo } from './Comment.js';
 import { FundingRepo } from './Funding.js';
@@ -57,20 +58,20 @@ export enum FEATURE_STATUS {
 
 export enum FEATURE_ACTIONS {
 	/**
-	 * Chiamato dal DEV
+	 * Chiamato dal DEVELOPER
 	 * per accettare lo sviluppo delle FEATURE
 	 * PROPOSED -> IN_DEVELOPMENT
 	 */
 	DEV_ACCEPT = "dev_accept",
 	/**
-	 * Chiamato dal DEV 
+	 * Chiamato dal DEVELOPER 
 	 * per rinunciare alla FEATURE
 	 * elimina se stesso come DEV
 	 * PROPOSED -> PROPOSED dev=null
 	 */
 	DEV_DECLINE = "dev_decline",
 	/**
-	 * Chiamato dal DEV 
+	 * Chiamato dal DEVELOPER 
 	 * per rinunciare alla FEATURE
 	 * elimina se stesso come DEV
 	 * PROPOSED -> PROPOSED dev=null
@@ -78,7 +79,7 @@ export enum FEATURE_ACTIONS {
 	 */
 	DEV_LEAVE = "dev_leave",
 	/**
-	 * Chiamato dal DEV
+	 * Chiamato dal DEVELOPER
 	 * Indica che la FEATURE è stata rilasciata
 	 * IN_DEVELOPMENT -> RELEASED
 	 */
@@ -168,6 +169,13 @@ export class FeatureRepo extends AccountAsset {
 	 */
 	@Column({ type: 'uuid', nullable: true })
 	accountDevId?: string;
+
+	/**
+	 * Relazione verso l'account DEV assegnato a questa feature
+	 */
+	@ManyToOne(() => AccountRepo, { nullable: true })
+	@JoinColumn({ name: 'accountDevId' })
+	accountDev?: AccountRepo;
 
 
 	//#region RELATIONSHIPS

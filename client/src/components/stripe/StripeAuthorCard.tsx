@@ -22,6 +22,7 @@ const StripeAuthorCard: React.FC = () => {
 
 	// HANDLERS
 	const handleRegister = async () => {
+		// se non sono ancora stati inserite le email, chiedo di inserirle (improbabile)
 		if (!authSo.state.user?.email && !authSo.state.user?.googleEmail) {
 			await dialogSo.dialogOpen({
 				text: t('cards.StripeAuthorCard.alerts.link_email'),
@@ -84,20 +85,20 @@ const StripeAuthorCard: React.FC = () => {
 			<Box sx={sxActions}>
 				{haveStripeAuthor && (
 					<Button onClick={handleDetach}>
-						{t('cards.StripeAuthorCard.actions.detach')}
+						{t('common.detach')}
 					</Button>
 				)}
 				{haveStripeAuthor && <>
 					<Button onClick={handleRegister}>
-						{accountReady ? t('cards.StripeAuthorCard.actions.modify') : t('cards.StripeAuthorCard.actions.complete')}
+						{t(accountReady ? 'common.edit' : 'common.complete')}
 					</Button>
 					<Button onClick={handleStripeDashboard}>
-						{t('cards.StripeAuthorCard.actions.dashboard')}
+						{t('common.dashboard')}
 					</Button>
 				</>}
 				{!haveStripeAuthor && (
 					<Button onClick={handleRegister}>
-						{t('cards.StripeAuthorCard.actions.register')}
+						{t('common.register')}
 					</Button>
 				)}
 

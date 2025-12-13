@@ -79,7 +79,7 @@ const FeatureDetailCard: React.FC<Props> = ({
 				<Box sx={sxActionCard}>
 					<Button
 						onClick={() => onSave?.()}
-					>{t('cards.FeatureDetailCard.save', 'SAVE DETAILS')}
+					>{t('common.save')}
 					</Button>
 				</Box>
 			)}

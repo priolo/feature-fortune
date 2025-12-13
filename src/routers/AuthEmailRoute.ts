@@ -82,11 +82,8 @@ class AuthEmailRoute extends httpRouter.Service {
 		})
 
 		// INVIO EMAIL con il codice e altri placeholder
-		const html = await getEmailCodeTemplate({
-			code,
-			support: "support@puce.app",
-			url: "https://puce.com/app/account",
-		})
+		const html = await getEmailCodeTemplate({ code, support: "support@puce.app", })
+		
 		await new Bus(this, this.state.email_path).dispatch({
 			type: emailNs.Actions.SEND,
 			payload: {

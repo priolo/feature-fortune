@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>PUCE - Notification</title>
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				background-color: #f9f9f9;
+				font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			}
+			.container {
+				background-color: #ffffff;
+				padding: 40px;
+				border-radius: 16px;
+				max-width: 480px;
+				margin: 40px auto;
+				box-shadow: 0 10px 25px rgba(225, 73, 252, 0.15);
+				border: 1px solid rgba(225, 73, 252, 0.1);
+			}
+			.header {
+				text-align: center;
+				margin-bottom: 30px;
+			}
+			.title {
+				color: #e149fc;
+				margin: 0;
+				font-size: 28px;
+				font-weight: 700;
+			}
+			.content {
+				color: #444;
+				font-size: 16px;
+				line-height: 1.6;
+				text-align: center;
+				margin-bottom: 24px;
+			}
+			.content strong {
+				color: #e149fc;
+				font-weight: 700;
+			}
+			.status-box {
+				background-color: #fdf2ff;
+				border-radius: 12px;
+				padding: 20px;
+				margin: 30px 0;
+				text-align: center;
+				border: 1px solid rgba(225, 73, 252, 0.1);
+			}
+			.status-label {
+				font-size: 12px;
+				color: #888;
+				text-transform: uppercase;
+				letter-spacing: 1px;
+				margin-bottom: 12px;
+			}
+			.status-flow {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 12px;
+				flex-wrap: wrap;
+			}
+			.badge {
+				padding: 6px 12px;
+				border-radius: 6px;
+				font-size: 14px;
+				font-weight: 600;
+				text-transform: uppercase;
+			}
+			.badge-old {
+				background-color: #eee;
+				color: #999;
+				text-decoration: line-through;
+			}
+			.badge-new {
+				background-color: #e149fc;
+				color: #fff;
+				box-shadow: 3px 3px 0px #91ff00;
+			}
+			.arrow {
+				color: #e149fc;
+				font-size: 18px;
+				font-weight: bold;
+			}
+			.btn-container {
+				text-align: center;
+				margin: 30px 0;
+			}
+			.btn {
+				display: inline-block;
+				background-color: #e149fc;
+				color: #ffffff;
+				font-size: 16px;
+				font-weight: 600;
+				text-decoration: none;
+				padding: 14px 30px;
+				border-radius: 50px;
+				transition: all 0.2s ease;
+				box-shadow: 0 4px 10px rgba(225, 73, 252, 0.3);
+			}
+			.btn:hover {
+				background-color: #d03be8;
+				box-shadow: 0 6px 15px rgba(225, 73, 252, 0.4);
+				transform: translateY(-2px);
+			}
+			.divider {
+				margin: 30px 0;
+				border: none;
+				border-top: 1px solid #eee;
+			}
+			.footer {
+				font-size: 12px;
+				color: #aaa;
+				text-align: center;
+			}
+			.link {
+				color: #e149fc;
+				text-decoration: none;
+				font-weight: 600;
+			}
+			.link:hover {
+				color: #91ff00;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<h2 class="title">La tua feature è stata accettata!</h2>
+			</div>
+			
+			<p class="content"><strong>Priolo</strong> ha accettato di sviluppare la tua proposta di feature per il repository <strong>NATS/NUI</strong></p>
+			
+			<div class="status-box">
+				<div class="status-label">Status Change</div>
+				<div class="status-flow">
+					<span class="badge badge-old">PROPOSED</span>
+					<span class="arrow">&rarr;</span>
+					<span class="badge badge-new">IN DEVELOP</span>
+				</div>
+			</div>
+
+			<div class="btn-container">
+				<a href="{{action_url}}" class="btn">VISUALIZZA</a>
+			</div>
+			
+			<hr class="divider">
+			
+			<p class="footer">Per qualsiasi domanda contattaci scrivendo a <a href="mailto:{{support}}" class="link">{{support}}</a>.</p>
+		</div>
+	</body>
+</html>

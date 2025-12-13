@@ -91,12 +91,12 @@ const AccountSelectorCard: React.FC<Props> = ({
                     {isSelected && (
                         <Button
                             onClick={handleRemoveClick}
-                        >{t(`cards.${variant}.actions.remove`)}</Button>
+                        >{t(`common.remove`)}</Button>
                     )}
                     <Button
                         onClick={handleSelectClick}
                     >
-                        {t(`cards.${variant}.actions.${!!isSelected ? "change" : "select"}`)}
+                        {t(`common.${!!isSelected ? "change" : "select"}`)}
                     </Button>
                 </Box>
             }

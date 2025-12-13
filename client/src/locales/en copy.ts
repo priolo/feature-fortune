@@ -2,28 +2,18 @@ import { add } from "@priolo/jon-utils/dist/object/diff";
 
 const en = {
 	common: {
+		save: "Save",
 		ok: "OK",
-		cancel: "Annulla",
-		close: "Chiudi",
-
-		save: "Salva",
-		edit: "Modifica",
-		complete: "Completa",
-		register: "Registrati",
-		detach: "Abbandona",
-		modify: "Modify",
-		select: "Seleziona",
-		change: "Cambia",
-		remove: "Cancella",
-		delete: "Elimina",
-
-		dashboard: "Dashboard",
-
+		cancel: "Cancel",
+		delete: "Delete",
+		edit: "Edit",
+		close: "Close",
+		loading: "Loading...",
 		msgbox: {
 			info: "INFO",
-			warning: "ATTENZIONE",
-			error: "ERRORE",
-			success: "SUCCESSO"
+			warning: "WARNING",
+			error: "ERROR",
+			success: "SUCCESS"
 		}
 	},
 	pag: {
@@ -44,103 +34,110 @@ const en = {
 					desc: "<br/>Seleziona un repository GitHub su cui deve essere implementala la feature."
 				}
 			},
-			dialog: {
-				placeholder: "Inizia a digitare il nome del repository...",
+			actions: {
+				remove: "CANCELLA",
+				change: "CAMBIA",
+				select: "SELEZIONA"
 			}
 		},
 		StripeAuthorCard: {
-			title: "RISCOSSIONE STRIPE CONNECTED",
+			title: "STRIPE CONNECTED ACCESS",
 			alerts: {
-				link_email: "Prima devi inserire un recapito email (Google or GitHub).",
-				registration_error: "Errore durante la registrazione su Stripe. Riprova.",
-				account_not_found: "Account Stripe non trovato.",
-				detach_warning_text: "Se ti disconnetti da Stripe non sarai più in grado di ricevere pagamenti.",
-				detached_success: "Sei stato disconnesso da Stripe."
+				link_email: "You must first link an email (Google or Github)",
+				registration_error: "Error during Stripe registration",
+				account_not_found: "Error: Stripe account not found",
+				detach_warning_text: "If you disconnect from Stripe you will no longer be able to receive payments.",
+				detached_success: "You have been disconnected from Stripe."
 			},
 			status: {
 				warn: {
-					title: "Non hai ancora un account Stripe.",
-					desc: `<br/>Registrati per ricevere donazioni dai tuoi sostenitori.
-					<br/>La registrazione è un pò lunga ma è gratuita e va fatta una sola volta.
-					<br/>Inoltre Stripe è una piattaforma nota e affidabile.
-					`
+					title: "You are not registered as a Stripe Account.",
+					desc: `<br/>Register to receive funding in your account.
+					<br />Registration is a bit long but it is free and only needs to be done once
+					<br />furthermore Stripe is a famous and reliable platform.`
 				},
 				info: {
-					title: "Ci siamo quasi. Sei registrato ma c'è qualcosa da completare.",
-					desc: `<br/>Clicca su (MODIFICA) e verrai reindirizzato sulla pagina di Stripe.
-					<br/>Quindi potrai completare i dati mancanti.
-					`
+					title: "Almost there, you are registered in Stripe but there is something to complete.",
+					desc: `<br/>Try to MODIFY your account.
+					<br />Registration is a bit long but it is free and only needs to be done once
+					<br />furthermore Stripe is a famous and reliable platform.`
 				},
 				done: {
-					title: "Bene, sei registrato a Stripe!",
-					desc: `<br/>Questo ti permetterà di ricevere donazioni dai tuoi sostenitori.
-					<br/>Usa il pannello di controllo (DASHBOARD) per gestire il tuo account Stripe.
-					`
+					title: "Good! You are registered as a Stripe Account.",
+					desc: `<br/>This allows you to receive funding autonomously.
+					<br />Use the DASHBOARD to manage your Stripe account.`
 				}
 			},
+			actions: {
+				detach: "DETACH",
+				modify: "MODIFY",
+				complete: "COMPLETE",
+				dashboard: "DASHBOARD",
+				register: "REGISTER"
+			}
 		},
 		StripeCreditCard: {
 			title: "CREDIT CARD",
 			status: {
 				warn: {
-					title: "Non hai una Carta di Credito impostata.",
-					desc: "<br/>Puoi fidarti: I tuoi dati saranno gestiti ESCLUSIVAMENTE da Stripe in completa sicurezza."
+					title: "You are not registered as a Stripe Account.",
+					desc: "<br/>Non hai ancora una carta di credito salvata."
 				},
 				done: {
-					title: "Bene, hai registrato la tua Carta di Credito.",
-					desc: "<br/>PUCE non memorizza i dati della tua carta: Li gestisce STRIPE in completa sicurezza."
+					title: "Good! You are registered as a Stripe Account.",
+					desc: "<br/>Hai una carta di credito salvata."
 				}
 			},
 			alerts: {
 				save_cc: {
-					error: "Errore di accettazione carta: {{message}}",
-					success: "Carta di Credito impostata!"
+					error: "Error confirming card: {{message}}",
+					success: "Payment method saved!"
 				},
 				remove_cc: {
-					alert: "Se rimuovi la CARD le tue donazioni schedulate verranno annullate e non ne potrai fare di nuove.",
-					error: "Errore durante la rimozione del metodo di pagamento.",
+					alert: "Se rimuovi la CARD le tue donazioni schedulate verranno annullate e non ne potrai fare di nuove",
+					error: "Errore durante la rimozione del metodo di pagamento",
 					success: "Metodo di pagamento rimosso."
 				}
 			},
 			actions: {
-				detach: "ELIMINA",
-				set_card: "REGISTRA"
+				detach: "DETACH",
+				set_card: "SET CARD"
 			}
 		},
 		GithubLoginCard: {
 			title: "GITHUB ACCESS",
 			status: {
 				warn: {
-					title: "Non hai ancora collegato GitHub",
-					desc: "<br/>In questa maniera puoi proporti come sviluppatore e avere priorità sui tuoi repository."
+					title: "Autenticati con GitHub",
+					desc: "<br/>per collegare rapidamente i tuoi repository e le tue richieste."
 				},
 				done: {
-					title: "Hai collegato GitHub",
-					desc: "<br/>Ora se c'è una feature che ti interessa puoi proporti come siluppatore."
+					title: "Bene hai collegato GitHub",
+					desc: "<br/>Ora se c'e' una FEATURE puoi proporti come siluppatore"
 				}
 			},
 			alerts: {
 				detach: {
-					check: "Se ti disconnetti da GitHub non potrai più accedere alle feature che stavi sviluppando.",
-					succes: "Ora non sei più connesso a GitHub."
+					check: "Se ti disconnetti da GitHub non potrai piu' accedere ai tuoi repository e alle tue richieste di funzionalita'.",
+					succes: "Perfetto ora non sei piu' connesso a GitHub."
 				}
 			},
 			actions: {
-				attach: "REGISTRA",
-				detach: "ELIMINA",
-				login: "ACCEDI"
+				attach: "ATTACH",
+				detach: "DETACH",
+				login: "ACCESS"
 			}
 		},
 		GoogleLoginCard: {
 			title: "GOOGLE ACCESS",
 			status: {
 				warn: {
-					title: "Non sei autenticato con Google.",
-					desc: "<br/>Collega il tuo account Google per un login più veloce e per ricevere notifiche.",
+					title: "Autenticati con Google",
+					desc: "<br/>per collegare rapidamente il tuo account."
 				},
 				done: {
-					title: "Hai collegato Google.",
-					desc: "<br/>Ora puoi usare Google per accedere e ricevere notifiche.",
+					title: "Bene hai collegato Google",
+					desc: "<br/>Ora puoi usare le funzionalita' che richiedono Google."
 				}
 			},
 			alerts: {
@@ -154,23 +151,23 @@ const en = {
 				}
 			},
 			actions: {
-				detach: "ELIMINA"
+				detach: "DETACH"
 			}
 		},
 		EmailLoginCard: {
 			title: "EMAIL",
 			status: {
 				register: {
-					title: "Entra con la tua email.",
-					desc: "<br/>Conferma la tua email cliccando su (INVIA). Riceverai un codice che ti permetterà di accedere senza password."
+					title: "Inserisci la tua email. Riceverai un codice di conferma.",
+					desc: "<br/>Ti permetterà di ricevere le notifiche e di accedere al tuo account senza password."
 				},
 				none: {
 					title: "Il tuo account non ha una email associata.",
-					desc: `<br/>Inserisci la tua email e premi (INVIA). Riceverai un codice temporaneo e potrai accedere e ricevere notifiche.`,
+					desc: `<br/>Inseriscila qui sotto per ricevere un codice di accesso temporaneo.`,
 				},
 				unverified: {
 					title: "La tua email non è ancora verificata.",
-					desc: "<br/>Invia un codice alla tua email per poterla verificare."
+					desc: "<br/>Invia un CODICE alla tua EMAIL per poterla verificare."
 				},
 				done: {
 					title: "La tua email è verificata.",
@@ -190,17 +187,16 @@ const en = {
 			},
 			dialog: {
 				title: "VERIFICA IL CODICE",
-				text: `Abbiamo inviato un codice al tuo indirizzo email.
-				<br/>Inseriscilo qui sotto per verificare la tua email.`,
-				placeholder: "Scrivi il codice ricevuto via email",
+				text: "Abbiamo inviato un codice al tuo indirizzo email.<br/>Inseriscilo qui sotto per verificare la tua identita.",
+				placeholder: "Type code sent to your email",
 				actions: {
-					cancel: "ANNULLA",
-					verify: "VERIFICA"
+					cancel: "CANCEL",
+					verify: "VERIFY"
 				}
 			},
 			actions: {
-				send: "INVIA",
-				resend: "RIPROVA"
+				send: "SEND CODE",
+				resend: "RESEND"
 			}
 		},
 		SettingsCard: {
@@ -228,7 +224,6 @@ const en = {
 				name_required: "NAME is required."
 			}
 		},
-		// NON USATO
 		GithubUserSelectorCard: {
 			title: "GITHUB USER",
 			status: {
@@ -248,7 +243,6 @@ const en = {
 				select: "SELECT"
 			}
 		},
-		// NON USATO
 		AccountSelectorCard: {
 			title: "ACCOUNT",
 			status: {
@@ -276,7 +270,7 @@ const en = {
 				},
 				matched: {
 					title: "Account trovato!",
-					desc: "<br/>Benissimo è proprio il poprietario del repository GitHub. Farà un buon lavoro!"
+					desc: "<br/>Benissimo è proprio il poprietario del repository GitHub. Siamo sicuri che farà un buon lavoro!"
 				},
 				none: {
 					title: "Seleziona il developer che dovrà implementare la feature",
@@ -284,13 +278,18 @@ const en = {
 					<br/>Altrimenti cerca qualcun'altro oppure lascialo vuoto e spera che qualcuno si faccia avanti`
 				}
 			},
+			actions: {
+				remove: "REMOVE",
+				change: "CHANGE",
+				select: "SELECT"
+			}
 		},
 		FundingsCard: {
 			title: "FUNDINGS",
 			actions: {
-				contribute: "CONTRIBUISCI"
+				contribute: "CONTRIBUTE"
 			},
-			empty: "ANCORA NESSUN CONTRIBUTO PER QUESTA FEATURE",
+			empty: "NO FUNDINGS YET FOR THIS FEATURE",
 			alerts: {
 				pay: {
 					check: "Confermando (OK) procederai con il pagamento immediato del funding.",
@@ -304,74 +303,74 @@ const en = {
 			}
 		},
 		FeatureDetailCard: {
-			title: "DETTAGLIO",
+			title: "DESCRIZIONE",
 			title_field: {
 				title: "TITOLO",
 				placeholder: "Scrivi un breve titolo per la feature"
 			},
 			description: {
-				title: "DESCRIZIONE",
-				placeholder: "Descrivi la feature che vorresti..."
+				title: "TESTO",
+				placeholder: "Scrivi una dettagliata descrizione della feature..."
 			},
 			link: {
 				title: "LINK (es. issue GitHub)",
 				placeholder: "Link relativo alla feature (per esempio: issues o discussion in Github)",
 			},
+			save: "SALVA DESCRIZIONE",
 		},
 		CommentsCard: {
 			title: "COMMENTI",
 			empty: "ANCORA NESSUN COMMENTO",
 			label: {
-				add: "COMMENTA"
+				add: "ADD"
 			}
 		},
 		FundingDialog: {
-			title: "CONTRIBUTO ALLA FEATURE",
-			amount: "SOMMA",
-			description: `Ricorda cha puoi annullare il finanziamento <0>in qualunque momento</0>.
-			Quando la feature è dichiarata <0>COMPLETED dall'autore</0> riceverai una notifica.
-			Da allora, <0>se vorrai</0>, avrai ancora <0>{{time}} ore di tempo per annullare</0> il finanziamento (se proprio non ti convince) altrimenti avverrà il pagamento in automatico.
-			Il pagamento è gestito in sicurezza da <0>Stripe</0>: Puoi fidarti!
+			title: "CONTRIBUTE",
+			amount: "AMOUNT",
+			description: `Puoi annullare il finanziamento <0>in qualunque momento</0> durante lo sviluppo della feature.
+			Quando la feature è dichiarata <0>COMPLETED dal autore</0> riceverai una notifica e avrai <0>{{time}} minuti di tempo per annullare</0> il finanziamento (se non ti convince) altrimenti avverrà il pagamento in automatico.
+			Il pagamento è gestito in sicurezza da <0>Stripe</0>: ti puoi fidare!
 			`,
 			placeholder: "Se vuoi puoi inserire un messaggio (opzionale)",
 			button: {
 				ok: "OK",
-				cancel: "ANNULLA"
+				cancel: "CANCEL"
 			}
+
 		}
 	},
 	overview: {
 		title: "OVERVIEW",
 		feature: {
 			message: {
-				new: `Indica il repository GitHub e inserisci il dettaglio della <0>feature</0> da implementare.
-				Sarebbe perfetto se ci fosse un link ad una descrizione dettagliata su GitHub (es. una <0>issue</0> o una <0>discussion</0>).
-				<br/>Quindi clicca sul bottone <0>CREA</0> per renderla disponibile.`,
+				new: `Indica il repository GitHub e inserisci il dettaglio della <0>feature</0> che vorresti fosse implementata.
+		<br/>Quindi <0>CREA</0> la feature per renderla disponibile.`,
 				proposed_no_dev: `Questa feature è una <0>bozza</0> (proposed).
         <br/>Deve essere proposta e accettata da un <0>developer</0> per iniziare lo sviluppo.
 		Sarebbe perfetto se fosse il proprietario del repository GitHub stesso!
 		<br/>Se non c'è tra i registrati a PUCE, contattalo e fagli creare un account!
-				<br/>Oppure aspettiamo che qualcuno si faccia avanti`,
+		<br/>Oppure aspettiamo che qualcuno si faccia avanti`,
 				proposed: `Questa feature è una <0>bozza</0> ed è stata proposta ad un <0>developer</0>.
 		<br/>Ora è lo sviluppatore che deve accettare e portare avanti la feature.
-				<br/>Per invogliarlo puoi contribuire finanziariamente!`,
+		<br/>Per invogliarlo puoi contribuire finanziariamente!`,
 				in_development: `Siamo in fase di sviluppo.
 		<br/>Il <0>developer</0> sta lavorando per completare la <0>feature</0>. 
 		<br/>Quando avrà finito rilascerà una <0>release</0> che dovà essere confermata dall'<0>autore</0>.
-				<br/>Nel frattempo puoi sempre contribuire finanziariamente!`,
+		<br/>Nel frattempo puoi sempre contribuire finanziariamente!`,
 				released: `La feature è stata rilasciata dal <0>developer</0>.,
 		<br/>Ora l'<0>autore</0> deve confermarne il completamento.
 		<br/>Se conferma, si attiva un <0>countdown</0> e dopo il sistema effettuerà i pagamenti al <0>developer</0>.
-				<br/>Affettati a contribuire: Quando userai questa feature ti sentirai meglio!`,
+		<br/>Affettati a contribuire: Quando userai questa feature ti sentirai meglio!`,
 				completed: `Evviva! La feature è stata accettata dall'<0>autore</0>!
 		<br/>Dopo un <0>countdwon</0> di {{time}} ore il sistema effettuerà il pagamento al <0>developer</0>.
-				<br/>Se hai contribuito controlla che sia tutto ok: puoi sempre annullare il finanziamento prima dello scadere del <0>countdown</0>.`,
+		<br/>Se hai contribuito controlla che sia tutto ok: puoi sempre annullare il finanziamento prima dello scadere del <0>countdown</0>.`,
 				paid: `Questa feature è stata pagata dal sistema.
-				<br/>Grazie per aver usato PUCE speriamo di aver contribuito al finanziamento dell Open Source!`,
+		<br/>Grazie per aver usato PUCE speriamo di aver contribuito al finanziamento dell Open Source!`,
 				cancelled: `Purtroppo questa FEATURE è stata ANNULLATA.
 		<br/>Non sarà più possibile procedere con il suo sviluppo.
 		<br/>Se hai contribuito finanziariamente, i tuoi non sono stati addebitati. 
-				<br/>Se vuoi, puoi sempre ricreare la feature!`
+		<br/>Se vuoi, puoi sempre ricreare la feature!`
 			},
 			label: {
 				author: "AUTORE",
@@ -491,7 +490,7 @@ const en = {
 			label: {
 				create: "CREA",
 
-				save: "SALVA",
+				modify: "MODIFICA",
 				accept: "ACCETTA",
 				decline: "RIFIUTA",
 
@@ -528,7 +527,7 @@ const en = {
 				reject: "Hai rifiutato l'implementazione della feature.",
 				complete: "Hai confermato il completamento della feature.",
 			},
-			dialog: {
+			dialog:{
 				warning: "ATTENZIONE",
 
 				accept: "TI IMPEGNI A SVILUPPARE QUESTA FEATURE. SEI SICURO?",
@@ -554,14 +553,14 @@ const en = {
 	},
 	view: {
 		githubRepo: {
-			no_description: "Descrizione non disponibile",
-			empty: "NESSUN REPOSITORY SELEZIONATO"
+			no_description: "No description available",
+			empty: "NO REPOSITORY SELECTED"
 		},
 		funding: {
 			label: {
-				cancel: "ANNULLA PAGAMENTO",
-				pay_now: "PAGA SUBITO!",
-				try_again: "RIPROVA!"
+				cancel: "CANCEL",
+				pay_now: "PAY NOW!",
+				try_again: "TRY AGAIN!"
 			},
 			status: {
 				pending: {

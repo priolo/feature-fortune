@@ -32,10 +32,9 @@ const FeatureDetailPag: React.FC<Props> = ({
 
     // STORES
     useStore(featureDetailSo)
-    const { t } = useTranslation()
-
 
     // HOOKS
+    const { t } = useTranslation()
     let { id } = useParams<{ id: string }>()
     useEffect(() => {
         locationSo.setCurrent(LOCATION_PAGE.FeatureDetail)

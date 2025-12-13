@@ -237,9 +237,12 @@ class FeatureRoute extends httpRouter.Service {
 
 		// carico la FEATURE
 		const feature: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
-			type: typeorm.Actions.GET_BY_ID,
-			payload: featureId
-		})
+			type: typeorm.Actions.FIND_ONE,
+			payload: {
+				where: { id: featureId },
+				relations: { accountDev: true }
+			}
+		});
 		if (!feature) return res.status(404).json({ error: "Feature not found" })
 
 
@@ -257,7 +260,9 @@ class FeatureRoute extends httpRouter.Service {
 					return res.status(400).json({ error: `You can accept a feature only if its status is ${FEATURE_STATUS.PROPOSED}` })
 				}
 				partial = { status: FEATURE_STATUS.IN_DEVELOPMENT }
-				authorMessage = `Hello,\n\nThe developer has accepted to work on your feature titled "${feature.title}". They are now in development.\n\nBest regards,\nFeature Fortune Team`
+				//authorMessage = `Hello,\n\nThe developer has accepted to work on your feature titled "${feature.title}". They are now in development.\n\nBest regards,\nFeature Fortune Team`
+				authorMessage = `Ciao, Il developer ${feature.accountDev.name} ha accettato di lavorare sulla feature che hai proposto 
+				per il repository ${feature.githubRepoMetadata.full_name}. They are now in development.\n\nBest regards,\nFeature Fortune Team`
 				break;
 
 			case FEATURE_ACTIONS.DEV_DECLINE:
@@ -350,12 +355,12 @@ class FeatureRoute extends httpRouter.Service {
 
 
 		// invia i messaggi
-		// const messageService = this.nodeByPath<MessageRoute>(this.state.message_route)
-		// await messageService.sendMessage(
-		// 	null,
-		// 	feature.accountId,
-		// 	authorMessage,
-		// )
+		const messageService = this.nodeByPath<MessageRoute>(this.state.message_route)
+		await messageService.sendMessage(
+			null,
+			feature.accountId,
+			authorMessage,
+		)
 
 
 		res.json({ feature: partial })

@@ -6,6 +6,7 @@ import { Box, Button, Tooltip, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -17,6 +18,7 @@ const FeatureDetailHeader: React.FC = () => {
 
 	// HOOKS
 	const { t } = useTranslation()
+	const navigate = useNavigate()
 
 
 	// HANDLERS
@@ -29,8 +31,12 @@ const FeatureDetailHeader: React.FC = () => {
 		})
 	}
 
-
 	const handleAuthorDeleteClick = async () => {
+		if ( isNew ) {
+			featureDetailSo.setFeature(null)
+			navigate('/app');
+			return
+		}
 		const res = await dialogSo.dialogOpen({
 			title: t("header.feature.dialog.warning"),
 			text: t("header.feature.dialog.delete"),
@@ -181,7 +187,7 @@ const FeatureDetailHeader: React.FC = () => {
 				<Button variant="contained"
 					onClick={handleAuthorSaveClick}
 					disabled={!canSave}
-				>{t(`header.feature.label.${isNew ? "create" : "modify"}`)}</Button>
+				>{t(`header.feature.label.${isNew ? "create" : "save"}`)}</Button>
 			</div></Tooltip>
 		)}
 
