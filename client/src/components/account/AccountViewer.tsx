@@ -1,6 +1,6 @@
 import { sxClips, sxContent, sxRoot } from '@/theme/AvatarStyle';
 import { Account } from '@/types/Account';
-import { Box, Chip, Tooltip, Typography } from '@mui/material';
+import { Box, Chip, Link, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import AvatarCmp from '../AvatarCmp';
@@ -39,6 +39,8 @@ const AccountViewer: React.FC<Props> = ({
         no: 'primary',
     }[stripeStatus]
 
+    const githubLink = account.githubName ? `https://github.com/${account.githubName}` : undefined;
+
 
     return (
         <Box sx={sxRoot}>
@@ -47,19 +49,28 @@ const AccountViewer: React.FC<Props> = ({
 
             <Box sx={sxContent} >
 
-                <Typography align='left'>
-                    {account.name}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "baseline", gap: 1 }}>
+                    <Typography>
+                        {account.name}
+                    </Typography>
+                    {account.githubName &&
+                        <Typography variant="caption" color="text.secondary">
+                            <Link href={githubLink}>
+                                {account.githubName}
+                            </Link>
+                        </Typography>
+                    }
+                </Box>
 
                 <Box sx={sxClips}>
 
-                    {account.emailVerified && (
+                    {/* {account.emailVerified && (
                         <Tooltip title={t("view.account.email.tooltip")}>
                             <Chip color="success"
                                 label={t("view.account.email.label", 'EMAIL')}
                             />
                         </Tooltip>
-                    )}
+                    )} */}
 
                     {account.googleEmail && (
                         <Tooltip title={t("view.account.google.tooltip")}>
@@ -79,18 +90,20 @@ const AccountViewer: React.FC<Props> = ({
 
                     {account.stripeHaveCard && (
                         <Tooltip title={t("view.account.card.tooltip")}>
-                            <Chip label={t("view.account.card.label", 'CARD')} />
+                            <Chip label={t("view.account.card.label", 'CARD')} color="secondary" />
                         </Tooltip>
                     )}
 
-                    <Tooltip title={stripeTooltip}>
-                        <Chip label={stripeLabel} color={stripeColor as any} />
-                    </Tooltip>
+                    {stripeStatus !== 'no' && (
+                        <Tooltip title={stripeTooltip}>
+                            <Chip label={stripeLabel} color={stripeColor as any} />
+                        </Tooltip>
+                    )}
 
                 </Box>
             </Box>
 
-        </Box>
+        </Box >
     )
 };
 

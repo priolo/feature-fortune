@@ -1,3 +1,4 @@
+import { AvailabeCurrency } from "@/types/Currency";
 import { Box, MenuItem, Select, TextField } from "@mui/material";
 import { FunctionComponent } from "react";
 
@@ -10,17 +11,12 @@ interface Props {
 	currency?: string;
 	/** Callback when the value changes */
 	onChange?: (value: number, currency: string) => void;
-
-	/** Available currencies */
-	currencies?: string[];
 }
 
 const CurrencyField: FunctionComponent<Props> = ({
 	value,
 	currency = "usd",
 	onChange,
-
-	currencies = ["usd", "eur", "gbp", "jpy"],
 }) => {
 
 	// HOOKS
@@ -46,7 +42,7 @@ const CurrencyField: FunctionComponent<Props> = ({
 				value={currency}
 				onChange={handleCurrencyChange}
 			>
-				{currencies.map((curr) => (
+				{AvailabeCurrency.map((curr) => (
 					<MenuItem key={curr} value={curr}>
 						{curr.toUpperCase()}
 					</MenuItem>

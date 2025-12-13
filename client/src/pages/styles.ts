@@ -13,7 +13,7 @@ export const sxOverviewRoot: SxProps = {
     mr: 4, 
     ml: 'auto', 
     //pt: 2,
-    maxWidth: 330,
+    maxWidth: 400,
 };
 
 export const sxRightMenuRoot: SxProps = {

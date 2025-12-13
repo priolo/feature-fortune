@@ -15,6 +15,7 @@ export async function seeding(root: RootService) {
 				email: "iorioivano@gmail.com", 
 				emailCode: EMAIL_CODE.VERIFIED,
 				githubId: 402921,
+				githubName: "priolo",
 				stripeCustomerId: "cus_TSMpgPvkCIxXNR",
 				stripePaymentMethodId: "pm_1SVS683sTEVFLjPv0lakKZAV",
 				stripeAccountId: "acct_1SVS6E3p6vh1SYbA",

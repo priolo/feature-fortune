@@ -4,7 +4,7 @@ import { Account } from "../types/Account";
 
 
 /** INDEX */
-function index(filter?: { text?: string }, opt?: CallOptions): Promise<Account[]> {
+function index(filter?: { text?: string }, opt?: CallOptions): Promise<{ accounts: Account[] }> {
 	const params = new URLSearchParams();
 	if (filter?.text) {
 		params.append('text', filter.text);
@@ -15,7 +15,7 @@ function index(filter?: { text?: string }, opt?: CallOptions): Promise<Account[]
 }
 
 /** GET */
-async function get(id: string, opt?: CallOptions): Promise<Account> {
+async function get(id: string, opt?: CallOptions): Promise<{ account: Account }> {
 	if (!id) return
 	const user = await ajax.get(`accounts/${id}`, opt)
 	return user

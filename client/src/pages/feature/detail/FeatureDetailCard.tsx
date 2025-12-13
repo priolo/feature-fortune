@@ -68,6 +68,11 @@ const FeatureDetailCard: React.FC<Props> = ({
 			<Typography variant='caption' color="textSecondary">
 				{t('cards.FeatureDetailCard.link.title')}
 			</Typography>
+			{!link && readOnly && (
+				<Typography variant="body2" color="textSecondary">
+					{t("cards.FeatureDetailCard.link.no_link")}
+				</Typography>
+			)}
 			<LinkField
 				readOnly={readOnly}
 				value={link}

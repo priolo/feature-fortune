@@ -49,6 +49,7 @@ class GithubRoute extends httpRouter.Service {
 			payload: <Partial<AccountRepo>>{
 				id: userJwt.id,
 				githubId: null,
+				githubName: null,
 			},
 		})
 
@@ -65,15 +66,15 @@ export default GithubRoute
 /**
  * Dato un ID github restituisce l'url della pagina html dell'utente
  */
-export async function getGithubHtmlUrl(githubId: number): Promise < string | null > {
-	if ( !githubId ) return null
-	try {
-		const response = await fetch(`https://api.github.com/user/${githubId}`)
-			if(!response.ok) return null
-			const data = await response.json() as { html_url: string }
-			return data.html_url
-	} catch(e) {
-		console.error(e)
-		return null
-	}
-}
+// export async function getGithubHtmlUrl(githubId: number): Promise<string | null> {
+// 	if (!githubId) return null
+// 	try {
+// 		const response = await fetch(`https://api.github.com/user/${githubId}`)
+// 		if (!response.ok) return null
+// 		const data = await response.json() as { html_url: string }
+// 		return data.html_url
+// 	} catch (e) {
+// 		console.error(e)
+// 		return null
+// 	}
+// }

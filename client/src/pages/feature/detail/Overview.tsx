@@ -12,6 +12,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import Countdown from './Countdown';
 import FeatureStatusChip from './StatusChip';
 import themeSo from '@/stores/layout/theme';
+import { useTransComponents } from '@/pages/useTransComponents';
 
 
 
@@ -30,6 +31,7 @@ const FeatureDetailOverview: React.FC<Props> = ({
 
     // STORES
     const { t } = useTranslation()
+    const TransCmps = useTransComponents()
     const featureDetailSa = useStore(featureDetailSo);
 
 
@@ -46,11 +48,6 @@ const FeatureDetailOverview: React.FC<Props> = ({
     const haveCountdown = feature.status === FEATURE_STATUS.COMPLETED && feature.completedAt
     const hours = Number(import.meta.env.VITE_PAYMENT_AFTER_COMPLETION_HOURS ?? 12)
     const deltaMin = haveCountdown ? hours * 60 * 60 * 1000 : 0
-
-    const palette = themeSo.state.current.palette
-    const TransCmps = useMemo(() => [
-        <span style={{ color: palette.text.primary, fontWeight: 600 }} />
-    ], [palette.text.primary])
 
     return (
         <Box sx={[sxOverviewRoot, sx] as SxProps}>
@@ -74,7 +71,7 @@ const FeatureDetailOverview: React.FC<Props> = ({
             )}
 
             {values.length > 0 && (
-                <Box>
+                <Box sx={sxPropBox}>
                     <Typography variant="overline" color="text.secondary">
                         {t('overview.feature.label.amount', 'AMOUNT')}
                     </Typography>
@@ -85,18 +82,18 @@ const FeatureDetailOverview: React.FC<Props> = ({
             )}
 
             {feature.accountId && (
-                <Box>
+                <Box sx={sxPropBox}>
                     <Typography variant="overline" color="text.secondary">
                         {t('overview.feature.label.author', 'AUTHOR')}
                     </Typography>
-                    <Paper sx={{ p: 1, borderRadius: 2, mt: 1 }}>
+                    <Paper sx={{ p: 1, borderRadius: 2 }}>
                         <AccountIdView accountId={feature.accountId} />
                     </Paper>
                 </Box>
             )}
 
             {feature.createdAt && (
-                <Box>
+                <Box sx={sxPropBox}>
                     <Typography variant="overline" color="text.secondary">
                         {t('overview.feature.label.created_at', 'CREATE AT')}
                     </Typography>
@@ -119,3 +116,9 @@ const FeatureDetailOverview: React.FC<Props> = ({
 
 export default FeatureDetailOverview;
 
+const sxPropBox: SxProps = {
+    display: "flex",
+    flexDirection: "column",
+    gap: 1,
+    alignItems: "flex-end",
+}

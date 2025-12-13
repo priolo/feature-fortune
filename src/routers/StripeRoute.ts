@@ -1,11 +1,10 @@
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
-import { FUNDING_STATUS, FundingRepo } from "../repository/Funding.js";
 import Stripe from "stripe";
 import { AccountRepo } from "../repository/Account.js";
+import { FUNDING_STATUS, FundingRepo } from "../repository/Funding.js";
 import PaymentCrono from "../services/crono/FeaturePaymentCrono.js";
 import { Actions } from "../services/stripe/types.js";
-import { getGithubHtmlUrl } from "./GithubRoute.js";
 import { envInit } from "../types/env.js";
 
 envInit();
@@ -126,7 +125,7 @@ class StripeRoute extends httpRouter.Service {
 
 		// CREATE se l'account non ha ancora uno stripe account lo creo
 		if (!user.stripeAccountId) {
-			const githubUrl = await getGithubHtmlUrl(user.githubId!)
+			const githubUrl = user.githubName ? `https://github.com/${user.githubName}` : "";
 			stripeAccount = await new Bus(this, this.state.stripe_service).dispatch({
 				type: Actions.ACCOUNT_CREATE,
 				payload: {

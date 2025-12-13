@@ -4,6 +4,7 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, LinearP
 import React, { FunctionComponent, useEffect } from "react";
 import AccountViewer from "./AccountViewer";
 import MessageBanner from "../MessageBanner";
+import { useTranslation } from "react-i18next";
 
 
 
@@ -35,6 +36,7 @@ const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 
 
 	// HOOKs
+	const { t } = useTranslation()
 	const [filterText, setFilterText] = React.useState('')
 	let [items, setItems] = React.useState<Account[]>([])
 	const [loading, setLoading] = React.useState(false)
@@ -55,7 +57,7 @@ const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 			setLoading(true)
 			try {
 				const result = await accountApi.index({ text: filterText })
-				setItems(result)
+				setItems(result?.accounts ?? [])
 			} catch (err) {
 				setItems([])
 			} finally {
@@ -103,7 +105,7 @@ const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 				<TextField autoFocus
 					value={filterText ?? ''}
 					onChange={handleFilterChange}
-					placeholder="Type to filter accounts..."
+					placeholder={t("cards.AccountFinderDialog.placeholder")}
 				/>
 			</Box>
 
@@ -124,14 +126,16 @@ const AccountFinderDialog: FunctionComponent<Partial<Props>> = ({
 					))}
 					{!loading && items.length === 0 && (
 						<MessageBanner>
-							No accounts found.
+							{t("cards.AccountFinderDialog.empty")}
 						</MessageBanner>
 					)}
 				</List>
 			</DialogContent>
 
 			<DialogActions>
-				<Button onClick={() => handleClose()}>Cancel</Button>
+				<Button onClick={() => handleClose()}>
+					{t("common.cancel")}
+				</Button>
 			</DialogActions>
 
 		</Dialog>

@@ -1,29 +1,13 @@
 import { Bus, httpRouter, jwt, typeorm, email as emailNs } from "@priolo/julian";
 import crypto from "crypto";
-import fs from "node:fs/promises";
-import path from "node:path";
 import { Request, Response } from "express";
 import { FindManyOptions } from "typeorm";
 import { AccountRepo, accountSendable, EMAIL_CODE, JWTPayload } from "../repository/Account.js";
 import { ENV_TYPE, envInit } from "../types/env.js";
 import { http } from "@priolo/julian";
+import { getEmailCodeTemplate } from "src/utils/templates.js";
 
 envInit()
-
-
-let authEmailCodeTemplateCached: string | null = null;
-async function getEmailCodeTemplate(templateVars: Record<string, string>): Promise<string> {
-	let template: string = null 
-	if (authEmailCodeTemplateCached) {
-		template = authEmailCodeTemplateCached
-	} else {
-		const templatePath = path.resolve(process.cwd(), "templates/email/code.html")
-		template = await fs.readFile(templatePath, "utf-8")
-	}
-	// Replace all {{var}} placeholders in the template
-	return template.replace(/{{(\w+)}}/g, (_, key) => templateVars[key] || "");
-}
-
 
 
 class AuthEmailRoute extends httpRouter.Service {

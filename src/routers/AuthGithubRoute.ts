@@ -4,6 +4,7 @@ import { Bus, httpRouter, jwt, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 import { envInit } from "../types/env.js";
 import { FindManyOptions } from "typeorm";
+import { GithubUser } from "../types/github.js";
 
 envInit();
 
@@ -57,7 +58,7 @@ class AuthGithubRoute extends httpRouter.Service {
 
 		try {
 			// GITHUB ACCOUNT
-			const userGithub: any = await this.getGithubUserByCode(code)
+			const userGithub = await this.getGithubUserByCode(code)
 			if (!userGithub?.id) {
 				return res.status(400).json({ error: "Failed to retrieve user information from GitHub" });
 			}
@@ -112,6 +113,7 @@ class AuthGithubRoute extends httpRouter.Service {
 					name: user.name ?? userGithub.name ?? userGithub.login,
 					avatarUrl: user.avatarUrl ?? userGithub.avatar_url,
 					githubId: userGithub.id,
+					githubName: userGithub.login,
 				}
 			})
 
@@ -165,7 +167,7 @@ class AuthGithubRoute extends httpRouter.Service {
 		if (!response.ok) {
 			throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
 		}
-		const userGithub: any = await response.json();
+		const userGithub = await response.json() as GithubUser;
 		return userGithub
 	}
 

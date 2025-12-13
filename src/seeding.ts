@@ -24,6 +24,7 @@ export async function seeding(root: RootService) {
 				avatarUrl: "https://lh3.googleusercontent.com/a/ACg8ocKA4wD4lM9V5uEQ17xEAUPziv77OEdGj04wZ-uZPG5H9l7CEukn=s96-c",
 				emailCode: EMAIL_CODE.VERIFIED,
 				githubId: 402921, //"octocat"
+				githubName: "priolo",
 				stripeCustomerId: "cus_TVzu5h5ZsSSO5p",
 				stripePaymentMethodId: "pm_1SYxuV3sTEVFLjPv83RAuOVI",
 				stripeAccountId: "acct_1SYxul3yTNMQLcVc",

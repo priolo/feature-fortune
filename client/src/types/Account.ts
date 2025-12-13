@@ -10,10 +10,13 @@ export interface Account {
 	emailVerified?: boolean
 	avatarUrl?: string
 	language?: string
+	notificationsEnabled?: boolean
+	preferredCurrency?: string
 
 	googleEmail?: string
 	
 	githubId?: number
+	githubName?: string
 
 	/** 
 	 * STRIPE for CONTRIBUTOR

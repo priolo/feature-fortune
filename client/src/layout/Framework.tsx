@@ -31,11 +31,9 @@ const Framework: React.FC<Props> = ({
 				{leftRender}
 				<Box sx={{ flex: 1 }} />
 				<Box sx={sxFooter}>
-					<Button color="inherit">
-						<Box sx={{ fontSize: "12px", fontWeight: 300 }}
-							onClick={() => dialogSo.setIsPolicyOpen(true)}
-						>PRIVACY POLICY</Box>
-					</Button>
+					<Box sx={sxButton}
+						onClick={() => dialogSo.setIsPolicyOpen(true)}
+					>{t("common.privacy_policy")}</Box>
 				</Box>
 			</Box>
 
@@ -98,5 +96,14 @@ const sxRight: SxProps = {
 
 const sxFooter: SxProps = {
 	alignSelf: "end",
-	p: 4,
+	mr: 4,
+	mb: 2,
+}
+
+const sxButton: SxProps = {
+	fontSize: "11px", 
+	fontWeight: 300, 
+	opacity: 0.6, 
+	cursor: "pointer", 
+	textTransform: "uppercase",
 }

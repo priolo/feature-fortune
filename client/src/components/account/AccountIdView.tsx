@@ -33,9 +33,9 @@ const AccountIdView: React.FC<Props> = ({
         const load = async () => {
             setIsLoading(true)
             try {
-                const account = await accountApi.get(accountId)
-                setAccount(account)
-                onLoad?.(account)
+                const res = await accountApi.get(accountId)
+                setAccount(res?.account)
+                onLoad?.(res?.account)
             } finally {
                 setIsLoading(false)
             }

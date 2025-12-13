@@ -2,11 +2,15 @@ import Stripe from "stripe";
 import { AccountRepo } from "../repository/Account.js";
 import { CommentRepo } from "../repository/Comment.js";
 import { FEATURE_ACTIONS, FEATURE_STATUS, FeatureRepo } from "../repository/Feature.js";
-import { FundingRepo } from "../repository/Funding.js";
-import { Bus, httpRouter, typeorm } from "@priolo/julian";
+import { FUNDING_STATUS, FundingRepo } from "../repository/Funding.js";
+import { Bus, httpRouter, typeorm, email as emailNs } from "@priolo/julian";
 import { Request, Response } from "express";
 import { FindManyOptions, FindOptionsWhere } from "typeorm";
 import MessageRoute from "./MessageRoute.js";
+import { envInit } from "../types/env.js";
+import { getEmailCodeTemplate } from "src/utils/templates.js";
+
+envInit();
 
 
 
@@ -19,6 +23,7 @@ class FeatureRoute extends httpRouter.Service {
 			feature_repo: "/typeorm/features",
 			comment_repo: "/typeorm/comments",
 			message_route: "/http/routers/public/messages",
+			email_path: "/email-noreply",
 			routers: [
 				{ path: "/", verb: "get", method: "getAll" },
 				{ path: "/:id", verb: "get", method: "getById" },
@@ -240,7 +245,46 @@ class FeatureRoute extends httpRouter.Service {
 			type: typeorm.Actions.FIND_ONE,
 			payload: {
 				where: { id: featureId },
-				relations: { accountDev: true }
+				relations: {
+					account: true,
+					accountDev: true,
+					fundings: {
+						account: true
+					}
+				},
+				select: {
+					id: true,
+					title: true,
+					status: true,
+					accountId: true,
+					accountDevId: true,
+					githubRepoMetadata: true,
+					account: {
+						id: true,
+						name: true,
+						notificationsEnabled: true,
+						email: true,
+						googleEmail: true
+					},
+					accountDev: {
+						id: true,
+						name: true,
+						notificationsEnabled: true,
+						email: true,
+						googleEmail: true
+					},
+					fundings: {
+						id: true,
+						accountId: true,
+						status: true,
+						account: {
+							id: true,
+							notificationsEnabled: true,
+							email: true,
+							googleEmail: true
+						}
+					}
+				}
 			}
 		});
 		if (!feature) return res.status(404).json({ error: "Feature not found" })
@@ -248,7 +292,17 @@ class FeatureRoute extends httpRouter.Service {
 
 		// calcolo la modifica alla FEATURE
 		let partial: Partial<FeatureRepo> = null
-		let authorMessage: string = null
+		let message: {
+			toFounders?: boolean,
+			mainReceiver?: AccountRepo,
+			title?: string,
+			body?: string,
+			url?: string
+		} = {
+			mainReceiver: feature.account,
+			toFounders: true,
+			url: `${process.env.FRONTEND_URL}/app/feature/${feature.id}`
+		}
 
 		switch (action) {
 
@@ -260,9 +314,10 @@ class FeatureRoute extends httpRouter.Service {
 					return res.status(400).json({ error: `You can accept a feature only if its status is ${FEATURE_STATUS.PROPOSED}` })
 				}
 				partial = { status: FEATURE_STATUS.IN_DEVELOPMENT }
-				//authorMessage = `Hello,\n\nThe developer has accepted to work on your feature titled "${feature.title}". They are now in development.\n\nBest regards,\nFeature Fortune Team`
-				authorMessage = `Ciao, Il developer ${feature.accountDev.name} ha accettato di lavorare sulla feature che hai proposto 
-				per il repository ${feature.githubRepoMetadata.full_name}. They are now in development.\n\nBest regards,\nFeature Fortune Team`
+				message = {
+					title: `Your feature "${feature.title}" is now in development!`,
+					body: `Good news! The developer ${feature.accountDev.name} has accepted to work on the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. They are now in development.`,
+				}
 				break;
 
 			case FEATURE_ACTIONS.DEV_DECLINE:
@@ -276,7 +331,11 @@ class FeatureRoute extends httpRouter.Service {
 					githubDevId: null,
 					accountDevId: null,
 				}
-				authorMessage = `Hello,\n\nThe developer has left the feature titled "${feature.title}". You may consider assigning a different developer.\n\nBest regards,\nFeature Fortune Team`
+				message = {
+					toFounders: false,
+					title: `Developer has declined your feature "${feature.title}"`,
+					body: `The developer ${feature.accountDev.name} has declined to work on the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. You may consider assigning a different developer.`,
+				}
 				break;
 
 			case FEATURE_ACTIONS.DEV_LEAVE:
@@ -291,7 +350,11 @@ class FeatureRoute extends httpRouter.Service {
 					githubDevId: null,
 					accountDevId: null,
 				}
-				authorMessage = `Hello,\n\nThe developer has left the feature titled "${feature.title}". You may consider assigning a different developer.\n\nBest regards,\nFeature Fortune Team`
+				message = {
+					toFounders: false,
+					title: `Developer has left your feature "${feature.title}"`,
+					body: `The developer ${feature.accountDev.name} has left the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. You may consider assigning a different developer.`,
+				}
 				break;
 
 			case FEATURE_ACTIONS.DEV_RELEASE:
@@ -302,7 +365,10 @@ class FeatureRoute extends httpRouter.Service {
 					return res.status(400).json({ error: `You can release a feature only if its status is ${FEATURE_STATUS.IN_DEVELOPMENT}` })
 				}
 				partial = { status: FEATURE_STATUS.RELEASED }
-				authorMessage = `Hello,\n\nThe developer has marked the feature titled "${feature.title}" as released.\n\nBest regards,\nFeature Fortune Team`
+				message = {
+					title: `Your feature "${feature.title}" has been released!`,
+					body: `Great news! The developer ${feature.accountDev.name} has released the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. You can now review and mark it as completed.`,
+				}
 				break;
 
 			case FEATURE_ACTIONS.ATH_CANCEL:
@@ -313,18 +379,27 @@ class FeatureRoute extends httpRouter.Service {
 					return res.status(400).json({ error: `You can cancel a feature only if its status is ${FEATURE_STATUS.PROPOSED}, ${FEATURE_STATUS.IN_DEVELOPMENT}, or ${FEATURE_STATUS.RELEASED}` })
 				}
 				partial = { status: FEATURE_STATUS.CANCELLED }
-				authorMessage = `Hello,\n\nThe feature titled "${feature.title}" has been cancelled by its creator.\n\nBest regards,\nFeature Fortune Team`
+				message = {
+					mainReceiver: feature.accountDev,
+					title: `Your feature "${feature.title}" has been cancelled`,
+					body: `The feature you proposed for the repository ${feature.githubRepoMetadata.full_name} has been cancelled by its creator.`,
+				}
 				break;
 
 			case FEATURE_ACTIONS.ATH_REJECTED:
 				if (feature.accountId != userJwt.id) {
 					return res.status(403).json({ error: "You are not allowed to reject this feature" })
 				}
-				if (feature.status != FEATURE_STATUS.IN_DEVELOPMENT) {
-					return res.status(400).json({ error: `You can reject a feature only if its status is ${FEATURE_STATUS.IN_DEVELOPMENT}` })
+				if (feature.status != FEATURE_STATUS.RELEASED) {
+					return res.status(400).json({ error: `You can reject a feature only if its status is ${FEATURE_STATUS.RELEASED}` })
 				}
 				partial = { status: FEATURE_STATUS.IN_DEVELOPMENT }
-				authorMessage = `Hello,\n\nThe feature titled "${feature.title}" has been rejected by its creator.\n\nBest regards,\nFeature Fortune Team`
+				message = {
+					mainReceiver: feature.accountDev,
+					toFounders: false,
+					title: `Your feature "${feature.title}" has been rejected by its creator`,
+					body: `The developer ${feature.accountDev.name} has informed that the feature you are developing for the repository ${feature.githubRepoMetadata.full_name} has been rejected by its creator.`,
+				}
 				break;
 
 			case FEATURE_ACTIONS.ATH_COMPLETE:
@@ -338,7 +413,11 @@ class FeatureRoute extends httpRouter.Service {
 					status: FEATURE_STATUS.COMPLETED,
 					completedAt: new Date(),
 				}
-				authorMessage = `Hello,\n\nThe feature titled "${feature.title}" has been marked as completed by its creator.\n\nBest regards,\nFeature Fortune Team`
+				message = {
+					mainReceiver: feature.accountDev,
+					title: `Your feature "${feature.title}" has been completed!`,
+					body: `Congratulations! The feature you proposed for the repository ${feature.githubRepoMetadata.full_name} has been marked as completed. Thank you for your contribution!`,
+				}
 				break;
 
 			default:
@@ -355,12 +434,50 @@ class FeatureRoute extends httpRouter.Service {
 
 
 		// invia i messaggi
+		const receivers = [message.mainReceiver]
+		if (message.toFounders) {
+			feature.fundings.forEach(f => {
+				if (
+					f.status != FUNDING_STATUS.CANCELLED 
+					&& !receivers.find(r => r.id == f.accountId)
+				) receivers.push(f.account)
+			})
+		}
 		const messageService = this.nodeByPath<MessageRoute>(this.state.message_route)
-		await messageService.sendMessage(
-			null,
-			feature.accountId,
-			authorMessage,
+		const html = await getEmailCodeTemplate(
+			{
+				title: message.title,
+				message: message.body,
+				old_status: feature.status,
+				new_status: partial.status,
+				action_url: message.url,
+				action_label: "View Feature",
+				support: "support@puce.app",
+			},
+			"templates/email/notification.html",
 		)
+
+		await Promise.all(receivers.map(async (receiver) => {
+			// invio i messaggi di sistema
+			await messageService.sendMessage(
+				null,
+				receiver.id,
+				message.body,
+			)
+			// invio email se abilitata
+			const email = receiver.googleEmail ?? receiver.email
+			if (receiver?.notificationsEnabled && !!email) {
+				await new Bus(this, this.state.email_path).dispatch({
+					type: emailNs.Actions.SEND,
+					payload: {
+						from: process.env.EMAIL_USER,
+						to: email,
+						subject: message.title,
+						html,
+					}
+				})
+			}
+		}))
 
 
 		res.json({ feature: partial })

@@ -25,7 +25,7 @@ const FeatureListOverview: React.FC = () => {
                 {t('overview.title', 'Overview')}
             </Typography>
 
-            <Typography variant="body2" color="text.secondary" /*sx={{ whiteSpace: 'pre-line' }}*/>
+            <Typography variant="body2" color="text.secondary">
                 {t('overview.features.message.default')}
             </Typography>
 

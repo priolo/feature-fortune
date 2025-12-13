@@ -1,7 +1,7 @@
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
 import { FindManyOptions, Like } from "typeorm";
-import { AccountRepo, accountSendable } from "../repository/Account.js";
+import { AccountRepo, accountSendable, accountSendableList } from "../repository/Account.js";
 
 
 
@@ -40,7 +40,8 @@ class AccountRoute extends httpRouter.Service {
 			findOptions.where = [
 				{ name: Like(searchText) },
 				{ email: Like(searchText) },
-				{ googleEmail: Like(searchText) }
+				{ googleEmail: Like(searchText) },
+				{ githubName: Like(searchText) },
 			];
 		}
 
@@ -49,7 +50,9 @@ class AccountRoute extends httpRouter.Service {
 			payload: findOptions
 		});
 
-		res.json(accounts);
+		res.json({
+			accounts: accountSendableList(accounts)
+		});
 	}
 
 	async getById(req: Request, res: Response) {
@@ -61,7 +64,9 @@ class AccountRoute extends httpRouter.Service {
 		});
 		if (!account) return res.status(404).json({ error: "Account not found" });
 
-		res.json(account);
+		res.json({ 
+			account: accountSendable(account) 
+		})
 	}
 
 	/**
@@ -91,6 +96,8 @@ class AccountRoute extends httpRouter.Service {
 			id: userJwt.id,
 			name: account.name,
 			language: account.language ?? undefined,
+			notificationsEnabled: account.notificationsEnabled ?? undefined,
+			preferredCurrency: account.preferredCurrency ?? undefined,
 		}
 
 		const savedAccount = await new Bus(this, this.state.account_repo).dispatch({

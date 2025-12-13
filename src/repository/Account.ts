@@ -5,6 +5,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export enum EMAIL_CODE {
 	VERIFIED = "verified",
 	UNVERIFIED = null,
+	
 }
 
 @Entity('accounts')
@@ -15,8 +16,17 @@ export class AccountRepo {
 
 	@Column({ type: 'varchar', nullable: true })
 	name?: string;
+	/** lingua preferita dell'utente */
 	@Column({ type: 'varchar', nullable: true, default: 'en' })
 	language?: string;
+	/** Abilita le notifiche per email */
+	@Column({ type: 'boolean', nullable: false, default: true })
+	notificationsEnabled?: boolean;
+	/** currency code ISO 4217, per esempio "eur" o "usd" */
+	@Column({ type: 'varchar', length: 3, default: 'eur' })
+	preferredCurrency: string;
+
+	
 
 	@Column({ type: 'varchar', nullable: true })
 	email?: string;
@@ -42,6 +52,11 @@ export class AccountRepo {
 	 */
 	@Column({ type: 'int', nullable: true })
 	githubId?: number;
+	/**
+	 * nome utente GITHUB collegato a questo ACCOUNT
+	 */
+	@Column({ type: 'varchar', nullable: true })
+	githubName?: string
 
 
 
@@ -82,15 +97,32 @@ export type JWTPayload = {
 
 export function accountSendable(account: AccountRepo) {
 	if (!account) return null
-	const { id, name, language, email, avatarUrl, googleEmail, githubId, stripeAccountId, stripeAccountStatus } = account
+	const { 
+		id, name, language, notificationsEnabled, preferredCurrency,
+		email, avatarUrl, googleEmail, githubId, githubName, 
+		stripeAccountId, stripeAccountStatus 
+	} = account
 	return {
-		id, name, language, email, avatarUrl, googleEmail, githubId, stripeAccountId, stripeAccountStatus,
-
+		id, name, language, notificationsEnabled, preferredCurrency,
+		email, avatarUrl, googleEmail, githubId, githubName, 
+		stripeAccountId, stripeAccountStatus,
 		stripeHaveCard: !!account.stripePaymentMethodId,
-
 		// se c'e' emailCode allora non e' verificata
 		emailVerified: account.emailCode == EMAIL_CODE.VERIFIED,
 	}
 }
+export function accountSendableList(accounts: AccountRepo[]) {
+	return accounts.map(account => accountSendable(account))
+}
 
-
+/**
+ * Metadati essenziali del repository GitHub
+ * memorizzati per evitare chiamate API ripetute
+ */
+export interface GithubAccountMetadata {
+	name: string;
+	full_name: string;
+	avatar_url: string; // avatar del owner
+	description?: string;
+	html_url?: string;
+}

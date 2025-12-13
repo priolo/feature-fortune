@@ -3,7 +3,7 @@ import Card from "@/components/Card";
 import authSo from "@/stores/auth";
 import dialogSo, { DIALOG_TYPE } from "@/stores/layout/dialogStore";
 import themeSo from "@/stores/layout/theme";
-import { Money } from "@mui/icons-material";
+import { Payment } from "@mui/icons-material";
 import { Box, Button, SxProps, Theme } from "@mui/material";
 import { useStore } from "@priolo/jon";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
@@ -124,7 +124,7 @@ const StripeCreditCard: React.FC<Props> = ({
 	return (
 		<Card id="stripe-credit-card"
 			title={t(`cards.StripeCreditCard.title`)}
-			icon={<Money color="primary" />}
+			icon={<Payment color="primary" />}
 		>
 
 			<MessageCmp variant={status} title={t(`cards.StripeCreditCard.status.${status}.title`)} sx={{ mb: 1 }}>

@@ -58,4 +58,4 @@ export interface PaymentIntentData {
 }
 
 
-
+export const AvailabeCurrency:string[] = ["usd", "eur", "gbp" ]

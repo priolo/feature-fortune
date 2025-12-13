@@ -647,7 +647,6 @@ const en = {
 	},
 	policy: {
 		title: "PRIVACY POLICY",
-		button_ok: "ACCEPT",
 		last_updated: "Last updated: June 10, 2024",
 	}
 }

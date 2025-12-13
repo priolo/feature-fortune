@@ -41,7 +41,7 @@ const PolicyDialog: FunctionComponent = () => {
 		<DialogActions>
 			<Button color='primary' variant='contained'
 				onClick={() => dialogSo.setIsPolicyOpen(false)}
-			>{t("policy.button_ok")}</Button>
+			>{t("common.accept")}</Button>
 		</DialogActions>
 
 	</Dialog>

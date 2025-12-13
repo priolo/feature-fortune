@@ -2,6 +2,8 @@ import React from 'react';
 import PageMenu from '../../components/PageMenu';
 import authSo from '@/stores/auth';
 import { useStore } from '@priolo/jon';
+import { useTranslation } from 'react-i18next';
+import { useTransComponents } from '../useTransComponents';
 
 
 
@@ -14,6 +16,9 @@ const AccountRightMenu: React.FC<Props> = ({
     // STORES
     useStore(authSo)
 
+    // HOOKS
+    const { t } = useTranslation()
+    const TransCmps = useTransComponents()
 
     // RENDER
     const user = authSo.state.user
@@ -22,37 +27,37 @@ const AccountRightMenu: React.FC<Props> = ({
     return <PageMenu items={[
         {
             id: 'settings-card',
-            label: 'SETTINGS',
+            label: t('cards.SettingsCard.title'),
             subLabel: 'General account settings',
         },
         {
             id: 'email-login-card',
-            label: 'EMAIL',
-            subLabel: 'Manage email login',
-            warnIcon: !user.email,
+            label: t(`cards.EmailLoginCard.title`),
+            subLabel: user.email ?? t("common.disabled"),
+            warnIcon: !user.emailVerified,
         },
         {
             id: 'google-login-card',
-            label: 'GOOGLE',
-            subLabel: 'Link Google account',
+            label: t(`cards.GoogleLoginCard.title`),
+            subLabel: user.googleEmail ?? t("common.disabled"),
             warnIcon: !user.googleEmail,
         },
         {
             id: 'github-login-card',
-            label: 'GITHUB',
-            subLabel: 'Link GitHub account',
+            label: t(`cards.GithubLoginCard.title`),
+            subLabel: user.githubName ?? t("common.disabled"),
             warnIcon: !user.githubId,
         },
         {
             id: 'stripe-credit-card',
-            label: 'CREDIT CARD',
-            subLabel: 'Manage payment methods',
+            label: t(`cards.StripeCreditCard.title`),
+            subLabel: user.stripeHaveCard ? t("common.enabled") : t("common.disabled"),
             warnIcon: !user.stripeHaveCard,
         },
         {
             id: 'stripe-author-card',
-            label: 'STRIPE AUTHOR',
-            subLabel: 'Manage payout details',
+            label: t('cards.StripeAuthorCard.title'),
+            subLabel: user.stripeAccountId ? t("common.enabled") : t("common.disabled"),
             warnIcon: !user.stripeAccountId,
         },
     ]} />;

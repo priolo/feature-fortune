@@ -5,6 +5,8 @@ import { FunctionComponent, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import CurrencyField from "../CurrencyField";
 import themeSo from "@/stores/layout/theme";
+import { useTransComponents } from "@/pages/useTransComponents";
+import authSo from "@/stores/auth";
 
 
 
@@ -27,12 +29,13 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 
 	// HOOKs
 	const { t } = useTranslation()
+	const TransCmps = useTransComponents()
 	const [funding, setFunding] = useState<Funding>(null)
 
 	useEffect(() => {
 		if (!isOpen) return
 		const defaultFunding = fundingToEdit ?? {
-			currency: 'usd',
+			currency: authSo.state.user?.preferredCurrency ?? 'eur',
 			amount: 500,
 			status: FUNDING_STATUS.PENDING,
 			message: '',
@@ -59,7 +62,6 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 
 	// RENDER 
 	if (!funding) return null
-	const palette = themeSo.state.current.palette
 	const error = !funding.amount || funding.amount < Number(import.meta.env.VITE_FUNDING_MIN_AMOUNT ?? 100)
 		? "amount_too_low"
 		: funding.amount > Number(import.meta.env.VITE_FUNDING_MAX_AMOUNT ?? 10000)
@@ -67,9 +69,6 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 			: null;
 	const bttOkEnabled = !error;
 	const tooltip = error
-	const TransCmps = [
-		<span style={{ color: palette.text.primary, fontWeight: 600 }} />
-	]
 
 	return (
 		<Dialog
@@ -91,7 +90,7 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 						/>
 					</Paragraph>
 
-					<Typography variant="body2" color="text.secondary" whiteSpace={"pre-line"}>
+					<Typography variant="body2" color="text.secondary">
 						<Trans
 							i18nKey={`cards.FundingDialog.description`}
 							values={{ time: COMPLETION_TIME }}

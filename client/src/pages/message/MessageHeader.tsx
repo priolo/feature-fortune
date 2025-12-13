@@ -5,6 +5,7 @@ import { Add, Refresh } from '@mui/icons-material';
 import messageListSo from '@/stores/message/list';
 import { useSearchParams } from 'react-router-dom';
 import MessageReceiverSelector from './MessageReceiverSelector';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -13,6 +14,7 @@ const MessageHeader: React.FC = () => {
 	// STORES
 
 	// HOOKS
+	const { t } = useTranslation()
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	// HANDLERS
@@ -39,7 +41,7 @@ const MessageHeader: React.FC = () => {
 		{/* <BackButton /> */}
 
 		<Typography variant="h5">
-			MESSAGES
+			{t("header.messages.title")}
 		</Typography>
 
 		<Box sx={{ flex: 1 }}></Box>
@@ -52,12 +54,12 @@ const MessageHeader: React.FC = () => {
 		<Button 
 			startIcon={<Refresh />}
 			onClick={handleRefreshClick}
-		>REFRESH</Button>
+		>{t("common.refresh")}</Button>
 
 		<Button variant='contained'
 			startIcon={<Add />}
 			onClick={handleNewMessageClick}
-		>NEW</Button>
+		>{t("common.new")}</Button>
 		
 	</>
 }

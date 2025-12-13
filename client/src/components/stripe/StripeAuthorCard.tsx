@@ -1,13 +1,14 @@
 import stripeApi from '@/api/stripe';
 import Card from '@/components/Card';
+import StripeIcon from '@/icons/StripeIcon';
 import authSo from '@/stores/auth';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
+import themeSo from '@/stores/layout/theme';
 import { Box, Button, SxProps } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import MessageCmp from '../MessageCmp';
-import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 
 
 /**
@@ -74,7 +75,7 @@ const StripeAuthorCard: React.FC = () => {
 	return (
 		<Card id="stripe-author-card"
 			title={t('cards.StripeAuthorCard.title')}
-			icon={<ManageAccountsIcon color="primary" />}
+			icon={<StripeIcon style={{ color: themeSo.state.current.palette.primary.main }} />}
 		>
 
 			<MessageCmp variant={msgType} title={t(`cards.StripeAuthorCard.status.${msgType}.title`)}>

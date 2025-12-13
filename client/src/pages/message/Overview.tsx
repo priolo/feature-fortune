@@ -1,9 +1,10 @@
 import messageListSo from '@/stores/message/list';
-import { Box, Typography } from '@mui/material';
+import { Box, SxProps, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { sxOverviewRoot } from '../styles';
+import { useTransComponents } from '../useTransComponents';
 
 
 
@@ -17,7 +18,7 @@ const MessageOverview: React.FC = () => {
 
     // HOOKS
     const { t } = useTranslation()
-
+    const TransCmps = useTransComponents()
 
     // RENDER
     return (
@@ -28,11 +29,14 @@ const MessageOverview: React.FC = () => {
             </Typography>
 
             <Typography variant="body2" color="text.secondary">
-                {t('overview.messages.message.default')}
+                <Trans
+                    i18nKey={t(`overview.messages.message.default`)}
+                    components={TransCmps}
+                />
             </Typography>
 
             {unreadCount > 0 && (
-                <Box sx={{ mt: 2 }}>
+                <Box sx={sxPropBox}>
                     <Typography variant="overline" color="text.secondary">
                         {t('overview.messages.label.unread')}
                     </Typography>
@@ -42,7 +46,7 @@ const MessageOverview: React.FC = () => {
                 </Box>
             )}
 
-            <Box sx={{ mt: 2 }}>
+            <Box sx={sxPropBox}>
                 <Typography variant="overline" color="text.secondary">
                     {t('overview.messages.label.total')}
                 </Typography>
@@ -56,3 +60,10 @@ const MessageOverview: React.FC = () => {
 };
 
 export default MessageOverview;
+
+const sxPropBox: SxProps = {
+    display: "flex",
+    flexDirection: "column",
+    gap: 1,
+    alignItems: "flex-end",
+}

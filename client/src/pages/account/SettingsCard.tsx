@@ -4,8 +4,9 @@ import authSo from '@/stores/auth';
 import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 import themeSo from '@/stores/layout/theme';
 import { lightTheme } from '@/theme/theme';
-import { Brightness4 as DarkModeIcon, Brightness7 as LightModeIcon, Settings } from '@mui/icons-material';
-import { Box, Button, IconButton, MenuItem, Select, SelectChangeEvent, SxProps, TextField, Typography } from '@mui/material';
+import { AvailabeCurrency } from '@/types/Currency';
+import { Brightness4 as DarkModeIcon, Brightness7 as LightModeIcon, Settings, Tune } from '@mui/icons-material';
+import { Box, Button, IconButton, MenuItem, Select, SelectChangeEvent, Switch, SxProps, TextField, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -38,6 +39,13 @@ const SettingsCard: React.FC<Props> = ({
     const handleLanguageChange = (event: SelectChangeEvent<string>) => {
         authSo.setUserInEdit({ ...authSo.state.userInEdit, language: event.target.value });
     }
+    const handleNotificationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        authSo.setUserInEdit({ ...authSo.state.userInEdit, notificationsEnabled: event.target.checked })
+    }
+    const handleCurrencyChange = (event: SelectChangeEvent<string>) => {
+        authSo.setUserInEdit({ ...authSo.state.userInEdit, preferredCurrency: event.target.value });
+    }
+
     const handleUpdate = async () => {
         if (!authSo.state.userInEdit?.name || authSo.state.userInEdit?.name.trim() === '') {
             dialogSo.dialogOpen({
@@ -58,7 +66,7 @@ const SettingsCard: React.FC<Props> = ({
     return (
         <Card id="settings-card"
             title={t('cards.SettingsCard.title')}
-            icon={<Settings color="primary" />}
+            icon={<Tune color="primary" />}
         >
 
             <Paragraph title={t('cards.SettingsCard.sections.name')}>
@@ -89,7 +97,7 @@ const SettingsCard: React.FC<Props> = ({
 
             <Paragraph title={t('cards.SettingsCard.sections.language')}>
                 <Select variant="outlined" size="small" fullWidth
-                    value={authSo.state.user.language}
+                    value={authSo.state.userInEdit?.language ?? "en"}
                     onChange={handleLanguageChange}
                 >
                     <MenuItem value="en">English</MenuItem>
@@ -97,10 +105,33 @@ const SettingsCard: React.FC<Props> = ({
                 </Select>
             </Paragraph>
 
+            <Paragraph title={t('cards.SettingsCard.sections.currency')}>
+                <Select variant="outlined" size="small" fullWidth
+                    value={authSo.state.userInEdit?.preferredCurrency ?? AvailabeCurrency[0]}
+                    onChange={handleCurrencyChange}
+                >
+                    {AvailabeCurrency.map((curr) => (
+                        <MenuItem key={curr} value={curr}>
+                            {curr.toUpperCase()}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </Paragraph>
+
+            <Paragraph title={t('cards.SettingsCard.sections.notification.label')} sxValue={{ alignItems: "center"}}>
+                <Switch
+                    checked={!!authSo.state.userInEdit?.notificationsEnabled}
+                    onChange={handleNotificationChange}
+                />
+                <Typography variant="body2" color="text.secondary" sx={{ ml: 1  }}>
+                    {t(`cards.SettingsCard.sections.notification.${authSo.state.userInEdit?.notificationsEnabled ? 'desc_on' : 'desc_off'}`)}
+                </Typography>
+            </Paragraph>
+
             <Box sx={sxActionCard}>
                 <Button
                     onClick={handleUpdate}
-                >{t('cards.SettingsCard.actions.update')}</Button>
+                >{t('common.update')}</Button>
             </Box>
 
         </Card>
