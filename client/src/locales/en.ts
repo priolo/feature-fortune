@@ -23,6 +23,7 @@ const en = {
 
 		select: "Seleziona",
 		refresh: "Aggiorna",
+		send: "Invia",
 
 		enabled: "abilitato",
 		disabled: "disabilitato",
@@ -40,7 +41,8 @@ const en = {
 	pag: {
 		features: {
 			empty: "NESSUNA FEATURE :( FORSE è ATTIVO QUALCHE FILTRO?",
-		}
+		},
+		
 	},
 	cards: {
 		GithubRepoSelectorCard: {
@@ -683,6 +685,16 @@ const en = {
 				label: "CANCELLED",
 				desc: "AUTHOR OR DEVELOPER HAS CANCELLED THE FEATURE"
 			},
+		},
+		messages: {
+			MessageRow: {
+				removed: "IL MESSAGGIO È STATO ELIMINATO.",
+				as_unread: "Come non letto",
+				reply: "Rispondi",
+			},
+			MessageView: {
+				placeholder: "Scrivi il tuo messaggio qui...",
+			}
 		}
 	},
 	policy: {

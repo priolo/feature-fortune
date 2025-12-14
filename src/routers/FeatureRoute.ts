@@ -1,14 +1,12 @@
-import Stripe from "stripe";
-import { AccountRepo } from "../repository/Account.js";
-import { CommentRepo } from "../repository/Comment.js";
-import { FEATURE_ACTIONS, FEATURE_STATUS, FeatureRepo } from "../repository/Feature.js";
-import { FUNDING_STATUS, FundingRepo } from "../repository/Funding.js";
-import { Bus, httpRouter, typeorm, email as emailNs } from "@priolo/julian";
+import { Bus, email as emailNs, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
-import { FindManyOptions, FindOptionsWhere } from "typeorm";
-import MessageRoute from "./MessageRoute.js";
-import { envInit } from "../types/env.js";
 import { getEmailCodeTemplate } from "src/utils/templates.js";
+import { FindManyOptions } from "typeorm";
+import { AccountRepo } from "../repository/Account.js";
+import { FEATURE_ACTIONS, FEATURE_STATUS, FeatureRepo } from "../repository/Feature.js";
+import { FUNDING_STATUS } from "../repository/Funding.js";
+import { envInit } from "../types/env.js";
+import MessageRoute from "./MessageRoute.js";
 
 envInit();
 
@@ -39,10 +37,13 @@ class FeatureRoute extends httpRouter.Service {
 	declare state: typeof this.stateDefault
 
 	async getAll(req: Request, res: Response) {
+		const { skip, take } = req.query
 
 		const features = await new Bus(this, this.state.feature_repo).dispatch({
 			type: typeorm.Actions.ALL,
 			payload: <FindManyOptions<FeatureRepo>>{
+				skip: skip ? Number(skip) : 0,
+				take: take ? Number(take) : 1000,
 				relations: {
 					fundings: { account: true }
 				},
@@ -55,31 +56,6 @@ class FeatureRoute extends httpRouter.Service {
 			}
 		})
 
-		// const userJwt: AccountRepo = req["jwtPayload"]
-		// const myId = userJwt?.id
-		// const { filter } = req.query as { filter: FEATURE_API_FILTER };
-
-		// const where: FindOptionsWhere<FeatureRepo> = {}
-		// if (filter == FEATURE_API_FILTER.MY) where.accountId = myId
-		// else if (filter == FEATURE_API_FILTER.DEVELOPED) where.accountDevId = myId
-		// else if (filter == FEATURE_API_FILTER.FINANCED) where.fundings = { accountId: myId }
-
-		// const features = await new Bus(this, this.state.feature_repo).dispatch({
-		// 	type: typeorm.Actions.FIND,
-		// 	payload: <FindManyOptions<FeatureRepo>>{
-		// 		where,
-		// 		relations: {
-		// 			fundings: { account: true }
-		// 		},
-		// 		select: {
-		// 			fundings: {
-		// 				id: true, amount: true, currency: true, status: true,
-		// 				account: { id: true, name: true, avatarUrl: true }
-		// 			}
-		// 		}
-		// 	}
-		// })
-
 		res.json({ features })
 	}
 
@@ -90,18 +66,8 @@ class FeatureRoute extends httpRouter.Service {
 			type: typeorm.Actions.FIND_ONE,
 			payload: {
 				where: { id: id },
-				//relations: { fundings: true }
 			}
 		})
-
-		// const comments: CommentRepo[] = await new Bus(this, this.state.comment_repo).dispatch({
-		// 	type: typeorm.Actions.FIND,
-		// 	payload: {
-		// 		where: { entityId: id, entityType: 'feature' },
-		// 		//relations: { account: true }
-		// 	}
-		// })
-		// feature.comments = comments
 
 		res.json(feature)
 	}
@@ -434,7 +400,7 @@ class FeatureRoute extends httpRouter.Service {
 
 
 		// invia i messaggi
-		const receivers = [message.mainReceiver]
+		const receivers = !!message.mainReceiver ? [message.mainReceiver] : []
 		if (message.toFounders) {
 			feature.fundings.forEach(f => {
 				if (
@@ -486,11 +452,3 @@ class FeatureRoute extends httpRouter.Service {
 }
 
 export default FeatureRoute
-
-
-// enum FEATURE_API_FILTER {
-// 	RECENT = "recent",
-// 	MY = "my",
-// 	FINANCED = "financed",
-// 	DEVELOPED = "developed",
-// }

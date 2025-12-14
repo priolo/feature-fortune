@@ -8,6 +8,7 @@ import AccountIdView from '../../components/account/AccountIdView';
 import Card from '../../components/Card';
 import messageListSo from '@/stores/message/list';
 import { getAllSenders } from '@/stores/message/utils';
+import { useTranslation } from 'react-i18next';
 
 
 
@@ -24,6 +25,7 @@ const MessageView: React.FC<Props> = ({
 }) => {
 
 	// HOOKS
+	const { t } = useTranslation()
 	const [dialogOpen, setDialogOpen] = useState(false)
 	const accounts = React.useMemo<Account[]>(() => {
 		if (!messageListSo.state.all) return []
@@ -60,14 +62,13 @@ const MessageView: React.FC<Props> = ({
 			title="NEW MESSAGE"
 			titleEndRender={<>
 				<Button size="small"
-					//startIcon={<Send />}
 					onClick={handleCancelClick}
-				>CANCEL</Button>
+				>{t("common.cancel")}</Button>
 				<Button variant="contained" size="small"
 					startIcon={<Send />}
 					disabled={isDisabled}
 					onClick={onSendMessage}
-				>SEND</Button>
+				>{t("common.send")}</Button>
 			</>}
 		>
 			{/* <Paragraph title="TO"> */}
@@ -82,7 +83,7 @@ const MessageView: React.FC<Props> = ({
 
 			<TextField multiline autoFocus
 				rows={4}
-				placeholder="Type your message..."
+				placeholder={t("view.messages.MessageView.placeholder")}
 				value={message.content?.text ?? ''}
 				onChange={(e) => handleTextChange(e.target.value)}
 			/>

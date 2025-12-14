@@ -100,7 +100,7 @@ const ActionMenuItem: FunctionComponent<ActionMenuItemProps> = ({
 			{action.icon && <ListItemIcon>
 				{action.icon}
 			</ListItemIcon>}
-			<Typography variant="caption" color={action.color}>
+			<Typography variant="caption" color={action.color} textTransform='uppercase'>
 				{action.label}
 			</Typography>
 		</MenuItem>

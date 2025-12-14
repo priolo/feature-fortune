@@ -59,11 +59,11 @@ class AuthGoogleRoute extends httpRouter.Service {
 			user = await new Bus(this, this.state.repository).dispatch({
 				type: typeorm.Actions.SAVE,
 				payload: {
-					email: payload.email,
-					name: payload.name,
-					avatarUrl: payload.picture,
 					...user,
+					email: payload.email,
 					googleEmail: payload.email,
+					name: user.name ?? payload.name,
+					avatarUrl: payload.picture ?? user.avatarUrl,
 				},
 			})
 

@@ -77,7 +77,6 @@ class FeaturePaymentCrono extends CronoService {
 					status: FEATURE_STATUS.PAID,
 				}
 			})
-			console.log(ret)
 		}
 
 
@@ -149,8 +148,6 @@ class FeaturePaymentCrono extends CronoService {
 				payload
 			})
 		} catch (error) {
-			throw error
-		} finally {
 			await new Bus(this, this.state.funding_repo).dispatch({
 				type: typeorm.Actions.SAVE,
 				payload: {
@@ -158,6 +155,7 @@ class FeaturePaymentCrono extends CronoService {
 					status: FUNDING_STATUS.ERROR,
 				}
 			})
+			throw error
 		}
 
 

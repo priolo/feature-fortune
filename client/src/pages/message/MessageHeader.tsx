@@ -51,7 +51,7 @@ const MessageHeader: React.FC = () => {
 			onChange={handleReceiverChange}
 		/> */}
 
-		<Button 
+		<Button color="secondary"
 			startIcon={<Refresh />}
 			onClick={handleRefreshClick}
 		>{t("common.refresh")}</Button>

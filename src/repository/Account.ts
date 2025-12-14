@@ -24,7 +24,7 @@ export class AccountRepo {
 	notificationsEnabled?: boolean;
 	/** currency code ISO 4217, per esempio "eur" o "usd" */
 	@Column({ type: 'varchar', length: 3, default: 'eur' })
-	preferredCurrency: string;
+	preferredCurrency?: string;
 
 	
 

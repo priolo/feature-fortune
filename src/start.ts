@@ -1,11 +1,13 @@
+import { ENV_TYPE, envInit } from "./types/env.js";
+envInit();
+
 import { RootService } from "@priolo/julian";
 import buildNodeConfig from "./config.js";
-import { ENV_TYPE, envInit } from "./types/env.js";
 import { seeding } from "./seeding.js";
 
 
 
-envInit();
+
 
 (async () => {
 

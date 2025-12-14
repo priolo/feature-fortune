@@ -6,6 +6,8 @@ import messageListSo from '@/stores/message/list';
 import ActionsMenu, { ActionMenuProps } from '@/components/ActionsMenu';
 import messageApi from '@/api/message';
 import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
+import { useTranslation } from 'react-i18next';
+import { Delete, MarkAsUnread, Reply, Send } from '@mui/icons-material';
 
 
 
@@ -18,6 +20,7 @@ const MessageRow: React.FC<MessageRowProps> = ({
 }) => {
 
 	// STATE
+	const { t } = useTranslation()
 	const [isExpanded, setIsExpanded] = useState(false);
 
 
@@ -30,7 +33,7 @@ const MessageRow: React.FC<MessageRowProps> = ({
 	const handleDeleteClick = async (action: ActionMenuProps) => {
 		await messageListSo.remove(message.id)
 		dialogSo.dialogOpen({
-			text: "Message removed",
+			text: t("view.messages.MessageRow.removed"),
 			modal: false,
 			type: DIALOG_TYPE.SUCCESS,
 		})
@@ -77,12 +80,14 @@ const MessageRow: React.FC<MessageRowProps> = ({
 					actions={[
 						{
 							hidden: isSystem,
-							label: "SEND",
+							icon: <Reply fontSize="small" />,
+							label:  t("view.messages.MessageRow.reply"),
 							onClick: handleSendClick,
 						},
 						{
 							hidden: !isRead,
-							label: "AS UNREAD",
+							icon: <MarkAsUnread fontSize="small" />,
+							label: t("view.messages.MessageRow.as_unread"),
 							onClick: handleAsUnreadClick,
 						},
 						{
@@ -90,7 +95,9 @@ const MessageRow: React.FC<MessageRowProps> = ({
 							label: "---",
 						},
 						{
-							label: "DELETE",
+							color: "primary",
+							icon: <Delete fontSize="small" color="primary"/>,
+							label: t("common.delete"),
 							onClick: handleDeleteClick,
 						},
 					]}

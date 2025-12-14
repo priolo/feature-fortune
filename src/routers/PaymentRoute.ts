@@ -88,6 +88,23 @@ class PaymentRoute extends httpRouter.Service {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		const { paymentMethodId } = req.body
 
+		// Validation: Check if payment method belongs to the user's customer
+		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
+			type: typeorm.Actions.GET_BY_ID,
+			payload: userJwt.id,
+		})
+		if (!user.stripeCustomerId) return res.status(400).json({ error: "User has no stripe customer" })
+		// get payment method details from Stripe
+		const paymentMethod: Stripe.PaymentMethod = await new Bus(this, this.state.stripe_service).dispatch({
+			type: Actions.PAYMENT_METHOD_GET,
+			payload: paymentMethodId
+		})
+		// check if payment method belongs to the customer
+		if (!paymentMethod || paymentMethod.customer !== user.stripeCustomerId) {
+			return res.status(403).json({ error: "Invalid payment method" })
+		}
+
+		// save payment method id to user
 		await new Bus(this, this.state.account_repo).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: {
