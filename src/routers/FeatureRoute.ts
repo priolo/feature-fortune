@@ -255,8 +255,8 @@ class FeatureRoute extends httpRouter.Service {
 
 		// calcolo la modifica alla FEATURE
 		let partial: Partial<FeatureRepo> = null
-		let message: MessageData = null
-		const messageDefault: MessageData = {
+		let message: NotificationData = null
+		const messageDefault: NotificationData = {
 			mainReceiver: feature.account,
 			toFounders: true,
 			url: `${process.env.FRONTEND_URL}/app/feature/${feature.id}`,
@@ -396,16 +396,17 @@ class FeatureRoute extends httpRouter.Service {
 			...messageDefault,
 			...message
 		}
+		// calcolo tutti i destinatati
 		const receivers = !!message.mainReceiver ? [message.mainReceiver] : []
 		if (message.toFounders) {
 			feature.fundings.forEach(f => {
-				if (
-					f.status != FUNDING_STATUS.CANCELLED
+				if (f.status != FUNDING_STATUS.CANCELLED
 					&& !receivers.find(r => r.id == f.accountId)
 				) receivers.push(f.account)
 			})
 		}
-		const messageService = this.nodeByPath<MessageRoute>(this.state.message_route)
+		
+		// ricavo il template email
 		const html = await getEmailCodeTemplate(
 			{
 				title: message.title,
@@ -414,12 +415,13 @@ class FeatureRoute extends httpRouter.Service {
 				new_status: partial.status,
 				action_url: message.url,
 				logo_url: `${process.env.FRONTEND_URL}/public/puce_logo.png`,
-				action_label: "View Feature",
+				action_label: "VIEW FEATURE",
 				support: "support@puce.app",
 			},
 			"templates/email/notification.html",
 		)
 
+		const messageService = this.nodeByPath<MessageRoute>(this.state.message_route)
 		await Promise.all(receivers.map(async (receiver) => {
 			// invio i messaggi di sistema
 			await messageService.sendMessage(
@@ -451,10 +453,14 @@ class FeatureRoute extends httpRouter.Service {
 export default FeatureRoute
 
 
-type MessageData = {
+type NotificationData = {
 	toFounders?: boolean,
 	mainReceiver?: AccountRepo,
 	title?: string,
 	body?: string,
 	url?: string
+}
+
+function notify ( data: NotificationData ) {
+	// TODO
 }
