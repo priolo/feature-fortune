@@ -1,13 +1,11 @@
-import { Bus, httpRouter, jwt, typeorm, email as emailNs } from "@priolo/julian";
+import { Bus, email as emailNs, http, httpRouter, jwt, typeorm } from "@priolo/julian";
 import crypto from "crypto";
 import { Request, Response } from "express";
+import { getEmailCodeTemplate } from "src/utils/templates.js";
 import { FindManyOptions } from "typeorm";
 import { AccountRepo, accountSendable, EMAIL_CODE, JWTPayload } from "../repository/Account.js";
-import { ENV_TYPE, envInit } from "../types/env.js";
-import { http } from "@priolo/julian";
-import { getEmailCodeTemplate } from "src/utils/templates.js";
+import { ENV_TYPE } from "../types/env.js";
 
-envInit()
 
 
 class AuthEmailRoute extends httpRouter.Service {

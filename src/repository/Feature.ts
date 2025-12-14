@@ -4,7 +4,7 @@ import { AccountRepo } from './Account.js';
 import { AccountAsset } from './AccountAsset.js';
 import { CommentRepo } from './Comment.js';
 import { FundingRepo } from './Funding.js';
-import { getTimestampType } from './dbConfig.js';
+import { getTimestampType } from '../startup/dbConfig.js';
 
 
 

@@ -1,12 +1,11 @@
 import fs from "fs";
-import { ENV_TYPE, envInit } from "../types/env.js";
-import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
 import { DataSourceOptions } from "typeorm";
+import { fileURLToPath } from 'url';
+import { ENV_TYPE } from "../types/env.js";
 
 
 
-envInit();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 

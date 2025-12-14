@@ -1,13 +1,10 @@
 import { Bus, typeorm } from "@priolo/julian";
-import { FEATURE_STATUS, FeatureRepo } from "../../repository/Feature.js";
 import { FindManyOptions, LessThan } from "typeorm";
 import { AccountRepo } from "../../repository/Account.js";
+import { FEATURE_STATUS, FeatureRepo } from "../../repository/Feature.js";
 import { FUNDING_STATUS, FundingRepo } from "../../repository/Funding.js";
 import { Actions, PaymentIntentData } from "../stripe/types.js";
 import CronoService from "./CronoService.js";
-import { envInit } from "../../types/env.js";
-
-envInit();
 
 
 

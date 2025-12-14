@@ -3,9 +3,7 @@ import crypto from "crypto";
 import { Request, Response } from "express";
 import { FindManyOptions } from "typeorm";
 import { AccountRepo, accountSendable, JWTPayload } from "../repository/Account.js";
-import { ENV_TYPE, envInit } from "../types/env.js";
-
-envInit();
+import { ENV_TYPE } from "../types/env.js";
 
 
 

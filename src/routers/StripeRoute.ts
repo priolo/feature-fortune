@@ -5,9 +5,6 @@ import { AccountRepo } from "../repository/Account.js";
 import { FUNDING_STATUS, FundingRepo } from "../repository/Funding.js";
 import PaymentCrono from "../services/crono/FeaturePaymentCrono.js";
 import { Actions } from "../services/stripe/types.js";
-import { envInit } from "../types/env.js";
-
-envInit();
 
 
 

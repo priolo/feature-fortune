@@ -1,10 +1,7 @@
-import { AccountRepo } from "../repository/Account.js";
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
-import { envInit } from "../types/env.js";
 import Stripe from "stripe";
-
-envInit();
+import { AccountRepo } from "../repository/Account.js";
 
 
 

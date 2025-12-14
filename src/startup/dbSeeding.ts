@@ -1,14 +1,11 @@
 import { Bus, RootService, typeorm } from "@priolo/julian";
-import { AccountRepo, EMAIL_CODE } from "./repository/Account.js";
-import { FeatureRepo } from "./repository/Feature.js";
-import { FundingRepo } from "./repository/Funding.js";
-import { envInit } from "./types/env.js";
-import { MESSAGE_ROLE, MessageRepo } from "./repository/Message.js";
-import { MessageContentRepo } from "./repository/MessageContent.js";
+import { AccountRepo, EMAIL_CODE } from "../repository/Account.js";
+import { FeatureRepo } from "../repository/Feature.js";
+import { FundingRepo } from "../repository/Funding.js";
+import { MESSAGE_ROLE, MessageRepo } from "../repository/Message.js";
+import { MessageContentRepo } from "../repository/MessageContent.js";
 
 
-
-envInit();
 
 export async function seeding(root: RootService) {
 

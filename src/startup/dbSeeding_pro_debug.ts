@@ -1,5 +1,5 @@
 import { Bus, RootService, typeorm } from "@priolo/julian";
-import { AccountRepo, EMAIL_CODE } from "./repository/Account.js";
+import { AccountRepo, EMAIL_CODE } from "../repository/Account.js";
 
 
 

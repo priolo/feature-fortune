@@ -4,7 +4,7 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { AccountRepo } from "./repository/Account.js";
 import { CommentRepo } from "./repository/Comment.js";
-import { getDBConnectionConfig } from './repository/dbConfig.js';
+import { getDBConnectionConfig } from './startup/dbConfig.js';
 import { FeatureRepo } from "./repository/Feature.js";
 import { FundingRepo } from "./repository/Funding.js";
 import { MessageRepo } from "./repository/Message.js";
@@ -27,11 +27,10 @@ import FeaturePaymentCrono from "./services/crono/FeaturePaymentCrono.js";
 import ReflectionRoute from "./services/reflection/ReflectionRoute.js";
 import StripeService from "./services/stripe/StripeService.js";
 import StripeServiceMock from "./services/stripe/StripeServiceMock.js";
-import { ENV_TYPE, envInit } from "./types/env.js";
+import { ENV_TYPE } from "./types/env.js";
 
 
 
-envInit();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 export const PORT = process.env.PORT || 3000;

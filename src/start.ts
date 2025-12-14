@@ -1,12 +1,10 @@
-import { ENV_TYPE, envInit } from "./types/env.js";
-envInit();
+// deve essere il primo import
+import "./startup/envPreload.js";
 
 import { RootService } from "@priolo/julian";
 import buildNodeConfig from "./config.js";
-import { seeding } from "./seeding.js";
-
-
-
+import { seeding } from "./startup/dbSeeding.js";
+import { ENV_TYPE } from "./types/env.js";
 
 
 (async () => {

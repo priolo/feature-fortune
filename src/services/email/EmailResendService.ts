@@ -1,12 +1,10 @@
 import { ServiceBase } from "@priolo/julian";
 import { Resend } from 'resend';
-import { envInit } from "../../types/env.js";
 
-envInit()
+
 
 // Inizializza Resend prendendo la chiave dalle variabili d'ambiente
 const resend = new Resend(process.env.EMAIL_RESEND_KEY);
-
 
 
 export enum Actions {

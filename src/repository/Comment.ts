@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { AccountAsset } from './AccountAsset.js';
-import { getTimestampType } from './dbConfig.js';
+import { getTimestampType } from '../startup/dbConfig.js';
 
 
 

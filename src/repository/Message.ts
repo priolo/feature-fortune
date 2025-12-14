@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGenerat
 import { AccountAsset } from './AccountAsset.js';
 import { MessageContentRepo } from './MessageContent.js';
 import type { Relation } from 'typeorm';
-import { getTimestampType } from './dbConfig.js';
+import { getTimestampType } from '../startup/dbConfig.js';
 
 
 

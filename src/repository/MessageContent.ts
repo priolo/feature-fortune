@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { MessageRepo } from './Message.js';
 import { AccountAsset } from './AccountAsset.js';
-import { getTimestampType } from './dbConfig.js';
+import { getTimestampType } from '../startup/dbConfig.js';
 
 
 

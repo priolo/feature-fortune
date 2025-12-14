@@ -24,6 +24,11 @@
 				text-align: center;
 				margin-bottom: 30px;
 			}
+			.logo {
+				width: 80px;
+				height: auto;
+				margin-bottom: 20px;
+			}
 			.title {
 				color: #e149fc;
 				margin: 0;
@@ -129,22 +134,23 @@
 	<body>
 		<div class="container">
 			<div class="header">
-				<h2 class="title">La tua feature è stata accettata!</h2>
+				<img class="logo" src="../images/puce_logo.png" alt="PUCE Logo" />
+				<h2 class="title">{{title}}</h2>
 			</div>
 			
-			<p class="content"><strong>Priolo</strong> ha accettato di sviluppare la tua proposta di feature per il repository <strong>NATS/NUI</strong></p>
+			<p class="content">{{message}}</p>
 			
 			<div class="status-box">
 				<div class="status-label">Status Change</div>
 				<div class="status-flow">
-					<span class="badge badge-old">PROPOSED</span>
+					<span class="badge badge-old">{{old_status}}</span>
 					<span class="arrow">&rarr;</span>
-					<span class="badge badge-new">IN DEVELOP</span>
+					<span class="badge badge-new">{{new_status}}</span>
 				</div>
 			</div>
 
 			<div class="btn-container">
-				<a href="{{action_url}}" class="btn">VISUALIZZA</a>
+				<a href="{{action_url}}" class="btn">{{action_label}}</a>
 			</div>
 			
 			<hr class="divider">

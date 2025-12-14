@@ -1,9 +1,6 @@
 import { ServiceBase } from "@priolo/julian";
 import Stripe from "stripe";
 import { Actions, PaymentIntentData } from "./types.js";
-import { envInit } from "../../types/env.js";
-
-envInit();
 
 
 

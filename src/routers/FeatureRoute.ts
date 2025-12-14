@@ -5,10 +5,7 @@ import { FindManyOptions } from "typeorm";
 import { AccountRepo } from "../repository/Account.js";
 import { FEATURE_ACTIONS, FEATURE_STATUS, FeatureRepo } from "../repository/Feature.js";
 import { FUNDING_STATUS } from "../repository/Funding.js";
-import { envInit } from "../types/env.js";
 import MessageRoute from "./MessageRoute.js";
-
-envInit();
 
 
 
@@ -258,16 +255,11 @@ class FeatureRoute extends httpRouter.Service {
 
 		// calcolo la modifica alla FEATURE
 		let partial: Partial<FeatureRepo> = null
-		let message: {
-			toFounders?: boolean,
-			mainReceiver?: AccountRepo,
-			title?: string,
-			body?: string,
-			url?: string
-		} = {
+		let message: MessageData = null
+		const messageDefault: MessageData = {
 			mainReceiver: feature.account,
 			toFounders: true,
-			url: `${process.env.FRONTEND_URL}/app/feature/${feature.id}`
+			url: `${process.env.FRONTEND_URL}/app/feature/${feature.id}`,
 		}
 
 		switch (action) {
@@ -400,11 +392,15 @@ class FeatureRoute extends httpRouter.Service {
 
 
 		// invia i messaggi
+		message = {
+			...messageDefault,
+			...message
+		}
 		const receivers = !!message.mainReceiver ? [message.mainReceiver] : []
 		if (message.toFounders) {
 			feature.fundings.forEach(f => {
 				if (
-					f.status != FUNDING_STATUS.CANCELLED 
+					f.status != FUNDING_STATUS.CANCELLED
 					&& !receivers.find(r => r.id == f.accountId)
 				) receivers.push(f.account)
 			})
@@ -417,6 +413,7 @@ class FeatureRoute extends httpRouter.Service {
 				old_status: feature.status,
 				new_status: partial.status,
 				action_url: message.url,
+				logo_url: `${process.env.FRONTEND_URL}/app/puce_logo.png`,
 				action_label: "View Feature",
 				support: "support@puce.app",
 			},
@@ -452,3 +449,12 @@ class FeatureRoute extends httpRouter.Service {
 }
 
 export default FeatureRoute
+
+
+type MessageData = {
+	toFounders?: boolean,
+	mainReceiver?: AccountRepo,
+	title?: string,
+	body?: string,
+	url?: string
+}
