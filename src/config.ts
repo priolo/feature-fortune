@@ -119,6 +119,12 @@ function buildNodeConfig(params?: ConfigParams) {
 					path: "/app/",
 					spaFile: "index.html",
 				},
+				<httpStatic.conf>{
+					class: "http-static",
+					dir: path.join(__dirname, "../client/public"),
+					path: "/public/",
+				},
+
 
 				<httpRouter.conf>{
 					name: "routers",

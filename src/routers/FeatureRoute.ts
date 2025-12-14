@@ -413,7 +413,7 @@ class FeatureRoute extends httpRouter.Service {
 				old_status: feature.status,
 				new_status: partial.status,
 				action_url: message.url,
-				logo_url: `${process.env.FRONTEND_URL}/app/puce_logo.png`,
+				logo_url: `${process.env.FRONTEND_URL}/public/puce_logo.png`,
 				action_label: "View Feature",
 				support: "support@puce.app",
 			},
