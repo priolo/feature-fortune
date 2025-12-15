@@ -66,7 +66,7 @@ const SettingsCard: React.FC<Props> = ({
     return (
         <Card id="settings-card"
             title={t('cards.SettingsCard.title')}
-            icon={<Tune color="primary" />}
+            icon={<Tune />}
         >
 
             <Paragraph title={t('cards.SettingsCard.sections.name')}>

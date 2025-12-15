@@ -1,6 +1,6 @@
 import { Bus, email as emailNs, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
-import { getEmailCodeTemplate } from "src/utils/templates.js";
+import { getEmailCodeTemplate } from "src/services/templates/index.js";
 import { FindManyOptions } from "typeorm";
 import { AccountRepo } from "../repository/Account.js";
 import { FEATURE_ACTIONS, FEATURE_STATUS, FeatureRepo } from "../repository/Feature.js";
@@ -24,7 +24,6 @@ class FeatureRoute extends httpRouter.Service {
 				{ path: "/:id", verb: "get", method: "getById" },
 				{ path: "/", verb: "post", method: "create" },
 				{ path: "/", verb: "patch", method: "update" },
-				{ path: "/:id", verb: "delete", method: "delete" },
 
 				{ path: "/:id/action", verb: "post", method: "action" },
 
@@ -157,38 +156,6 @@ class FeatureRoute extends httpRouter.Service {
 			feature: { ...featureOld, ...featureNew }
 		})
 	}
-
-	/**
-	 * Chiamata dall'AUTHOR
-	 * Elimina una FEATURE.
-	 * è possibile farlo solo se la feature è in stato:
-	 * PROPOSED, CANCELLED
-	 */
-	async delete(req: Request, res: Response) {
-		const userJwt: AccountRepo = req["jwtPayload"]
-		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
-		const id = req.params["id"]
-
-		// verifico la FEATURE
-		const featureOld = await new Bus(this, this.state.feature_repo).dispatch({
-			type: typeorm.Actions.GET_BY_ID,
-			payload: id
-		})
-		if (!featureOld) return res.status(404).json({ error: "Feature not found" })
-		if (featureOld.accountId !== userJwt.id) return res.status(403).json({ error: "You are not allowed to delete this feature" })
-		if (![FEATURE_STATUS.PROPOSED, FEATURE_STATUS.CANCELLED].includes(featureOld.status)) {
-			return res.status(400).json({ error: `You can delete a feature only if its status is ${FEATURE_STATUS.PROPOSED} or ${FEATURE_STATUS.CANCELLED}` })
-		}
-
-		// elimino la FEATURE
-		await new Bus(this, this.state.feature_repo).dispatch({
-			type: typeorm.Actions.DELETE,
-			payload: id
-		})
-
-		res.json({ success: true })
-	}
-
 
 	/**
 	 * Chiamato dal DEV

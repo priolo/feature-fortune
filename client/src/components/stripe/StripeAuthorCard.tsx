@@ -75,7 +75,7 @@ const StripeAuthorCard: React.FC = () => {
 	return (
 		<Card id="stripe-author-card"
 			title={t('cards.StripeAuthorCard.title')}
-			icon={<StripeIcon style={{ color: themeSo.state.current.palette.primary.main }} />}
+			icon={<StripeIcon />}
 		>
 
 			<MessageCmp variant={msgType} title={t(`cards.StripeAuthorCard.status.${msgType}.title`)}>

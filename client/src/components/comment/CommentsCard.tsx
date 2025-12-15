@@ -1,7 +1,7 @@
 import CommentDialog from '@/components/comment/CommentDialog';
 import commentListSo from '@/stores/comment/list';
 import { Comment } from '@/types/Comment';
-import { Add, CommentBank } from '@mui/icons-material';
+import { Add, ChatBubble } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useState } from 'react';
@@ -62,7 +62,7 @@ const CommentsCard: React.FC<Props> = ({
 
 		<Card id="comments-card"
 			title={t('cards.CommentsCard.title', "COMMENTS")}
-			icon={<CommentBank />}
+			icon={<ChatBubble />}
 			titleEndRender={!readonly && (
 				<Button variant='contained' size="small"
 					startIcon={<Add />}

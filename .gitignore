@@ -12,3 +12,5 @@ db/
 .env.development
 .env.remote
 .env.render
+
+logs/

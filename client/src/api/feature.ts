@@ -41,11 +41,6 @@ function update(feature: Feature, opt?: CallOptions): Promise<{ feature: Feature
 	return ajax.patch(`features`, { feature }, opt)
 }
 
-/** DELETE */
-function remove(featureId: string, opt?: CallOptions): Promise<{ success: boolean }> {
-	return ajax.delete(`features/${featureId}`, null, opt)
-}
-
 function action(featureId: string, action: FEATURE_ACTIONS, opt?: CallOptions): Promise<{ feature: Partial<Feature> }> {
 	return ajax.post(`features/${featureId}/action`, { action }, opt)
 }
@@ -57,8 +52,6 @@ const featureApi = {
 	get,
 	create,
 	update,
-	remove,
-
 	action,
 }
 export default featureApi

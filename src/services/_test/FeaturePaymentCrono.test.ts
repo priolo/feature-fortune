@@ -18,7 +18,7 @@ describe("FEATURE CRONO", () => {
 	let root: RootService;
 
 	beforeAll(async () => {
-		const cnf = buildNodeConfig({ noLog: true, noHttp: true });
+		const cnf = buildNodeConfig({ noHttp: true });
 		root = await RootService.Start(cnf);
 		await seeding(root);
 	});

@@ -86,7 +86,7 @@ const EmailLoginCard: React.FC<Props> = ({
 
     return <>
         <Card id="email-login-card"
-            icon={<MailOutlineIcon color="primary" />}
+            icon={<MailOutlineIcon />}
             title={t(`cards.EmailLoginCard.title`)}
         >
             <MessageCmp

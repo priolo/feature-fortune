@@ -24,7 +24,7 @@ describe("FEATURE ROUTER", () => {
 			timeout: 0, // no timeout while debugging
 		});
 
-		const cnf = buildNodeConfig({ noLog: true, port: PORT });
+		const cnf = buildNodeConfig({ port: PORT });
 		root = await RootService.Start(cnf);
 		await seeding(root);
 	});

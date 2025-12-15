@@ -63,24 +63,12 @@ const setup = {
 			}
 		},
 
-		/**
-		 * L'AUTHOR cancella la FEATURE
-		 */
-		async remove(_: void, store?: FeatureDetailStore) {
-			const feature = store.state.feature
-			await featureApi.remove(feature.id)
-		},
-
 		async action(action: FEATURE_ACTIONS, store?: FeatureDetailStore) {
 			const feature = store.state.feature
 			const updatedFeature: Partial<Feature> = (await featureApi.action(feature.id, action))?.feature
 			store.updateSelected(updatedFeature)
 		},
-
-
-
-
-
+		
 		async addComment(comment: Comment, store?: FeatureDetailStore) {
 			comment.entityType = 'feature'
 			comment.entityId = featureDetailSo.state.feature.id

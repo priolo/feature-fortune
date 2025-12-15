@@ -4,7 +4,6 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { AccountRepo } from "./repository/Account.js";
 import { CommentRepo } from "./repository/Comment.js";
-import { getDBConnectionConfig } from './startup/dbConfig.js';
 import { FeatureRepo } from "./repository/Feature.js";
 import { FundingRepo } from "./repository/Funding.js";
 import { MessageRepo } from "./repository/Message.js";
@@ -27,7 +26,11 @@ import FeaturePaymentCrono from "./services/crono/FeaturePaymentCrono.js";
 import ReflectionRoute from "./services/reflection/ReflectionRoute.js";
 import StripeService from "./services/stripe/StripeService.js";
 import StripeServiceMock from "./services/stripe/StripeServiceMock.js";
+import { getDBConnectionConfig } from './startup/dbConfig.js';
 import { ENV_TYPE } from "./types/env.js";
+import { logger } from "./services/logger/index.js";
+import { TypeLog } from "@priolo/julian/dist/core/types.js";
+
 
 
 
@@ -41,17 +44,37 @@ type ConfigParams = {
 	port?: number,
 }
 
+const logTerminal = process.env.LOG_TERMINAL_ENABLE == "true"
+const logFile = process.env.LOG_FILE_ENABLE == "true"
+
 function buildNodeConfig(params?: ConfigParams) {
-	const { noLog, noHttp, port } = params ?? {}
+
+	const { noHttp, port } = params ?? {}
 
 	return [
 
 		<log.conf>{
 			class: "log",
 			exclude: [types.TypeLog.SYSTEM],
-			onParentLog: (log) => {
-				if (noLog) return false
-				if (!!log?.payload && ['nc:init', 'nc:destroy', "ns:set-state"].includes(log.payload.type)) return false
+			onParentLog: (logItem) => {
+				if (!logFile && !logTerminal) return false
+				if (logItem.type != TypeLog.ERROR) {
+					// no log interni di init e destroy dei nodi
+					if (!!logItem?.payload && ['nc:init', 'nc:destroy', "ns:set-state"].includes(logItem.payload.type)) return false
+					// no log su source = /jwt
+					if (logItem.source == "/jwt") return false
+					// se è un email non mandare anche il payload!
+					if (logItem.source == "/email-noreply") logItem.payload = "[HIDDEN EMAIL PAYLOAD]"
+				}
+				if (logFile) {
+					const msg = `${logItem.source} :: ${logItem.name}`
+					if (logItem.type == types.TypeLog.ERROR) {
+						logger.error(logItem.payload, msg)
+					} else {
+						logger.info(logItem.payload, msg)
+					}
+				}
+				return logTerminal
 			}
 		},
 
@@ -101,6 +124,7 @@ function buildNodeConfig(params?: ConfigParams) {
 		!noHttp && <http.conf>{
 			class: "http",
 			disabled: !!noHttp,
+			log: { body: true },
 			port: port ?? PORT,
 			rawPaths: ["/api/stripe/webhook"],
 			children: [
@@ -119,12 +143,12 @@ function buildNodeConfig(params?: ConfigParams) {
 					path: "/app/",
 					spaFile: "index.html",
 				},
+
 				<httpStatic.conf>{
 					class: "http-static",
 					dir: path.join(__dirname, "../client/public"),
 					path: "/public/",
 				},
-
 
 				<httpRouter.conf>{
 					name: "routers",
@@ -170,7 +194,7 @@ function buildNodeConfig(params?: ConfigParams) {
 		<typeorm.conf>{
 			class: "typeorm",
 			options: {
-				...getDBConnectionConfig(noLog),
+				...getDBConnectionConfig(),
 			},
 			children: [
 				{
@@ -209,7 +233,7 @@ function buildNodeConfig(params?: ConfigParams) {
 
 		<jwt.conf>{
 			class: "jwt",
-			secret: "secret_word!!!"
+			secret: process.env.JWT_SECRET,
 		},
 
 		// <email.conf>{

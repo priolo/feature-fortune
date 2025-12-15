@@ -73,7 +73,7 @@ const GithubLoginCard: React.FC<Props> = ({
     return (
         <Card id="github-login-card"
             title={t(`cards.GithubLoginCard.title`)}
-            icon={<GitHubIcon color="primary" />}
+            icon={<GitHubIcon />}
         >
             <MessageCmp variant={status} title={t(`cards.GithubLoginCard.status.${status}.title`)} sx={{ mb: 1 }}>
                 <Trans i18nKey={`cards.GithubLoginCard.status.${status}.desc`} />

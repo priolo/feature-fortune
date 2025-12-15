@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 
 
 // in base ai settaggi dell'env imposto la connessione al DB
-export const getDBConnectionConfig = (noLog: boolean = false): DataSourceOptions => {
+export const getDBConnectionConfig = (): DataSourceOptions => {
 
 	let config: any = null
 
@@ -30,7 +30,7 @@ export const getDBConnectionConfig = (noLog: boolean = false): DataSourceOptions
 		synchronize: true, // process.env.NODE_ENV != ENV_TYPE.PROD, // in prod mai
 		//migrations: ["src/migration/*.ts"], // Dove leggere le migration
 		//migrationsTableName: "migrations",  // Tabella nel DB che tiene traccia della storia
-		logging: !noLog //&& process.env.NODE_ENV != ENV_TYPE.PROD, // in prod mai
+		logging: process.env.LOG_DB_ENABLE == "true" 
 	}
 
 }

@@ -124,7 +124,7 @@ const StripeCreditCard: React.FC<Props> = ({
 	return (
 		<Card id="stripe-credit-card"
 			title={t(`cards.StripeCreditCard.title`)}
-			icon={<Payment color="primary" />}
+			icon={<Payment />}
 		>
 
 			<MessageCmp variant={status} title={t(`cards.StripeCreditCard.status.${status}.title`)} sx={{ mb: 1 }}>

@@ -67,7 +67,7 @@ const GoogleLoginCard: React.FC<Props> = ({
     return (
         <Card id="google-login-card"
             title={t(`cards.GoogleLoginCard.title`)}
-            icon={<GoogleIcon color="primary" />}
+            icon={<GoogleIcon />}
         >
 
             <MessageCmp variant={status} title={t(`cards.GoogleLoginCard.status.${status}.title`)} sx={{ mb: 1 }}>
