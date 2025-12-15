@@ -1,0 +1,68 @@
+// import { ServiceBase } from "@priolo/julian";
+// import { Resend } from 'resend';
+
+
+
+// // Inizializza Resend prendendo la chiave dalle variabili d'ambiente
+// const resend = new Resend(process.env.EMAIL_RESEND_KEY);
+
+
+// export enum Actions {
+// 	SEND = "send",
+// }
+
+// export interface Email {
+// 	from: string;
+// 	to: string;
+// 	subject: string;
+// 	html: string;
+// }
+
+
+// /**
+//  * invia un email tramite Resend.com
+//  */
+// export type EmailResendServiceConf = Partial<EmailResendService['stateDefault']>
+
+// class EmailResendService extends ServiceBase {
+
+// 	get stateDefault() {
+// 		return {
+// 			...super.stateDefault,
+// 			name: "puce-email",
+// 		}
+// 	}
+// 	declare state: typeof this.stateDefault;
+
+// 	get executablesMap() {
+// 		return {
+// 			...super.executablesMap,
+// 			[Actions.SEND]: async (email: Email) => await this.send(email),
+// 		}
+// 	}
+
+// 	protected async send(email: Email) {
+
+// 		const res = await resend.emails.send({
+// 			// IMPORTANTE:
+// 			// Se NON hai ancora verificato un dominio su Resend, DEVI usare:
+// 			from: email.from,
+// 			// Se HAI verificato un dominio (es. tuosito.com), userai:
+// 			// from: 'info@tuosito.com',
+
+// 			to: ["iorioivano@gmail.com"/*email.to*/], // Attenzione: in modalità test puoi inviare solo alla TUA email di registrazione
+// 			subject: email.subject,
+// 			html: email.html,
+// 		})
+
+// 		if (!!res.error) {
+// 			throw new Error(`Errore invio email: ${res.error.message}`);
+// 		}
+// 		this.log("resend:send:success:", res.data.id)
+// 		return res.data.id
+
+// 	}
+
+// }
+
+// export default EmailResendService

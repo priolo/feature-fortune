@@ -1,7 +1,7 @@
 import { Bus, email as emailNs, http, httpRouter, jwt, typeorm } from "@priolo/julian";
 import crypto from "crypto";
 import { Request, Response } from "express";
-import { CodeTemplate, loadTemplate } from "src/services/templates/index.js";
+import { CodeTemplate, loadTemplate } from "../services/templates/index.js";
 import { FindManyOptions } from "typeorm";
 import { AccountRepo, accountSendable, EMAIL_CODE, JWTPayload } from "../repository/Account.js";
 import { ENV_TYPE } from "../types/env.js";

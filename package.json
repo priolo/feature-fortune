@@ -9,7 +9,7 @@
   "main": "dist/start.js",
   "scripts": {
     "start:dev": "cross-env NODE_ENV=development tsx src/start.ts",
-    "start:prod": "node dist/start.js",
+    "start:prod": "cross-env NODE_ENV=production node dist/start.js",
     "build": "tsc",
     "test": "node --experimental-vm-modules --inspect-brk ./node_modules/jest/bin/jest.js",
     "script:server_stripe": "node ./scripts/server_stripe_webhook.js",

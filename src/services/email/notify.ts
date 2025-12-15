@@ -1,8 +1,8 @@
 import { Bus, NodeConf, typeorm, email as emailNs } from "@priolo/julian";
-import { AccountRepo } from "src/repository/Account.js";
-import { FeatureRepo } from "src/repository/Feature.js";
+import { AccountRepo } from "../../repository/Account.js";
+import { FeatureRepo } from "../../repository/Feature.js";
 import { loadTemplate, NotificationTemplate } from "../templates/index.js";
-import MessageRoute from "src/routers/MessageRoute.js";
+import MessageRoute from "../../routers/MessageRoute.js";
 
 
 /**
