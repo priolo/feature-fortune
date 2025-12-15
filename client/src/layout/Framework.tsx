@@ -1,5 +1,7 @@
+import deviceSo from '@/stores/layout/device';
 import dialogSo from '@/stores/layout/dialogStore';
 import { Box, Button, SxProps } from '@mui/material';
+import { useStore } from '@priolo/jon';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,32 +20,40 @@ const Framework: React.FC<Props> = ({
 	rightRender,
 }) => {
 
+	// STORES
+	useStore(deviceSo)
 
 	// HOOKS
 	const { t } = useTranslation()
 
 
 	// RENDER
+	const isDesktop = deviceSo.isDesktop()
+
 	return (
 		<Box sx={sxRoot}>
 
-			<Box sx={sxLeft}>
-				{leftRender}
-				<Box sx={{ flex: 1 }} />
-				<Box sx={sxFooter}>
-					<Box sx={sxButton}
-						onClick={() => dialogSo.setIsPolicyOpen(true)}
-					>{t("common.privacy_policy")}</Box>
+			{isDesktop && (
+				<Box sx={sxLeft}>
+					{leftRender}
+					<Box sx={{ flex: 1 }} />
+					<Box sx={sxFooter}>
+						<Box sx={sxButton}
+							onClick={() => dialogSo.setIsPolicyOpen(true)}
+						>{t("common.privacy_policy")}</Box>
+					</Box>
 				</Box>
-			</Box>
+			)}
 
-			<Box sx={[sxCenter, sx] as SxProps}>
+			<Box sx={[sxCenter, { p: isDesktop ? undefined : 2 }, sx] as SxProps}>
 				{children}
 			</Box>
 
-			<Box sx={sxRight}>
-				{rightRender}
-			</Box>
+			{isDesktop && (
+				<Box sx={sxRight}>
+					{rightRender}
+				</Box>
+			)}
 
 		</Box>
 	)
@@ -101,9 +111,9 @@ const sxFooter: SxProps = {
 }
 
 const sxButton: SxProps = {
-	fontSize: "11px", 
-	fontWeight: 300, 
-	opacity: 0.6, 
-	cursor: "pointer", 
+	fontSize: "11px",
+	fontWeight: 300,
+	opacity: 0.6,
+	cursor: "pointer",
 	textTransform: "uppercase",
 }

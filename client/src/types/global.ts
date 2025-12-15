@@ -21,3 +21,8 @@ export type Color = `#${string}`
 /** una string che rappresenta un uuid */
 export type Uuid = string
 
+export type Dimension = {
+	width?: number,
+	height?: number
+}
+

@@ -65,6 +65,7 @@ function buildNodeConfig(params?: ConfigParams) {
 					if (logItem.source == "/jwt") return false
 					// se è un email non mandare anche il payload!
 					if (logItem.source == "/email-noreply") logItem.payload = "[HIDDEN EMAIL PAYLOAD]"
+					if (logItem.name == "HTTP POST /api/stripe/webhook") logItem.payload = "[HIDDEN STRIPE WEBHOOK PAYLOAD]"
 				}
 				if (logFile) {
 					const msg = `${logItem.source} :: ${logItem.name}`

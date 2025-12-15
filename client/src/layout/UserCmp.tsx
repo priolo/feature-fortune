@@ -92,11 +92,11 @@ const UserCmp: React.FC<UserCmpProps> = ({
 					<ListItemText>CONFIG</ListItemText>
 				</ListItemButton>
 
-				<Divider sx={{ my: 2 }} />
+				<Divider sx={{ my: 1 }} />
 
 				<ListItemButton onClick={handleLogout}>
 					<ListItemIcon>
-						<Logout fontSize="small" />
+						<Logout fontSize="small" color='primary'/>
 					</ListItemIcon>
 					<ListItemText>LOGOUT</ListItemText>
 				</ListItemButton>
