@@ -1,12 +1,12 @@
-import { Bus, email as emailNs, httpRouter, NodeConf, typeorm } from "@priolo/julian";
+import { Bus, email as emailNs, httpRouter, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
+import { notifyAssignFeature } from "src/services/email/notify.js";
 import { loadTemplate, NotificationTemplate } from "src/services/templates/index.js";
 import { FindManyOptions } from "typeorm";
 import { AccountRepo } from "../repository/Account.js";
 import { FEATURE_ACTIONS, FEATURE_STATUS, FeatureRepo } from "../repository/Feature.js";
 import { FUNDING_STATUS } from "../repository/Funding.js";
 import MessageRoute from "./MessageRoute.js";
-import { notifyAssignFeature } from "src/services/email/notify.js";
 
 
 
