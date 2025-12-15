@@ -1,11 +1,12 @@
-import { Bus, email as emailNs, httpRouter, typeorm } from "@priolo/julian";
+import { Bus, email as emailNs, httpRouter, NodeConf, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
-import { getEmailCodeTemplate } from "src/services/templates/index.js";
+import { loadTemplate, NotificationTemplate } from "src/services/templates/index.js";
 import { FindManyOptions } from "typeorm";
 import { AccountRepo } from "../repository/Account.js";
 import { FEATURE_ACTIONS, FEATURE_STATUS, FeatureRepo } from "../repository/Feature.js";
 import { FUNDING_STATUS } from "../repository/Funding.js";
 import MessageRoute from "./MessageRoute.js";
+import { notifyAssignFeature } from "src/services/email/notify.js";
 
 
 
@@ -89,12 +90,7 @@ class FeatureRoute extends httpRouter.Service {
 
 		// se c'e' un DEV gli mando un messaggio
 		if (!!feature.accountDevId) {
-			const messageService = this.nodeByPath<MessageRoute>(this.state.message_route)
-			await messageService.sendMessage(
-				null,
-				feature.accountDevId,
-				`Hello,\n\nYou have been assigned as the developer for the feature titled "${feature.title}". Please log in to your account to view the details and get started.\n\nBest regards,\nFeature Fortune Team`
-			)
+			notifyAssignFeature(this, feature.accountDevId, feature)
 		}
 
 		// salvo
@@ -138,12 +134,7 @@ class FeatureRoute extends httpRouter.Service {
 
 		// se c'e' un developer nuovo gli mando un messaggio
 		if (feature.accountDevId && feature.accountDevId != featureOld?.accountDevId) {
-			const messageService = this.nodeByPath<MessageRoute>(this.state.message_route)
-			await messageService.sendMessage(
-				null,
-				feature.accountDevId,
-				`Hello,\n\nYou have been assigned as the developer for the feature titled "${feature.title}". Please log in to your account to view the details and get started.\n\nBest regards,\nFeature Fortune Team`
-			)
+			notifyAssignFeature(this, feature.accountDevId, feature)
 		}
 
 		// salvo
@@ -226,7 +217,7 @@ class FeatureRoute extends httpRouter.Service {
 		const messageDefault: NotificationData = {
 			mainReceiver: feature.account,
 			toFounders: true,
-			url: `${process.env.FRONTEND_URL}/app/feature/${feature.id}`,
+			action_url: `${process.env.FRONTEND_URL}/app/feature/${feature.id}`,
 		}
 
 		switch (action) {
@@ -241,7 +232,7 @@ class FeatureRoute extends httpRouter.Service {
 				partial = { status: FEATURE_STATUS.IN_DEVELOPMENT }
 				message = {
 					title: `Your feature "${feature.title}" is now in development!`,
-					body: `Good news! The developer ${feature.accountDev.name} has accepted to work on the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. They are now in development.`,
+					message: `Good news! The developer ${feature.accountDev.name} has accepted to work on the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. They are now in development.`,
 				}
 				break;
 
@@ -259,7 +250,7 @@ class FeatureRoute extends httpRouter.Service {
 				message = {
 					toFounders: false,
 					title: `Developer has declined your feature "${feature.title}"`,
-					body: `The developer ${feature.accountDev.name} has declined to work on the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. You may consider assigning a different developer.`,
+					message: `The developer ${feature.accountDev.name} has declined to work on the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. You may consider assigning a different developer.`,
 				}
 				break;
 
@@ -278,7 +269,7 @@ class FeatureRoute extends httpRouter.Service {
 				message = {
 					toFounders: false,
 					title: `Developer has left your feature "${feature.title}"`,
-					body: `The developer ${feature.accountDev.name} has left the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. You may consider assigning a different developer.`,
+					message: `The developer ${feature.accountDev.name} has left the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. You may consider assigning a different developer.`,
 				}
 				break;
 
@@ -292,7 +283,7 @@ class FeatureRoute extends httpRouter.Service {
 				partial = { status: FEATURE_STATUS.RELEASED }
 				message = {
 					title: `Your feature "${feature.title}" has been released!`,
-					body: `Great news! The developer ${feature.accountDev.name} has released the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. You can now review and mark it as completed.`,
+					message: `Great news! The developer ${feature.accountDev.name} has released the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. You can now review and mark it as completed.`,
 				}
 				break;
 
@@ -307,7 +298,7 @@ class FeatureRoute extends httpRouter.Service {
 				message = {
 					mainReceiver: feature.accountDev,
 					title: `Your feature "${feature.title}" has been cancelled`,
-					body: `The feature you proposed for the repository ${feature.githubRepoMetadata.full_name} has been cancelled by its creator.`,
+					message: `The feature you proposed for the repository ${feature.githubRepoMetadata.full_name} has been cancelled by its creator.`,
 				}
 				break;
 
@@ -323,7 +314,7 @@ class FeatureRoute extends httpRouter.Service {
 					mainReceiver: feature.accountDev,
 					toFounders: false,
 					title: `Your feature "${feature.title}" has been rejected by its creator`,
-					body: `The developer ${feature.accountDev.name} has informed that the feature you are developing for the repository ${feature.githubRepoMetadata.full_name} has been rejected by its creator.`,
+					message: `The developer ${feature.accountDev.name} has informed that the feature you are developing for the repository ${feature.githubRepoMetadata.full_name} has been rejected by its creator.`,
 				}
 				break;
 
@@ -341,7 +332,7 @@ class FeatureRoute extends httpRouter.Service {
 				message = {
 					mainReceiver: feature.accountDev,
 					title: `Your feature "${feature.title}" has been completed!`,
-					body: `Congratulations! The feature you proposed for the repository ${feature.githubRepoMetadata.full_name} has been marked as completed. Thank you for your contribution!`,
+					message: `Congratulations! The feature you proposed for the repository ${feature.githubRepoMetadata.full_name} has been marked as completed. Thank you for your contribution!`,
 				}
 				break;
 
@@ -372,18 +363,15 @@ class FeatureRoute extends httpRouter.Service {
 				) receivers.push(f.account)
 			})
 		}
-		
+
 		// ricavo il template email
-		const html = await getEmailCodeTemplate(
+		const html = await loadTemplate<NotificationTemplate>(
 			{
 				title: message.title,
-				message: message.body,
+				message: message.message,
+				action_url: message.action_url,
 				old_status: feature.status,
 				new_status: partial.status,
-				action_url: message.url,
-				logo_url: `${process.env.FRONTEND_URL}/public/puce_logo.png`,
-				action_label: "VIEW FEATURE",
-				support: "support@puce.app",
 			},
 			"templates/email/notification.html",
 		)
@@ -394,7 +382,7 @@ class FeatureRoute extends httpRouter.Service {
 			await messageService.sendMessage(
 				null,
 				receiver.id,
-				message.body,
+				message.message,
 			)
 			// invio email se abilitata
 			const email = receiver.googleEmail ?? receiver.email
@@ -420,14 +408,7 @@ class FeatureRoute extends httpRouter.Service {
 export default FeatureRoute
 
 
-type NotificationData = {
+type NotificationData = NotificationTemplate & {
 	toFounders?: boolean,
 	mainReceiver?: AccountRepo,
-	title?: string,
-	body?: string,
-	url?: string
-}
-
-function notify ( data: NotificationData ) {
-	// TODO
 }

@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 
 
 
+const COMPLETION_TIME = import.meta.env.VITE_PAYMENT_AFTER_COMPLETION_HOURS
+
 const FeatureDetailHeader: React.FC = () => {
 
 	// STORES
@@ -32,7 +34,7 @@ const FeatureDetailHeader: React.FC = () => {
 	}
 
 	const handleAuthorDeleteClick = async () => {
-		if ( isNew ) {
+		if (isNew) {
 			featureDetailSo.setFeature(null)
 			navigate('/app');
 			return
@@ -135,7 +137,7 @@ const FeatureDetailHeader: React.FC = () => {
 	const handleDevReleaseClick = async () => {
 		const res = await dialogSo.dialogOpen({
 			title: t("header.feature.dialog.warning"),
-			text: t("header.feature.dialog.release"),
+			text: t("header.feature.dialog.release", { time: COMPLETION_TIME }),
 			type: DIALOG_TYPE.WARNING,
 			modal: true,
 		})

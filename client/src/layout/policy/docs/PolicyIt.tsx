@@ -19,7 +19,7 @@ const PolicyEn: FunctionComponent = () => {
 				Indirizzo: <strong> Via Don Giovanni Verità, 5 Padova</strong>
 				<br />
 				Email di contatto: <strong>
-					<Link href="mailto:support@puce.app"> support@puce.app</Link>
+					<Link href="mailto:info@puce.app"> info@puce.app</Link>
 				</strong>
 			</Typography>
 
@@ -49,6 +49,7 @@ const PolicyEn: FunctionComponent = () => {
 			</Typography>
 
 			<Box sx={{ bgcolor: 'action.hover', p: 2, borderRadius: 1 }}>
+
 				<Typography variant='subtitle1' sx={{ fontWeight: 'bold', mb: 1 }}>
 					Elaborazione Pagamenti (Stripe)
 				</Typography>
@@ -73,6 +74,20 @@ const PolicyEn: FunctionComponent = () => {
 						<strong> Privacy Policy di Google</strong>
 					</Link>.
 				</Typography>
+
+				<Typography variant='subtitle1' sx={{ fontWeight: 'bold', mt: 2, mb: 1 }}>
+					Autenticazione (GitHub)
+				</Typography>
+				<Typography variant='body2'>
+					Questa Piattaforma permette di effettuare l'accesso tramite il servizio "Sign in with GitHub" fornito da GitHub Inc.
+					Quando utilizzi questa funzionalità, GitHub raccoglie dati relativi al tuo account GitHub (come username, email e avatar) per verificare la tua identità e fornirci un token di accesso sicuro. Noi non abbiamo accesso alla tua password GitHub né possiamo agire per conto tuo sul tuo account.
+					<br />
+					Per maggiori informazioni:
+					<Link href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener" color="secondary">
+						<strong> Privacy Policy di GitHub</strong>
+					</Link>.
+				</Typography>
+				
 			</Box>
 
 			<Typography variant='h6' sx={{ mt: 2 }}>
@@ -113,6 +128,9 @@ const PolicyEn: FunctionComponent = () => {
 					</li>
 					<li>
 						<strong>Autenticazione Federata (Google):</strong> Utilizziamo cookie tecnici di terze parti strettamente necessari per la gestione del servizio "Sign-in with Google". Questi sono necessari per permettere l'accesso rapido tramite il tuo account Google.
+					</li>
+					<li>
+						<strong>Autenticazione Federata (GitHub):</strong> Utilizziamo cookie tecnici di terze parti strettamente necessari per la gestione del servizio "Sign-in with GitHub". Questi sono necessari per permettere l'accesso rapido tramite il tuo account GitHub.
 					</li>
 				</ul>
 			</Typography>

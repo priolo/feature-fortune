@@ -3,44 +3,44 @@ import { add } from "@priolo/jon-utils/dist/object/diff";
 const en = {
 	common: {
 		ok: "OK",
-		accept: "Accetta",
-		cancel: "Annulla",
-		close: "Chiudi",
+		accept: "Accept",
+		cancel: "Cancel",
+		close: "Close",
 
-		save: "Salva",
-		edit: "Modifica",
-		modify: "Modifica",
-		change: "Cambia",
-		update: "Aggiorna",
-		complete: "Completa",
-		register: "Registrati",
+		save: "Save",
+		edit: "Edit",
+		modify: "Modify",
+		change: "Change",
+		update: "Update",
+		complete: "Complete",
+		register: "Register",
 
-		new: "Nuovo",
+		new: "New",
 
-		remove: "Cancella",
-		delete: "Elimina",
-		detach: "Abbandona",
+		remove: "Remove",
+		delete: "Delete",
+		detach: "Detach",
 
-		select: "Seleziona",
-		refresh: "Aggiorna",
-		send: "Invia",
+		select: "Select",
+		refresh: "Refresh",
+		send: "Send",
 
-		enabled: "abilitato",
-		disabled: "disabilitato",
+		enabled: "enabled",
+		disabled: "disabled",
 
 		dashboard: "Dashboard",
 		privacy_policy: "Privacy Policy",
 
 		msgbox: {
 			info: "INFO",
-			warning: "ATTENZIONE",
-			error: "ERRORE",
-			success: "SUCCESSO"
+			warning: "WARNING",
+			error: "ERROR",
+			success: "SUCCESS"
 		}
 	},
 	pag: {
 		features: {
-			empty: "NESSUNA FEATURE :( FORSE è ATTIVO QUALCHE FILTRO?",
+			empty: "NO FEATURES :( MAYBE SOME FILTER IS ACTIVE?",
 		},
 		
 	},
@@ -49,40 +49,40 @@ const en = {
 			title: "GITHUB REPOSITORY",
 			status: {
 				selected: {
-					title: "Repository Selezionato",
-					desc: "<br/>Questo è il repository a cui fa riferimanto la feature."
+					title: "Repository Selected",
+					desc: "<br/>This is the repository the feature refers to."
 				},
 				none: {
-					title: "Nessun Repository Selezionato",
-					desc: "<br/>Seleziona un repository GitHub su cui deve essere implementala la feature."
+					title: "No Repository Selected",
+					desc: "<br/>Select a GitHub repository where the feature should be implemented."
 				}
 			},
 			dialog: {
-				placeholder: "Inizia a digitare il nome del repository...",
+				placeholder: "Start typing the repository name...",
 			}
 		},
 		GithubLoginCard: {
 			title: "GITHUB ACCESS",
 			status: {
 				warn: {
-					title: "Non hai ancora collegato GitHub",
-					desc: "<br/>In questa maniera puoi proporti come sviluppatore e avere priorità sui tuoi repository."
+					title: "You haven't connected GitHub yet",
+					desc: "<br/>This way you can propose yourself as a developer and have priority on your repositories."
 				},
 				done: {
-					title: "Hai collegato GitHub",
-					desc: "<br/>Ora se c'è una feature che ti interessa puoi proporti come siluppatore."
+					title: "You have connected GitHub",
+					desc: "<br/>Now if there is a feature you are interested in, you can propose yourself as a developer."
 				}
 			},
 			alerts: {
 				detach: {
-					check: "Se ti disconnetti da GitHub non potrai più accedere alle feature che stavi sviluppando.",
-					succes: "ORA NON SEI PIÙ CONNESSO A GITHUB."
+					check: "If you disconnect from GitHub you will no longer be able to access the features you were developing.",
+					succes: "YOU ARE NO LONGER CONNECTED TO GITHUB."
 				}
 			},
 			actions: {
-				attach: "REGISTRA",
-				detach: "ELIMINA",
-				login: "ACCEDI"
+				attach: "REGISTER",
+				detach: "REMOVE",
+				login: "LOGIN"
 			}
 		},
 		// NON USATO
@@ -109,30 +109,30 @@ const en = {
 		StripeAuthorCard: {
 			title: "STRIPE CONNECTED",
 			alerts: {
-				link_email: "PRIMA DEVI INSERIRE UN RECAPITO EMAIL (GOOGLE OR GITHUB).",
-				registration_error: "ERRORE DURANTE LA REGISTRAZIONE SU STRIPE. RIPROVA.",
-				account_not_found: "ACCOUNT STRIPE NON TROVATO.",
-				detach_warning_text: "Se ti disconnetti da Stripe non sarai più in grado di ricevere pagamenti.",
-				detached_success: "SEI STATO DISCONNESSO DA STRIPE."
+				link_email: "YOU MUST FIRST ENTER AN EMAIL ADDRESS (GOOGLE OR GITHUB).",
+				registration_error: "ERROR DURING STRIPE REGISTRATION. TRY AGAIN.",
+				account_not_found: "STRIPE ACCOUNT NOT FOUND.",
+				detach_warning_text: "If you disconnect from Stripe you will no longer be able to receive payments.",
+				detached_success: "YOU HAVE BEEN DISCONNECTED FROM STRIPE."
 			},
 			status: {
 				warn: {
-					title: "Non hai ancora un account Stripe.",
-					desc: `<br/>Registrati per ricevere donazioni dai tuoi sostenitori.
-					<br/>La registrazione è un pò lunga ma è gratuita e va fatta una sola volta.
-					<br/>Inoltre Stripe è una piattaforma nota e affidabile.
+					title: "You don't have a Stripe account yet.",
+					desc: `<br/>Register to receive donations from your supporters.
+					<br/>Registration is a bit long but it is free and only needs to be done once.
+					<br/>Furthermore, Stripe is a well-known and reliable platform.
 					`
 				},
 				info: {
-					title: "Ci siamo quasi. Sei registrato ma c'è qualcosa da completare.",
-					desc: `<br/>Clicca su (MODIFICA) e verrai reindirizzato sulla pagina di Stripe.
-					Quindi potrai completare i dati mancanti.
+					title: "Almost there. You are registered but there is something to complete.",
+					desc: `<br/>Click on (MODIFY) and you will be redirected to the Stripe page.
+					Then you can complete the missing data.
 					`
 				},
 				done: {
-					title: "Bene, sei registrato a Stripe!",
-					desc: `<br/>Questo ti permetterà di ricevere donazioni dai tuoi sostenitori.
-					<br/>Usa il pannello di controllo (DASHBOARD) per gestire il tuo account Stripe.
+					title: "Great, you are registered with Stripe!",
+					desc: `<br/>This will allow you to receive donations from your supporters.
+					<br/>Use the control panel (DASHBOARD) to manage your Stripe account.
 					`
 				}
 			},
@@ -141,28 +141,28 @@ const en = {
 			title: "CREDIT CARD",
 			status: {
 				warn: {
-					title: "Non hai una Carta di Credito impostata.",
-					desc: "<br/>Puoi fidarti: I tuoi dati saranno gestiti ESCLUSIVAMENTE da Stripe in completa sicurezza."
+					title: "You do not have a Credit Card set.",
+					desc: "<br/>You can trust: Your data will be managed EXCLUSIVELY by Stripe in complete security."
 				},
 				done: {
-					title: "Bene, hai registrato la tua Carta di Credito.",
-					desc: "<br/>PUCE non memorizza i dati della tua carta: Li gestisce STRIPE in completa sicurezza."
+					title: "Great, you have registered your Credit Card.",
+					desc: "<br/>PUCE does not store your card details: STRIPE manages them in complete security."
 				}
 			},
 			alerts: {
 				save_cc: {
-					error: "ERRORE DI ACCETTAZIONE CARTA: {{message}}",
-					success: "CARTA DI CREDITO IMPOSTATA!"
+					error: "CARD ACCEPTANCE ERROR: {{message}}",
+					success: "CREDIT CARD SET!"
 				},
 				remove_cc: {
-					alert: "Se rimuovi la CARD le tue donazioni schedulate verranno annullate e non ne potrai fare di nuove.",
-					error: "Errore durante la rimozione del metodo di pagamento.",
-					success: "Metodo di pagamento rimosso."
+					alert: "If you remove the CARD your scheduled donations will be cancelled and you will not be able to make new ones.",
+					error: "Error removing payment method.",
+					success: "Payment method removed."
 				}
 			},
 			actions: {
-				detach: "ELIMINA",
-				set_card: "REGISTRA"
+				detach: "REMOVE",
+				set_card: "REGISTER"
 			}
 		},
 
@@ -170,72 +170,72 @@ const en = {
 			title: "GOOGLE ACCESS",
 			status: {
 				warn: {
-					title: "Non sei autenticato con Google.",
-					desc: "<br/>Collega il tuo account Google per un login più veloce e per ricevere notifiche.",
+					title: "You are not authenticated with Google.",
+					desc: "<br/>Connect your Google account for faster login and to receive notifications.",
 				},
 				done: {
-					title: "Hai collegato Google.",
-					desc: "<br/>Ora puoi usare Google per accedere e ricevere notifiche.",
+					title: "You have connected Google.",
+					desc: "<br/>Now you can use Google to login and receive notifications.",
 				}
 			},
 			alerts: {
 				login: {
-					error: "ERRORE DURANTE IL LOGIN CON GOOGLE, RIPROVA.",
-					success: "LOGIN CON GOOGLE AVVENUTO CON SUCCESSO!"
+					error: "ERROR DURING GOOGLE LOGIN, TRY AGAIN.",
+					success: "GOOGLE LOGIN SUCCESSFUL!"
 				},
 				detach: {
-					check: "Se ti disconnetti da Google non potrai piu' usare le funzionalita' che richiedono Google.",
-					succes: "Perfetto ora non sei piu' connesso a Google."
+					check: "If you disconnect from Google you will no longer be able to use features that require Google.",
+					succes: "Perfect, now you are no longer connected to Google."
 				}
 			},
 			actions: {
-				detach: "ELIMINA"
+				detach: "REMOVE"
 			}
 		},
 		EmailLoginCard: {
 			title: "EMAIL",
 			status: {
 				register: {
-					title: "Entra con la tua email.",
-					desc: "<br/>Conferma la tua email cliccando su (INVIA). Riceverai un codice che ti permetterà di accedere senza password."
+					title: "Enter with your email.",
+					desc: "<br/>Confirm your email by clicking on (SEND). You will receive a code that will allow you to login without a password."
 				},
 				none: {
-					title: "Il tuo account non ha una email associata.",
-					desc: `<br/>Inserisci la tua email e premi (INVIA). Riceverai un codice temporaneo e potrai accedere e ricevere notifiche.`,
+					title: "Your account does not have an email associated.",
+					desc: `<br/>Enter your email and press (SEND). You will receive a temporary code and you will be able to login and receive notifications.`,
 				},
 				unverified: {
-					title: "La tua email non è ancora verificata.",
-					desc: "<br/>Invia un codice alla tua email per poterla verificare."
+					title: "Your email is not verified yet.",
+					desc: "<br/>Send a code to your email to verify it."
 				},
 				done: {
-					title: "La tua email è verificata.",
-					desc: "<br/>Puoi usare la tua email per accedere al tuo accounte ricevere le notifiche."
+					title: "Your email is verified.",
+					desc: "<br/>You can use your email to access your account and receive notifications."
 				}
 			},
 			alerts: {
 				send_code: {
-					empty: "DEVI INSERIRE UNA EMAIL VALIDA",
-					error: "ERRORE NELL'INVIO DEL CODICE"
+					empty: "YOU MUST ENTER A VALID EMAIL",
+					error: "ERROR SENDING CODE"
 				},
 				verify_code: {
-					empty: "DEVI INSERIRE UN CODICE VALIDO",
-					error: "ERRORE NELLA VERIFICA DEL CODICE",
-					success: "EMAIL VERIFICATA CON SUCCESSO"
+					empty: "YOU MUST ENTER A VALID CODE",
+					error: "ERROR VERIFYING CODE",
+					success: "EMAIL VERIFIED SUCCESSFULLY"
 				}
 			},
 			dialog: {
-				title: "VERIFICA IL CODICE",
-				text: `Abbiamo inviato un codice al tuo indirizzo email.
-				<br/>Inseriscilo qui sotto per verificare la tua email.`,
-				placeholder: "Scrivi il codice ricevuto via email",
+				title: "VERIFY CODE",
+				text: `We sent a code to your email address.
+				<br/>Enter it below to verify your email.`,
+				placeholder: "Type the code received via email",
 				actions: {
-					cancel: "ANNULLA",
-					verify: "VERIFICA"
+					cancel: "CANCEL",
+					verify: "VERIFY"
 				}
 			},
 			actions: {
-				send: "INVIA",
-				resend: "RIPROVA"
+				send: "SEND",
+				resend: "RETRY"
 			}
 		},
 
@@ -262,108 +262,108 @@ const en = {
 			title: "DEVELOPER",
 			status: {
 				selected: {
-					title: "Account selezionato",
-					desc: `<br/>Attenzione però: Non è il proprietario del repo Github. Ci fidiamo?`
+					title: "Account selected",
+					desc: `<br/>Warning though: It is not the owner of the Github repo. Do we trust them?`
 				},
 				matched: {
-					title: "Account trovato!",
-					desc: "<br/>Benissimo è proprio il poprietario del repository GitHub. Farà un buon lavoro!"
+					title: "Account found!",
+					desc: "<br/>Great, it is the owner of the GitHub repository. They will do a good job!"
 				},
 				none: {
-					title: "Seleziona il developer che dovrà implementare la feature",
-					desc: `<br/>Se non trovi il proprietario del repo GitHub, contattalo e fallo registrare a questa piattaforma!
-					<br/>Altrimenti cerca qualcun'altro oppure lascialo vuoto e spera che qualcuno si faccia avanti`
+					title: "Select the developer who will implement the feature",
+					desc: `<br/>If you don't find the owner of the GitHub repo, contact them and get them to register on this platform!
+					<br/>Otherwise look for someone else or leave it empty and hope someone steps forward`
 				}
 			},
 		},
 		AccountFinderDialog: {
-			placeholder:"Inizia a scrivere il nome dell'account...",
-			empty: "Nessun account trovato.",
+			placeholder:"Start typing the account name...",
+			empty: "No account found.",
 		},
 
 		SettingsCard: {
-			title: "SETTAGGI",
+			title: "SETTINGS",
 			sections: {
-				name: "NOME",
-				theme: "TEMA",
-				language: "LINGUA",
+				name: "NAME",
+				theme: "THEME",
+				language: "LANGUAGE",
 				notification: {
-					label:"NOTIFICHE",
-					desc_on: "Ti arriveranno notifiche via email per aggiornamenti importanti.",
-					desc_off: "Non riceverai notifiche via email."
+					label:"NOTIFICATIONS",
+					desc_on: "You will receive email notifications for important updates.",
+					desc_off: "You will not receive email notifications."
 				},
-				currency: "VALUTA PREFERITA",
+				currency: "PREFERRED CURRENCY",
 			},
 			theme: {
 				light: {
-					title: "Tema chiaro",
-					desc: "Cambia al tema scuro per una migliore visibilità con poca luce"
+					title: "Light theme",
+					desc: "Switch to dark theme for better visibility in low light"
 				},
 				dark: {
 					title: "Dark Mode",
-					desc: "Cambia al tema chiaro se ti piace"
+					desc: "Switch to light theme if you like"
 				}
 			},
 			alerts: {
-				save_success: "LE IMPOSTAZIONI SONO STATE SALVATE!",
-				name_required: "IL CAMPO NOME È NECESSARIO."
+				save_success: "SETTINGS HAVE BEEN SAVED!",
+				name_required: "THE NAME FIELD IS REQUIRED."
 			}
 		},
 
 		FundingsCard: {
-			title: "DONAZIONI",
+			title: "DONATIONS",
 			actions: {
-				contribute: "CONTRIBUISCI"
+				contribute: "CONTRIBUTE"
 			},
-			empty: "ANCORA NESSUN CONTRIBUTO PER QUESTA FEATURE",
+			empty: "NO CONTRIBUTIONS FOR THIS FEATURE YET",
 			alerts: {
 				pay: {
-					check: "Confermando (OK) procederai con il pagamento immediato della donazione al developer.",
-					success: "PAGAMENTO EFFETTUATO CON SUCCESSO.",
-					error: "ERRORE DI PAGAMENTO: {{message}}"
+					check: "By confirming (OK) you will proceed with the immediate payment of the donation to the developer.",
+					success: "PAYMENT SUCCESSFUL.",
+					error: "PAYMENT ERROR: {{message}}"
 				},
 				cancel: {
-					check: "Questo pagamento non verrà mai effettuato e non può essere ripristinato. Eventualmente puoi creare un nuovo pagamento",
-					success: "PAGAMENTO CANCELLATO CON SUCCESSO.",
-					error: "ERRORE DI CANCELLAZIONE: {{message}}"
+					check: "This payment will never be made and cannot be restored. You can eventually create a new payment",
+					success: "PAYMENT CANCELLED SUCCESSFULLY.",
+					error: "CANCELLATION ERROR: {{message}}"
 				}
 			}
 		},
 		FundingDialog: {
-			title: "CONTRIBUTO ALLA FEATURE",
-			amount: "SOMMA",
-			description: `Ricorda cha puoi annullare il finanziamento <0>in qualunque momento</0>.
-			<br/>Quando la feature è dichiarata <0>COMPLETED dall'autore</0> riceverai una notifica.
-			<br/>Da allora, <0>se vorrai</0>, avrai ancora <0>{{time}} ore di tempo per annullare</0> il finanziamento (se proprio non ti convince) altrimenti avverrà il pagamento in automatico.
-			<br/>Il pagamento è gestito in sicurezza da <0>Stripe</0>: Puoi fidarti!
+			title: "CONTRIBUTION TO THE FEATURE",
+			amount: "AMOUNT",
+			description: `Remember that you can cancel the funding <0>at any time</0>.
+			<br/>When the feature is declared <0>COMPLETED by the author</0> you will receive a notification.
+			<br/>From then on, <0>if you want</0>, you will still have <0>{{time}} hours to cancel</0> the funding (if you are not convinced) otherwise the payment will be made automatically.
+			<br/>Payment is securely managed by <0>Stripe</0>: You can trust it!
 			`,
-			placeholder: "Se vuoi puoi inserire un messaggio (opzionale)",
+			placeholder: "If you want you can enter a message (optional)",
 			button: {
 				ok: "OK",
-				cancel: "ANNULLA"
+				cancel: "CANCEL"
 			}
 		},
 		FeatureDetailCard: {
-			title: "DETTAGLIO",
+			title: "DETAIL",
 			title_field: {
-				title: "TITOLO",
-				placeholder: "Scrivi un breve titolo per la feature"
+				title: "TITLE",
+				placeholder: "Write a short title for the feature"
 			},
 			description: {
-				title: "DESCRIZIONE",
-				placeholder: "Descrivi la feature che vorresti..."
+				title: "DESCRIPTION",
+				placeholder: "Describe the feature you would like..."
 			},
 			link: {
-				title: "LINK (es. issue GitHub)",
-				placeholder: "Link relativo alla feature (per esempio: issues o discussion in Github)",
-				no_link: "Nessun link fornito."
+				title: "LINK (e.g. GitHub issue)",
+				placeholder: "Link related to the feature (for example: issues or discussion in Github)",
+				no_link: "No link provided."
 			},
 		},
 		CommentsCard: {
-			title: "COMMENTI",
-			empty: "ANCORA NESSUN COMMENTO",
+			title: "COMMENTS",
+			empty: "NO COMMENTS YET",
 			label: {
-				add: "COMMENTA"
+				add: "COMMENT"
 			}
 		},
 
@@ -372,86 +372,86 @@ const en = {
 		title: "OVERVIEW",
 		feature: {
 			message: {
-				new: `Indica il repository GitHub e inserisci il dettaglio della <0>feature</0> da implementare.
-				Sarebbe perfetto se ci fosse un link ad una descrizione dettagliata su GitHub (es. una <0>issue</0> o una <0>discussion</0>).
-				<br/>Quindi clicca sul bottone <0>CREA</0> per renderla disponibile.`,
-				proposed_no_dev: `Questa feature è una <0>bozza</0> (proposed).
-				Deve essere accettata da un <0>developer</0> per iniziare lo sviluppo. 
-				<br/>Sarebbe perfetto se fosse il proprietario del repository GitHub stesso!
-				Se non c'è tra i registrati a PUCE, 
-				<0>contattalo e fagli creare un account!</0>
-				Oppure aspettiamo che qualcuno si faccia avanti`,
-				proposed: `Questa feature è una <0>bozza</0> ed è stata proposta ad un <0>developer</0>.
-				<br/>Ora è lo sviluppatore che deve accettare e portare avanti la feature.
-				<br/>Per invogliarlo puoi contribuire finanziariamente!`,
-				in_development: `Siamo in fase di sviluppo.
-				<br/>Il <0>developer</0> sta lavorando per completare la <0>feature</0>. 
-				<br/>Quando avrà finito rilascerà una <0>release</0> che dovà essere confermata dall'<0>autore</0>.
-				<br/>Nel frattempo puoi sempre contribuire finanziariamente!`,
-				released: `La feature è stata rilasciata dal <0>developer</0>.,
-				<br/>Ora l'<0>autore</0> deve confermarne il completamento.
-				<br/>Se conferma, si attiva un <0>countdown</0> e dopo il sistema effettuerà i pagamenti al <0>developer</0>.
-				<br/>Affettati a contribuire: Quando userai questa feature ti sentirai meglio!`,
-				completed: `Evviva! La feature è stata accettata dall'<0>autore</0>!
-				<br/>Dopo un <0>countdwon</0> di {{time}} ore il sistema effettuerà il pagamento al <0>developer</0>.
-				<br/>Se hai contribuito controlla che sia tutto ok: puoi sempre annullare il finanziamento prima dello scadere del <0>countdown</0>.`,
-				paid: `Questa feature è stata pagata dal sistema.
-				<br/>Grazie per aver usato PUCE speriamo di aver contribuito al finanziamento dell Open Source!`,
-				cancelled: `Purtroppo questa FEATURE è stata ANNULLATA.
-			<br/>Non sarà più possibile procedere con il suo sviluppo.
-			<br/>Se hai contribuito finanziariamente, i tuoi non sono stati addebitati. 
-				<br/>Se vuoi, puoi sempre ricreare la feature!`
+				new: `Indicate the GitHub repository and enter the detail of the <0>feature</0> to be implemented.
+				It would be perfect if there was a link to a detailed description on GitHub (e.g. an <0>issue</0> or a <0>discussion</0>).
+				<br/>Then click on the <0>CREATE</0> button to make it available.`,
+				proposed_no_dev: `This feature is a <0>draft</0> (proposed).
+				It must be accepted by a <0>developer</0> to start development. 
+				<br/>It would be perfect if it was the owner of the GitHub repository itself!
+				If they are not among those registered on PUCE, 
+				<0>contact them and have them create an account!</0>
+				Or let's wait for someone to step forward`,
+				proposed: `This feature is a <0>draft</0> and has been proposed to a <0>developer</0>.
+				<br/>Now it is the developer who must accept and carry out the feature.
+				<br/>To encourage them you can contribute financially!`,
+				in_development: `We are in the development phase.
+				<br/>The <0>developer</0> is working to complete the <0>feature</0>. 
+				<br/>When finished they will release a <0>release</0> which must be confirmed by the <0>author</0>.
+				<br/>In the meantime you can always contribute financially!`,
+				released: `The feature has been released by the <0>developer</0>.,
+				<br/>Now the <0>author</0> must confirm its completion.
+				<br/>If confirmed, a <0>countdown</0> is activated and afterwards the system will make payments to the <0>developer</0>.
+				<br/>Hurry to contribute: When you use this feature you will feel better!`,
+				completed: `Hurray! The feature has been accepted by the <0>author</0>!
+				<br/>After a <0>countdown</0> of {{time}} hours the system will make the payment to the <0>developer</0>.
+				<br/>If you contributed check that everything is ok: you can always cancel the funding before the <0>countdown</0> expires.`,
+				paid: `This feature has been paid by the system.
+				<br/>Thank you for using PUCE we hope to have contributed to the funding of Open Source!`,
+				cancelled: `Unfortunately this FEATURE has been CANCELLED.
+				<br/>It will no longer be possible to proceed with its development.
+				<br/>If you contributed financially, your funds have not been charged. 
+				<br/>If you want, you can always recreate the feature!`
 			},
 			label: {
-				amount: "SOMMA TOTALE",
-				author: "AUTORE",
-				created_at: "CREATA IL"
+				amount: "TOTAL AMOUNT",
+				author: "AUTHOR",
+				created_at: "CREATED AT"
 			}
 		},
 		features: {
 			message: {
-				default: `Naviga tra le feature. 
-				Le puoi filtrare o mettere in odine con il menù a destra. 
-				Oppure scrivi in alto per cercare una feature specifica.
-				Natualmente puoi anche CREARE una nuova feature!
+				default: `Browse through the features. 
+				You can filter or sort them with the menu on the right. 
+				Or type above to search for a specific feature.
+				Naturally you can also CREATE a new feature!
 				`,
 			},
 			label: {
-				total: "NUMERO FEATURES"
+				total: "NUMBER OF FEATURES"
 			}
 		},
 		messages: {
 			message: {
-				default: `Puoi leggere le notifiche di sistema e i messaggi ricevuti.
-				<br/><0>Non dare mai dati sensibili come carte di credito o password.</0>
-				<br/>Ti preghiamo di scrivere liberamente a qualunque in maniera rispettosa, evitando polemiche e spam.
-				<br/>Questo posto è perfetto per mettersi d'accordo sullo sviluppo delle feature per esempio chiedere i tempi di consegna o proporre modifiche.
+				default: `You can read system notifications and received messages.
+				<br/><0>Never give sensitive data like credit cards or passwords.</0>
+				<br/>Please write freely to anyone in a respectful manner, avoiding controversy and spam.
+				<br/>This place is perfect for agreeing on feature development for example asking for delivery times or proposing changes.
 				`,
 			},
 			label: {
-				unread: "DA LEGGERE",
-				total: "MESSAGGI TOTALI",
+				unread: "UNREAD",
+				total: "TOTAL MESSAGES",
 			}
 		},
 		account: {
 			message: {
-				default: `Gestisci i tuoi dati di account e le tue preferenze qui.`,
+				default: `Manage your account data and preferences here.`,
 				email: {
-					warning: `Non possiamo mandarti notifiche per <0>email</0>.`,
-					success: `Riceverai nella tua <0>email</0> le notifiche più importanti.
-					Per esempio se una <0>feature</0> a cui hai contribuito è stata rilasciata.`
+					warning: `We cannot send you notifications by <0>email</0>.`,
+					success: `You will receive the most important notifications in your <0>email</0>.
+					For example if a <0>feature</0> you contributed to has been released.`
 				},
 				github: {
-					warning: `Non puoi proporti come <0>developer</0> senza un repository <0>GitHub</0>`,
-					success: `Puoi proporti come <0>developer</0> di una <0>feature</0>.`
+					warning: `You cannot propose yourself as a <0>developer</0> without a <0>GitHub</0> repository`,
+					success: `You can propose yourself as a <0>developer</0> of a <0>feature</0>.`
 				},
 				credit_card: {
-					warning: `Non puoi finanziare le <0>feature</0> se non inserisci una <0>carta di credito</0>`,
-					success: `Puoi finanziare le <0>feature</0> con la tua <0>carta di credito</0>.`
+					warning: `You cannot fund <0>features</0> if you do not enter a <0>credit card</0>`,
+					success: `You can fund <0>features</0> with your <0>credit card</0>.`
 				},
 				stripe: {
-					warning: `Non potrai ricevere <0>donazioni</0> senza un account <0>Stripe</0> collegato.`,
-					success: `Puoi ricevere <0>donazioni</0> nel tuo account <0>Stripe</0>.`
+					warning: `You will not be able to receive <0>donations</0> without a connected <0>Stripe</0> account.`,
+					success: `You can receive <0>donations</0> in your <0>Stripe</0> account.`
 				},
 			},
 			label: {
@@ -463,59 +463,59 @@ const en = {
 		feature: {
 			repo: {
 				label: "GITHUB REPOSITORY",
-				warn: "Inserisci un repository GitHub",
+				warn: "Enter a GitHub repository",
 			},
 			details: {
-				label: "DETTAGLIO",
-				ok: "I dettagli sono stati compilati",
-				warn: "Scrivi un titolo e una descrizione (ed eventualmente un link)"
+				label: "DETAIL",
+				ok: "Details have been filled",
+				warn: "Write a title and a description (and eventually a link)"
 			},
 			developer: {
 				label: "DEVELOPER",
-				ok: "Assegnato",
-				warn: "Cerca e seleziona un developer"
+				ok: "Assigned",
+				warn: "Search and select a developer"
 			},
 			fundings: {
-				label: "DONAZIONI",
-				ok: "numero donazioni",
-				warn: "Ancora nessuna donazione",
+				label: "DONATIONS",
+				ok: "number of donations",
+				warn: "No donations yet",
 			},
 			comments: {
-				label: "COMMENTI",
-				ok: "numero di commenti",
-				warn: "Ancora nessun commento",
+				label: "COMMENTS",
+				ok: "number of comments",
+				warn: "No comments yet",
 			}
 		},
 		features: {
 			sort: {
-				title: "ORDINA PER",
-				newest: "NUOVE",
-				oldest: "VECCHIE",
-				most_funded: "PIU' FINANZIATE",
+				title: "SORT BY",
+				newest: "NEWEST",
+				oldest: "OLDEST",
+				most_funded: "MOST FUNDED",
 				github: "GITHUB REPO",
 			},
 			filter: {
-				title: "FILTRA PER",
-				all: "TUTTE",
-				my: "HO CREATO",
-				financed: "HO CONTRIBUITO",
-				developed: "HO SVILUPPATO",
+				title: "FILTER BY",
+				all: "ALL",
+				my: "CREATED BY ME",
+				financed: "CONTRIBUTED BY ME",
+				developed: "DEVELOPED BY ME",
 			},
 			status: {
-				title: "STATO",
-				all: "TUTTE TRANNE CANCELLED",
+				title: "STATUS",
+				all: "ALL EXCEPT CANCELLED",
 			}
 		},
 		messages: {
 			status: {
 				title: "STATUS",
-				all: "TUTTI",
-				to_read: "DA LEGGERE",
-				read: "GIA' LETTI",
+				all: "ALL",
+				to_read: "TO READ",
+				read: "ALREADY READ",
 			},
 			sender: {
-				title: "MITTENTE",
-				all: "TUTTI",
+				title: "SENDER",
+				all: "ALL",
 			},
 		},
 		account: {
@@ -526,148 +526,148 @@ const en = {
 		feature: {
 			title: "FEATURE",
 			label: {
-				create: "CREA",
+				create: "CREATE",
 
-				save: "SALVA",
-				accept: "ACCETTA",
-				decline: "RIFIUTA",
+				save: "SAVE",
+				accept: "ACCEPT",
+				decline: "DECLINE",
 
-				delete: "ELIMINA",
-				leave: "ABBANDONA",
-				release: "RILASCIA",
+				delete: "DELETE",
+				leave: "LEAVE",
+				release: "RELEASE",
 
-				reject: "RIFIUTA",
-				complete: "FINITA!",
+				reject: "REJECT",
+				complete: "COMPLETED!",
 			},
 			tooltip: {
-				save_yes: "SALVA LE MODIFICHE FATTE",
-				save_no: "PER SALVARE ISERISCI GITHUB E IL DETTAGLIO",
+				save_yes: "SAVE CHANGES MADE",
+				save_no: "TO SAVE ENTER GITHUB AND DETAIL",
 
-				accept: "ACCETTA DI IMPLEMENTARE QUESTA FEATURE",
-				decline: "RIFIUTA! NON IMPLEMENTERAI QUESTA FEATURE",
+				accept: "ACCEPT TO IMPLEMENT THIS FEATURE",
+				decline: "DECLINE! YOU WILL NOT IMPLEMENT THIS FEATURE",
 
-				delete: "CANCELLA LA FEATURE DEFINITIVAMENTE O.O",
-				leave: "RINUNCIA! NON IMPLEMENTERAI PIU' QUESTA FEATURE",
-				release: "OK! LA FEATURE è STATA IMPLEMENTATA",
+				delete: "DELETE THE FEATURE PERMANENTLY O.O",
+				leave: "GIVE UP! YOU WILL NO LONGER IMPLEMENT THIS FEATURE",
+				release: "OK! THE FEATURE HAS BEEN IMPLEMENTED",
 
-				reject: "QUALCOSA NON VA NELL'IMPLEMENTAZIONE. RIPROVA",
-				complete: "PERFETTO! LA FEATURE E' COMPLETATA",
+				reject: "SOMETHING IS WRONG WITH THE IMPLEMENTATION. TRY AGAIN",
+				complete: "PERFECT! THE FEATURE IS COMPLETED",
 			},
 			message: {
-				modify: "MODIFICHE SALVATE CON SUCCESSO!",
-				accept: "HAI ACCETTATO DI SVILUPPARE QUESTA FEATURE!",
-				decline: "HAI RIFIUTATO DI SVILUPPARE QUESTA FEATURE.",
+				modify: "CHANGES SAVED SUCCESSFULLY!",
+				accept: "YOU HAVE ACCEPTED TO DEVELOP THIS FEATURE!",
+				decline: "YOU HAVE DECLINED TO DEVELOP THIS FEATURE.",
 
-				delete: "FEATURE ELIMINATA DEFINITIVAMENTE.",
-				leave: "HAI ABBANDONATO LO SVILUPPO DI QUESTA FEATURE.",
-				release: "HAI RILASCIATO LA FEATURE COME COMPLETATA.",
+				delete: "FEATURE DELETED PERMANENTLY.",
+				leave: "YOU HAVE ABANDONED THE DEVELOPMENT OF THIS FEATURE.",
+				release: "YOU HAVE RELEASED THE FEATURE AS COMPLETED.",
 
-				reject: "HAI RIFIUTATO L'IMPLEMENTAZIONE DELLA FEATURE.",
-				complete: "HAI CONFERMATO IL COMPLETAMENTO DELLA FEATURE.",
+				reject: "YOU HAVE REJECTED THE IMPLEMENTATION OF THE FEATURE.",
+				complete: "YOU HAVE CONFIRMED THE COMPLETION OF THE FEATURE.",
 			},
 			dialog: {
-				warning: "ATTENZIONE",
+				warning: "WARNING",
 
-				accept: "TI IMPEGNI A SVILUPPARE QUESTA FEATURE. SEI SICURO?",
-				decline: "SE RIFIUTI QUESTA FEATURE NON SARA' PIU' ASSEGNATA A TE. SEI SICURO?",
+				accept: "You commit to developing this feature. Are you sure?",
+				decline: "If you decline this feature it will no longer be assigned to you. Are you sure?",
 
-				delete: "LE DONAZIONI VERRANNO ANNULLATE E IL DEVELOPER NON VERRÀ PAGATO. QUESTA FEATURE VERRÀ CHIUSA DEFINITIVAMENTE E NON SARÀ MODIFICABILE",
-				leave: "STAI ABBANDONADO LA FEATURE. VERRAI RIMOSSO COME DEVELOPER E LA FEATURE TORNERÀ IN UNO STATO DI PROPOSTA",
-				release: "DOPO QUESTO RILASCIO, L'AUTORE DOVRÀ ACCETTARE O RIFIUTARE. SE ACCETTA DOPO {{time}} ORE AVVERRÀ IL PAGAMENTO",
+				delete: "Donations will be cancelled and the developer will not be paid. This feature will be closed permanently and will not be editable",
+				leave: "You are abandoning the feature. You will be removed as developer and the feature will return to a proposed state",
+				release: "After release, the author must accept or reject. If accepted, payment will occur after {{time}} hours",
 
-				reject: "SE RESPINGI LE RELEASE LA FEATURE TORNERÀ ALLO STATO DI SVILUPPO E DOVRÀ ESSERE ACCETTATA NUOVAMENTE",
-				complete: "DICHIARI CHE LA FEATURE È COMPLETATA. QUINDI TRA {{time}} ORE VERRANNO EFFETTUATI I PAGAMENTI AL DEVELOPER",
+				reject: "If you reject the release the feature will return to development state and must be accepted again",
+				complete: "You declare that the feature is completed. So in {{time}} hours payments will be made to the developer",
 
 			}
 		},
 		features: {
 			title: "FEATURES",
-			placeholder: "Cerca per titolo, descrizione o github ...",
+			placeholder: "Search by title, description or github ...",
 			new: {
-				label: "CREA",
-				tooltip: "Crea una richiesta per una funzionalità su un repository GitHub",
+				label: "CREATE",
+				tooltip: "CREATE A REQUEST FOR A FEATURE ON A GITHUB REPOSITORY",
 			},
 		},
 		messages: {
-			title: "MESSAGGI",
+			title: "MESSAGES",
 			//placeholder: "Cerca per mittente o contenuto ...",
 		}
 	},
 	view: {
 		githubRepo: {
-			no_description: "Descrizione non disponibile",
-			empty: "NESSUN REPOSITORY SELEZIONATO"
+			no_description: "Description not available",
+			empty: "NO REPOSITORY SELECTED"
 		},
 		funding: {
 			label: {
-				cancel: "ANNULLA PAGAMENTO",
-				pay_now: "PAGA SUBITO!",
-				try_again: "RIPROVA!"
+				cancel: "CANCEL PAYMENT",
+				pay_now: "PAY NOW!",
+				try_again: "TRY AGAIN!"
 			},
 			status: {
 				pending: {
 					label: "PENDING",
-					tooltip: "IN ATTESI DI ESSERE ACCETTATA DA UN DEVELOPER"
+					tooltip: "WAITING TO BE ACCEPTED BY A DEVELOPER"
 				},
 				cancelled: {
 					label: "CANCELLED",
-					tooltip: "CANCELLATA PRIMA DEL PAGAMENTO"
+					tooltip: "CANCELLED BEFORE PAYMENT"
 				},
 				payable: {
 					label: "PAYABLE",
-					tooltip: "PRONTA PER ESSERE PAGATA"
+					tooltip: "READY TO BE PAID"
 				},
 				paied: {
-					label: "PAIED",
-					tooltip: "TERMINATA ED E' STATA PAGATA!"
+					label: "PAID",
+					tooltip: "FINISHED AND HAS BEEN PAID!"
 				},
 				error: {
 					label: "ERROR",
-					tooltip: "BLOCCATA PER QUALCHE ERRORE DI SISTEMA"
+					tooltip: "BLOCKED DUE TO SOME SYSTEM ERROR"
 				},
 			}
 		},
 		account: {
-			empty: "NESSUN ACCOUNT SELEZIONATO",
+			empty: "NO ACCOUNT SELECTED",
 			stripe: {
 				ready: {
 					label: "STRIPE",
-					tooltip: "ABILITATO A RICEVERE PAGAMENTI",
+					tooltip: "ENABLED TO RECEIVE PAYMENTS",
 				},
 				partial: {
 					label: "STRIPE",
-					tooltip: "PUO' RICEVERE PAGAMENTI MA DEVE COMPLETARE LA REGISTRAZIONE",
+					tooltip: "CAN RECEIVE PAYMENTS BUT MUST COMPLETE REGISTRATION",
 				},
 				no: {
 					label: "NO STRIPE",
-					tooltip: "ATTUALMENTE NON PUO' RICEVERE PAGAMENTI STRIPE",
+					tooltip: "CURRENTLY CANNOT RECEIVE STRIPE PAYMENTS",
 				},
 			},
 			email: {
 				label: "EMAIL",
-				tooltip: "L'EMAIL E' VERIFICATA",
+				tooltip: "EMAIL IS VERIFIED",
 			},
 			google: {
 				label: "GOOGLE",
-				tooltip: "HA UN ACCOUNT GOOGLE",
+				tooltip: "HAS A GOOGLE ACCOUNT",
 			},
 			github: {
 				label: "GITHUB",
-				tooltip: "HA UN ACCOUNT GITHUB",
+				tooltip: "HAS A GITHUB ACCOUNT",
 			},
 			card: {
 				label: "CARD",
-				tooltip: "HA INSERITO LA CARTA DI CREDITO",
+				tooltip: "HAS ENTERED CREDIT CARD",
 			}
 		},
 		feature: {
 			proposed: {
 				label: "PROPOSED",
-				desc: "FEATURE HAS BEEN PROPOSED FROM AUTHOR"
+				desc: "FEATURE HAS BEEN PROPOSED BY AUTHOR"
 			},
 			in_development: {
 				label: "DEVELOPMENT",
-				desc: "FEATURE ACCEPTED BY AN DEVELOPER AND IS IN PROGRESS"
+				desc: "FEATURE ACCEPTED BY A DEVELOPER AND IS IN PROGRESS"
 			},
 			released: {
 				label: "RELEASED",
@@ -688,12 +688,12 @@ const en = {
 		},
 		messages: {
 			MessageRow: {
-				removed: "IL MESSAGGIO È STATO ELIMINATO.",
-				as_unread: "Come non letto",
-				reply: "Rispondi",
+				removed: "THE MESSAGE HAS BEEN DELETED.",
+				as_unread: "Mark as unread",
+				reply: "Reply",
 			},
 			MessageView: {
-				placeholder: "Scrivi il tuo messaggio qui...",
+				placeholder: "Write your message here...",
 			}
 		}
 	},

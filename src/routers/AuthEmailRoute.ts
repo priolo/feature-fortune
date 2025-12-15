@@ -1,7 +1,7 @@
 import { Bus, email as emailNs, http, httpRouter, jwt, typeorm } from "@priolo/julian";
 import crypto from "crypto";
 import { Request, Response } from "express";
-import { getEmailCodeTemplate } from "src/services/templates/index.js";
+import { CodeTemplate, loadTemplate } from "src/services/templates/index.js";
 import { FindManyOptions } from "typeorm";
 import { AccountRepo, accountSendable, EMAIL_CODE, JWTPayload } from "../repository/Account.js";
 import { ENV_TYPE } from "../types/env.js";
@@ -64,14 +64,13 @@ class AuthEmailRoute extends httpRouter.Service {
 		})
 
 		// INVIO EMAIL con il codice e altri placeholder
-		const html = await getEmailCodeTemplate({ code, support: "support@puce.app", })
-		
+		const html = await loadTemplate<CodeTemplate>({ code }, "templates/email/code.html")
 		await new Bus(this, this.state.email_path).dispatch({
 			type: emailNs.Actions.SEND,
 			payload: {
 				from: process.env.EMAIL_USER,
 				to: email,
-				subject: "Richiesta registraziuone",
+				subject: "Verification Code",
 				html,
 			}
 		});

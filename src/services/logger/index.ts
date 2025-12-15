@@ -19,6 +19,7 @@ const transport = pino.transport({
 export const logger = pino({
     level: process.env.LOG_LEVEL || 'info',
     timestamp: pino.stdTimeFunctions.isoTime,
+    base: null, // Remove pid, hostname from logs
 }, transport);
 
 /**
