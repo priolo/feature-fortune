@@ -364,6 +364,10 @@ const en = {
 			empty: "NO COMMENTS YET",
 			label: {
 				add: "COMMENT"
+			},
+			dialog: {
+				title: "COMMENT",
+				placeholder: "Add a message"
 			}
 		},
 

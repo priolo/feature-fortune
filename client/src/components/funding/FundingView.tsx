@@ -14,12 +14,14 @@ import { useTranslation } from 'react-i18next';
 
 interface Props {
 	funding: Funding;
+	isPayableNow?: boolean;
 	onCancel?: (funding: Funding) => void;
 	onPayNow?: (funding: Funding) => void;
 }
 
 const FundingView: React.FC<Props> = ({
 	funding,
+	isPayableNow = false,
 	onCancel,
 	onPayNow
 }) => {
@@ -35,9 +37,23 @@ const FundingView: React.FC<Props> = ({
 	const canEditable = funding.status == FUNDING_STATUS.PENDING || funding.status == FUNDING_STATUS.ERROR
 	const actions: ActionMenuProps[] = [
 		//{ label: "PAUSE", icon: <Pause />, onClick: null },
-		{ label: t("view.funding.label.cancel", "CANCEL"), icon: <Cancel />, onClick: () => onCancel(funding) },
-		{ label: t("view.funding.label.pay_now", "PAY NOW"), icon: <Payment />, onClick: () => onPayNow(funding), hidden: funding.status !== FUNDING_STATUS.PENDING  },
-		{ label: t("view.funding.label.try_again", "TRY AGAIN"), icon: <Payment />, onClick: () => onPayNow(funding), hidden: funding.status !== FUNDING_STATUS.ERROR  },
+		{
+			label: t("view.funding.label.cancel", "CANCEL"),
+			icon: <Cancel />,
+			onClick: () => onCancel(funding)
+		},
+		{
+			label: t("view.funding.label.pay_now", "PAY NOW"),
+			icon: <Payment />,
+			onClick: () => onPayNow(funding),
+			hidden: funding.status !== FUNDING_STATUS.PENDING || !isPayableNow
+		},
+		{ 
+			label: t("view.funding.label.try_again", "TRY AGAIN"), 
+			icon: <Payment />, 
+			onClick: () => onPayNow(funding), 
+			hidden: funding.status !== FUNDING_STATUS.ERROR 
+		},
 	]
 
 	return (

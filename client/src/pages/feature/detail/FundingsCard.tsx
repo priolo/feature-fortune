@@ -16,11 +16,13 @@ import { useTranslation } from 'react-i18next';
 interface Props {
     featureId?: string
     readonly?: boolean
+    isPayableNow?: boolean
 }
 
 const FundingsCard: React.FC<Props> = ({
     featureId,
     readonly = false,
+    isPayableNow = false,
 }) => {
 
     // STORES
@@ -100,7 +102,7 @@ const FundingsCard: React.FC<Props> = ({
                     <ListItem key={funding.id}
                         divider={index < fundings.length - 1}
                     >
-                        <FundingView
+                        <FundingView isPayableNow={isPayableNow}
                             funding={funding}
                             onCancel={handleCancel}
                             onPayNow={handlePayNow}

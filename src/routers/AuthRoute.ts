@@ -28,15 +28,14 @@ class AuthRoute extends httpRouter.Service {
 	/** se esiste JWT restituisce l'utente */
 	async current(req: Request, res: Response) {
 
+		// [II] da togliere
 		if (process.env.NODE_ENV == ENV_TYPE.DEV && process.env.AUTO_AUTH_ENABLE === "true") {
 			return this.autoLogin(req, res);
 		}
 
 		// ricavo JWT dai cookies
 		const token: string = req.cookies.jwt;
-		if (!token) {
-			return res.status(401).json({ user: null });
-		}
+		if (!token) return res.status(401).json({ user: null });
 
 		try {
 
@@ -145,13 +144,14 @@ class AuthRoute extends httpRouter.Service {
 	async login(req: Request, res: Response) {
 		const { repository } = this.state
 		var { email, password } = req.body
+		if (!email || !password) return res.status(400).json({ error: "login:missing_parameters" })
 
 		// get user
 		const users = await new Bus(this, repository).dispatch({
 			type: typeorm.Actions.FIND,
 			payload: { where: { email } }
 		})
-		if (users.length == 0) return res.sendStatus(404)
+		if (users.length == 0) return res.status(404).json({ error: "login:account:not_found" })
 		const user = users[0]
 
 		// check password

@@ -19,7 +19,6 @@ class AuthGoogleRoute extends httpRouter.Service {
 			jwt: "/jwt",
 			routers: [
 				{ path: "/login", verb: "post", method: "login" },
-				{ path: "/callback", verb: "get", method: "callback" },
 			]
 		}
 	}
@@ -29,19 +28,19 @@ class AuthGoogleRoute extends httpRouter.Service {
 
 	/** login/register con GOOGLE */
 	async login(req: Request, res: Response) {
-		const { token } = req.body;
+		const { token } = req.body
+		if (!token) return res.status(400).json({ error: "Missing token parameter" });
 		try {
-
 			// Verifico GOOGLE token e ricavo PAYLOAD
 			const ticket = await client.verifyIdToken({
 				idToken: token,
 				audience: process.env.GOOGLE_CLIENT_ID,
 			});
 			const payload = ticket.getPayload();
+			if (!payload || !payload.email) return res.status(400).json({ error: "Invalid Google token payload" });
 
 
-
-			// FIND ACCOUNT
+			// FIND ACCOUNT or VOID ACCOUNT
 			let user: AccountRepo = await new Bus(this, this.state.repository).dispatch({
 				type: typeorm.Actions.FIND_ONE,
 				payload: <FindManyOptions<AccountRepo>>{
@@ -52,7 +51,7 @@ class AuthGoogleRoute extends httpRouter.Service {
 				}
 			}) ?? {}
 
-			// ACCOUNT UPDATE
+			// ACCOUNT UPDATE or CREATE
 			user = await new Bus(this, this.state.repository).dispatch({
 				type: typeorm.Actions.SAVE,
 				payload: {
@@ -63,7 +62,6 @@ class AuthGoogleRoute extends httpRouter.Service {
 					avatarUrl: payload.picture ?? user.avatarUrl,
 				},
 			})
-
 
 
 			// Genera il token JWT con l'email nel payload
@@ -95,12 +93,6 @@ class AuthGoogleRoute extends httpRouter.Service {
 			res.status(401).json({ error: 'Invalid Token' });
 		}
 	}
-
-	async callback(req: Request, res: Response) {
-		console.log("callback")
-		debugger
-	}
-
 
 }
 

@@ -91,7 +91,7 @@ class FundingRoute extends httpRouter.Service {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
 		const id = req.params["id"]
-		if (!id) return
+		if (!id) return res.status(400).json({ error: "Missing id parameter" })
 
 		// fetch
 		const funding: FundingRepo = await new Bus(this, this.state.funding_repo).dispatch({

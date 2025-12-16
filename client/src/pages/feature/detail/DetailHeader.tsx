@@ -176,7 +176,7 @@ const FeatureDetailHeader: React.FC = () => {
 		<Box sx={{ flex: 1 }}></Box>
 
 
-		{isAuthor && feature.status == FEATURE_STATUS.IN_DEVELOPMENT || feature.status == FEATURE_STATUS.PROPOSED && <>
+		{isAuthor && (feature.status == FEATURE_STATUS.IN_DEVELOPMENT || feature.status == FEATURE_STATUS.PROPOSED) && <>
 			<Tooltip title={t(`header.feature.tooltip.delete`)}>
 				<Button
 					onClick={handleAuthorDeleteClick}

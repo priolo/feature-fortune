@@ -30,7 +30,6 @@ const UserCmp: React.FC<UserCmpProps> = ({
 	// HANDLERS
 	const handleLoginClick = (event: React.MouseEvent<HTMLElement>) => {
 		navigate('/app/login');
-		//setAnchorEl(event.currentTarget);
 	};
 	const handleUserClick = (event: React.MouseEvent<HTMLElement>) => {
 		setUserMenuAnchorEl(event.currentTarget);
@@ -49,6 +48,7 @@ const UserCmp: React.FC<UserCmpProps> = ({
 	const handleLogout = async () => {
 		await authSo.logout()
 		handleUserMenuClose();
+		navigate('/app/login');
 	}
 
 

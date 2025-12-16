@@ -36,6 +36,7 @@ class GoogleRoute extends httpRouter.Service {
 
 
 		const { token } = req.body
+		if (!token) return res.status(400).json({ error: "Missing token parameter" });
 		try {
 
 			// Verifico GOOGLE token e ricavo PAYLOAD

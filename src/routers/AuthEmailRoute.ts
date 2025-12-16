@@ -8,6 +8,8 @@ import { ENV_TYPE } from "../types/env.js";
 
 
 
+
+
 class AuthEmailRoute extends httpRouter.Service {
 
 	get stateDefault() {
@@ -15,7 +17,7 @@ class AuthEmailRoute extends httpRouter.Service {
 			...super.stateDefault,
 			path: "/api/auth",
 			email_path: "/email-noreply",
-			repository: "/typeorm/accounts",
+			account_repo: "/typeorm/accounts",
 			jwt: "/jwt",
 			routers: [
 				{ path: "/email_code", verb: "post", method: "emailSendCode" },
@@ -32,6 +34,7 @@ class AuthEmailRoute extends httpRouter.Service {
 	 */
 	async emailSendCode(req: Request, res: Response) {
 		const { email } = req.body
+		if (!isEmail(email)) return res.status(400).json({ error: "email:invalid" })
 
 		// RATE LIMITER
 		if (this.limiter.isLimited(email)) {
@@ -44,7 +47,7 @@ class AuthEmailRoute extends httpRouter.Service {
 			: crypto.randomBytes(3).toString('hex').slice(0, 5).toUpperCase();
 
 		// FIND ACCOUNT
-		let user = await new Bus(this, this.state.repository).dispatch({
+		let user = await new Bus(this, this.state.account_repo).dispatch({
 			type: typeorm.Actions.FIND_ONE,
 			payload: <FindManyOptions<AccountRepo>>{
 				where: [
@@ -55,7 +58,7 @@ class AuthEmailRoute extends httpRouter.Service {
 		}) ?? { email }
 
 		// ACCOUNT UPDATE
-		user = await new Bus(this, this.state.repository).dispatch({
+		user = await new Bus(this, this.state.account_repo).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: {
 				...user,
@@ -85,21 +88,32 @@ class AuthEmailRoute extends httpRouter.Service {
 		var { code } = req.body
 		if (!code) return res.status(400).json({ error: "activate:code:missing" })
 
+			
 		// cerco lo USER tramite il codice
-		const user: AccountRepo = await new Bus(this, this.state.repository).dispatch({
+		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
 			type: typeorm.Actions.FIND_ONE,
 			payload: <FindManyOptions<AccountRepo>>{
 				where: { emailCode: (<string>code).toUpperCase() }
 			}
 		})
 		if (!user) return res.status(404).json({ error: "activate:code:not_found" })
+		if (!isEmail(user.email)) return res.status(400).json({ error: "user:email:invalid" })
+		if (user.emailCode === EMAIL_CODE.VERIFIED) return res.status(400).json({ error: "activate:code:already_verified" })
+		
 
-		// verifico l'email
+		// aggiorno lo USER
 		user.emailCode = EMAIL_CODE.VERIFIED
-		await new Bus(this, this.state.repository).dispatch({
+		// assegno un nome di default se non esiste
+		if (!user.name) user.name = user.email.split("@")[0]
+		await new Bus(this, this.state.account_repo).dispatch({
 			type: typeorm.Actions.SAVE,
-			payload: user,
+			payload: {
+				id: user.id,
+				emailCode: user.emailCode,
+				name: user.name,
+			},
 		})
+
 
 		// Genera il token JWT con l'email nel payload
 		const jwtToken: string = await new Bus(this, "/jwt").dispatch({
@@ -119,6 +133,7 @@ class AuthEmailRoute extends httpRouter.Service {
 			maxAge: 24 * 60 * 60 * 1000, // 1 giorno
 		});
 
+
 		// restituisco i dati dell'utente loggato
 		res.status(200).json({
 			user: accountSendable(user),
@@ -128,3 +143,9 @@ class AuthEmailRoute extends httpRouter.Service {
 }
 
 export default AuthEmailRoute
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function isEmail(email: string): boolean {
+	if (!email || email.trim().length == 0) return false;
+	return emailRegex.test(email);
+}

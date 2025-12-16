@@ -127,11 +127,13 @@ npm install -g pm2
 ### avvio
 
 ```bash
+# RICORDA DI PASSARE A SUDO!
+sudo -i
 # Avvia il server
 pm2 start ecosystem.config.cjs
-# Fai in modo che PM2 si riavvii se riavvii la VPS
+# (opzionale) Fai in modo che PM2 si riavvii se riavvii la VPS
 pm2 startup
-# (Copia ed esegui il comando che ti apparirà a schermo)
+# (opzionale) (Copia ed esegui il comando che ti apparirà a schermo)
 pm2 save
 ```
 
@@ -147,6 +149,7 @@ pm2 delete <name|id>   # elimina processo
 
 ### riavvio dopo aggiornamento da git
 ```bash
+sudo -i
 git pull origin main
 npm install
 npm run build

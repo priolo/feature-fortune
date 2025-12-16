@@ -79,7 +79,14 @@ class FeatureRoute extends httpRouter.Service {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
 		let { feature }: { feature: FeatureRepo } = req.body
+
+
+		// check campi obbligatori
 		if (!feature) return res.status(400).json({ error: "Feature data is required" })
+		if (!feature.title || feature.title.trim() == "") return res.status(400).json({ error: "Feature title is required" })
+		if (!feature.description || feature.description.trim() == "") return res.status(400).json({ error: "Feature description is required" })
+		if (!feature.githubRepoId) return res.status(400).json({ error: "GitHub Repository ID is required" })
+
 
 		// preparo la FEATURE
 		feature.accountId = userJwt.id
@@ -88,17 +95,18 @@ class FeatureRoute extends httpRouter.Service {
 		delete feature.comments
 		delete feature.fundings
 
+
 		// se c'e' un DEV gli mando un messaggio
 		if (!!feature.accountDevId) {
 			notifyAssignFeature(this, feature.accountDevId, feature)
 		}
 
-		// salvo
+
+		// salvo e invio
 		const featureNew: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: feature
 		})
-
 		res.json({ feature: featureNew })
 	}
 
@@ -112,7 +120,14 @@ class FeatureRoute extends httpRouter.Service {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
 		let { feature }: { feature: FeatureRepo } = req.body
+
+
+		// check campi obbligatori
 		if (!feature) return res.status(400).json({ error: "Feature data is required" })
+		if (!feature.title || feature.title.trim() == "") return res.status(400).json({ error: "Feature title is required" })
+		if (!feature.description || feature.description.trim() == "") return res.status(400).json({ error: "Feature description is required" })
+		if (!feature.githubRepoId) return res.status(400).json({ error: "GitHub Repository ID is required" })
+
 
 		// carico la vecchia FEATURE 
 		const featureOld = await new Bus(this, this.state.feature_repo).dispatch({
@@ -137,12 +152,11 @@ class FeatureRoute extends httpRouter.Service {
 			notifyAssignFeature(this, feature.accountDevId, feature)
 		}
 
-		// salvo
+		// salvo e invio
 		const featureNew: AccountRepo = await new Bus(this, this.state.feature_repo).dispatch({
 			type: typeorm.Actions.SAVE,
 			payload: feature
 		})
-
 		res.json({
 			feature: { ...featureOld, ...featureNew }
 		})
@@ -220,6 +234,10 @@ class FeatureRoute extends httpRouter.Service {
 			action_url: `${process.env.FRONTEND_URL}/app/feature/${feature.id}`,
 		}
 
+		const devName = feature.accountDev?.name ?? "<unknown>"
+		const featureTitle = feature.title ?? "<unknow>"
+		const repoName = feature.githubRepoMetadata?.full_name ?? "<unknown>"
+
 		switch (action) {
 
 			case FEATURE_ACTIONS.DEV_ACCEPT:
@@ -231,8 +249,8 @@ class FeatureRoute extends httpRouter.Service {
 				}
 				partial = { status: FEATURE_STATUS.IN_DEVELOPMENT }
 				message = {
-					title: `Your feature "${feature.title}" is now in development!`,
-					message: `Good news! The developer ${feature.accountDev.name} has accepted to work on the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. They are now in development.`,
+					title: `Your feature "${featureTitle}" is now in development!`,
+					message: `Good news! The developer ${devName} has accepted to work on the feature you proposed for the repository ${repoName}. They are now in development.`,
 				}
 				break;
 
@@ -249,8 +267,8 @@ class FeatureRoute extends httpRouter.Service {
 				}
 				message = {
 					toFounders: false,
-					title: `Developer has declined your feature "${feature.title}"`,
-					message: `The developer ${feature.accountDev.name} has declined to work on the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. You may consider assigning a different developer.`,
+					title: `Developer has declined your feature "${featureTitle}"`,
+					message: `The developer ${devName} has declined to work on the feature you proposed for the repository ${repoName}. You may consider assigning a different developer.`,
 				}
 				break;
 
@@ -268,8 +286,8 @@ class FeatureRoute extends httpRouter.Service {
 				}
 				message = {
 					toFounders: false,
-					title: `Developer has left your feature "${feature.title}"`,
-					message: `The developer ${feature.accountDev.name} has left the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. You may consider assigning a different developer.`,
+					title: `Developer has left your feature "${featureTitle}"`,
+					message: `The developer ${devName} has left the feature you proposed for the repository ${repoName}. You may consider assigning a different developer.`,
 				}
 				break;
 
@@ -282,8 +300,8 @@ class FeatureRoute extends httpRouter.Service {
 				}
 				partial = { status: FEATURE_STATUS.RELEASED }
 				message = {
-					title: `Your feature "${feature.title}" has been released!`,
-					message: `Great news! The developer ${feature.accountDev.name} has released the feature you proposed for the repository ${feature.githubRepoMetadata.full_name}. You can now review and mark it as completed.`,
+					title: `Your feature "${featureTitle}" has been released!`,
+					message: `Great news! The developer ${devName} has released the feature you proposed for the repository ${repoName}. You can now review and mark it as completed.`,
 				}
 				break;
 
@@ -297,8 +315,8 @@ class FeatureRoute extends httpRouter.Service {
 				partial = { status: FEATURE_STATUS.CANCELLED }
 				message = {
 					mainReceiver: feature.accountDev,
-					title: `Your feature "${feature.title}" has been cancelled`,
-					message: `The feature you proposed for the repository ${feature.githubRepoMetadata.full_name} has been cancelled by its creator.`,
+					title: `Your feature "${featureTitle}" has been cancelled`,
+					message: `The feature you proposed for the repository ${repoName} has been cancelled by its creator.`,
 				}
 				break;
 
@@ -313,8 +331,8 @@ class FeatureRoute extends httpRouter.Service {
 				message = {
 					mainReceiver: feature.accountDev,
 					toFounders: false,
-					title: `Your feature "${feature.title}" has been rejected by its creator`,
-					message: `The developer ${feature.accountDev.name} has informed that the feature you are developing for the repository ${feature.githubRepoMetadata.full_name} has been rejected by its creator.`,
+					title: `Your feature "${featureTitle}" has been rejected by its creator`,
+					message: `The developer ${devName} has informed that the feature you are developing for the repository ${repoName} has been rejected by its creator.`,
 				}
 				break;
 
@@ -331,8 +349,8 @@ class FeatureRoute extends httpRouter.Service {
 				}
 				message = {
 					mainReceiver: feature.accountDev,
-					title: `Your feature "${feature.title}" has been completed!`,
-					message: `Congratulations! The feature you proposed for the repository ${feature.githubRepoMetadata.full_name} has been marked as completed. Thank you for your contribution!`,
+					title: `Your feature "${featureTitle}" has been completed!`,
+					message: `Congratulations! The feature you proposed for the repository ${repoName} has been marked as completed. Thank you for your contribution!`,
 				}
 				break;
 

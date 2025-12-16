@@ -152,6 +152,8 @@ class AuthGithubRoute extends httpRouter.Service {
 	 * Utente GITHUB tramite il `code` ricevuto da GITHUB in fase di callback
 	 */
 	private async getGithubUserByCode(code: string) {
+		if ( !code ) throw new Error("Missing code parameter");
+		
 		// creo il token di accesso e recupero info utente
 		const { authentication } = await githubOAuth.createToken({ code });
 		const response = await fetch("https://api.github.com/user", {

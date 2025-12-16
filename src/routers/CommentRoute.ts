@@ -25,9 +25,8 @@ class CommentRoute extends httpRouter.Service {
 		const { featureId } = req.query as { featureId?: string };
 
 		// If no featureId filter is provided, return empty array
-		if (!featureId) {
-			return res.json({ comments: [] });
-		}
+		if (!featureId) return res.json({ comments: [] });
+
 
 		// Get comments filtered by feature ID
 		const comments: CommentRepo[] = await new Bus(this, this.state.comment_repo).dispatch({
@@ -59,7 +58,14 @@ class CommentRoute extends httpRouter.Service {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
 		let { comment }: { comment: CommentRepo } = req.body
-		if (!comment) return res.status(400).json({ error: "Comment data is required" })
+
+		// check fields
+		if (!comment || !comment.entityId || !comment.text || !comment.entityType) {
+			return res.status(400).json({ error: "Missing required comment fields" })
+		}
+		if ( comment.text.trim().length === 0 || comment.text.length > 300 ) {
+			return res.status(400).json({ error: "Comment text must be between 1 and 300 characters" })
+		}
 
 		comment.accountId = userJwt.id
 

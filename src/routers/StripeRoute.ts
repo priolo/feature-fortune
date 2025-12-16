@@ -60,6 +60,7 @@ class StripeRoute extends httpRouter.Service {
 		if (funding.status !== FUNDING_STATUS.PENDING && funding.status !== FUNDING_STATUS.ERROR) {
 			return res.status(400).json({ error: `Funding status must be PENDING or ERROR, current status is ${funding.status}` })
 		}
+		
 
 		// // transform in PAYABLE
 		// const featureUp = await new Bus(this, this.state.funding_repo).dispatch({

@@ -87,7 +87,8 @@ class PaymentRoute extends httpRouter.Service {
 	async updatePaymentCard(req: Request, res: Response) {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		const { paymentMethodId } = req.body
-
+		if (!paymentMethodId) return res.status(400).json({ error: "Missing paymentMethodId parameter" })
+		
 		// Validation: Check if payment method belongs to the user's customer
 		const user: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
 			type: typeorm.Actions.GET_BY_ID,
@@ -126,7 +127,7 @@ class PaymentRoute extends httpRouter.Service {
 			type: typeorm.Actions.GET_BY_ID,
 			payload: userJwt.id,
 		})
-		if (!user) return res.status(404).json({ error: "User not found" });
+		if (!user) return res.status(404).json({ error: "User not found" })
 
 		// If user has a Stripe customer ID, remove all payment methods
 		if (user.stripeCustomerId) {
@@ -164,8 +165,8 @@ class PaymentRoute extends httpRouter.Service {
 			payload: userJwt.id,
 		})
 		if (!user) return res.status(404).json({ error: "User not found" });
-
 		if (!user.stripePaymentMethodId) return res.status(404).json({ error: "No payment method found for user" });
+
 		let paymentMethods: Stripe.PaymentMethod;
 		try {
 			paymentMethods = await new Bus(this, this.state.stripe_service).dispatch({

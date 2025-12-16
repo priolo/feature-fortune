@@ -125,6 +125,8 @@ const FeatureDetailPag: React.FC<Props> = ({
     const isAuthor = logged && (isNew || feature?.accountId == authSo.state.user?.id)
     // è possibile finanziare 
     const isFundable = logged && feature?.status != FEATURE_STATUS.CANCELLED && feature?.status != FEATURE_STATUS.COMPLETED
+    // si puo' pagare ora se c'e' un dev associato
+    const isPayableNow = isFundable && !!feature.accountDevId
     // è possibile commentare
     const isCommentable = logged
     // posso editare solo se sono l'AUTHOR e lo stato è PROPOSED
@@ -160,7 +162,7 @@ const FeatureDetailPag: React.FC<Props> = ({
             onChange={handleAccountDevChange}
         />
 
-        <FundingsCard readonly={!isFundable}
+        <FundingsCard readonly={!isFundable} isPayableNow={isPayableNow}
             featureId={feature.id}
         />
 

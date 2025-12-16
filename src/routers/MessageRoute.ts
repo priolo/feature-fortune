@@ -100,7 +100,7 @@ class MessageRoute extends httpRouter.Service {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		let { text, toAccountId }: { text: string, toAccountId: string } = req.body
 		if (!text || !text.trim()) return res.status(400).json({ error: "Message text is required" })
-		if (!toAccountId) return res.status(400).json({ error: "'receiverId' data is required" })
+		if (!toAccountId) return res.status(400).json({ error: "'toAccountId' data is required" })
 
 		// send message
 		const { content, msgReceiver, msgSender } = await this.sendMessage(userJwt.id, toAccountId, text)
@@ -114,7 +114,7 @@ class MessageRoute extends httpRouter.Service {
 	 * Se fromAccountId è null allora è un messaggio di sistema
 	 */
 	async sendMessage(fromAccountId: string, toAccountId: string, text: string) {
-		if (!toAccountId || !text) throw new Error("toAccountId, fromAccountId and text are required")
+		if (!toAccountId || !text) throw new Error("toAccountId and text are required")
 
 		// Save content
 		const content: MessageContentRepo = await new Bus(this, this.state.message_content_repo).dispatch({

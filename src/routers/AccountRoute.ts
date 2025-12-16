@@ -35,7 +35,7 @@ class AccountRoute extends httpRouter.Service {
 		};
 
 		// If text filter is provided, search in text properties
-		if (text && text.trim()) {
+		if (!!text && text.trim().length > 0) {
 			const searchText = `%${text.trim()}%`;
 			findOptions.where = [
 				{ name: Like(searchText) },
@@ -57,6 +57,7 @@ class AccountRoute extends httpRouter.Service {
 
 	async getById(req: Request, res: Response) {
 		const id = req.params["id"];
+		if (!id) return res.status(400).json({ error: "Missing id parameter" });
 
 		const account: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
 			type: typeorm.Actions.GET_BY_ID,
@@ -64,8 +65,8 @@ class AccountRoute extends httpRouter.Service {
 		});
 		if (!account) return res.status(404).json({ error: "Account not found" });
 
-		res.json({ 
-			account: accountSendable(account) 
+		res.json({
+			account: accountSendable(account)
 		})
 	}
 
@@ -74,6 +75,8 @@ class AccountRoute extends httpRouter.Service {
 	 */
 	async getByGithubUserId(req: Request, res: Response) {
 		const githubId = parseInt(req.params.id)
+		if (isNaN(githubId)) return res.status(400).json({ error: "Invalid GitHub ID" })
+
 		const account: AccountRepo = await new Bus(this, this.state.account_repo).dispatch({
 			type: typeorm.Actions.FIND_ONE,
 			payload: <FindManyOptions<AccountRepo>>{
@@ -89,7 +92,7 @@ class AccountRoute extends httpRouter.Service {
 		const userJwt: AccountRepo = req["jwtPayload"]
 		if (!userJwt) return res.status(401).json({ error: "Unauthorized" })
 		const { account } = req.body;
-
+		if (!account) return res.status(400).json({ error: "Missing account data" });
 		if (account.name == null || account.name.trim().length == 0) return res.status(400).json({ error: "Invalid name" });
 
 		const newAccount: Partial<AccountRepo> = {
