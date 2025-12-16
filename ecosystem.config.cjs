@@ -4,7 +4,7 @@ module.exports = {
     name   : "puce",
     script : "./dist/start.js",
     env: {
-      NODE_ENV: "development"
+      NODE_ENV: "production"
     }
   }]
 }
