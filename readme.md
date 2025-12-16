@@ -110,3 +110,45 @@ mettere in .env STRIPE_WEBHOOK_SECRET
 
 ### FE .env
 `VITE_STRIPE_PUBLISHABLE_KEY=pk_test_... < Panoramica / Chiave pubblicabile >`
+
+
+
+
+## PM2
+
+### istallazione
+```bash
+# Installa le dipendenze
+npm install
+# Installa PM2 (serve a tenere il sito sempre acceso anche se crasha)
+npm install -g pm2
+```
+
+### avvio
+
+```bash
+# Avvia il server
+pm2 start ecosystem.config.cjs
+# Fai in modo che PM2 si riavvii se riavvii la VPS
+pm2 startup
+# (Copia ed esegui il comando che ti apparirà a schermo)
+pm2 save
+```
+
+### comandi utili PM2
+
+```bash
+pm2 list               # lista processi
+pm2 logs               # vedi log in tempo reale
+pm2 stop <name|id>     # ferma processo
+pm2 restart <name|id>  # riavvia processo
+pm2 delete <name|id>   # elimina processo
+```
+
+### riavvio dopo aggiornamento da git
+```bash
+git pull origin main
+npm install
+npm run build
+pm2 restart <name|id>
+```

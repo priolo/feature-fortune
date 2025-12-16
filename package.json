@@ -11,10 +11,7 @@
     "start:dev": "cross-env NODE_ENV=development tsx src/start.ts",
     "start:prod": "cross-env NODE_ENV=production node dist/start.js",
     "build": "tsc",
-    "test": "node --experimental-vm-modules --inspect-brk ./node_modules/jest/bin/jest.js",
-    "script:server_stripe": "node ./scripts/server_stripe_webhook.js",
-    "script:server_github": "tsx ./scripts/server_github_auth.ts",
-    "script:google_token": "node ./scripts/get-gmail-tokens.js"
+    "test": "node --experimental-vm-modules --inspect-brk ./node_modules/jest/bin/jest.js"
   },
   "//dependencies": {
     "@priolo/julian": "file://C:/Users/ivano.iorio/Documents/julian",
