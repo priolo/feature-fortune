@@ -22,6 +22,9 @@ export interface GithubRepoMetadata {
 	html_url?: string;
 }
 
+/**
+ * Stati della FEATURE
+ */
 export enum FEATURE_STATUS {
 	/**
 	 * AUTHOR: la feature è stata proposta	
@@ -56,6 +59,9 @@ export enum FEATURE_STATUS {
 	CANCELLED = "cancelled",
 }
 
+/**
+ * Azioni che possono essere eseguite sulle FEATURE
+ */
 export enum FEATURE_ACTIONS {
 	/**
 	 * Chiamato dal DEVELOPER

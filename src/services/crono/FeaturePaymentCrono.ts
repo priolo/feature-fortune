@@ -110,7 +110,6 @@ class FeaturePaymentCrono extends CronoService {
 			}
 		})
 
-
 		// check
 		if (!funding) throw new Error("Funding not found");
 		if (funding.status !== FUNDING_STATUS.PAYABLE && !ignoreState) {
@@ -161,7 +160,7 @@ class FeaturePaymentCrono extends CronoService {
 			type: typeorm.Actions.SAVE,
 			payload: {
 				id: funding.id,
-				status: FUNDING_STATUS.PAIED,
+				status: FUNDING_STATUS.WAITING,
 				paidAt: new Date(),
 				transactionId: paymentIntent.id,
 			}
@@ -170,7 +169,7 @@ class FeaturePaymentCrono extends CronoService {
 
 
 		// log & return
-		this.log("funding:payment:", payload)
+		this.log("funding : payment", payload)
 		return funding
 	}
 

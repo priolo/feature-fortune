@@ -5,7 +5,11 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 export enum EMAIL_CODE {
 	VERIFIED = "verified",
 	UNVERIFIED = null,
-	
+}
+
+export enum ROLE {
+	USER = 1,
+	ADMIN = 0,
 }
 
 @Entity('accounts')
@@ -16,24 +20,34 @@ export class AccountRepo {
 
 	@Column({ type: 'varchar', nullable: true })
 	name?: string;
+
+	/** ruolo dell'account */
+	@Column({ type: "varchar", length: 32, default: ROLE.USER })
+	role: ROLE;
+
 	/** lingua preferita dell'utente */
 	@Column({ type: 'varchar', nullable: true, default: 'en' })
 	language?: string;
+
 	/** Abilita le notifiche per email */
 	@Column({ type: 'boolean', nullable: false, default: true })
 	notificationsEnabled?: boolean;
+
 	/** currency code ISO 4217, per esempio "eur" o "usd" */
 	@Column({ type: 'varchar', length: 3, default: 'eur' })
 	preferredCurrency?: string;
 
-	
 
+
+	/** valorizzata alla registrazione oppure da accesso google */
 	@Column({ type: 'varchar', nullable: true })
 	email?: string;
+	/** il codice di verifica dell'email */
 	@Column({ type: 'varchar', default: EMAIL_CODE.UNVERIFIED, nullable: true })
 	emailCode?: string;
 
 
+	/** immagine dell'avatar */
 	@Column({ type: 'varchar', nullable: true })
 	avatarUrl?: string;
 
@@ -97,14 +111,14 @@ export type JWTPayload = {
 
 export function accountSendable(account: AccountRepo) {
 	if (!account) return null
-	const { 
+	const {
 		id, name, language, notificationsEnabled, preferredCurrency,
-		email, avatarUrl, googleEmail, githubId, githubName, 
-		stripeAccountId, stripeAccountStatus 
+		email, avatarUrl, googleEmail, githubId, githubName,
+		stripeAccountId, stripeAccountStatus
 	} = account
 	return {
 		id, name, language, notificationsEnabled, preferredCurrency,
-		email, avatarUrl, googleEmail, githubId, githubName, 
+		email, avatarUrl, googleEmail, githubId, githubName,
 		stripeAccountId, stripeAccountStatus,
 		stripeHaveCard: !!account.stripePaymentMethodId,
 		// se c'e' emailCode allora non e' verificata

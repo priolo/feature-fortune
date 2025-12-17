@@ -13,3 +13,5 @@ evitare che l'app si chiuda
 *** controllare che nei log su files escano anche gli errori
 
 regolarmente andrebbero cercati tutti gli account che hanno il codice di verifica non "verified" e non hanno google o github collegati e cancellarli
+
+creare il ruolo admin

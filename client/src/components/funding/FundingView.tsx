@@ -52,7 +52,7 @@ const FundingView: React.FC<Props> = ({
 			label: t("view.funding.label.try_again", "TRY AGAIN"), 
 			icon: <Payment />, 
 			onClick: () => onPayNow(funding), 
-			hidden: funding.status !== FUNDING_STATUS.ERROR 
+			hidden: funding.status !== FUNDING_STATUS.ERROR || !isPayableNow
 		},
 	]
 

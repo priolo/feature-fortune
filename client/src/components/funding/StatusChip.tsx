@@ -1,5 +1,5 @@
 import { FUNDING_STATUS } from '@/types/Funding';
-import { ChevronRight, Close, Done, PlayArrow, PointOfSale } from '@mui/icons-material';
+import { ChevronRight, Close, Done, PlayArrow, PointOfSale, WatchLater } from '@mui/icons-material';
 import { Chip, SxProps, Tooltip } from '@mui/material';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -39,6 +39,10 @@ const StatusChip: React.FC<Props> = ({
             [FUNDING_STATUS.PAYABLE]: {
                 color: 'primary',
                 icon: <PointOfSale sx={sxIcon} />,
+            },
+            [FUNDING_STATUS.WAITING]: {
+                color: 'warning',
+                icon: <WatchLater sx={sxIcon} />,
             },
             [FUNDING_STATUS.PAIED]: {
                 color: 'secondary',

@@ -1,6 +1,9 @@
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
+import { TypeLog } from "@priolo/julian/dist/core/types.js";
 import { Request, Response } from "express";
+import { FUNDING_STATUS, FundingRepo } from "src/repository/Funding.js";
 import Stripe from "stripe";
+import { FindOneOptions } from "typeorm";
 import { AccountRepo } from "../repository/Account.js";
 
 
@@ -10,11 +13,12 @@ const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
 class StripeHookRoute extends httpRouter.Service {
 
-	get stateDefault(): httpRouter.conf & any {
+	get stateDefault() {
 		return {
 			...super.stateDefault,
 			path: "/api/stripe",
 			account_repo: "/typeorm/accounts",
+			funding_repo: "/typeorm/fundings",
 			routers: [
 				{ path: "/webhook", verb: "post", method: "webhook" },
 			]
@@ -38,6 +42,8 @@ class StripeHookRoute extends httpRouter.Service {
 
 		// Handle the event
 		switch (event.type) {
+
+
 			case 'account.updated': {
 				const stripeAccount = event.data.object;
 				const accountId = stripeAccount.metadata.accountId
@@ -68,6 +74,19 @@ class StripeHookRoute extends httpRouter.Service {
 				break
 			}
 
+
+			case 'payment_intent.succeeded': {
+				const paymentIntent = event.data.object
+				this.setFundingStatusByPaymentIntent(paymentIntent, FUNDING_STATUS.PAIED)
+				break
+			}
+
+			case 'payment_intent.payment_failed': {
+				const paymentIntent = event.data.object
+				this.setFundingStatusByPaymentIntent(paymentIntent, FUNDING_STATUS.ERROR)
+				break
+			}
+
 			case 'payment_intent.amount_capturable_updated':
 				const paymentIntentAmountCapturableUpdated = event.data.object;
 				// Then define and call a function to handle the event payment_intent.amount_capturable_updated
@@ -84,10 +103,7 @@ class StripeHookRoute extends httpRouter.Service {
 				const paymentIntentPartiallyFunded = event.data.object;
 				// Then define and call a function to handle the event payment_intent.partially_funded
 				break;
-			case 'payment_intent.payment_failed':
-				const paymentIntentPaymentFailed = event.data.object;
-				// Then define and call a function to handle the event payment_intent.payment_failed
-				break;
+
 			case 'payment_intent.processing':
 				const paymentIntentProcessing = event.data.object;
 				// Then define and call a function to handle the event payment_intent.processing
@@ -96,16 +112,49 @@ class StripeHookRoute extends httpRouter.Service {
 				const paymentIntentRequiresAction = event.data.object;
 				// Then define and call a function to handle the event payment_intent.requires_action
 				break;
-			case 'payment_intent.succeeded':
-				const paymentIntentSucceeded = event.data.object;
-				// Then define and call a function to handle the event payment_intent.succeeded
-				break;
 			// ... handle other event types
 			default:
 				break
 		}
+
 		// Return a 200 response to acknowledge receipt of the event
 		response.send();
+	}
+
+	/**
+	 * Cerca un FUNDING tramite il paymenti intent di Stripe e lo setta ad un nuovo stato.
+	 */
+	private async setFundingStatusByPaymentIntent(paymentIntent: Stripe.PaymentIntent, newStatus: FUNDING_STATUS) {
+
+		// load FUNDING from DB
+		const funding: FundingRepo = await new Bus(this, this.state.funding_repo).dispatch({
+			type: typeorm.Actions.FIND_ONE,
+			payload: <FindOneOptions<FundingRepo>>{
+				where: { transactionId: paymentIntent.id },
+			}
+		})
+
+		// check
+		if (!funding) {
+			this.log(`set status : funding not found`, { payment_intent_id: paymentIntent.id }, TypeLog.ERROR)
+			return
+		}
+		if (funding.status != FUNDING_STATUS.WAITING) {
+			this.log(`set status : status is not WAITING `,
+				{ payment_intent_id: paymentIntent.id, new_status: newStatus, current_status: funding.status },
+				TypeLog.ERROR
+			)
+			return
+		}
+
+		// update status
+		await new Bus(this, this.state.funding_repo).dispatch({
+			type: typeorm.Actions.SAVE,
+			payload: {
+				id: funding.id,
+				status: newStatus,
+			}
+		})
 	}
 
 }

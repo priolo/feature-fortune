@@ -113,7 +113,7 @@ class StripeService extends ServiceBase {
 			//limit: 100,
 		});
 		const paymentMethods = res?.data;
-		if ( !paymentMethods || paymentMethods.length === 0 ) return;
+		if (!paymentMethods || paymentMethods.length === 0) return;
 		await Promise.all(paymentMethods.map(pm => stripe.paymentMethods.detach(pm.id)));
 	}
 
@@ -141,10 +141,14 @@ class StripeService extends ServiceBase {
 				/** ID Account Venditore */
 				stripeAccount: data.destination,
 			}
-		);
+		)
+		if (!clonedPaymentMethod) {
+			throw new Error("Failed to clone payment method to seller's account");
+		}
 
+		// Eseguiamo il pagamento usando il metodo clonato
 		try {
-			return await stripe.paymentIntents.create(
+			const paymentIntent = await stripe.paymentIntents.create(
 				{
 					amount: data.amount,
 					currency: data.currency,
@@ -188,7 +192,24 @@ class StripeService extends ServiceBase {
 					// Idempotenza: Se ri-esegui questa funzione con lo stesso fundingId, Stripe non addebiterà due volte
 					idempotencyKey: data.fundingId ? `fund_${data.fundingId}` : undefined
 				}
-			);
+			)
+
+			// Controllo dello STATO del pagamento
+			if (paymentIntent.status === 'succeeded') {
+				this.log("executePayment:succeded", paymentIntent);
+			} else if (paymentIntent.status === 'requires_action') {
+				// IMPORTANTE: Questo accade se la banca chiede 3D Secure anche se off_session
+				// Dovresti inviare una email al cliente per tornare online a pagare.
+				this.log("executePayment:requires_action", paymentIntent);
+			} else if (paymentIntent.status === 'processing') {
+				// Raro per le carte, comune per bonifici. Il pagamento non è ancora certo.
+				this.log("executePayment:processing", paymentIntent);
+			} else {
+				// Altri stati (requires_payment_method, etc.)
+				throw new Error(`Stato imprevisto: ${paymentIntent.status}`);
+			}
+
+			return paymentIntent
 		} catch (e: any) {
 			// Gestione specifica errori SCA
 			if (e.code === 'authentication_required') {

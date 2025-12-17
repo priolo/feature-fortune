@@ -1,12 +1,11 @@
 import Paragraph from "@/layout/Paragraph";
+import { useTransComponents } from "@/pages/useTransComponents";
+import authSo from "@/stores/auth";
 import { Funding, FUNDING_STATUS } from "@/types/Funding";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Tooltip, Typography } from "@mui/material";
 import { FunctionComponent, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import CurrencyField from "../CurrencyField";
-import themeSo from "@/stores/layout/theme";
-import { useTransComponents } from "@/pages/useTransComponents";
-import authSo from "@/stores/auth";
 
 
 

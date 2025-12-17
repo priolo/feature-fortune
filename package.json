@@ -11,6 +11,7 @@
     "start:dev": "cross-env NODE_ENV=development tsx src/start.ts",
     "start:prod": "cross-env NODE_ENV=production node dist/start.js",
     "build": "tsc",
+    "migration:up": "node dist/scripts/run-migrations.js",
     "test": "node --experimental-vm-modules --inspect-brk ./node_modules/jest/bin/jest.js"
   },
   "//dependencies": {

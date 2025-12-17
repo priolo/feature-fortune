@@ -20,6 +20,10 @@ export enum FUNDING_STATUS {
 	 */
 	PAYABLE = "payable",
 	/**
+	 * in attesa di conferma pagamanto da STRIPE
+	 */
+	WAITING = "waiting",
+	/**
 	 * è stato pagato
 	 * next: (nessuno)
 	 */

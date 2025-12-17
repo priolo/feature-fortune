@@ -8,6 +8,9 @@ import { getTimestampType } from '../startup/dbConfig.js';
 
 const dateTimeType = getTimestampType()
 
+/**
+ * Stati del FUNDING
+ */
 export enum FUNDING_STATUS {
 	/** 
 	 * viene controllato per le verifiche 
@@ -24,6 +27,10 @@ export enum FUNDING_STATUS {
 	 * next: PAIED | ERROR
 	 */
 	PAYABLE = "payable",
+	/**
+	 * in attesa di conferma pagamanto da STRIPE
+	 */
+	WAITING = "waiting",
 	/**
 	 * è stato pagato
 	 * next: (nessuno)
@@ -70,27 +77,24 @@ export class FundingRepo extends AccountAsset {
 	paidAt?: Date;
 
 	/**
-	 * ID stripe payment
+	 * il PaymentIntent.id di Stripe
 	 */
 	@Column({ type: 'varchar', nullable: true })
 	transactionId?: string;
 
 
+
 	//#region RELATIONSHIPS
+
 
 	/** La feature che si vuole finanziare */
 	@ManyToOne(() => FeatureRepo, feature => feature.fundings)
 	@JoinColumn({ name: 'featureId' })
 	feature?: Relation<FeatureRepo>;
-	/** La feature che si vuole finanziare */
+	/** La feature che si vuole finanziare (id)*/
 	@Column({ type: 'varchar' })
 	featureId: string;
 
-	// /**
-	//  * comments on the feature
-	//  */
-	// @OneToMany(() => CommentRepo, comment => comment.funding)
-	// comments?: Relation<CommentRepo[]>;
 
 	//#endregion
 
