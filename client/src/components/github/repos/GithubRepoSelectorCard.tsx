@@ -20,7 +20,7 @@ interface Props {
 /**
  * si occupa di crerae e collegare l'account del current user ai vari servizi
  */
-const GithubRepoSelectorCard: React.FC<Props> = ({
+const GithubRepoSelectorCardCmp: React.FC<Props> = ({
     githubRepoId,
     readOnly,
     onChange,
@@ -119,6 +119,12 @@ const GithubRepoSelectorCard: React.FC<Props> = ({
         />
 
     </>
-};
+}
+
+const GithubRepoSelectorCard = React.memo(
+    GithubRepoSelectorCardCmp,
+    (prev, next) => prev.readOnly === next.readOnly && prev.githubRepoId === next.githubRepoId
+);
 
 export default GithubRepoSelectorCard;
+

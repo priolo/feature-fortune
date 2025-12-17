@@ -45,8 +45,8 @@ const CommentDialog: FunctionComponent<Partial<Props>> = ({
 
 
 	// RENDER 
-	const trimmedLength = message?.trim().length ?? 0;
-	const canSave = trimmedLength > 0 && trimmedLength <= MAX_LENGTH;
+	const messageTrim = message?.trim().length ?? 0;
+	const canSave = messageTrim > 0 && messageTrim <= MAX_LENGTH;
 
 	return (
 
@@ -60,8 +60,7 @@ const CommentDialog: FunctionComponent<Partial<Props>> = ({
 					onChange={(e) => setMessage(e.target.value)}
 					placeholder={t("cards.CommentsCard.dialog.placeholder")}
 					inputProps={{ maxLength: MAX_LENGTH }}
-					error={trimmedLength > MAX_LENGTH}
-					helperText={`${trimmedLength}/${MAX_LENGTH}`}
+					helperText={`${messageTrim}/${MAX_LENGTH}`}
 				/>
 			</DialogContent>
 

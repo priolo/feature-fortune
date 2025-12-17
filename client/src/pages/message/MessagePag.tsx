@@ -7,8 +7,9 @@ import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
 import messageListSo from '@/stores/message/list';
 import { Message } from '@/types/Message';
-import { useStore } from '@priolo/jon';
+import { renderOnChange, useStoreNext } from '@priolo/jon';
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import MessageOverview from './Overview';
 import RightMenu from './RightMenu';
 
@@ -17,7 +18,8 @@ import RightMenu from './RightMenu';
 const MessagePag: React.FC = () => {
 
 	// STORES
-	useStore(messageListSo)
+	//const { t } = useTranslation()
+	//useStoreNext(messageListSo, renderOnChange(["selected"]))
 
 	// HOOKS
 	useEffect(() => {
@@ -27,21 +29,9 @@ const MessagePag: React.FC = () => {
 
 
 	// HANDLERS
-	const handleSendMessage = async () => {
-		await messageListSo.sendSelected()
-		dialogSo.dialogOpen({
-			text: "Message sent",
-			modal: false,
-			type: DIALOG_TYPE.SUCCESS,
-		})
-	}
-	const handleMessageChange = (message: Message) => {
-		messageListSo.setSelected(message)
-	}
-
+	
 
 	// RENDER
-	const selected = messageListSo.state.selected
 	const currentUserId = authSo.state.user?.id
 
 	return <Framework sx={{ py: 2 }}
@@ -49,11 +39,7 @@ const MessagePag: React.FC = () => {
 		rightRender={<RightMenu />}
 	>
 
-		<MessageView
-			message={selected}
-			onChange={handleMessageChange}
-			onSendMessage={handleSendMessage}
-		/>
+		<MessageView />
 
 		<Card>
 			<MessagesList />

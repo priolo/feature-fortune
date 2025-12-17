@@ -19,7 +19,7 @@ interface Props {
     isPayableNow?: boolean
 }
 
-const FundingsCard: React.FC<Props> = ({
+const FundingsCardCmp: React.FC<Props> = ({
     featureId,
     readonly = false,
     isPayableNow = false,
@@ -99,7 +99,7 @@ const FundingsCard: React.FC<Props> = ({
             {!isVoid ? (
                 <List> {fundings.map((funding, index) => (
 
-                    <ListItem key={funding.id}
+                    <ListItem key={funding.id} sx={{ pl: 0}}
                         divider={index < fundings.length - 1}
                     >
                         <FundingView isPayableNow={isPayableNow}
@@ -126,4 +126,5 @@ const FundingsCard: React.FC<Props> = ({
     </>
 }
 
-export default FundingsCard;
+const FundingsCard = React.memo(FundingsCardCmp)
+export default FundingsCard

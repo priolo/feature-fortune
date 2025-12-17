@@ -9,20 +9,19 @@ import Card from '../../components/Card';
 import messageListSo from '@/stores/message/list';
 import { getAllSenders } from '@/stores/message/utils';
 import { useTranslation } from 'react-i18next';
+import { useStore } from '@priolo/jon';
+import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 
 
 
 interface Props {
-	message: Message;
-	onChange: (message: Message) => void;
-	onSendMessage: () => void;
 }
 
 const MessageView: React.FC<Props> = ({
-	message,
-	onChange,
-	onSendMessage,
 }) => {
+
+	// STORES
+	useStore(messageListSo)
 
 	// HOOKS
 	const { t } = useTranslation()
@@ -34,32 +33,47 @@ const MessageView: React.FC<Props> = ({
 
 
 	// HANDLERS
+	const handleSendMessage = async () => {
+		await messageListSo.sendSelected()
+		dialogSo.dialogOpen({
+			text: t("view.messages.MessageView.send"),
+			modal: false,
+			type: DIALOG_TYPE.SUCCESS,
+		})
+	}
+	const handleMessageChange = (message: Message) => {
+		messageListSo.setSelected(message)
+	}
+
+
+
 	const handleTextChange = (text: string) => {
 		if (message.content == null) message.content = { text: '' };
 		message.content.text = text;
-		onChange({ ...message });
+		handleMessageChange({ ...message });
 	};
 	const handleDialogClose = async (account: Account) => {
 		setDialogOpen(false)
 		if (!account) return
-		onChange({
+		handleMessageChange({
 			...message,
 			content: { ...message.content, accountId: account.id }
 		})
 	}
 	const handleCancelClick = () => {
-		onChange(null)
+		handleMessageChange(null)
 	}
 
 
 	// RENDER
+	const message = messageListSo.state.selected
 	if (!message) return null;
 	const isDisabled = !message.content.accountId || !message.content?.text?.trim().length;
 
 	return <>
 		<Card sx={sxRoot}
 			icon={<MessageIcon />}
-			title="NEW MESSAGE"
+			title={t("view.messages.MessageView.new_message")}
 			titleEndRender={<>
 				<Button size="small"
 					onClick={handleCancelClick}
@@ -67,7 +81,7 @@ const MessageView: React.FC<Props> = ({
 				<Button variant="contained" size="small"
 					startIcon={<Send />}
 					disabled={isDisabled}
-					onClick={onSendMessage}
+					onClick={handleSendMessage}
 				>{t("common.send")}</Button>
 			</>}
 		>

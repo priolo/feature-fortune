@@ -30,7 +30,7 @@ const MessageOverview: React.FC = () => {
 
             <Typography variant="body2" color="text.secondary">
                 <Trans
-                    i18nKey={t(`overview.messages.message.default`)}
+                    i18nKey="overview.messages.message.default"
                     components={TransCmps}
                 />
             </Typography>

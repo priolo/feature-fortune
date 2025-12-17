@@ -17,7 +17,7 @@ interface Props {
 	readonly?: boolean
 }
 
-const CommentsCard: React.FC<Props> = ({
+const CommentsCardCmp: React.FC<Props> = ({
 	featureId,
 	readonly = false,
 }) => {
@@ -67,7 +67,7 @@ const CommentsCard: React.FC<Props> = ({
 				<Button variant='contained' size="small"
 					startIcon={<Add />}
 					onClick={handleCommentClick}
-				>{t('cards.CommentsCard.lable.add', "ADD")}</Button>
+				>{t('common.add')}</Button>
 			)}
 		>
 
@@ -91,4 +91,5 @@ const CommentsCard: React.FC<Props> = ({
 	</>
 }
 
+const CommentsCard = React.memo(CommentsCardCmp)
 export default CommentsCard;

@@ -97,7 +97,6 @@ const setup = {
 				console.error('Error fetching current user:', error);
 				return
 			}
-			console.log('User data:', user);
 			authSo.setUser(user)
 		},
 		/** 
@@ -106,7 +105,6 @@ const setup = {
 		attachGoogle: async (token: string, store?: AuthStore) => {
 			const res = await authApi.googleAttach(token)
 			const user = res.user as Account
-			console.log(user)
 			store.setUser(<Account>{
 				...store.state.user,
 				googleEmail: user.googleEmail,

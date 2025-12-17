@@ -16,6 +16,7 @@ const en = {
 		register: "Register",
 
 		new: "New",
+		add: "Add",
 
 		remove: "Remove",
 		delete: "Delete",
@@ -42,7 +43,6 @@ const en = {
 		features: {
 			empty: "NO FEATURES :( MAYBE SOME FILTER IS ACTIVE?",
 		},
-		
 	},
 	cards: {
 		GithubRepoSelectorCard: {
@@ -697,6 +697,8 @@ const en = {
 				reply: "Reply",
 			},
 			MessageView: {
+				new_message: "NEW MESSAGE",
+				send: "MESSAGE SENT SUCCESSFULLY.",
 				placeholder: "Write your message here...",
 			}
 		}

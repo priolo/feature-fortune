@@ -20,6 +20,7 @@ interface Props {
 }
 
 const COMPLETION_TIME = import.meta.env.VITE_PAYMENT_AFTER_COMPLETION_HOURS
+const MAX_LENGTH = 300;
 
 const FundingDialog: FunctionComponent<Partial<Props>> = ({
 	fundingToEdit,
@@ -69,6 +70,7 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 			: null;
 	const bttOkEnabled = !error;
 	const tooltip = error
+	const messageTrim = funding.message?.trim().length ?? 0;
 
 	return (
 		<Dialog
@@ -102,6 +104,8 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 						value={funding.message ?? ""}
 						onChange={(e) => handlePropChange({ message: e.target.value })}
 						placeholder={t(`cards.FundingDialog.placeholder`)}
+						inputProps={{ maxLength: MAX_LENGTH }}
+						helperText={`${messageTrim}/${MAX_LENGTH}`}
 					/>
 
 				</Box>

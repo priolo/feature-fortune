@@ -58,7 +58,7 @@ const FeatureDetailOverview: React.FC<Props> = ({
 
             <Typography variant="body2" color="text.secondary">
                 <Trans
-                    i18nKey={t(`overview.feature.message.${messageStatus}`)}
+                    i18nKey={`overview.feature.message.${messageStatus}`}
                     values={{ time: hours }}
                     components={TransCmps}
                 />

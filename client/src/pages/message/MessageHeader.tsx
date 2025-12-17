@@ -1,11 +1,9 @@
+import messageListSo from '@/stores/message/list';
+import { Add, Refresh } from '@mui/icons-material';
 import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
-import HomeButton from '../../layout/BackButton';
-import { Add, Refresh } from '@mui/icons-material';
-import messageListSo from '@/stores/message/list';
-import { useSearchParams } from 'react-router-dom';
-import MessageReceiverSelector from './MessageReceiverSelector';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 
 
 
@@ -38,8 +36,6 @@ const MessageHeader: React.FC = () => {
 	const params = Object.fromEntries(searchParams.entries())
 	const receiverId = params.receiver ?? null
 	return <>
-		{/* <BackButton /> */}
-
 		<Typography variant="h5">
 			{t("header.messages.title")}
 		</Typography>

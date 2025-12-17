@@ -16,7 +16,9 @@ interface Props {
 	onSave?: () => Promise<void>;
 }
 
-const FeatureDetailCard: React.FC<Props> = ({
+const MAX_LENGTH = 1000;
+
+const FeatureDetailCardCmp: React.FC<Props> = ({
 	feature,
 	readOnly,
 	onChange,
@@ -63,6 +65,8 @@ const FeatureDetailCard: React.FC<Props> = ({
 				value={description}
 				onChange={(e) => handlePropChange({ description: e.target.value })}
 				placeholder={t("cards.FeatureDetailCard.description.placeholder")}
+				inputProps={{ maxLength: MAX_LENGTH }}
+				helperText={`${description.length}/${MAX_LENGTH}`}
 			/>
 
 			<Typography variant='caption' color="textSecondary">
@@ -91,7 +95,12 @@ const FeatureDetailCard: React.FC<Props> = ({
 
 		</Card>
 	);
-};
+}
+
+const FeatureDetailCard = React.memo(
+	FeatureDetailCardCmp,
+	(prev, next) => prev.feature === next.feature && prev.readOnly === next.readOnly
+);
 
 export default FeatureDetailCard;
 

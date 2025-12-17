@@ -25,7 +25,7 @@ interface Props {
 /**
  * CARD che visualizza e seleziona un ACCOUNT
  */
-const AccountSelectorCard: React.FC<Props> = ({
+const AccountSelectorCardCmp: React.FC<Props> = ({
     id,
     accountId,
     match,
@@ -109,7 +109,14 @@ const AccountSelectorCard: React.FC<Props> = ({
         />
 
     </>
-};
+}
 
-export default AccountSelectorCard;
+const AccountSelectorCard = React.memo(
+    AccountSelectorCardCmp,
+    (prev, next) => 
+        prev.id === next.id && prev.accountId === next.accountId
+        && prev.match === next.match && prev.readOnly === next.readOnly 
+        && prev.variant === next.variant && prev.icon === next.icon
+)
+export default AccountSelectorCard
 

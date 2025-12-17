@@ -1,6 +1,6 @@
 import messageListSo from '@/stores/message/list';
 import { Box } from '@mui/material';
-import { useStore } from '@priolo/jon';
+import { renderOnChange, useStore, useStoreNext } from '@priolo/jon';
 import React, { useMemo } from 'react';
 import MessageBanner from '../../components/MessageBanner';
 import MessageRow from './MessageRow';
@@ -17,7 +17,8 @@ const MessagesList: React.FC<Props> = ({
 }) => {
 
 	// STORES
-	useStore(messageListSo)
+	//useStore(messageListSo)
+	useStoreNext(messageListSo, renderOnChange(["all"]))
 
 	// HOOKS
 	const [searchParams] = useSearchParams()
