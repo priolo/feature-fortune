@@ -1,5 +1,5 @@
 import type { Relation } from 'typeorm';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Index } from 'typeorm';
 import { AccountAsset } from './AccountAsset.js';
 import { FeatureRepo } from './Feature.js';
 import { getTimestampType } from '../startup/dbConfig.js';
@@ -79,6 +79,7 @@ export class FundingRepo extends AccountAsset {
 	/**
 	 * il PaymentIntent.id di Stripe
 	 */
+	@Index()
 	@Column({ type: 'varchar', nullable: true })
 	transactionId?: string;
 

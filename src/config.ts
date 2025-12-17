@@ -151,6 +151,12 @@ function buildNodeConfig(params?: ConfigParams) {
 					path: "/public/",
 				},
 
+				<httpStatic.conf>{
+					class: "http-static",
+					dir: path.join(__dirname, "../landingpage/dist"),
+					path: "/land/",
+				},
+
 				<httpRouter.conf>{
 					name: "routers",
 					class: "http-router",
