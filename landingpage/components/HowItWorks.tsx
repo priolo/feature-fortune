@@ -48,12 +48,34 @@ const HowItWorks: React.FC = () => {
             icon={<Eye className="text-puce-pink" />}
             tag="CHECK"
           />
-          <WorkCard
+          {/* <WorkCard
             title="Payment"
             desc="After a few hours the developer receives all the accumulated donations"
             icon={<Banknote className="text-puce-green" />}
             tag="PAY"
-          />
+          /> */}
+
+          <div className="flex flex-col gap-6 p-8 bg-black rounded-3xl">
+
+            <div className="">
+              <div className="text-6xl font-black text-puce-green">
+                PAY
+              </div>
+            </div>
+
+            {/* <div className="w-12 h-12 bg-gray-900 rounded-xl flex items-center justify-center mb-5">
+      {icon}
+    </div> */}
+
+            {/* <h4 className="text-xl font-bold text-white mb-3 mt-14">
+      {title}
+    </h4> */}
+
+            <p className="text-gray-400 leading-relaxed text-sm">
+              After a few hours the developer receives all the accumulated donations
+            </p>
+
+          </div>
         </div>
       </div>
     </section>
@@ -61,9 +83,9 @@ const HowItWorks: React.FC = () => {
 };
 
 const WorkCard: React.FC<{ title: string, desc: string, icon: React.ReactNode, tag: string }> = ({ title, desc, icon, tag }) => (
-  <div className="group bg-[#1e1b4b]/40 p-8 rounded-3xl relative overflow-hidden">
+  <div className="flex flex-col gap-6 p-8 bg-black rounded-3xl">
 
-    <div className="absolute top-2 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+    <div className="">
       <div className="text-6xl font-black text-white">
         {tag}
       </div>
@@ -73,9 +95,9 @@ const WorkCard: React.FC<{ title: string, desc: string, icon: React.ReactNode, t
       {icon}
     </div> */}
 
-    <h4 className="text-xl font-bold text-white mb-3 mt-14">
+    {/* <h4 className="text-xl font-bold text-white mb-3 mt-14">
       {title}
-    </h4>
+    </h4> */}
 
     <p className="text-gray-400 leading-relaxed text-sm">
       {desc}
