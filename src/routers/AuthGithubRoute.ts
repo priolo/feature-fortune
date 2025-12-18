@@ -1,7 +1,7 @@
 import { OAuthApp } from "@octokit/oauth-app";
 import { Bus, httpRouter, jwt, typeorm } from "@priolo/julian";
 import { Request, Response } from "express";
-import { FindManyOptions } from "typeorm";
+import { FindManyOptions, FindOneOptions } from "typeorm";
 import { AccountRepo, JWTPayload } from "../repository/Account.js";
 import { GithubUser } from "../types/github.js";
 
@@ -93,7 +93,7 @@ class AuthGithubRoute extends httpRouter.Service {
 				// FIND ACCOUNT
 				user = await new Bus(this, this.state.account_repo).dispatch({
 					type: typeorm.Actions.FIND_ONE,
-					payload: <FindManyOptions<AccountRepo>>{
+					payload: <FindOneOptions<AccountRepo>>{
 						where: { githubId: userGithub.id, },
 					}
 				}) ?? {}

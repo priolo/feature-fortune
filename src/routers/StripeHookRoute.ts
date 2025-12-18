@@ -1,7 +1,7 @@
 import { Bus, httpRouter, typeorm } from "@priolo/julian";
 import { TypeLog } from "@priolo/julian/dist/core/types.js";
 import { Request, Response } from "express";
-import { FUNDING_STATUS, FundingRepo } from "src/repository/Funding.js";
+import { FUNDING_STATUS, FundingRepo } from "../repository/Funding.js";
 import Stripe from "stripe";
 import { FindOneOptions } from "typeorm";
 import { AccountRepo } from "../repository/Account.js";

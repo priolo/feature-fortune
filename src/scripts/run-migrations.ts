@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { AppDataSource } from "../data-source"; // adjust import if named differently
+import { AppDataSource } from "../data-source.js"; // adjust import if named differently
 
 (async () => {
   const ds = await AppDataSource.initialize();

@@ -23,7 +23,7 @@ export class AccountRepo {
 
 	/** ruolo dell'account */
 	@Column({ type: "varchar", length: 32, default: ROLE.USER })
-	role: ROLE;
+	role?: ROLE;
 
 	/** lingua preferita dell'utente */
 	@Column({ type: 'varchar', nullable: true, default: 'en' })
