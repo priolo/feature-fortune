@@ -67,7 +67,7 @@ abstract class CronoService extends ServiceBase {
 			try {
 				await this.onCronoTick()
 			} catch (error) {
-				this.log("crono:setTimeout", error, TypeLog.ERROR)
+				this.log("CRONO : setTimeout", error, TypeLog.ERROR)
 			} finally {
 				if ( this.state.status == CRONO_STATUS.STOPPED ) return
 				this.startCrono()

@@ -1,4 +1,3 @@
-import { add } from "@priolo/jon-utils/dist/object/diff";
 
 const en = {
 	common: {
@@ -620,6 +619,10 @@ const en = {
 				payable: {
 					label: "PAYABLE",
 					tooltip: "READY TO BE PAID"
+				},
+				waiting: {
+					label: "WAITING",
+					tooltip: "WAITING FOR CONFIRMATION FROM STRIPE"
 				},
 				paied: {
 					label: "PAID",

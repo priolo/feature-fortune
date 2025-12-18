@@ -6,12 +6,10 @@ const WhySection: React.FC = () => {
   return (
     <section id="why" className="py-24 bg-[#0a0a0a] border-t border-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
           <div>
-            <div className="inline-flex items-center space-x-2 text-puce-pink font-bold uppercase tracking-wider text-sm mb-4">
-              <Award size={16} />
-              <span>Our Vision</span>
-            </div>
             <h2 className="text-4xl md:text-5xl font-black text-white mb-8 leading-tight">
               We Built PUCE because <br />
               <span className="text-puce-green">We Love Open Source.</span>
@@ -24,12 +22,12 @@ const WhySection: React.FC = () => {
               <p>
                 We believe that by allowing users to directly fund specific improvements, we create a more responsive and healthy ecosystem for everyone.
               </p>
-              <div className="p-6 rounded-2xl bg-puce-pink/10 border border-puce-pink/20">
-                <p className="text-puce-pink font-bold flex items-center gap-2">
+              <div className="p-6 rounded-2xl bg-puce-green">
+                <p className="text-gray-900 font-bold flex items-center gap-2">
                   <Shield size={20} />
                   NO FEES. PERIOD.
                 </p>
-                <p className="text-sm mt-2">
+                <p className="text-sm text-gray-900 mt-2">
                   The platform receives no compensation. Every cent (minus Stripe's transaction fee) goes directly to the developer who solves the task. This is our contribution to the community.
                 </p>
               </div>

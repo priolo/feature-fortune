@@ -196,14 +196,14 @@ class StripeService extends ServiceBase {
 
 			// Controllo dello STATO del pagamento
 			if (paymentIntent.status === 'succeeded') {
-				this.log("executePayment:succeded", paymentIntent);
+				this.log("EXECUTE PAYMENT : succeded", paymentIntent);
 			} else if (paymentIntent.status === 'requires_action') {
 				// IMPORTANTE: Questo accade se la banca chiede 3D Secure anche se off_session
 				// Dovresti inviare una email al cliente per tornare online a pagare.
-				this.log("executePayment:requires_action", paymentIntent);
+				this.log("EXECUTE PAYMENT : requires_action", paymentIntent);
 			} else if (paymentIntent.status === 'processing') {
 				// Raro per le carte, comune per bonifici. Il pagamento non è ancora certo.
-				this.log("executePayment:processing", paymentIntent);
+				this.log("EXECUTE PAYMENT : processing", paymentIntent);
 			} else {
 				// Altri stati (requires_payment_method, etc.)
 				throw new Error(`Stato imprevisto: ${paymentIntent.status}`);
@@ -244,7 +244,7 @@ class StripeService extends ServiceBase {
 				name: name ?? undefined,
 				url: url, // è il github del profilo
 				mcc: '5734', // Codice categoria merceologica: Computer Software Stores
-				product_description: 'Sviluppo di funzionalità software open source su richiesta',
+				product_description: 'Development of open source software features',
 			},
 
 			// Passiamo i dati anagrafici per saltare passaggi nell'onboarding
@@ -272,22 +272,17 @@ class StripeService extends ServiceBase {
 	 * Create a express account link for AUTHOR
 	 */
 	async getAccountLink(stripeAccountId: string): Promise<string> {
-		try {
-			const accountLink = await stripe.accountLinks.create({
-				account: stripeAccountId,
-				refresh_url: process.env.STRIPE_REFESH_URL,
-				return_url: process.env.STRIPE_RETURN_URL,
-				type: "account_onboarding",
-				collection_options: {
-					fields: 'eventually_due',          // upfront onboarding
-					future_requirements: 'include',    // gather future requirements too
-				},
-			});
-			return accountLink.url
-		} catch (error) {
-			console.error("Error creating account link:", error);
-			throw error;
-		}
+		const accountLink = await stripe.accountLinks.create({
+			account: stripeAccountId,
+			refresh_url: process.env.STRIPE_REFESH_URL,
+			return_url: process.env.STRIPE_RETURN_URL,
+			type: "account_onboarding",
+			collection_options: {
+				fields: 'eventually_due',          // upfront onboarding
+				future_requirements: 'include',    // gather future requirements too
+			},
+		})
+		return accountLink.url
 	}
 
 	/**

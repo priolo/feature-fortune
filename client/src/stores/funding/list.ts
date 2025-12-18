@@ -49,7 +49,7 @@ const setup = {
 			if (!res.success) return false
 			const funding = store.getById(id)
 			if (!funding) return true
-			funding.status = FUNDING_STATUS.PAIED
+			funding.status = FUNDING_STATUS.WAITING
 			store._update()
 			return true
 		}

@@ -169,7 +169,7 @@ class FeaturePaymentCrono extends CronoService {
 
 
 		// log & return
-		this.log("funding : payment", payload)
+		this.log("FUNDING : payment", payload)
 		return funding
 	}
 

@@ -86,7 +86,7 @@ class StripeHookRoute extends httpRouter.Service {
 				this.setFundingStatusByPaymentIntent(paymentIntent, FUNDING_STATUS.ERROR)
 				break
 			}
-
+//paymentIntent.receipt_email 
 			case 'payment_intent.amount_capturable_updated':
 				const paymentIntentAmountCapturableUpdated = event.data.object;
 				// Then define and call a function to handle the event payment_intent.amount_capturable_updated
@@ -117,6 +117,9 @@ class StripeHookRoute extends httpRouter.Service {
 				break
 		}
 
+		// log
+		this.log(`STRIPE WEBHOOK : ${event.type}`, event.data.object, TypeLog.INFO)
+
 		// Return a 200 response to acknowledge receipt of the event
 		response.send();
 	}
@@ -136,11 +139,11 @@ class StripeHookRoute extends httpRouter.Service {
 
 		// check
 		if (!funding) {
-			this.log(`set status : funding not found`, { payment_intent_id: paymentIntent.id }, TypeLog.ERROR)
+			this.log(`STRIPE WEBHOOK : funding not found`, { payment_intent_id: paymentIntent.id }, TypeLog.ERROR)
 			return
 		}
 		if (funding.status != FUNDING_STATUS.WAITING) {
-			this.log(`set status : status is not WAITING `,
+			this.log(`STRIPE WEBHOOK : status is not WAITING `,
 				{ payment_intent_id: paymentIntent.id, new_status: newStatus, current_status: funding.status },
 				TypeLog.ERROR
 			)
