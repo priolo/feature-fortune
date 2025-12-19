@@ -150,8 +150,21 @@ pm2 delete <name|id>   # elimina processo
 ### riavvio dopo aggiornamento da git
 ```bash
 sudo -i
+# eventualmente
+# git reset -hard HEAD
 git pull origin main
+
+#cd client
+#npm install
+#npm run build
+
+cd ../landingpage
 npm install
 npm run build
-pm2 restart <name|id>
+
+cd .. 
+npm install
+npm run build
+
+pm2 restart puce
 ```

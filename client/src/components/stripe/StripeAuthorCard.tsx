@@ -3,7 +3,6 @@ import Card from '@/components/Card';
 import StripeIcon from '@/icons/StripeIcon';
 import authSo from '@/stores/auth';
 import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
-import themeSo from '@/stores/layout/theme';
 import { Box, Button, SxProps } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React from 'react';
@@ -70,7 +69,7 @@ const StripeAuthorCard: React.FC = () => {
 	// RENDER
 	const haveStripeAuthor = !!authSo.state.user?.stripeAccountId
 	const accountReady = authSo.state.user?.stripeAccountStatus == "ready";
-	const msgType = !haveStripeAuthor ? 'warn' : accountReady ? 'info' : 'done';
+	const msgType = !haveStripeAuthor ? 'warn' : !accountReady ? 'info' : 'done';
 
 	return (
 		<Card id="stripe-author-card"
@@ -81,7 +80,6 @@ const StripeAuthorCard: React.FC = () => {
 			<MessageCmp variant={msgType} title={t(`cards.StripeAuthorCard.status.${msgType}.title`)}>
 				<Trans i18nKey={`cards.StripeAuthorCard.status.${msgType}.desc`} />
 			</MessageCmp>
-
 
 			<Box sx={sxActions}>
 				{haveStripeAuthor && (
@@ -102,19 +100,19 @@ const StripeAuthorCard: React.FC = () => {
 						{t('common.register')}
 					</Button>
 				)}
-
 			</Box>
-		</Card>
-	);
-};
 
-export default StripeAuthorCard;
+		</Card>
+	)
+}
+
+export default StripeAuthorCard
 
 const sxActions: SxProps = {
 	display: 'flex',
 	justifyContent: 'end',
 	paddingTop: 1,
-};
+}
 
 
 

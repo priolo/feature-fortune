@@ -131,7 +131,7 @@ const en = {
 				done: {
 					title: "Great, you are registered with Stripe!",
 					desc: `<br/>This will allow you to receive donations from your supporters.
-					<br/>Use the control panel (DASHBOARD) to manage your Stripe account.
+					Use the DASHBOARD button to manage your Stripe account.
 					`
 				}
 			},
