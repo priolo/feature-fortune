@@ -151,7 +151,7 @@ pm2 delete <name|id>   # elimina processo
 ```bash
 sudo -i
 # eventualmente
-# git reset -hard HEAD
+# git reset --hard HEAD
 git pull origin main
 
 #cd client
