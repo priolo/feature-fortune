@@ -25,10 +25,10 @@ const SequenceSection: React.FC = () => {
             <React.Fragment key={step.name}>
 
               <div className="flex flex-col items-center group w-full lg:w-48 text-center">
-                <div className={`w-20 h-20 rounded-2xl flex items-center justify-center mb-4 bg-gray-900 border-2 border-${step.color}`}>
-                  <step.icon size={32} className={`text-${step.color}`} />
+                <div className={`w-20 h-20 rounded-2xl flex items-center justify-center mb-4 bg-${step.color} border-2 border-${step.color}`}>
+                  <step.icon size={32} className={`text-gray-900`} />
                 </div>
-                <h3 className={`text-lg font-black text-white mb-2 tracking-tighter`}>{step.name}</h3>
+                <h3 className={`text-lg font-black text-gray-900 mb-2 tracking-tighter`}>{step.name}</h3>
                 <p className="text-sm text-gray-500 leading-tight px-2">{step.desc}</p>
               </div>
 

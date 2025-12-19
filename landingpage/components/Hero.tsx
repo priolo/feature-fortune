@@ -19,7 +19,7 @@ const Hero: React.FC = () => {
         </h1>
 
         <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-          <button className="w-full sm:w-auto px-8 py-4 bg-puce-pink text-black font-extrabold text-lg rounded-xl shadow-[0_0_20px_rgba(225,73,252,.5)] hover:shadow-[0_0_30px_rgba(225,73,252,0.6)] transition-all"
+          <button className="w-full sm:w-auto px-8 py-4 bg-puce-pink text-black font-extrabold text-lg rounded-full shadow-[0_0_20px_rgba(225,73,252,.5)] hover:shadow-[0_0_30px_rgba(225,73,252,0.6)] transition-all"
             onClick={() => window.location.href = '/app/'}
           >
             Get Started Now

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Heart, Globe, Beaker, Award, Shield } from 'lucide-react';
+import { Rocket, Award, Code, Globe, Shield } from 'lucide-react';
 
 const WhySection: React.FC = () => {
   return (
@@ -22,7 +22,7 @@ const WhySection: React.FC = () => {
               <p>
                 We believe that by allowing users to directly fund specific improvements, we create a more responsive and healthy ecosystem for everyone.
               </p>
-              <div className="p-6 rounded-2xl bg-puce-green">
+              <div className="p-6 rounded bg-puce-green">
                 <p className="text-gray-900 font-bold flex items-center gap-2">
                   <Shield size={20} />
                   NO FEES. PERIOD.
@@ -34,29 +34,30 @@ const WhySection: React.FC = () => {
             </div>
           </div>
 
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
             <WhyItem
-              icon={<Heart className="text-puce-pink" />}
-              title="Love for OSS"
-              desc="Open source is the backbone of the web. We want to see it thrive."
+              icon={<Rocket className="text-puce-pink" />}
+              title="We’re just getting started"
+              desc="The platform is brand new and the community is still small. Join us early and help us grow a project with big ambitions."
               color="pink"
             />
-            <WhyItem
-              icon={<Beaker className="text-puce-green" />}
-              title="Experimental"
-              desc="A new way to think about how code gets funded at the feature level."
+            <WhyItem2
+              icon={<Award className="text-puce-green" />}
+              title="Supporting open source creators"
+              desc="Our goal is to help open source project owners earn something while having fun improving the projects they love."
               color="green"
             />
             <WhyItem
-              icon={<Globe className="text-puce-pink" />}
-              title="Global Reach"
-              desc="Developers from anywhere can earn for their high-quality contributions."
+              icon={<Code className="text-puce-pink" />}
+              title="Developers come first"
+              desc="There are already established donation platforms, but we focus on the developers who own and maintain the repositories."
               color="pink"
             />
             <WhyItem
-              icon={<Shield className="text-puce-green" />}
-              title="Direct & Fair"
-              desc="No complex management fees. Transparent flow from sponsor to dev."
+              icon={<Globe className="text-puce-green" />}
+              title="Free and open for everyone"
+              desc="The service is completely free. Sign up, create your profile, and help us build a better community."
               color="green"
             />
           </div>
@@ -67,12 +68,20 @@ const WhySection: React.FC = () => {
   );
 };
 
-const WhyItem: React.FC<{ icon: React.ReactNode, title: string, desc: string, color:string }> = ({ icon, title, desc, color }) => (
-  <div className="p-6 rounded-2xl bg-[#1e1b4b]/40">
-    <div className={`w-10 h-10 bg-${color}-500/10 rounded-lg flex items-center justify-center mb-4`}>
-      {icon}
-    </div>
-    <h4 className="text-lg font-bold text-gray-100 mb-2">
+const WhyItem: React.FC<{ icon: React.ReactNode, title: string, desc: string, color:string }> = ({ title, desc }) => (
+  <div className="p-6 flex flex-col rounded-2xl bg-[#1e1b4b]/40">
+    <h4 className="flex-1 text-lg font-bold text-gray-100 mb-2">
+      {title}
+    </h4>
+    <p className="text-sm text-gray-400 leading-relaxed">
+      {desc}
+    </p>
+  </div>
+);
+
+const WhyItem2: React.FC<{ icon: React.ReactNode, title: string, desc: string, color:string }> = ({ title, desc }) => (
+  <div className="p-6 flex flex-col rounded-2xl bg-[#1e1b4b]/40">
+    <h4 className="flex-1 text-lg font-bold text-puce-green mb-2">
       {title}
     </h4>
     <p className="text-sm text-gray-400 leading-relaxed">

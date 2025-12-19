@@ -29,7 +29,7 @@ const Navbar: React.FC = () => {
               Why PUCE
             </a>
 
-            <button className="flex items-center space-x-2 bg-puce-pink hover:bg-opacity-80 text-white px-5 py-2 rounded-full font-bold"
+            <button className="flex items-center space-x-2 bg-puce-pink hover:bg-opacity-80 text-gray-900 px-5 py-2 rounded-full font-bold"
               onClick={() => window.location.href = '/app/login'}
             >
               <LogIn size={18} />
