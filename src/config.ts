@@ -153,7 +153,7 @@ function buildNodeConfig(params?: ConfigParams) {
 
 				<httpStatic.conf>{
 					class: "http-static",
-					dir: path.join(__dirname, "../landingpage/dist"),
+					dir: path.join(__dirname, "../landingpage"),
 					path: "/land/",
 				},
 
