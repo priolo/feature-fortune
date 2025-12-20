@@ -1,4 +1,4 @@
-import { DoneOutlineRounded, ErrorOutline, Info, InfoOutline, InfoOutlineSharp, Warning } from '@mui/icons-material';
+import { DoneOutlineRounded, ErrorOutline, Info, InfoOutline, Warning } from '@mui/icons-material';
 import { SxProps, Typography } from '@mui/material';
 import React from 'react';
 
