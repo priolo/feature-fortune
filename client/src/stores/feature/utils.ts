@@ -12,7 +12,7 @@ export function filterByAccount(features: Feature[], filter: FEATURE_FILTER, use
 		case FEATURE_FILTER.MY:
 			return features.filter(feature => feature.accountId == userId)
 		case FEATURE_FILTER.FINANCED:
-			return features.filter(f => f.fundings?.some(funding => funding.accountId == userId))
+			return features.filter(f => f.fundings?.some(funding => funding.account?.id == userId))
 		case FEATURE_FILTER.DEVELOPED:
 			return features.filter(f => f.accountDevId == userId)
 		case FEATURE_FILTER.ALL:

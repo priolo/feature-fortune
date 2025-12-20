@@ -7,14 +7,14 @@ import { FEATURE_FILTER, FEATURE_SORT } from "@/stores/feature/types";
 import { filterByAccount, filterByStatus, filterByText, sort } from '@/stores/feature/utils';
 import locationSo, { LOCATION_PAGE } from '@/stores/location';
 import { FEATURE_STATUS } from '@/types/feature/Feature';
-import { Box, List, ListItemButton } from '@mui/material';
+import { List, ListItemButton } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React, { useEffect, useMemo } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import FeatureListOverview from './Overview';
-import FeatureView from './FeatureView';
-import RightMenu from './RightMenu';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import FeatureView from './FeatureView';
+import FeatureListOverview from './Overview';
+import RightMenu from './RightMenu';
 
 
 
