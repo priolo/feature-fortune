@@ -103,12 +103,18 @@ export class AccountRepo {
 
 }
 
+/**
+ * Payload memorizzato nel JWT token
+ */
 export type JWTPayload = {
 	id: string;
 	email: string;
 	name: string;
 }
 
+/** 
+ * restituisce una versione "sendable" dell'ACCOUNT, senza campi sensibili 
+ */
 export function accountSendable(account: AccountRepo) {
 	if (!account) return null
 	const {
@@ -125,6 +131,9 @@ export function accountSendable(account: AccountRepo) {
 		emailVerified: account.emailCode == EMAIL_CODE.VERIFIED,
 	}
 }
+/**
+ * Restituisce una lista di ACCOUNT in versione "sendable"
+ */
 export function accountSendableList(accounts: AccountRepo[]) {
 	return accounts.map(account => accountSendable(account))
 }

@@ -13,8 +13,7 @@ class AuthRoute extends httpRouter.Service {
 		return {
 			...super.stateDefault,
 			path: "/api/auth",
-			email_path: "/email-noreply",
-			repository: "/typeorm/accounts",
+			accounts_repo: "/typeorm/accounts",
 			jwt: "/jwt",
 			routers: [
 				{ path: "/current", verb: "get", method: "current" },
@@ -53,7 +52,7 @@ class AuthRoute extends httpRouter.Service {
 			// 		where: { email: data.email },
 			// 	}
 			// })
-			const user: AccountRepo = await new Bus(this, this.state.repository).dispatch({
+			const user: AccountRepo = await new Bus(this, this.state.accounts_repo).dispatch({
 				type: typeorm.Actions.GET_BY_ID,
 				payload: userJwt.id
 			})
@@ -83,6 +82,16 @@ class AuthRoute extends httpRouter.Service {
 			res.status(401).json({ user: null })
 		}
 	}
+
+	/** elimino il cookie JWT cosi da chiudere la sessione */
+	async logout(req: Request, res: Response) {
+		res.clearCookie('jwt');
+		res.status(200).send('Logout successful');
+	}
+
+
+
+	/** eseguo autologin per DEV e TEST */
 	async autoLogin(req: Request, res: Response) {
 		// fai autologin solo in DEV o TEST
 		if (!(
@@ -96,7 +105,7 @@ class AuthRoute extends httpRouter.Service {
 		if ( !userId ) userId = "id-user-1"
 
 		// carico l'account DEMO
-		const user: AccountRepo = await new Bus(this, this.state.repository).dispatch({
+		const user: AccountRepo = await new Bus(this, this.state.accounts_repo).dispatch({
 			type: typeorm.Actions.FIND_ONE,
 			payload: <FindManyOptions<AccountRepo>>{
 				where: { id: userId },
@@ -126,44 +135,33 @@ class AuthRoute extends httpRouter.Service {
 		});
 	}
 
-	/** elimino il cookie JWT cosi da chiudere la sessione */
-	async logout(req: Request, res: Response) {
-		res.clearCookie('jwt');
-		res.status(200).send('Logout successful');
-	}
-
-
-
-
-
-
-
 	/**
 	 * eseguo il login grazie a "email" e "password"
+	 * [II] da rivedere perche' non usiamo piu' questo metodo
 	 */
-	async login(req: Request, res: Response) {
-		const { repository } = this.state
-		var { email, password } = req.body
-		if (!email || !password) return res.status(400).json({ error: "login:missing_parameters" })
+	// async login(req: Request, res: Response) {
+	// 	const { accounts_repo: repository } = this.state
+	// 	var { email, password } = req.body
+	// 	if (!email || !password) return res.status(400).json({ error: "login:missing_parameters" })
 
-		// get user
-		const users = await new Bus(this, repository).dispatch({
-			type: typeorm.Actions.FIND,
-			payload: { where: { email } }
-		})
-		if (users.length == 0) return res.status(404).json({ error: "login:account:not_found" })
-		const user = users[0]
+	// 	// get user
+	// 	const users = await new Bus(this, repository).dispatch({
+	// 		type: typeorm.Actions.FIND,
+	// 		payload: { where: { email } }
+	// 	})
+	// 	if (users.length == 0) return res.status(404).json({ error: "login:account:not_found" })
+	// 	const user = users[0]
 
-		// check password
-		const hash = crypto.pbkdf2Sync(password, user.salt, 1000, 64, `sha512`).toString(`hex`)
-		const correct = hash == user.password
-		if (!correct) return res.status(404).json({ error: "login:account:not_found" })
+	// 	// check password
+	// 	const hash = crypto.pbkdf2Sync(password, user.salt, 1000, 64, `sha512`).toString(`hex`)
+	// 	const correct = hash == user.password
+	// 	if (!correct) return res.status(404).json({ error: "login:account:not_found" })
 
-		// inserisco user nel payload jwt
-		const jwtService = this.nodeByPath<httpRouter.jwt.Service>("/http/route/route-jwt")
-		const token = await jwtService.putPayload(user, res as any)
-		res.json({ token })
-	}
+	// 	// inserisco user nel payload jwt
+	// 	const jwtService = this.nodeByPath<httpRouter.jwt.Service>("/http/route/route-jwt")
+	// 	const token = await jwtService.putPayload(user, res as any)
+	// 	res.json({ token })
+	// }
 }
 
 export default AuthRoute

@@ -136,7 +136,6 @@ function buildNodeConfig(params?: ConfigParams) {
 				{ class: AuthGoogleRoute },
 
 				{ class: StripeHookRoute },
-				{ class: ReflectionRoute },
 
 				<httpStatic.conf>{
 					class: "http-static",
