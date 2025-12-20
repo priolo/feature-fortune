@@ -316,6 +316,8 @@ const en = {
 			},
 			empty: "NO CONTRIBUTIONS FOR THIS FEATURE YET",
 			alerts: {
+				no_card: `You must register a credit card to make a donation.
+				Go to your account settings.`,
 				pay: {
 					check: "By confirming (OK) you will proceed with the immediate payment of the donation to the developer.",
 					success: "PAYMENT SUCCESSFUL.",

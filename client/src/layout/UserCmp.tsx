@@ -89,7 +89,7 @@ const UserCmp: React.FC<UserCmpProps> = ({
 					<ListItemIcon>
 						<Face fontSize="small" />
 					</ListItemIcon>
-					<ListItemText>CONFIG</ListItemText>
+					<ListItemText>SETTINGS</ListItemText>
 				</ListItemButton>
 
 				<Divider sx={{ my: 1 }} />

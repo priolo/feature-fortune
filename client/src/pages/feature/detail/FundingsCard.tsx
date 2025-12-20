@@ -2,6 +2,7 @@ import Card from '@/components/Card';
 import FundingDialog from '@/components/funding/FundingDialog';
 import FundingView from '@/components/funding/FundingView';
 import MessageBanner from '@/components/MessageBanner';
+import authSo from '@/stores/auth';
 import fundingListSo from '@/stores/funding/list';
 import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 import { Funding } from '@/types/Funding';
@@ -43,6 +44,15 @@ const FundingsCardCmp: React.FC<Props> = ({
 
     // HANDLERS
     const handleCreateClick = () => {
+        if (!authSo.state.user?.stripeHaveCard) {
+            dialogSo.dialogOpen({
+                type: DIALOG_TYPE.WARNING,
+                text: t('cards.FundingsCard.alerts.no_card'),
+                labelCancel: null,
+                modal: true,
+            })
+            return
+        }
         setDialogOpen(true)
     }
     /** Funding è sempre NEW */
@@ -99,7 +109,7 @@ const FundingsCardCmp: React.FC<Props> = ({
             {!isVoid ? (
                 <List> {fundings.map((funding, index) => (
 
-                    <ListItem key={funding.id} sx={{ pl: 0}}
+                    <ListItem key={funding.id} sx={{ pl: 0 }}
                         divider={index < fundings.length - 1}
                     >
                         <FundingView isPayableNow={isPayableNow}

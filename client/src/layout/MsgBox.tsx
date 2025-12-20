@@ -57,7 +57,7 @@ const MsgBox: FunctionComponent = () => {
 		</DialogTitle>
 
 		<DialogContent>
-			<DialogContentText>
+			<DialogContentText sx={{ whiteSpace: 'pre-line' }}>
 				{dialogSa.text}
 			</DialogContentText>
 		</DialogContent>
