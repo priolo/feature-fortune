@@ -80,7 +80,7 @@ const FundingsCardCmp: React.FC<Props> = ({
 
     // RENDER
     const fundings = fundingListSo.state.all
-    if (!fundings) return null
+    if (!fundings || !featureId) return null
     const isVoid = fundings.length == 0;
 
     return <>

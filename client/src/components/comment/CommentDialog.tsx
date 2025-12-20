@@ -49,8 +49,10 @@ const CommentDialog: FunctionComponent<Partial<Props>> = ({
 	const canSave = messageTrim > 0 && messageTrim <= MAX_LENGTH;
 
 	return (
-
-		<Dialog onClose={handleClose} open={isOpen} maxWidth="sm" fullWidth>
+		<Dialog maxWidth="sm" fullWidth
+			//onClose={handleClose} 
+			open={isOpen} 
+		>
 
 			<DialogTitle>{t("cards.CommentsCard.dialog.title")}</DialogTitle>
 

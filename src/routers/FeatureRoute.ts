@@ -58,6 +58,7 @@ class FeatureRoute extends httpRouter.Service {
 
 	async getById(req: Request, res: Response) {
 		const id = req.params["id"]
+		if (!id) return res.status(400).json({ error: "Missing id parameter" })
 
 		const feature: FeatureRepo = await new Bus(this, this.state.feature_repo).dispatch({
 			type: typeorm.Actions.FIND_ONE,

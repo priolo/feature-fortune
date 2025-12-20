@@ -11,6 +11,7 @@ function index(/*filter?: FEATURE_API_FILTER,*/ opt?: CallOptions): Promise<{ fe
 
 /** GET */
 function get(id: string, opt?: CallOptions): Promise<Feature> {
+	if (!id) throw new Error("Feature ID is required")
 	return ajax.get(`features/${id}`, opt)
 }
 

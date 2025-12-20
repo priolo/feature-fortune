@@ -74,7 +74,7 @@ const FundingDialog: FunctionComponent<Partial<Props>> = ({
 	return (
 		<Dialog
 			open={isOpen}
-			onClose={handleClose}
+			//onClose={handleClose}
 		>
 			<DialogTitle>
 				{t(`cards.FundingDialog.title`)}
