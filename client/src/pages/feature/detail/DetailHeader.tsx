@@ -2,7 +2,8 @@ import authSo from '@/stores/auth';
 import featureDetailSo from '@/stores/feature/detail';
 import dialogSo, { DIALOG_TYPE } from '@/stores/layout/dialogStore';
 import { FEATURE_ACTIONS, FEATURE_STATUS } from '@/types/feature/Feature';
-import { Box, Button, Tooltip, Typography } from '@mui/material';
+import { ContentCopy as ContentCopyIcon, Link } from '@mui/icons-material';
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material';
 import { useStore } from '@priolo/jon';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -150,6 +151,15 @@ const FeatureDetailHeader: React.FC = () => {
 		})
 	}
 
+	const handleCopyClick = () => {
+		navigator.clipboard.writeText(window.location.href)
+		dialogSo.dialogOpen({
+			text: t("header.feature.message.copy"),
+			type: DIALOG_TYPE.SUCCESS,
+			modal: false,
+		})
+	}
+
 
 	// RENDER
 	const feature = featureDetailSo.state.feature
@@ -172,9 +182,16 @@ const FeatureDetailHeader: React.FC = () => {
 		<Typography variant="h5">
 			{t("header.feature.title", "FEATURE")}
 		</Typography>
+		
+		{!isNew && (
+			<Tooltip title={t("header.feature.tooltip.copy")}>
+				<IconButton onClick={handleCopyClick} size='small'>
+					<Link fontSize='small' color="secondary" />
+				</IconButton>
+			</Tooltip>
+		)}
 
 		<Box sx={{ flex: 1 }}></Box>
-
 
 		{isAuthor && (feature.status == FEATURE_STATUS.IN_DEVELOPMENT || feature.status == FEATURE_STATUS.PROPOSED) && <>
 			<Tooltip title={t(`header.feature.tooltip.delete`)}>
